@@ -20,6 +20,7 @@ Temp
 *.unityproj
 *.sln
 *.userprefs
+*.suo
 
 # Legacy cruft:
 2DGameplayTutorialProject

@@ -10,7 +10,6 @@ public class PlayerMovement : MonoBehaviour
     const int RIGHT_BUTTON = 1;
     const int MIDDLE_BUTTON = 2;
 
-
     void Update()
     {
         // Keyboard

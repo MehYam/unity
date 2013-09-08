@@ -11,7 +11,6 @@ public class Life : MonoBehaviour
         if (!float.IsNaN(seconds))
         {
             // might expire from time
-            Debug.Log("seconds: " + seconds);
             seconds -= Time.deltaTime;
             if (seconds <= 0)
             {
