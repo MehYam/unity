@@ -21,8 +21,9 @@ Temp
 *.sln
 *.userprefs
 *.suo
+playing1/obj
 
-# Legacy cruft:
+# cruft and test code:
 2DGameplayTutorialProject
 CacheServer
 NGUITest2
@@ -33,3 +34,5 @@ square.x3d
 testvideo
 testwww
 white disk.png
+smartfoxsamples
+sample
