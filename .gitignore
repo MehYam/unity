@@ -22,6 +22,7 @@ Temp
 *.userprefs
 *.suo
 playing1/obj
+playing1server/bin
 
 # cruft and test code:
 2DGameplayTutorialProject
