@@ -25,6 +25,8 @@ public sealed class SmartFoxBroker : MonoBehaviour
         sf.AddEventListener(SFSEvent.CONNECTION_LOST, OnConnectionLost);
 
         _started = true; // KAI: the sample code does something like this, not sure we need to
+
+        SendSpawnRequest();
     }
 
     void FixedUpdate()
@@ -35,6 +37,12 @@ public sealed class SmartFoxBroker : MonoBehaviour
         }
     }
 
+    void SendSpawnRequest()
+    {
+        Room room = SmartFoxConnection.Connection.LastJoinedRoom;
+        ExtensionRequest request = new ExtensionRequest("spawnMe", new SFSObject(), room);
+        SmartFoxConnection.Connection.Send(request);
+    }
     private void OnExtensionResponse(BaseEvent evt)
     {
         try
@@ -56,7 +64,7 @@ public sealed class SmartFoxBroker : MonoBehaviour
         Room room = (Room)evt.Params["room"];
 
         //PlayerManager.Instance.DestroyEnemy(user.Id);
-        Debug.Log("User " + user.Name + " left");
+        Debug.Log(string.Format("User {0} left {1}", user.Name, room.Name));
     }
     private void OnConnectionLost(BaseEvent evt)
     {
