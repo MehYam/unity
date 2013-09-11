@@ -26,6 +26,7 @@ public final class World implements IWorld
 		time = new Date().getTime();
 		lastTime = time;
 		
+		lastTime++;
 		createTestScene();
 	}
 

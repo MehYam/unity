@@ -12,6 +12,6 @@ public class SpawnMeHandler extends BaseClientRequestHandler
 	public void handleClientRequest(User player, ISFSObject arg1)
 	{
 		Playing1ServerExtension ext = (Playing1ServerExtension) getParentExtension();
-		ext.populateWorldForUser(player);
+		ext.sendWorldToUser(player);
 	}
 }

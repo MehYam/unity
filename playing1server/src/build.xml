@@ -1,0 +1,7 @@
+<?xml version="1.0" ?>
+<!-- Configuration of the Ant build system to generate a Jar file --> 
+<project name="playing1server" default="CreateJar">
+  <target name="CreateJar" description="Export jar file to SFS deployment">
+        <jar jarfile="C:\source\SFS\SFS2X\extensions\playing1\playing1Extension.jar" basedir="." includes="**/*.class" />
+  </target>
+</project>

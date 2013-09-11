@@ -33,7 +33,7 @@ public final class Playing1ServerExtension extends SFSExtension
 	public void init()
 	{
 		trace("##init()");
-		
+
         // add handlers
 		addRequestHandler("spawnMe", SpawnMeHandler.class);
 
@@ -43,8 +43,7 @@ public final class Playing1ServerExtension extends SFSExtension
         _world = world;
         
 		exe = new ScheduledThreadPoolExecutor(1);
-        exe.scheduleAtFixedRate(new WorldRunner(this), 3000, 3000, TimeUnit.MILLISECONDS);
-        
+        exe.scheduleAtFixedRate(new WorldRunner(this), 25, 25, TimeUnit.MILLISECONDS);
 	}
 
 	@Override
@@ -65,15 +64,13 @@ public final class Playing1ServerExtension extends SFSExtension
 	{
 		_world.tick();
 		
-		trace("##tick() " + (_world.now() - lastPosUpdate));
 		if ((_world.now() - lastPosUpdate) > 200)
 		{
 			sendPositions();
 			lastPosUpdate = _world.now();
 		}
-		trace("##tick done");
 	}
-	public void populateWorldForUser(User player)
+	public void sendWorldToUser(User player)
 	{
 		// spawn each actor for the new user 
 		for (Actor actor : _world.getMobs())
@@ -84,20 +81,29 @@ public final class Playing1ServerExtension extends SFSExtension
 			this.send("spawn", data, player);
 		}
 	}
+	long posCount = 0;
+	long lastLog = 0;
 	void sendPositions()
-	{
+	{		
 		Room room = getParentRoom();
 		if (room != null)
 		{
 			List<User> userList = room.getUserList();
 	
-			trace("here " + _world.getMobs().size() + ", users: " + userList.size());
-			
 			for (Actor actor : _world.getMobs())
 			{
 				ISFSObject data = Serializer.encode(actor);
 				this.send("pos", data, userList, true);
+				
+				++posCount;
 			}
+		}
+		
+		if ((_world.now() - lastLog) > 5000 && posCount > 0)
+		{
+			trace(String.format("Processed %d positions", posCount));
+			posCount = 0;
+			lastLog = _world.now();
 		}
 	}
 }
