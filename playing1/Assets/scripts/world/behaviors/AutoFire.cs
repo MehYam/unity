@@ -17,7 +17,10 @@ namespace playing1.world.behaviors
                 {
                     _lastFire = Time.time;
 
-                    Instantiate(ammo, transform.localPosition, transform.localRotation);
+                    var start = transform.localPosition;
+                    ++start.z;
+
+                    Instantiate(ammo, start, transform.localRotation);
                 }
             }
         }
