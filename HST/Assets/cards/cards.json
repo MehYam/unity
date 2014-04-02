@@ -1,0 +1,45 @@
+{
+	"card":
+	{
+		"name": "...",
+		"type": "minion/spell/weapon",
+		"cost": "0",
+		"actions": { },
+		"asset": "..."
+	},
+	"cards":
+	[
+		//KAI: write a script to do this
+		{ 
+			"asset": "1.png",
+			"name": "Heroic Strike",
+			"type": "s",
+			"text": "Give your hero +4 Attack this turn.",
+			"cost": "2",
+			"actions":
+			{
+				"addAttack": "4"
+			},
+		},
+		{
+			"name": "Edwin VanCleef",
+			"type": "m",
+			"cost": "3",
+			"actions": 
+			{ 
+				"combo":
+				{
+
+				}
+			},
+			"asset": "3.png"
+		},
+		{
+			"name": "...",
+			"type": "minion/spell/weapon",
+			"cost": "0",
+			"actions": { },
+			"asset": "..."
+		}
+	]
+}
