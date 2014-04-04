@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+using HST.Util;
+
 public class Deck<T>
 {
     readonly T[] _cards;
@@ -10,8 +12,6 @@ public class Deck<T>
     {
         _cards = new T[size];
     }
-
-    public T[] cards { get { return _cards; } }
 
     public void Shuffle() 
     {
@@ -34,6 +34,8 @@ public class Deck<T>
 
     public void SetCardAt(int index, T card)
     {
+        DebugUtils.Assert(index >= 0 && index < _cards.Length);
+
         _cards[index] = card;
     }
 
@@ -58,10 +60,21 @@ public class Hand<T> : IEnumerable<T>
     {
         cards.AddLast(card);
     }
+    public T PullFirst()
+    {
+        DebugUtils.Assert(size > 0);
+
+        var first = cards.First.Value;
+        cards.RemoveFirst();
+
+        return first;
+    }
     public void PullCard(T card)
     {
         //KAI: there's no remove-nth?  That's probably what I'll need...
-        cards.Remove(card);
+        var removed = cards.Remove(card);
+
+        DebugUtils.Assert(removed);
     }
 
     public IEnumerator<T> GetEnumerator()

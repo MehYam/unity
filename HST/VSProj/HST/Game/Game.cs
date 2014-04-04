@@ -3,6 +3,7 @@ using System.Collections;
 public class Game
 {
     static public readonly int DECKSIZE = 30;
+    static public readonly int INITIAL_DRAW = 3;
     readonly Hero[] _heros = new Hero[2];
     public Hero[] hero
     {
@@ -21,13 +22,23 @@ public class Game
         _heros[1] = second;
     }
 
-    public void Start()
+    public void DrawForMulligan()
     {
-        _heros[0].Draw(3);
-        _heros[1].Draw(4);
+        _heros[0].deck.Shuffle();
+        _heros[1].deck.Shuffle();
 
-        // _heros[1] add the Coin
+        _heros[0].Draw(INITIAL_DRAW);
+        _heros[1].Draw(INITIAL_DRAW + 1);
     }
+
+    public void OnPostMulligan()
+    {
+        _heros[0].Draw(INITIAL_DRAW);
+        _heros[1].Draw(INITIAL_DRAW + 1);
+        
+        _heros[1].hand.AddCard(CardFactory.Instance.CreateCoin());
+    }
+
 
     public override string ToString()
     {

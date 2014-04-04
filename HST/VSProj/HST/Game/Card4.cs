@@ -24,7 +24,7 @@ public abstract class AbstractCard
     }
 }
 
-public class MinionCard : AbstractCard
+public sealed class MinionCard : AbstractCard
 {
     public readonly int attack;
     public readonly int health;
@@ -63,7 +63,8 @@ public class SpellCard : AbstractCard
     }
 }
 
-public class ModifiedAbility<T> where T : AbstractCard
+// cards are immutable, we attach modifiers to affect them
+public class ModifiedCard<T> where T : AbstractCard
 {
     public readonly T ability;
     public readonly int modifiers;
@@ -90,18 +91,18 @@ public class SpellCard : AbstractAbility
 }
 */
 //KAI: this factory does not yet hide the concrete types - maybe it shouldn't?
-public class AbilityFactory
+public class CardFactory
 {
-    AbilityFactory() {    } // hide constructor
+    CardFactory() {    } // hide constructor
 
-    static AbilityFactory _instance;
-    static public AbilityFactory Instance
+    static CardFactory _instance;
+    static public CardFactory Instance
     {
         get
         {
             if (_instance == null)
             {
-                _instance = new AbilityFactory();
+                _instance = new CardFactory();
             }
             return _instance;
         }
@@ -120,6 +121,11 @@ public class AbilityFactory
     public MinionCard CreateRandomMinionCard()
     {
         return new MinionCard(++_instances, "minion", "minion", _rnd.Next(10), _rnd.Next(12), _rnd.Next(1, 12));
+    }
+
+    public SpellCard CreateCoin()
+    {
+        return new SpellCard(2112, "Coin", "Adds a mana", 0);
     }
 }
 

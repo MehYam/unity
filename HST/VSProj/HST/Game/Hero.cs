@@ -1,17 +1,23 @@
 using System.Collections.Generic;
+using HST.Util;
 
-public class Hero
+public sealed class Hero
 {
-    public int health { get; set; }
-    public int mana { get; set; }
-    public readonly Deck<AbstractCard> deck = new Deck<AbstractCard>(Game.DECKSIZE);
-    public Playfield field = new Playfield();
-    public Hand<AbstractCard> hand = new Hand<AbstractCard>();
+    public int health { get; private set; }
+    public int mana { get; private set; }
+
+    public Deck<AbstractCard> deck { get; private set; }
+    public Hand<AbstractCard> hand { get; private set; }
+    public Playfield field { get; private set; }
 
     Hero()
     {
         health = 30;
         mana = 1;
+
+        deck = new Deck<AbstractCard>(Game.DECKSIZE);
+        hand = new Hand<AbstractCard>();
+        field = new Playfield();
     }
 
     public enum CLASS { MAGE, WARRIOR, PRIEST, PALADIN, WARLOCK, DRUID, HUNTER, SHAMAN, ROGUE };
@@ -27,6 +33,28 @@ public class Hero
             var card = deck.Draw();
             hand.AddCard(card);
         }
+    }
+
+    public void Mulligan(Hand<AbstractCard> cardsToMully)
+    {
+        DebugUtils.Assert(cardsToMully.size < Game.DECKSIZE);
+
+        // rebuild a new deck with the undrawn and mully'ed cards, then shuffle it
+        var newDeck = new Deck<AbstractCard>(Game.DECKSIZE - hand.size + cardsToMully.size);
+        int newDeckIndex = 0;
+        while (deck.remaining > 0)
+        {
+            newDeck.SetCardAt(newDeckIndex++, deck.Draw());
+        }
+        foreach (var card in cardsToMully)
+        {
+            newDeck.SetCardAt(newDeckIndex++, card);
+            hand.PullCard(card);
+        }
+        newDeck.Shuffle();
+        deck = newDeck;
+
+        DebugUtils.Assert(newDeckIndex == Game.DECKSIZE && newDeck.remaining + hand.size == Game.DECKSIZE);
     }
 
     public override string ToString()
