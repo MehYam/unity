@@ -31,11 +31,11 @@ public sealed class Card3
     // card events
     public interface CardEvents
     {
-        public void OnPlay();
-        public void OnAttack();
-        public void OnReceiveAttack();
-        public void OnDeath();
-        public void OnReturnToHand();
+        void OnPlay();
+        void OnAttack();
+        void OnReceiveAttack();
+        void OnDeath();
+        void OnReturnToHand();
     }
 
     // implement the card effects here - these could be soft-coded in Lua instead, but this is good for starters

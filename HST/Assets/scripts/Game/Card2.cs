@@ -1,4 +1,3 @@
-using UnityEngine;
 using System.Collections.Generic;
 
 //KAI: this attempt is more interesting, but this is getting complicated - going to start with a very simple Card3 first, then move to something cleverer later

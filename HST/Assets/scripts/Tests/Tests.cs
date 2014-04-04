@@ -1,26 +1,47 @@
-﻿using UnityEngine;
-using System.Collections;
+using UnityEngine;
+using System.Collections.Generic;
 
-public sealed class Tests
+public sealed class Tests : MonoBehaviour
 {
-    void Test1()
+    void Start()
     {
-        // create a game
+        TestDeck();
+
+        TestGameSimple();
+    }
+
+    static void LogResult(string name, bool pass)
+    {
+        if (pass)
+        {
+            Debug.Log(name + ": passed");
+        }
+        else
+        {
+            Debug.LogError(name + ": FAILED");
+        }
+    }
+
+    void TestDeck()
+    {
+        Debug.Log("Tests.TestDeck");
+
+        var deck = new Deck();
+        deck.CreateRandom();
+
+        // test shuffle
+        deck.Shuffle();
+
+        // test draw
+    }
+
+    void TestGameSimple()
+    {
         var game = new Game();
 
-        // initialize it
+        game.heros[0].deck.CreateRandom();
+        game.heros[1].deck.CreateRandom();
 
-        // shuffle cards
-
-        // run mulligans
-
-        // make some plays
-
-        // test that plays result in minions on board
-
-        // test attacks
-
-        // test all effects
-
+      
     }
 }

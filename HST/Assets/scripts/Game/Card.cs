@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
 
 
 //KAI: this was my first attempt at a design for cards - kind of a standard object-oriented hierarchy.  I want to move to a more
@@ -30,7 +29,7 @@ public abstract class Card
 
 
 }
-
+/*
 public class MinionCard : Card
 {
     public bool battlecry { get; set; }
@@ -58,3 +57,4 @@ public class SpellCard : Card
     {
     }
 }
+*/
