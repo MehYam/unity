@@ -52,9 +52,12 @@ public sealed class Hero
             hand.PullCard(card);
         }
         newDeck.Shuffle();
-        deck = newDeck;
 
-        DebugUtils.Assert(newDeckIndex == Game.DECKSIZE && newDeck.remaining + hand.size == Game.DECKSIZE);
+        DebugUtils.Assert(
+            (newDeckIndex + hand.size) == Game.DECKSIZE && 
+            newDeck.remaining + hand.size == Game.DECKSIZE);
+
+        deck = newDeck;
     }
 
     public override string ToString()

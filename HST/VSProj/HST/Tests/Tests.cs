@@ -45,6 +45,7 @@ public sealed class Tests
     void TestGame()
     {
         // start game
+        Game.DECKSIZE = 10;
         var game = new Game(
             Hero.CreateHero(Hero.CLASS.DRUID),
             Hero.CreateHero(Hero.CLASS.PALADIN)
@@ -56,6 +57,8 @@ public sealed class Tests
         // test mulligan
         game.DrawForMulligan();
 
+        logger.Log("TestGame pre-mulligan", game.ToString());
+
         DebugUtils.Assert(game.hero[0].hand.size == Game.INITIAL_DRAW);
         DebugUtils.Assert(game.hero[1].hand.size == Game.INITIAL_DRAW + 1);
 
@@ -66,7 +69,7 @@ public sealed class Tests
             var toMulligan = new Hand<AbstractCard>();
             foreach (var card in hand)
             {
-                if (rnd.Next(1, 2) == 1)
+                if (rnd.Next(0, 2) == 1)
                 {
                     toMulligan.AddCard(card);
                 }
@@ -74,15 +77,16 @@ public sealed class Tests
             return toMulligan;
         };
 
+        var mully = pickRandom(game.hero[0].hand);
+        logger.Log("TestGame hero0 mullies", mully.size.ToString());
+        game.hero[0].Mulligan(mully);
 
-        game.hero[0].Mulligan(pickRandom(game.hero[0].hand));
-        game.hero[1].Mulligan(pickRandom(game.hero[1].hand));
+        mully = pickRandom(game.hero[1].hand);
+        game.hero[1].Mulligan(mully);
+        logger.Log("TestGame hero1 mullies", mully.size.ToString());
 
         game.OnPostMulligan();
 
-        DebugUtils.Assert(game.hero[0].hand.size == Game.INITIAL_DRAW);
-        DebugUtils.Assert(game.hero[1].hand.size == Game.INITIAL_DRAW + 2);
-
-        logger.Log("TestGame", game.ToString());
+        logger.Log("TestGame post-mulligan", game.ToString());
     }
 }

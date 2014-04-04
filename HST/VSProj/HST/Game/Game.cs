@@ -1,8 +1,10 @@
 using System.Collections;
 
+using HST.Util;
+
 public class Game
 {
-    static public readonly int DECKSIZE = 30;
+    static public int DECKSIZE = 30;  //KAI: non-readonly for testing purposes, got to be a nicer way
     static public readonly int INITIAL_DRAW = 3;
     readonly Hero[] _heros = new Hero[2];
     public Hero[] hero
@@ -33,10 +35,13 @@ public class Game
 
     public void OnPostMulligan()
     {
-        _heros[0].Draw(INITIAL_DRAW);
-        _heros[1].Draw(INITIAL_DRAW + 1);
+        _heros[0].Draw(INITIAL_DRAW - _heros[0].hand.size);
+        _heros[1].Draw((INITIAL_DRAW + 1) - _heros[1].hand.size);
         
         _heros[1].hand.AddCard(CardFactory.Instance.CreateCoin());
+
+        DebugUtils.Assert(_heros[0].hand.size == Game.INITIAL_DRAW);
+        DebugUtils.Assert(_heros[1].hand.size == Game.INITIAL_DRAW + 2);
     }
 
 
