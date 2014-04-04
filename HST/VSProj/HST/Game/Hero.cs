@@ -17,7 +17,20 @@ public class Hero
     public enum CLASS { MAGE, WARRIOR, PRIEST, PALADIN, WARLOCK, DRUID, HUNTER, SHAMAN, ROGUE };
     static public Hero CreateHero(CLASS heroClass)
     {
-        return new Hero();
+        var hero = new Hero();
+        hero.deck.CreateRandom();
+        hero.deck.Shuffle();
+
+        return hero;
+    }
+
+    public void Draw(int cards)
+    {
+        for (int i = 0; i < cards; ++i)
+        {
+            var card = deck.Draw();
+            hand.AddCard(card);
+        }
     }
 
     public override string ToString()
@@ -31,15 +44,6 @@ public class Hero
         sb.AppendLine(field.ToString());
 
         return sb.ToString();
-    }
-
-    public void Draw(int cards)
-    {
-        for (int i = 0; i < cards; ++i)
-        {
-            var card = deck.Draw();
-            hand.AddCard(card);
-        }
     }
 }
 

@@ -55,6 +55,12 @@ public class Hand : IEnumerable<AbstractCard>
     public int size { get { return cards.Count; } }
     public void AddCard(AbstractCard card)
     {
+        cards.AddLast(card);
+    }
+    public void PullCard(AbstractCard card)
+    {
+        //KAI: there's no remove-nth?  That's probably what I'll need...
+        cards.Remove(card);
     }
 
     public IEnumerator<AbstractCard> GetEnumerator()
