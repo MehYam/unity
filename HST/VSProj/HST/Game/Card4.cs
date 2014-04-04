@@ -45,6 +45,24 @@ public class MinionCard : AbstractCard
     }
 }
 
+public class SpellCard : AbstractCard
+{
+    public SpellCard(int id, string name, string text, int cost)
+        : base(id, name, text, cost)
+    {
+    }
+
+    public override void OnPlayed(Game g)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override string ToString()
+    {
+        return string.Format("{0} (spell)", base.ToString());
+    }
+}
+
 public class ModifiedAbility<T> where T : AbstractCard
 {
     public readonly T ability;
@@ -74,9 +92,7 @@ public class SpellCard : AbstractAbility
 //KAI: this factory does not yet hide the concrete types - maybe it shouldn't?
 public class AbilityFactory
 {
-    AbilityFactory()
-    {
-    }
+    AbilityFactory() {    } // hide constructor
 
     static AbilityFactory _instance;
     static public AbilityFactory Instance
@@ -103,8 +119,7 @@ public class AbilityFactory
     }
     public MinionCard CreateRandomMinionCard()
     {
-        return new MinionCard(++_instances, "some card", "some text", _rnd.Next(10), _rnd.Next(12), _rnd.Next(1, 12));
+        return new MinionCard(++_instances, "minion", "minion", _rnd.Next(10), _rnd.Next(12), _rnd.Next(1, 12));
     }
-
 }
 

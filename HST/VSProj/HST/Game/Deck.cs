@@ -2,27 +2,23 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-public class Deck
+public class Deck<T>
 {
-    static public readonly int SIZE = 30;
-    readonly AbstractCard[] _cards = new AbstractCard[SIZE];
+    readonly T[] _cards;
     int _next = 0;
-
-    public AbstractCard[] cards { get { return _cards; } }
-    public void CreateRandom()
+    public Deck(int size)
     {
-        _next = 0;        
-        for (int i = 0; i < _cards.Length; ++i)
-        {
-            _cards[i] = AbilityFactory.Instance.CreateRandomMinionCard();
-        }
+        _cards = new T[size];
     }
+
+    public T[] cards { get { return _cards; } }
 
     public void Shuffle() 
     {
-        _next = 0;
+        // this shuffles undrawn cards.
         var rnd = new Random();
-        for (int i = 0; i < SIZE; ++i)
+        var size = _cards.Length;
+        for (int i = _next; i < size; ++i)
         {   
             var randomIndex = rnd.Next(0, _cards.Length);
             var randomPick = _cards[randomIndex];
@@ -30,40 +26,45 @@ public class Deck
             _cards[i] = randomPick;
         }
     }
-    public int remaining { get { return SIZE - _next; } }
-    public AbstractCard Draw()
+    public int remaining { get { return _cards.Length - _next; } }
+    public T Draw()
     {
-        return remaining > 0 ? _cards[_next++] : null;
+        return remaining > 0 ? _cards[_next++] : default(T);
+    }
+
+    public void SetCardAt(int index, T card)
+    {
+        _cards[index] = card;
     }
 
     public override string ToString()
     {
         var sb = new StringBuilder();
-        foreach (var card in _cards)
+        var size = _cards.Length;
+        for (int i = _next; i < size; ++i)
         {
-            if (card == null) break;
-            sb.AppendLine(card.ToString());
+            sb.AppendLine(_cards[i].ToString());
         }
         return sb.ToString();
     }
 }
 
-public class Hand : IEnumerable<AbstractCard>
+public class Hand<T> : IEnumerable<T>
 {
-    LinkedList<AbstractCard> cards = new LinkedList<AbstractCard>();
+    LinkedList<T> cards = new LinkedList<T>();
 
     public int size { get { return cards.Count; } }
-    public void AddCard(AbstractCard card)
+    public void AddCard(T card)
     {
         cards.AddLast(card);
     }
-    public void PullCard(AbstractCard card)
+    public void PullCard(T card)
     {
         //KAI: there's no remove-nth?  That's probably what I'll need...
         cards.Remove(card);
     }
 
-    public IEnumerator<AbstractCard> GetEnumerator()
+    public IEnumerator<T> GetEnumerator()
     {
         return cards.GetEnumerator();
     }

@@ -2,6 +2,7 @@ using System.Collections;
 
 public class Game
 {
+    static public readonly int DECKSIZE = 30;
     readonly Hero[] _heros = new Hero[2];
     public Hero[] hero
     {

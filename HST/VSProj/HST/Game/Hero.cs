@@ -4,9 +4,9 @@ public class Hero
 {
     public int health { get; set; }
     public int mana { get; set; }
-    public readonly Deck deck = new Deck();
+    public readonly Deck<AbstractCard> deck = new Deck<AbstractCard>(Game.DECKSIZE);
     public Playfield field = new Playfield();
-    public Hand hand = new Hand();
+    public Hand<AbstractCard> hand = new Hand<AbstractCard>();
 
     Hero()
     {
@@ -17,11 +17,7 @@ public class Hero
     public enum CLASS { MAGE, WARRIOR, PRIEST, PALADIN, WARLOCK, DRUID, HUNTER, SHAMAN, ROGUE };
     static public Hero CreateHero(CLASS heroClass)
     {
-        var hero = new Hero();
-        hero.deck.CreateRandom();
-        hero.deck.Shuffle();
-
-        return hero;
+        return new Hero();
     }
 
     public void Draw(int cards)
