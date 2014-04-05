@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+using HST.Game;
 using HST.Util;
 
 public sealed class Tests
@@ -88,5 +89,7 @@ public sealed class Tests
         game.OnPostMulligan();
 
         logger.Log("TestGame post-mulligan", game.ToString());
+
+
     }
 }
