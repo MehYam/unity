@@ -5,27 +5,31 @@ namespace HST.Game
 {
     public sealed class Hero
     {
+        public enum CLASS { MAGE, WARRIOR, PRIEST, PALADIN, WARLOCK, DRUID, HUNTER, SHAMAN, ROGUE };
+        public readonly CLASS heroClass;
+
         public int health { get; private set; }
         public int mana { get; private set; }
 
-        public Deck<AbstractCard> deck { get; private set; }
-        public Hand<AbstractCard> hand { get; private set; }
+        public Deck<Card4> deck { get; private set; }
+        public Hand<Card4> hand { get; private set; }
         public Playfield field { get; private set; }
 
-        Hero()
+        Hero(CLASS heroClass)
         {
+            this.heroClass = heroClass;
+
             health = 30;
             mana = 1;
 
-            deck = new Deck<AbstractCard>(Game.DECKSIZE);
-            hand = new Hand<AbstractCard>();
+            deck = new Deck<Card4>(Game.DECKSIZE);
+            hand = new Hand<Card4>();
             field = new Playfield();
         }
 
-        public enum CLASS { MAGE, WARRIOR, PRIEST, PALADIN, WARLOCK, DRUID, HUNTER, SHAMAN, ROGUE };
         static public Hero CreateHero(CLASS heroClass)
         {
-            return new Hero();
+            return new Hero(heroClass);
         }
 
         public void Draw(int cards)
@@ -37,12 +41,12 @@ namespace HST.Game
             }
         }
 
-        public void Mulligan(Hand<AbstractCard> cardsToMully)
+        public void Mulligan(Hand<Card4> cardsToMully)
         {
             DebugUtils.Assert(cardsToMully.size < Game.DECKSIZE);
 
             // rebuild a new deck with the undrawn and mully'ed cards, then shuffle it
-            var newDeck = new Deck<AbstractCard>(Game.DECKSIZE - hand.size + cardsToMully.size);
+            var newDeck = new Deck<Card4>(Game.DECKSIZE - hand.size + cardsToMully.size);
             int newDeckIndex = 0;
             while (deck.remaining > 0)
             {
@@ -65,6 +69,7 @@ namespace HST.Game
         public override string ToString()
         {
             var sb = new System.Text.StringBuilder();
+            sb.AppendLine(heroClass.ToString());
             sb.AppendLine("Deck cards remaining: " + deck.remaining);
             sb.AppendLine(deck.ToString());
             sb.AppendLine("Hand:");
@@ -74,10 +79,17 @@ namespace HST.Game
 
             return sb.ToString();
         }
-    }
+        public string ToStringBrief()
+        {
+            var sb = new System.Text.StringBuilder();
+            sb.AppendLine(heroClass.ToString());
+            sb.AppendLine("Deck cards remaining: " + deck.remaining);
+            sb.AppendLine("Hand:");
+            sb.AppendLine(hand.ToString());
+            sb.AppendLine("Playfield:");
+            sb.AppendLine(field.ToString());
 
-    public class Playfield
-    {
-        public readonly MinionCard[] minions = new MinionCard[7];
+            return sb.ToString();
+        }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 using HST.Util;
@@ -62,23 +63,21 @@ namespace HST.Game  // belongs somewhere more generic, this contains nothing HS-
         {
             cards.AddLast(card);
         }
-        public T PullFirst()
-        {
-            DebugUtils.Assert(size > 0);
-
-            var first = cards.First.Value;
-            cards.RemoveFirst();
-
-            return first;
-        }
         public void PullCard(T card)
         {
+            DebugUtils.Assert(cards.Count > 0);
+
             //KAI: there's no remove-nth?  That's probably what I'll need...
             var removed = cards.Remove(card);
 
             DebugUtils.Assert(removed);
         }
+        public T CardAt(int index)
+        {
+            return cards.ElementAt(index);
+        }
 
+        // KAI: this feels shifty.  Better to return a readonlycollection?
         public IEnumerator<T> GetEnumerator()
         {
             return cards.GetEnumerator();

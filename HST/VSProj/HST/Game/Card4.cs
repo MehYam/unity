@@ -1,24 +1,35 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace HST.Game
 {
-    public abstract class AbstractCard
+    public class Card4
     {
         public readonly int id;
 
         public readonly string name;
         public readonly string text;
         public readonly int cost;
+        public readonly ReadOnlyCollection<IEffect> effects;
 
-        public AbstractCard(int id, string name, string text, int cost)
+        public Card4(int id, string name, string text, int cost, IList<IEffect> effects)
         {
             this.id = id;
             this.name = name;
             this.text = text;
             this.cost = cost;
+
+            this.effects = new ReadOnlyCollection<IEffect>(effects);
         }
 
-        public abstract void Play(Game g, Hero hero);
+        public void Play(Game g)
+        {
+            foreach (var effect in effects)
+            {
+                effect.Go(g, g.turnHero);
+            }
+        }
 
         public override string ToString()
         {
@@ -26,49 +37,9 @@ namespace HST.Game
         }
     }
 
-    public sealed class MinionCard : AbstractCard
+    public class ModdedCard<T> where T : Card4
     {
-        public readonly int attack;
-        public readonly int health;
-        public MinionCard(int id, string name, string text, int cost, int attack, int health)
-            : base(id, name, text, cost)
-        {
-            this.attack = attack;
-            this.health = health;
-        }
-
-        public override void Play(Game g, Hero hero)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override string ToString()
-        {
-            return string.Format("{0}, attack {1,2}, health {2,2}", base.ToString(), attack, health);
-        }
-    }
-
-    public class SpellCard : AbstractCard
-    {
-        public SpellCard(int id, string name, string text, int cost)
-            : base(id, name, text, cost)
-        {
-        }
-
-        public override void Play(Game g, Hero hero)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override string ToString()
-        {
-            return string.Format("{0} (spell)", base.ToString());
-        }
-    }
-
-    // cards are immutable, we attach modifiers to affect them
-    public class PlayedCard<T> where T : AbstractCard
-    {
+        // i.e. for when a card's cost been changed
         public readonly T ability;
         public readonly int modifiers;
     }
@@ -92,23 +63,23 @@ namespace HST.Game
         }
         readonly Random _rnd = new Random();
         int _instances = 0;
-        public AbstractCard CreateAbility(int id)
+        public Card4 CreateAbility(int id)
         {
             return null;
         }
 
-        public MinionCard CreateMinionCard(int id)
+        public Card4 CreateMinionCard(MinionFactory.MinionID id)
         {
-            return CreateRandomMinionCard();
-        }
-        public MinionCard CreateRandomMinionCard()
-        {
-            return new MinionCard(++_instances, "minion", "minion", _rnd.Next(10), _rnd.Next(12), _rnd.Next(1, 12));
+            var effects = new IEffect[] { null };
+            var card = new Card4(_instances++, "a card", "text", _rnd.Next(0, 11), effects);
+
+            effects[0] = new MinionSpawner(card, id);
+            return card;
         }
 
-        public SpellCard CreateCoin()
+        public Card4 CreateCoin()
         {
-            return new SpellCard(2112, "Coin", "Adds a mana", 0);
+            return new Card4(2112, "Coin", "Adds a mana", 0, new IEffect[] {});
         }
     }
 

@@ -9,7 +9,7 @@ namespace HST
     {
         static void Main(string[] args)
         {
-            var tests = new Tests(new ConsoleTestLogger());
+            var tests = new Tests(new ConsoleLogger());
             tests.RunAll();
 
             Console.ReadKey(true);
