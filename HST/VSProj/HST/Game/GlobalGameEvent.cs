@@ -31,11 +31,12 @@ namespace HST.Game
         // work well to drive this multi-step action.
         //
         // KAI: should we consider callback actions for some results instead?
+        // KAI: these arguments getting passed around seem kind of arbitrary and inconsistent.  i.e. Game vs. Hero vs. whatever...
         public event Action<Hero, Card4> CardPlayCompleted = delegate { };
         public void FireCardPlayCompleted(Hero h, Card4 c) { CardPlayCompleted(h, c); }
 
-        public event Action NewTurn = delegate { };
-        public void FireNewTurn() { NewTurn();  }
+        public event Action<Game> NewTurn = delegate { };
+        public void FireNewTurn(Game g) { NewTurn(g);  }
 
         public event Action<Hero> MinionPositionNeeded = delegate {};
         public void FireMinionPositionNeeded(Hero h) { MinionPositionNeeded(h); }

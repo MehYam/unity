@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,15 +18,13 @@ namespace HST.Game
         {
             this.card = card;
             minionID = ID;
-
-            System.Console.WriteLine(string.Format("spawner card id {0}, minion {1}", card.id, minionID));
         }
 
         public void Go(Game g, Hero hero)
         {
             var gge = GlobalGameEvent.Instance;
 
-            //KAI: this never unsubscribes...
+            //KAI: never unsubscribes...
             gge.MinionPositionChosen += MinionPositionChosen;
             GlobalGameEvent.Instance.FireMinionPositionNeeded(hero);
         }

@@ -51,7 +51,7 @@ public sealed class Tests
     void TestGame()
     {
         // start game
-        Game.DECKSIZE = 10;
+        //Game.DECKSIZE = 10;
         var game = new Game(
             Hero.CreateHero(Hero.CLASS.DRUID),
             Hero.CreateHero(Hero.CLASS.PALADIN)
@@ -63,18 +63,18 @@ public sealed class Tests
         // test mulligan
         game.DrawForMulligan();
 
-        logger.Log("TestGame pre-mulligan " + game.ToStringBrief());
+        //logger.Log("TestGame pre-mulligan " + game.ToStringBrief());
 
         DebugUtils.Assert(game.heros[0].hand.size == Game.INITIAL_DRAW);
         DebugUtils.Assert(game.heros[1].hand.size == Game.INITIAL_DRAW + 1);
 
-        // randomly mulligan a few cards
+        // mulligan cards costing more than 3
         Func<Hand<Card4>, Hand<Card4>> pickRandom = (hand) =>
         {
             var toMulligan = new Hand<Card4>();
             foreach (var card in hand)
             {
-                if (rnd.Next(0, 2) == 1)
+                if (card.cost > 3)
                 {
                     toMulligan.AddCard(card);
                 }
@@ -83,12 +83,12 @@ public sealed class Tests
         };
 
         var mully = pickRandom(game.heros[0].hand);
-        logger.Log("TestGame hero0 mullies " + mully.size.ToString());
+        logger.Log(string.Format("TestGame {0} mullies {1}", game.heros[0].heroClass, mully.size.ToString()));
         game.heros[0].Mulligan(mully);
 
         mully = pickRandom(game.heros[1].hand);
         game.heros[1].Mulligan(mully);
-        logger.Log("TestGame hero1 mullies " +  mully.size.ToString());
+        logger.Log(string.Format("TestGame {0} mullies {1}", game.heros[1].heroClass, mully.size.ToString()));
 
         game.OnPostMulligan();
 
@@ -97,30 +97,37 @@ public sealed class Tests
         // play some turns
         for (int turn = 0; turn < 4; ++turn)
         {
-            PlayRandomCard(game);
-
             logger.Log(string.Format("Turn {0} -------", game.turnNumber));
-
+            
+            PlayCardRandomly(game);
             game.NextTurn();
         }
     }
 
-    void PlayRandomCard(Game game)
+    void PlayCardRandomly(Game game)
     {
-        var cards = game.turnHero.hand;
-        var card = cards.CardAt(rnd.Next(0, cards.size));
+        var hand = game.turnHero.hand;
 
-        Action<Hero> minionPositionNeeded = (hero) =>
+        // find a card we can afford
+        foreach (var card in hand)
         {
-            GlobalGameEvent.Instance.FireMinionPositionChosen(hero, 0);
-        };
-        GlobalGameEvent.Instance.MinionPositionNeeded += minionPositionNeeded;
+            if (card.cost < game.turnHero.mana)
+            {
+                Action<Hero> minionPositionNeeded = (hero) =>
+                {
+                    GlobalGameEvent.Instance.FireMinionPositionChosen(hero, 0);
+                };
+                GlobalGameEvent.Instance.MinionPositionNeeded += minionPositionNeeded;
+                
+                card.Play(game);
 
-        card.Play(game);
+                GlobalGameEvent.Instance.MinionPositionNeeded -= minionPositionNeeded;
 
-        logger.Log(string.Format("{0} played random card {1}", game.turnHero.heroClass.ToString(), card.id));
-        logger.Log(game.turnHero.ToStringBrief());
-
-        GlobalGameEvent.Instance.MinionPositionNeeded -= minionPositionNeeded;
+                logger.Log(string.Format("{0} plays card {1}", game.turnHero.heroClass.ToString(), card.id));
+                logger.Log(game.turnHero.ToStringBrief());
+                return;
+            }
+        }
+        logger.Log(string.Format("{0} passes", game.turnHero.heroClass.ToString()));
     }
 }

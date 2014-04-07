@@ -27,7 +27,7 @@ namespace HST.Game
         }
         public Game(Hero first, Hero second)
         {
-            turnNumber = 1;
+            turnNumber = 0;
 
             _heros[0] = first;
             _heros[1] = second;
@@ -54,12 +54,15 @@ namespace HST.Game
 
             DebugUtils.Assert(_heros[0].hand.size == Game.INITIAL_DRAW);
             DebugUtils.Assert(_heros[1].hand.size == Game.INITIAL_DRAW + 2);
+
+            NextTurn();
         }
 
         public void NextTurn()
         {
             ++turnNumber;
-            GlobalGameEvent.Instance.FireNewTurn();
+
+            GlobalGameEvent.Instance.FireNewTurn(this);
         }
 
         static void OnCardPlayCompleted(Hero h, Card4 card)

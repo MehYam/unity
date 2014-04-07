@@ -10,21 +10,49 @@ namespace HST.Game
 
         public int health { get; private set; }
         public int mana { get; private set; }
+        public int crystals { get; private set; }
 
         public Deck<Card4> deck { get; private set; }
         public Hand<Card4> hand { get; private set; }
         public Playfield field { get; private set; }
 
+        static readonly int START_HEALTH = 30;
+        static readonly int MAX_MANA = 10;
         Hero(CLASS heroClass)
         {
             this.heroClass = heroClass;
 
-            health = 30;
+            health = START_HEALTH;
             mana = 1;
+            crystals = 1;
 
             deck = new Deck<Card4>(Game.DECKSIZE);
             hand = new Hand<Card4>();
             field = new Playfield();
+
+            //KAI: never unsubscribes...
+            GlobalGameEvent.Instance.NewTurn += OnNewTurn;
+            GlobalGameEvent.Instance.CardPlayCompleted += OnCardPlayCompleted;
+        }
+
+        void OnNewTurn(Game g)
+        {
+            if (g.turnHero == this)
+            {
+                crystals = System.Math.Min(mana + 1, MAX_MANA);
+                mana = crystals;
+
+                Draw(1);
+            }
+        }
+        void OnCardPlayCompleted(Hero h, Card4 c)
+        {
+            if (h == this)
+            {
+                DebugUtils.Assert(c.cost <= mana);
+
+                crystals -= c.cost;
+            }
         }
 
         static public Hero CreateHero(CLASS heroClass)
@@ -69,7 +97,7 @@ namespace HST.Game
         public override string ToString()
         {
             var sb = new System.Text.StringBuilder();
-            sb.AppendLine(heroClass.ToString());
+            sb.AppendLine(string.Format("{0}, {1} hp, {2}/{3} mana", heroClass.ToString(), health, mana, crystals));
             sb.AppendLine("Deck cards remaining: " + deck.remaining);
             sb.AppendLine(deck.ToString());
             sb.AppendLine("Hand:");
@@ -82,7 +110,7 @@ namespace HST.Game
         public string ToStringBrief()
         {
             var sb = new System.Text.StringBuilder();
-            sb.AppendLine(heroClass.ToString());
+            sb.AppendLine(string.Format("{0}, {1} hp, {2}/{3} mana", heroClass.ToString(), health, mana, crystals));
             sb.AppendLine("Deck cards remaining: " + deck.remaining);
             sb.AppendLine("Hand:");
             sb.AppendLine(hand.ToString());
