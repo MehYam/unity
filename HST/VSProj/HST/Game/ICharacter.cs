@@ -17,6 +17,6 @@ namespace HST.Game
 
     public interface ICharacter : IDamageGiver, IDamageTaker
     {
-        void ReceiveAttack(IDamageGiver attacker);
+        void ReceiveAttack(Game game, IDamageGiver attacker);
     }
 }

@@ -31,7 +31,7 @@ namespace HST.Game
             turnHero = second;
             turnDefender = first;
 
-            //KAI: needs to be cleaned up
+            //KAI: references need to be cleaned up
             GlobalGameEvent.Instance.CardPlayCompleted += OnCardPlayCompleted;
         }
 
@@ -67,10 +67,14 @@ namespace HST.Game
             GlobalGameEvent.Instance.FireNewTurn(this);
         }
 
-        static public void Attack(ICharacter attacker, ICharacter attackee)
+        public void Attack(ICharacter attacker, ICharacter attackee)
         {
-            attacker.ReceiveAttack(attackee);
-            attackee.ReceiveAttack(attacker);
+            if (!(attacker is Hero) && !(attackee is Hero))
+            {
+                Logger.Log(string.Format("{0} attacks {1}", attacker, attackee));
+            }
+            attacker.ReceiveAttack(this, attackee); 
+            attackee.ReceiveAttack(this, attacker);
         }
 
         static public void Attack(IEffect attacker, ICharacter attackee)

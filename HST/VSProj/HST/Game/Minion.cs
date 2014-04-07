@@ -24,19 +24,19 @@ namespace HST.Game
             awake = false;
         }
 
-        public void ReceiveAttack(IDamageGiver attacker)
+        public void ReceiveAttack(Game g, IDamageGiver attacker)
         {
-            Logger.Log(string.Format("{0} receiving attack of {1}, new stats:", this, attacker.atk));
+            Logger.Log(string.Format("{0} receiving attack of {1}", this, attacker.atk));
 
             //KAI: here we need to loop effects first
-            this.health -= attacker.atk;
+            health -= attacker.atk;
 
-            Logger.Log(this.ToString());
-        }
+            if (health <= 0)
+            {
+                Logger.Log(string.Format("{0} has been KILLED!", this));
 
-        public void ReceiveAttack(IEffect effect)
-        {
-            throw new System.NotImplementedException();
+                GlobalGameEvent.Instance.FireMinionDeath(g, this);
+            }
         }
 
         public void OnNewTurn(Game game)

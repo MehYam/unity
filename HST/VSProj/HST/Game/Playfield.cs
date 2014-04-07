@@ -72,9 +72,9 @@ namespace HST.Game
             }
         }
 
-        public void RemoveMinion(Minion minion)
+        public bool RemoveMinion(Minion minion)
         {
-            minions.Remove(minion);
+            return minions.Remove(minion);
         }
 
         public IEnumerator<Minion> GetEnumerator()

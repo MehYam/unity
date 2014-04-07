@@ -61,7 +61,6 @@ namespace HST.Game
                 return _instance;
             }
         }
-        readonly Random _rnd = new Random();
         int _instances = 0;
         public Card4 CreateAbility(int id)
         {
@@ -71,7 +70,17 @@ namespace HST.Game
         public Card4 CreateMinionCard(MinionFactory.MinionID id)
         {
             var effects = new IEffect[] { null };
-            var card = new Card4(_instances++, "a card", "text", _rnd.Next(0, 11), effects);
+
+int cost = 0;
+//KAI: temp
+switch (id)
+{
+    case MinionFactory.MinionID.BOULDERFIST: cost = 6; break;
+    case MinionFactory.MinionID.CROCOLISK: cost = 2; break;
+    case MinionFactory.MinionID.WISP: cost = 0; break;
+    case MinionFactory.MinionID.YETI: cost = 4; break;
+}
+            var card = new Card4(_instances++, "a card", "text", cost, effects);
 
             effects[0] = new MinionSpawner(card, id);
             return card;

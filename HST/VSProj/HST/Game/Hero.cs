@@ -24,8 +24,8 @@ namespace HST.Game
             this.heroClass = heroClass;
 
             health = START_HEALTH;
-            mana = 1;
-            crystals = 1;
+            mana = 0;
+            crystals = 0;
 
             deck = new Deck<Card4>(Game.DECKSIZE);
             hand = new Hand<Card4>();
@@ -34,29 +34,8 @@ namespace HST.Game
             //KAI: never unsubscribes...
             GlobalGameEvent.Instance.NewTurn += OnNewTurn;
             GlobalGameEvent.Instance.CardPlayCompleted += OnCardPlayCompleted;
+            GlobalGameEvent.Instance.MinionDeath += OnMinionDeath;
         }
-
-        void OnNewTurn(Game g)
-        {
-            if (g.turnHero == this)
-            {
-                crystals = System.Math.Min(mana + 1, MAX_MANA);
-                mana = crystals;
-
-                Draw(1);
-            }
-            field.OnNewTurn(g);
-        }
-        void OnCardPlayCompleted(Hero h, Card4 c)
-        {
-            if (h == this)
-            {
-                DebugUtils.Assert(c.cost <= mana);
-
-                crystals -= c.cost;
-            }
-        }
-
         static public Hero CreateHero(CLASS heroClass)
         {
             return new Hero(heroClass);
@@ -96,7 +75,7 @@ namespace HST.Game
             deck = newDeck;
         }
 
-        public void ReceiveAttack(IDamageGiver attacker)
+        public void ReceiveAttack(Game g, IDamageGiver attacker)
         {
             this.health -= attacker.atk;
 
@@ -106,6 +85,35 @@ namespace HST.Game
         public void ReceiveAttack(IEffect effect)
         {
             throw new System.NotImplementedException();
+        }
+
+        // events //////////////////////////////////////
+        void OnNewTurn(Game g)
+        {
+            if (g.turnHero == this)
+            {
+                crystals = System.Math.Min(mana + 1, MAX_MANA);
+                mana = crystals;
+
+                Draw(1);
+            }
+            field.OnNewTurn(g);
+        }
+        void OnCardPlayCompleted(Hero h, Card4 c)
+        {
+            if (h == this)
+            {
+                DebugUtils.Assert(c.cost <= mana);
+
+                mana -= c.cost;
+            }
+        }
+        void OnMinionDeath(Game g, Minion m)
+        {
+            if (field.RemoveMinion(m))
+            {
+                Logger.Log(string.Format("Hero {0} sees dead minion, removing from playfield", heroClass));
+            }
         }
 
         public override string ToString()

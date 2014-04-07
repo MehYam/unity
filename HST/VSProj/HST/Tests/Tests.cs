@@ -95,9 +95,9 @@ public sealed class Tests
         logger.Log("TestGame post-mulligan " + game.ToStringBrief());
 
         // play some turns
-        for (int turn = 0; turn < 4; ++turn)
+        for (int turn = 0; turn < 6; ++turn)
         {
-            logger.Log(string.Format("Turn {0} -------", game.turnNumber));
+            logger.Log(string.Format("Turn {0} -------------------------------------", game.turnNumber));
             
             PlayCardRandomly(game);
             AttackRandomly(game);
@@ -113,7 +113,7 @@ public sealed class Tests
         // find a card we can afford
         foreach (var card in hand)
         {
-            if (card.cost < game.turnHero.mana)
+            if (card.cost <= game.turnHero.mana)
             {
                 Action<Hero> minionPositionNeeded = (hero) =>
                 {
@@ -130,7 +130,7 @@ public sealed class Tests
                 return;
             }
         }
-        logger.Log(string.Format("{0} passes", game.turnHero.heroClass.ToString()));
+        logger.Log(string.Format("{0} plays no cards", game.turnHero.heroClass.ToString()));
     }
 
     void AttackRandomly(Game game)
@@ -161,7 +161,11 @@ public sealed class Tests
                 attackee = game.turnDefender;
             }
 
-            Game.Attack(attacker, attackee);
+            game.Attack(attacker, attackee);
+        }
+        else
+        {
+            logger.Log(string.Format("{0} can't attack with minions", game.turnHero.heroClass.ToString()));
         }
     }
 }

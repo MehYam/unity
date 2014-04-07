@@ -29,8 +29,7 @@ namespace HST.Game
         // when a card gets played, it often requires user input to complete (i.e. place a 
         // minion, or choose a target).  This makes it an asynchronous operation, so events
         // work well to drive this multi-step action.
-        //
-        // KAI: should we consider callback actions for some results instead?
+
         // KAI: these arguments getting passed around seem kind of arbitrary and inconsistent.  i.e. Game vs. Hero vs. whatever...
         public event Action<Hero, Card4> CardPlayCompleted = delegate { };
         public void FireCardPlayCompleted(Hero h, Card4 c) { CardPlayCompleted(h, c); }
@@ -43,5 +42,8 @@ namespace HST.Game
 
         public event Action<Hero, int> MinionPositionChosen = delegate { }; // int -> the index of the board position to use, -1 if cancelled
         public void FireMinionPositionChosen(Hero h, int index) { MinionPositionChosen(h, index); }
+
+        public event Action<Game, Minion> MinionDeath = delegate { };
+        public void FireMinionDeath(Game g, Minion m) { MinionDeath(g, m); }
     }
 }
