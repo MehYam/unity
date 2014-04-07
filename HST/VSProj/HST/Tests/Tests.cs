@@ -12,7 +12,7 @@ public sealed class Tests
 
     public Tests(ILogger logger)
     {
-        this.logger = logger;
+        Logger.Impl = this.logger = logger;
     }
     public void RunAll()
     {
@@ -100,10 +100,12 @@ public sealed class Tests
             logger.Log(string.Format("Turn {0} -------", game.turnNumber));
             
             PlayCardRandomly(game);
+            AttackRandomly(game);
             game.NextTurn();
         }
     }
 
+    // these ***randomly functions will turn into the move finder part of the AI
     void PlayCardRandomly(Game game)
     {
         var hand = game.turnHero.hand;
@@ -129,5 +131,37 @@ public sealed class Tests
             }
         }
         logger.Log(string.Format("{0} passes", game.turnHero.heroClass.ToString()));
+    }
+
+    void AttackRandomly(Game game)
+    {
+        // if the hero has an awake minion, attack something with it
+        ICharacter attacker = null;
+        foreach (var minion in game.turnHero.field)
+        {
+            if (minion.awake)
+            {
+                attacker = minion;
+                break;
+            }
+        }
+        if (attacker != null)
+        {
+            ICharacter attackee = null;
+            var nDefendingMinions = game.turnDefender.field.size;
+
+            if (nDefendingMinions > 0)
+            {
+                // attack a minion
+                attackee = game.turnDefender.field[rnd.Next(0, nDefendingMinions)];
+            }
+            else
+            {
+                // or hit face
+                attackee = game.turnDefender;
+            }
+
+            Game.Attack(attacker, attackee);
+        }
     }
 }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +10,16 @@ namespace HST.Game
     public class Playfield : IEnumerable<Minion>
     {
         static public readonly int MAX_MINIONS = 7;
-        public readonly LinkedList<Minion> minions = new LinkedList<Minion>();
+        readonly LinkedList<Minion> minions = new LinkedList<Minion>();
+
+        public int size { get { return minions.Count; } }
+        public Minion this[int index]
+        {
+            get
+            {
+                return minions.ElementAt(index);
+            }
+        }
 
         public void AddMinion(Minion minion)
         {
@@ -46,6 +55,20 @@ namespace HST.Game
             else
             {
                 DebugUtils.Assert(false);
+            }
+        }
+
+        public void OnNewTurn(Game game)
+        {
+            //KAI: this is an interesting model where we propagate events directly instead.  It
+            // might not be so bad for Game to be the master controller that calls functions directly this way...
+
+            if (game.turnHero.field == this)
+            {
+                foreach (var minion in this)
+                {
+                    minion.OnNewTurn(game);
+                }
             }
         }
 

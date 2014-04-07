@@ -59,6 +59,14 @@ namespace HST.Game  // belongs somewhere more generic, this contains nothing HS-
         LinkedList<T> cards = new LinkedList<T>();
 
         public int size { get { return cards.Count; } }
+        public T this[int index]
+        {
+            get
+            {
+                return cards.ElementAt(index);
+            }
+        }
+        
         public void AddCard(T card)
         {
             cards.AddLast(card);
@@ -71,10 +79,6 @@ namespace HST.Game  // belongs somewhere more generic, this contains nothing HS-
             var removed = cards.Remove(card);
 
             DebugUtils.Assert(removed);
-        }
-        public T CardAt(int index)
-        {
-            return cards.ElementAt(index);
         }
 
         // KAI: this feels shifty.  Better to return a readonlycollection?

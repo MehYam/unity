@@ -5,25 +5,48 @@ using System.Text;
 
 namespace HST.Game
 {
-    public sealed class Minion
+    public sealed class Minion : ICharacter
     {
         readonly Card4 card;
 
-        public int attack { get; private set; }
+        public int atk { get; private set; }
         public int health { get; private set; }
+
+        public bool awake { get; private set; }
         public readonly IList<IEffect> effects;
 
         public Minion(Card4 spawner, int attack, int health, IList<IEffect> effects)
         {
             this.card = spawner;
-            this.attack = attack;
+            this.atk = attack;
             this.health = health;
             this.effects = effects;
+            awake = false;
+        }
+
+        public void ReceiveAttack(IDamageGiver attacker)
+        {
+            Logger.Log(string.Format("{0} receiving attack of {1}, new stats:", this, attacker.atk));
+
+            //KAI: here we need to loop effects first
+            this.health -= attacker.atk;
+
+            Logger.Log(this.ToString());
+        }
+
+        public void ReceiveAttack(IEffect effect)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void OnNewTurn(Game game)
+        {
+            awake = true;
         }
 
         public override string ToString()
         {
-            return string.Format("Minion: {0}, atk {1}, hp {2}", card, attack, health);
+            return string.Format("Minion: {0}, atk {1}, hp {2}, awake {3}", card, atk, health, awake);
         }
     }
 

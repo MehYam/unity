@@ -18,19 +18,18 @@ namespace HST.Game
         }
 
         public int turnNumber { get; private set; }
-        public Hero turnHero
-        {
-            get
-            {
-                return _heros[(turnNumber - 1) % _heros.Length];
-            }
-        }
+        public Hero turnHero { get; private set; }
+        public Hero turnDefender { get; private set; }
         public Game(Hero first, Hero second)
         {
             turnNumber = 0;
 
             _heros[0] = first;
             _heros[1] = second;
+
+            //KAI: hokey - we don't need the heros array anymore
+            turnHero = second;
+            turnDefender = first;
 
             //KAI: needs to be cleaned up
             GlobalGameEvent.Instance.CardPlayCompleted += OnCardPlayCompleted;
@@ -62,7 +61,22 @@ namespace HST.Game
         {
             ++turnNumber;
 
+            turnHero = _heros[(turnNumber - 1) % _heros.Length];
+            turnDefender = _heros[turnNumber % _heros.Length];
+
             GlobalGameEvent.Instance.FireNewTurn(this);
+        }
+
+        static public void Attack(ICharacter attacker, ICharacter attackee)
+        {
+            attacker.ReceiveAttack(attackee);
+            attackee.ReceiveAttack(attacker);
+        }
+
+        static public void Attack(IEffect attacker, ICharacter attackee)
+        {
+            //KAI: attacker should maybe be IDamageGiver, but that's ambiguous with the above call
+            throw new System.NotImplementedException();
         }
 
         static void OnCardPlayCompleted(Hero h, Card4 card)

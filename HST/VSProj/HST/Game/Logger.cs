@@ -5,7 +5,21 @@ using System.Text;
 
 namespace HST.Game
 {
-    static class Logger
+    class Logger
     {
+        static public ILogger Impl
+        {
+            set;
+            private get;
+        }
+        static public void Log(string str)
+        {
+            Impl.Log(str);
+        }
+
+        static public void LogResult(string str, bool pass)
+        {
+            Impl.LogResult(str, pass);
+        }
     }
 }

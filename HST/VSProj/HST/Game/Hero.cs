@@ -3,11 +3,12 @@ using HST.Util;
 
 namespace HST.Game
 {
-    public sealed class Hero
+    public sealed class Hero : ICharacter
     {
         public enum CLASS { MAGE, WARRIOR, PRIEST, PALADIN, WARLOCK, DRUID, HUNTER, SHAMAN, ROGUE };
         public readonly CLASS heroClass;
 
+        public int atk { get; private set; }
         public int health { get; private set; }
         public int mana { get; private set; }
         public int crystals { get; private set; }
@@ -44,6 +45,7 @@ namespace HST.Game
 
                 Draw(1);
             }
+            field.OnNewTurn(g);
         }
         void OnCardPlayCompleted(Hero h, Card4 c)
         {
@@ -92,6 +94,18 @@ namespace HST.Game
                 newDeck.remaining + hand.size == Game.DECKSIZE);
 
             deck = newDeck;
+        }
+
+        public void ReceiveAttack(IDamageGiver attacker)
+        {
+            this.health -= attacker.atk;
+
+            Logger.Log(string.Format("{0} receiving attack from {1}, new health {2}",heroClass, attacker, health));
+        }
+
+        public void ReceiveAttack(IEffect effect)
+        {
+            throw new System.NotImplementedException();
         }
 
         public override string ToString()
