@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,12 +12,10 @@ namespace HST.Game
 
     public class MinionSpawner : IEffect
     {
-        readonly Card4 card;
-        readonly MinionFactory.MinionID minionID;
-        public MinionSpawner(Card4 card, MinionFactory.MinionID ID)
+        readonly int minionID;
+        public MinionSpawner(int minionID)
         {
-            this.card = card;
-            minionID = ID;
+            this.minionID = minionID;
         }
 
         public void Go(Game g, Hero hero)
@@ -36,7 +34,7 @@ namespace HST.Game
             h.field.AddMinionAt(index, MinionFactory.Instance.CreateMinion(minionID));
 
             // choosing a minion's position ends the play of the card.
-            GlobalGameEvent.Instance.FireCardPlayCompleted(h, card);
+            GlobalGameEvent.Instance.FireCardPlayCompleted();
         }
     }
 

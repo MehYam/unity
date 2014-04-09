@@ -33,6 +33,7 @@ namespace HST.Game
 
             //KAI: never unsubscribes...
             GlobalGameEvent.Instance.NewTurn += OnNewTurn;
+            GlobalGameEvent.Instance.CardPlayStarted += OnCardPlayStarted;
             GlobalGameEvent.Instance.CardPlayCompleted += OnCardPlayCompleted;
             GlobalGameEvent.Instance.MinionDeath += OnMinionDeath;
         }
@@ -90,6 +91,8 @@ namespace HST.Game
         // events //////////////////////////////////////
         void OnNewTurn(Game g)
         {
+            DebugUtils.Assert(_currentCard == null);
+
             if (g.turnHero == this)
             {
                 crystals = System.Math.Min(mana + 1, MAX_MANA);
@@ -99,13 +102,21 @@ namespace HST.Game
             }
             field.OnNewTurn(g);
         }
-        void OnCardPlayCompleted(Hero h, Card4 c)
-        {
-            if (h == this)
-            {
-                DebugUtils.Assert(c.cost <= mana);
 
-                mana -= c.cost;
+        Card4 _currentCard = null;
+        void OnCardPlayStarted(Hero h, Card4 c)
+        {
+            //KAI: weak...
+            _currentCard = h == this ? c : null;
+        }
+        void OnCardPlayCompleted()
+        {
+            if (_currentCard != null)
+            {
+                DebugUtils.Assert(_currentCard.cost <= mana);
+
+                mana -= _currentCard.cost;
+                _currentCard = null;
             }
         }
         void OnMinionDeath(Game g, Minion m)

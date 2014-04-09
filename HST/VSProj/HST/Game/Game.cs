@@ -32,6 +32,7 @@ namespace HST.Game
             turnDefender = first;
 
             //KAI: references need to be cleaned up
+            GlobalGameEvent.Instance.CardPlayStarted += OnCardPlayStarted;
             GlobalGameEvent.Instance.CardPlayCompleted += OnCardPlayCompleted;
         }
 
@@ -83,10 +84,20 @@ namespace HST.Game
             throw new System.NotImplementedException();
         }
 
-        static void OnCardPlayCompleted(Hero h, Card4 card)
+        Card4 _currentCard = null;  // KAI: weak
+        void OnCardPlayStarted(Hero h, Card4 card)
         {
+            DebugUtils.Assert(h == turnHero);
+            _currentCard = card;
+        }
+        void OnCardPlayCompleted()
+        {
+            DebugUtils.Assert(_currentCard != null);
+
             //KAI: theoretically only the hand needs to subscribe to this?
-            h.hand.PullCard(card);
+            turnHero.hand.PullCard(_currentCard);
+
+            _currentCard = null;
         }
 
         public override string ToString()

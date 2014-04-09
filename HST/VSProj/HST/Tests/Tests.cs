@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
@@ -16,12 +17,14 @@ public sealed class Tests
     }
     public void RunAll()
     {
-        TestLanguage();
+        TestCSharp();
+
+        LoadCards();
         TestDeck();
         TestGame();
     }
 
-    void TestLanguage()
+    void TestCSharp()
     {
         // getting an enumerator part way through an array and looping it
         var array = new int[] { 1, 2, 3, 4, 5 };
@@ -32,8 +35,7 @@ public sealed class Tests
     {
         for (int i = 0; i < Game.DECKSIZE; ++i)
         {
-            var minion = (MinionFactory.MinionID)rnd.Next(0, (int)MinionFactory.MinionID.MAX);
-            var card = CardFactory.Instance.CreateMinionCard(minion);
+            var card = CardFactory.Instance.GetCard(rnd.Next(0, CardFactory.Instance.NumCards));
 
             deck.SetCardAt(i, card);
         }
@@ -48,9 +50,20 @@ public sealed class Tests
         deck.Shuffle();
     }
 
+    void LoadCards()
+    {
+        string file = "C:\\source\\unity\\HST\\Assets\\cards\\cards.json";
+
+        using (var cards = new System.IO.StreamReader(file))
+        {
+            string jsonText = cards.ReadToEnd();
+
+            CardFactory.Instance.LoadCards(jsonText);
+        }
+    }
+
     void TestGame()
     {
-        // start game
         //Game.DECKSIZE = 10;
         var game = new Game(
             Hero.CreateHero(Hero.CLASS.DRUID),
@@ -95,7 +108,7 @@ public sealed class Tests
         logger.Log("TestGame post-mulligan " + game.ToStringBrief());
 
         // play some turns
-        for (int turn = 0; turn < 6; ++turn)
+        for (int plays = 0; plays < 8; ++plays)
         {
             logger.Log(string.Format("Turn {0} -------------------------------------", game.turnNumber));
             
@@ -125,7 +138,7 @@ public sealed class Tests
 
                 GlobalGameEvent.Instance.MinionPositionNeeded -= minionPositionNeeded;
 
-                logger.Log(string.Format("{0} plays card {1}", game.turnHero.heroClass.ToString(), card.id));
+                logger.Log(string.Format("{0} plays card {1}", game.turnHero.heroClass.ToString(), card));
                 logger.Log(game.turnHero.ToStringBrief());
                 return;
             }
@@ -139,7 +152,7 @@ public sealed class Tests
         ICharacter attacker = null;
         foreach (var minion in game.turnHero.field)
         {
-            if (minion.awake)
+            if (minion.awake && minion.atk > 0)
             {
                 attacker = minion;
                 break;
@@ -168,4 +181,5 @@ public sealed class Tests
             logger.Log(string.Format("{0} can't attack with minions", game.turnHero.heroClass.ToString()));
         }
     }
+
 }
