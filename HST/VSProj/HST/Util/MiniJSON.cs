@@ -24,7 +24,7 @@ using System.Collections.Generic;
 /// JSON uses Arrays and Objects. These correspond here to the datatypes ArrayList and Hashtable.
 /// All numbers are parsed to doubles.
 /// </summary>
-public class MiniJSON
+public static class MiniJSON
 {
 	private const int TOKEN_NONE = 0;
 	private const int TOKEN_CURLY_OPEN = 1;
@@ -43,8 +43,8 @@ public class MiniJSON
 	/// <summary>
 	/// On decoding, this value holds the position at which the parse failed (-1 = no error).
 	/// </summary>
-	protected static int lastErrorIndex = -1;
-	protected static string lastDecode = "";
+	static int lastErrorIndex = -1;
+	static string lastDecode = "";
 
 
 	/// <summary>
@@ -142,7 +142,7 @@ public class MiniJSON
 
 	#region Parsing
 
-	protected static Hashtable parseObject( char[] json, ref int index )
+	static Hashtable parseObject( char[] json, ref int index )
 	{
 		Hashtable table = new Hashtable();
 		int token;
@@ -195,7 +195,7 @@ public class MiniJSON
 	}
 
 
-	protected static ArrayList parseArray( char[] json, ref int index )
+	static ArrayList parseArray( char[] json, ref int index )
 	{
 		ArrayList array = new ArrayList();
 
@@ -234,7 +234,7 @@ public class MiniJSON
 	}
 
 
-	protected static object parseValue( char[] json, ref int index, ref bool success )
+	static object parseValue( char[] json, ref int index, ref bool success )
 	{
 		switch( lookAhead( json, index ) )
 		{
@@ -264,7 +264,7 @@ public class MiniJSON
 	}
 
 
-	protected static string parseString( char[] json, ref int index )
+	static string parseString( char[] json, ref int index )
 	{
 		string s = "";
 		char c;
@@ -365,7 +365,7 @@ s += Char.ConvertFromUtf32((int)codePoint);
 	}
 
 
-	protected static double parseNumber( char[] json, ref int index )
+	static double parseNumber( char[] json, ref int index )
 	{
 		eatWhitespace( json, ref index );
 
@@ -379,7 +379,7 @@ s += Char.ConvertFromUtf32((int)codePoint);
 	}
 
 
-	protected static int getLastIndexOfNumber( char[] json, int index )
+	static int getLastIndexOfNumber( char[] json, int index )
 	{
 		int lastIndex;
 		for( lastIndex = index; lastIndex < json.Length; lastIndex++ )
@@ -391,7 +391,7 @@ s += Char.ConvertFromUtf32((int)codePoint);
 	}
 
 
-	protected static void eatWhitespace( char[] json, ref int index )
+	static void eatWhitespace( char[] json, ref int index )
 	{
 		for( ; index < json.Length; index++ )
 			if( " \t\n\r".IndexOf( json[index] ) == -1 )
@@ -401,14 +401,14 @@ s += Char.ConvertFromUtf32((int)codePoint);
 	}
 
 
-	protected static int lookAhead( char[] json, int index )
+	static int lookAhead( char[] json, int index )
 	{
 		int saveIndex = index;
 		return nextToken( json, ref saveIndex );
 	}
 
 
-	protected static int nextToken( char[] json, ref int index )
+	static int nextToken( char[] json, ref int index )
 	{
 		eatWhitespace( json, ref index );
 
@@ -500,7 +500,7 @@ s += Char.ConvertFromUtf32((int)codePoint);
 
 	#region Serialization
 
-	protected static bool serializeObjectOrArray( object objectOrArray, StringBuilder builder )
+	static bool serializeObjectOrArray( object objectOrArray, StringBuilder builder )
 	{
 		if( objectOrArray is Hashtable )
 		{
@@ -517,7 +517,7 @@ s += Char.ConvertFromUtf32((int)codePoint);
 	}
 
 
-	protected static bool serializeObject( Hashtable anObject, StringBuilder builder )
+	static bool serializeObject( Hashtable anObject, StringBuilder builder )
 	{
 		builder.Append( "{" );
 
@@ -548,7 +548,7 @@ s += Char.ConvertFromUtf32((int)codePoint);
 	}
 
 
-	protected static bool serializeDictionary( Dictionary<string,string> dict, StringBuilder builder )
+	static bool serializeDictionary( Dictionary<string,string> dict, StringBuilder builder )
 	{
 		builder.Append( "{" );
 
@@ -570,7 +570,7 @@ s += Char.ConvertFromUtf32((int)codePoint);
 	}
 
 
-	protected static bool serializeArray( ArrayList anArray, StringBuilder builder )
+	static bool serializeArray( ArrayList anArray, StringBuilder builder )
 	{
 		builder.Append( "[" );
 
@@ -597,7 +597,7 @@ s += Char.ConvertFromUtf32((int)codePoint);
 	}
 
 
-	protected static bool serializeValue( object value, StringBuilder builder )
+	static bool serializeValue( object value, StringBuilder builder )
 	{
 		// Type t = value.GetType();
 		// Debug.Log("type: " + t.ToString() + " isArray: " + t.IsArray);
@@ -651,7 +651,7 @@ s += Char.ConvertFromUtf32((int)codePoint);
 	}
 
 
-	protected static void serializeString( string aString, StringBuilder builder )
+	static void serializeString( string aString, StringBuilder builder )
 	{
 		builder.Append( "\"" );
 
@@ -705,7 +705,7 @@ s += Char.ConvertFromUtf32((int)codePoint);
 	}
 
 
-	protected static void serializeNumber( double number, StringBuilder builder )
+	static void serializeNumber( double number, StringBuilder builder )
 	{
 		builder.Append( Convert.ToString( number ) ); // , CultureInfo.InvariantCulture));
 	}
@@ -718,7 +718,7 @@ s += Char.ConvertFromUtf32((int)codePoint);
 
 #region Extension methods
 
-public static class MiniJsonExtensions
+public static class MJSON
 {
 	public static string toJson( this Hashtable obj )
 	{
@@ -783,6 +783,22 @@ public static class MiniJsonExtensions
         catch (Exception e) { e.ToString(); }
 
         return null;
+    }
+
+    public static string SafeGetValue(Hashtable node, string name)
+    {
+        object value = node[name];
+        return value == null ? null : value.ToString();
+    }
+    public static int SafeGetInt(Hashtable node, string name)
+    {
+        object value = node[name];
+        return value == null ? 0 : int.Parse(value.ToString());
+    }
+    public static bool SafeGetBool(Hashtable node, string name)
+    {
+        var value = SafeGetValue(node, name);
+        return value != null && value != "0" && string.Compare(value, "false", true) != 0;
     }
 
 }

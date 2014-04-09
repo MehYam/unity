@@ -68,14 +68,17 @@ namespace HST.Game
             GlobalGameEvent.Instance.FireNewTurn(this);
         }
 
-        public void Attack(ICharacter attacker, ICharacter attackee)
+        public void Attack(ICharacter attacker, ICharacter victim)
         {
-            if (!(attacker is Hero) && !(attackee is Hero))
+            // Attacks are always bidirectional
+            if (attacker.canAttack)
             {
-                Logger.Log(string.Format("{0} attacks {1}", attacker, attackee));
+                attacker.Attack(this, victim);
             }
-            attacker.ReceiveAttack(this, attackee); 
-            attackee.ReceiveAttack(this, attacker);
+            if (victim.atk > 0)
+            {
+                victim.Attack(this, attacker);
+            }
         }
 
         static public void Attack(IEffect attacker, ICharacter attackee)

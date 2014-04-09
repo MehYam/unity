@@ -48,7 +48,11 @@ namespace HST.Game  // belongs somewhere more generic, this contains nothing HS-
             var size = _cards.Length;
             for (int i = _next; i < size; ++i)
             {
-                sb.AppendLine(_cards[i].ToString());
+                sb.Append(_cards[i].ToString());
+                if (i < size - 1)
+                {
+                    sb.AppendLine();
+                }
             }
             return sb.ToString();
         }

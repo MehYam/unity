@@ -47,7 +47,7 @@ namespace HST.Game
 
         public override string ToString()
         {
-            return string.Format("Card {3,3}: {0}, {1}, cost {2,2}", name, text, cost, id);
+            return string.Format("{0,20},{1,2},{3,8}, {2}", name, cost, text, id);
         }
     }
 
@@ -75,60 +75,44 @@ namespace HST.Game
                 return _instance;
             }
         }
-        int _instances = 0;
-
 
         IList<Card4> _cards = new List<Card4>();
         Dictionary<string, Card4> _cardLookupByName = new Dictionary<string, Card4>();
+        Dictionary<string, Card4> _cardLookupByFileID = new Dictionary<string, Card4>();
 
-        static string SafeGetValue(Hashtable node, string name)
+        public void LoadCards(string jsonText)
         {
-            object value = node[name];
-            return value == null ? null : value.ToString();
-        }
-        static int SafeGetInt(Hashtable node, string name)
-        {
-            object value = node[name];
-            return value == null ? 0 : int.Parse( value.ToString() );
-        }
-        static bool SafeGetBool(Hashtable node, string name)
-        {
-            var value = SafeGetValue(node, name);
-            return value != null && value != "0" && string.Compare(value, "false", true) != 0;
-        }
-        public void LoadCards(string JSON)
-        {
-            var retval = MiniJsonExtensions.hashtableFromJson(JSON);
+            var json = MJSON.hashtableFromJson(jsonText);
 
-            var cardsNode = (ArrayList)MiniJsonExtensions.getNode(retval, "cards");
+            var cardsNode = (ArrayList)MJSON.getNode(json, "cards");
             foreach (Hashtable card in cardsNode)
             {
                 // not a lot of error checking here, this is a file that's not apt to change
                 // without a lot of testing first, so we'll play this fast and loose.
-                var cardID  = SafeGetValue(card, "id");
-                var name = SafeGetValue(card, "name");
-                var cost = SafeGetInt(card, "cost");
-                var cardType = (Card4.Type)SafeGetInt(card, "type");
-                var text = SafeGetValue(card, "text");
-                var targetingText = SafeGetValue(card, "targetingText");
+                var cardID  = MJSON.SafeGetValue(card, "id");
+                var name = MJSON.SafeGetValue(card, "name");
+                var cost = MJSON.SafeGetInt(card, "cost");
+                var cardType = (Card4.Type)MJSON.SafeGetInt(card, "type");
+                var text = MJSON.SafeGetValue(card, "text");
+                var targetingText = MJSON.SafeGetValue(card, "targetingText");
 
-                var atk = SafeGetInt(card, "atk");
-                var freeze = SafeGetBool(card, "freeze");
+                var atk = MJSON.SafeGetInt(card, "atk");
+                var freeze = MJSON.SafeGetBool(card, "freeze");
 
                 IList<IEffect> effects = new List<IEffect>();
                 switch (cardType)
                 {
                     case Card4.Type.MINION:
-                        var health = SafeGetInt(card, "health");
-                        var battlecry = SafeGetBool(card, "battlecry");
-                        var taunt = SafeGetBool(card, "taunt");
-                        var stealth = SafeGetBool(card, "stealth");
-                        var charge = SafeGetBool(card, "charge");
-                        var divineShield = SafeGetBool(card, "divineShield");
-                        var windfury = SafeGetBool(card, "windfury");
-                        var combo = SafeGetBool(card, "combo");
-                        var overload = SafeGetBool(card, "overload");
-                        var spellpower = SafeGetBool(card, "spellpower");
+                        var health = MJSON.SafeGetInt(card, "health");
+                        var battlecry = MJSON.SafeGetBool(card, "battlecry");
+                        var taunt = MJSON.SafeGetBool(card, "taunt");
+                        var stealth = MJSON.SafeGetBool(card, "stealth");
+                        var charge = MJSON.SafeGetBool(card, "charge");
+                        var divineShield = MJSON.SafeGetBool(card, "divineShield");
+                        var windfury = MJSON.SafeGetBool(card, "windfury");
+                        var combo = MJSON.SafeGetBool(card, "combo");
+                        var overload = MJSON.SafeGetBool(card, "overload");
+                        var spellpower = MJSON.SafeGetBool(card, "spellpower");
 
                         //KAI: something here is redundant... 
                         //...we have MinionSpawner, MinionType, MinionFactory
@@ -138,13 +122,17 @@ namespace HST.Game
                         break;
                     case Card4.Type.SPELL:
                         //KAI: the card xml has "ReferencedTag", something we should possibly use here
+                        var secret = MJSON.SafeGetBool(card, "secret");
                         break;
                     case Card4.Type.WEAPON:
-                        var durability = SafeGetInt(card, "durability");
+                        var durability = MJSON.SafeGetInt(card, "durability");
                         break;
                 }
 
-                _cards.Add(new Card4(cardID, cardType, name, text, cost, effects));
+                var newCard = new Card4(cardID, cardType, name, text, cost, effects);
+                _cards.Add(newCard);
+                _cardLookupByName[name] = newCard;
+                _cardLookupByFileID[cardID] = newCard;
             }
         }
 

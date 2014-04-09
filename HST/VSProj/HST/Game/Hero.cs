@@ -76,11 +76,14 @@ namespace HST.Game
             deck = newDeck;
         }
 
+        public bool canAttack { get { return false; } } // not yet
+        public void Attack(Game g, IDamageTaker victim) { }
         public void ReceiveAttack(Game g, IDamageGiver attacker)
         {
+            var oldHealth = this.health;
             this.health -= attacker.atk;
 
-            Logger.Log(string.Format("{0} receiving attack from {1}, new health {2}",heroClass, attacker, health));
+            Logger.Log(string.Format("{0} receiving attack from {1}, health {2}->{3}", heroClass, attacker, oldHealth, health));
         }
 
         public void ReceiveAttack(IEffect effect)
@@ -95,7 +98,7 @@ namespace HST.Game
 
             if (g.turnHero == this)
             {
-                crystals = System.Math.Min(mana + 1, MAX_MANA);
+                crystals = System.Math.Min(crystals + 1, MAX_MANA);
                 mana = crystals;
 
                 Draw(1);
@@ -129,27 +132,29 @@ namespace HST.Game
 
         public override string ToString()
         {
-            var sb = new System.Text.StringBuilder();
-            sb.AppendLine(string.Format("{0}, {1} hp, {2}/{3} mana", heroClass.ToString(), health, mana, crystals));
-            sb.AppendLine("Deck cards remaining: " + deck.remaining);
-            sb.AppendLine(deck.ToString());
-            sb.AppendLine("Hand:");
-            sb.AppendLine(hand.ToString());
-            sb.AppendLine("Playfield:");
-            sb.AppendLine(field.ToString());
-
-            return sb.ToString();
+            return ToStringImpl();
         }
         public string ToStringBrief()
+        {
+            return ToStringImpl(true);
+        }
+        string ToStringImpl(bool brief = false)
         {
             var sb = new System.Text.StringBuilder();
             sb.AppendLine(string.Format("{0}, {1} hp, {2}/{3} mana", heroClass.ToString(), health, mana, crystals));
             sb.AppendLine("Deck cards remaining: " + deck.remaining);
-            sb.AppendLine("Hand:");
-            sb.AppendLine(hand.ToString());
-            sb.AppendLine("Playfield:");
-            sb.AppendLine(field.ToString());
-
+            if (!brief)
+            {
+                sb.AppendLine(deck.ToString());
+            }
+            sb.AppendLine("--Hand--");
+            sb.Append(hand.ToString());
+            if (field.size > 0)
+            {
+                sb.AppendLine();
+                sb.AppendLine("--Playfield--");
+                sb.Append(field.ToString());
+            }
             return sb.ToString();
         }
     }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
@@ -23,10 +23,24 @@ namespace HST.Game
             awake = false;
         }
 
+        public bool canAttack
+        {
+            get
+            {
+                //kai: and later check for frozen, etc
+                return awake && atk > 0;
+            }
+        }
+        public void Attack(Game g, IDamageTaker victim)
+        {
+            Logger.Log(string.Format("{0} attacking", this));
+
+            victim.ReceiveAttack(g, this);
+
+            awake = false;  // back to sleep until next turn
+        }
         public void ReceiveAttack(Game g, IDamageGiver attacker)
         {
-            Logger.Log(string.Format("{0} receiving attack of {1}", this, attacker.atk));
-
             //KAI: here we need to loop effects first
             health -= attacker.atk;
 

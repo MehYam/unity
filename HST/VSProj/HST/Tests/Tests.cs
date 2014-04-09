@@ -50,9 +50,9 @@ public sealed class Tests
         deck.Shuffle();
     }
 
-    void LoadCards()
+    static void LoadCards()
     {
-        string file = "C:\\source\\unity\\HST\\Assets\\cards\\cards.json";
+        string file = "C:\\source\\unity\\HST\\Assets\\cards.json";
 
         using (var cards = new System.IO.StreamReader(file))
         {
@@ -61,6 +61,22 @@ public sealed class Tests
             CardFactory.Instance.LoadCards(jsonText);
         }
     }
+    static void LoadDeck(string filename, Deck<Card4> deck)
+    {
+        using (var cards = new System.IO.StreamReader(filename))
+        {
+            string jsonText = cards.ReadToEnd();
+            var json = MJSON.hashtableFromJson(jsonText);
+
+            var cardsNode = (ArrayList)MJSON.getNode(json, "cards");
+            int i = 0;
+            foreach (string cardName in cardsNode)
+            {
+                deck.SetCardAt(i++, CardFactory.Instance.GetCard(cardName));
+            }
+        }
+    }
+
 
     void TestGame()
     {
@@ -69,14 +85,13 @@ public sealed class Tests
             Hero.CreateHero(Hero.CLASS.DRUID),
             Hero.CreateHero(Hero.CLASS.PALADIN)
         );
-
-        PopulateRandomDeck(game.heros[0].deck);
-        PopulateRandomDeck(game.heros[1].deck);
+        LoadDeck("c:\\source\\unity\\HST\\VSProj\\HST\\testdeck_druid.json", game.heros[0].deck);
+        LoadDeck("c:\\source\\unity\\HST\\VSProj\\HST\\testdeck_paladin.json", game.heros[1].deck);
 
         // test mulligan
         game.DrawForMulligan();
 
-        //logger.Log("TestGame pre-mulligan " + game.ToStringBrief());
+        logger.Log("TestGame pre-mulligan\n" + game.ToString());
 
         DebugUtils.Assert(game.heros[0].hand.size == Game.INITIAL_DRAW);
         DebugUtils.Assert(game.heros[1].hand.size == Game.INITIAL_DRAW + 1);
@@ -105,13 +120,14 @@ public sealed class Tests
 
         game.OnPostMulligan();
 
-        logger.Log("TestGame post-mulligan " + game.ToStringBrief());
+        logger.Log("TestGame post-mulligan\n" + game.ToStringBrief());
 
         // play some turns
-        for (int plays = 0; plays < 8; ++plays)
+        const int TURNS = 20;
+        for (int plays = 0; plays < TURNS; ++plays)
         {
             logger.Log(string.Format("Turn {0} -------------------------------------", game.turnNumber));
-            
+
             PlayCardRandomly(game);
             AttackRandomly(game);
             game.NextTurn();
@@ -149,37 +165,44 @@ public sealed class Tests
     void AttackRandomly(Game game)
     {
         // if the hero has an awake minion, attack something with it
+        
         ICharacter attacker = null;
-        foreach (var minion in game.turnHero.field)
+        do
         {
-            if (minion.awake && minion.atk > 0)
+            // need a double loop here since the field collection changes as we're iterating it, due
+            // to minions dying and being removed
+            attacker = null;
+            foreach (var minion in game.turnHero.field)
             {
-                attacker = minion;
-                break;
+                if (minion.canAttack)
+                {
+                    attacker = minion;
+                    break;
+                }
             }
-        }
-        if (attacker != null)
+            if (attacker != null)
+            {
+                Attack(game, attacker);
+            }
+        } while (attacker != null);
+    }
+    static void Attack(Game game, ICharacter attacker)
+    {
+        ICharacter victim = null;
+        var nDefendingMinions = game.turnDefender.field.size;
+
+        if (nDefendingMinions > 0)
         {
-            ICharacter attackee = null;
-            var nDefendingMinions = game.turnDefender.field.size;
-
-            if (nDefendingMinions > 0)
-            {
-                // attack a minion
-                attackee = game.turnDefender.field[rnd.Next(0, nDefendingMinions)];
-            }
-            else
-            {
-                // or hit face
-                attackee = game.turnDefender;
-            }
-
-            game.Attack(attacker, attackee);
+            // attack a minion
+            victim = game.turnDefender.field[rnd.Next(0, nDefendingMinions)];
         }
         else
         {
-            logger.Log(string.Format("{0} can't attack with minions", game.turnHero.heroClass.ToString()));
+            // or hit face
+            victim = game.turnDefender;
         }
+
+        game.Attack(attacker, victim);
     }
 
 }
