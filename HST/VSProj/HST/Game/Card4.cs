@@ -7,42 +7,20 @@ using HST.Util;
 
 namespace HST.Game
 {
-    public class Card4
+    public class AbstractCard
     {
-        public enum Type { MINION = 4, SPELL = 5, WEAPON = 7, HERO_POWER = 10 };
-        
         public readonly string id;
-        public readonly Type type; // KAI: class hierarchy instead?
-
         public readonly string name;
         public readonly string text;
         public readonly int cost;
-        public readonly ReadOnlyCollection<IEffect> effects;
+        //public readonly ReadOnlyCollection<IEffect> effects;
 
-        public Card4(string id, Type type, string name, string text, int cost, IList<IEffect> effects)
+        public AbstractCard(string id, string name, string text, int cost)
         {
             this.id = id;
-            this.type = type;
             this.name = name;
             this.text = text;
             this.cost = cost;
-
-            this.effects = new ReadOnlyCollection<IEffect>(effects);
-        }
-
-        public void Play(Game g)
-        {
-            GlobalGameEvent.Instance.FireCardPlayStarted(g.turnHero, this);
-            foreach (var effect in effects)
-            {
-                effect.Go(g, g.turnHero);
-            }
-
-            //KAI: weak... this needs to be rethought
-            if (effects.Count == 0)
-            {
-                GlobalGameEvent.Instance.FireCardPlayCompleted();
-            }
         }
 
         public override string ToString()
@@ -51,14 +29,56 @@ namespace HST.Game
         }
     }
 
-    public class ModdedCard<T> where T : Card4
+    public sealed class MinionCard : AbstractCard
     {
-        // i.e. for when a card's cost been changed
-        public readonly T ability;
-        public readonly int modifiers;
+        public readonly Minion template;   // we'll call Clone off this minion instance when we want to create one.
+        public MinionCard(string id, string name, string text, int cost, Minion template)
+            : base(id, name, text, cost)
+        {
+            this.template = template;
+        }
+
+        public void Play(Game game, Hero hero, int indexFromCenter)
+        {
+            hero.field.AddMinionAt(indexFromCenter, template.Clone());
+        }
+    }
+    public sealed class SpellCard : AbstractCard
+    {
+        public enum TARGET { NONE, MINION, HERO, CHARACTER };
+        public enum TARGET_AFFINITY { NONE, FRIENDLY_ONLY, ENEMY_ONLY };
+
+        public readonly TARGET targeting;
+        public readonly TARGET_AFFINITY affinity;
+        readonly Action<Game, ICharacter> spellAction;
+        public SpellCard(string id, string name, string text, int cost) : base(id, name, text, cost)
+        {
+            targeting = TARGET.MINION;
+            affinity = TARGET_AFFINITY.NONE;
+            spellAction = SpellFactory.Instance.GetSpellAction(name);
+        }
+        public void Play(Game game, ICharacter target)
+        {
+            if (spellAction != null)
+            {
+                spellAction(game, target);
+            }
+        }
+    }
+    public sealed class WeaponCard : AbstractCard
+    {
+        public WeaponCard(string id, string name, string text, int cost) : base(id, name, text, cost) { }
+    }
+    public sealed class HeroPowerCard : AbstractCard
+    {
+        public HeroPowerCard(string id, string name, string text, int cost) : base(id, name, text, cost) { }
+    }
+    public class RecostedCard<T> where T : AbstractCard
+    {
+        public readonly int costDelta;
+        public RecostedCard(int costDelta) { this.costDelta = costDelta; }
     }
 
-    //KAI: this factory does not yet hide the concrete types - maybe it shouldn't?
     public class CardFactory
     {
         CardFactory() { } // hide constructor
@@ -76,15 +96,32 @@ namespace HST.Game
             }
         }
 
-        IList<Card4> _cards = new List<Card4>();
-        Dictionary<string, Card4> _cardLookupByName = new Dictionary<string, Card4>();
-        Dictionary<string, Card4> _cardLookupByFileID = new Dictionary<string, Card4>();
+        enum CardType { MINION = 4, SPELL = 5, WEAPON = 7, HERO_POWER = 10 };
 
-        public void LoadCards(string jsonText)
+        IList<AbstractCard> _cards = new List<AbstractCard>();
+        Dictionary<string, AbstractCard> _cardLookupByName = new Dictionary<string, AbstractCard>();
+        Dictionary<string, AbstractCard> _cardLookupByFileID = new Dictionary<string, AbstractCard>();
+
+        static readonly string THE_COIN = "GAME_005";
+        public void LoadCards(string jsonTextCards, string jsonTextCardSupplemental)
         {
-            var json = MJSON.hashtableFromJson(jsonText);
+            Action<AbstractCard> AddCard = (card) =>
+            {
+                if (card != null)
+                {
+                    _cards.Add(card);
+                    _cardLookupByName[card.name] = card;
+                    _cardLookupByFileID[card.id] = card;
+                }
+            };
 
-            var cardsNode = (ArrayList)MJSON.getNode(json, "cards");
+            // create the coin manually, it doesn't show up in our json because the card xml gives it no cost
+            AddCard(new SpellCard("The Coin", THE_COIN, "Gain 1 Mana Crystal this turn only.", 0));
+
+            var jsonCards = MJSON.hashtableFromJson(jsonTextCards);
+            //var jsonCardSupplemental = MJSON.hashtableFromJson(jsonTextCardSupplemental);
+
+            var cardsNode = (ArrayList)MJSON.getNode(jsonCards, "cards");
             foreach (Hashtable card in cardsNode)
             {
                 // not a lot of error checking here, this is a file that's not apt to change
@@ -92,7 +129,7 @@ namespace HST.Game
                 var cardID  = MJSON.SafeGetValue(card, "id");
                 var name = MJSON.SafeGetValue(card, "name");
                 var cost = MJSON.SafeGetInt(card, "cost");
-                var cardType = (Card4.Type)MJSON.SafeGetInt(card, "type");
+                var cardType = (CardType)MJSON.SafeGetInt(card, "type");
                 var text = MJSON.SafeGetValue(card, "text");
                 var targetingText = MJSON.SafeGetValue(card, "targetingText");
 
@@ -100,9 +137,10 @@ namespace HST.Game
                 var freeze = MJSON.SafeGetBool(card, "freeze");
 
                 IList<IEffect> effects = new List<IEffect>();
+                AbstractCard newCard = null;
                 switch (cardType)
                 {
-                    case Card4.Type.MINION:
+                    case CardType.MINION:
                         var health = MJSON.SafeGetInt(card, "health");
                         var battlecry = MJSON.SafeGetBool(card, "battlecry");
                         var taunt = MJSON.SafeGetBool(card, "taunt");
@@ -114,42 +152,43 @@ namespace HST.Game
                         var overload = MJSON.SafeGetBool(card, "overload");
                         var spellpower = MJSON.SafeGetBool(card, "spellpower");
 
-                        //KAI: something here is redundant... 
-                        //...we have MinionSpawner, MinionType, MinionFactory
-                        int minionID = MinionFactory.Instance.AddMinionType(name, atk, health);
-
-                        effects.Add(new MinionSpawner(minionID));
+                        newCard = new MinionCard(cardID, name, text, cost, 
+                            new Minion(name, atk, health, null)
+                        );
                         break;
-                    case Card4.Type.SPELL:
+                    case CardType.SPELL:
                         //KAI: the card xml has "ReferencedTag", something we should possibly use here
                         var secret = MJSON.SafeGetBool(card, "secret");
+                        newCard = new SpellCard(cardID, name, text, cost);
                         break;
-                    case Card4.Type.WEAPON:
+                    case CardType.WEAPON:
                         var durability = MJSON.SafeGetInt(card, "durability");
+                        newCard = new WeaponCard(cardID, name, text, cost);
+                        break;
+                    case CardType.HERO_POWER:
+                        newCard = new HeroPowerCard(cardID, name, text, cost);
                         break;
                 }
-
-                var newCard = new Card4(cardID, cardType, name, text, cost, effects);
-                _cards.Add(newCard);
-                _cardLookupByName[name] = newCard;
-                _cardLookupByFileID[cardID] = newCard;
+                AddCard(newCard);
             }
         }
 
         public int NumCards { get { return _cards.Count; } }
-        public Card4 GetCard(int index)
+        public AbstractCard GetCard(int index)
         {
             return _cards[index];
         }
-        public Card4 GetCard(string cardName)
+        public AbstractCard GetCard(string cardName)
         {
             return _cardLookupByName[cardName];
         }
-
-        public Card4 CreateCoin()
+        public AbstractCard GetCardByID(string cardID)
         {
-            return new Card4("Fake Coin", Card4.Type.SPELL, "Coin", "Adds a mana", 0, new IEffect[] {});
+            return _cardLookupByFileID[cardID];
+        }
+        public AbstractCard GetCoin()
+        {
+            return GetCardByID(THE_COIN);
         }
     }
-
 }

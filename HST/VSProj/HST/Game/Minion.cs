@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
@@ -8,10 +8,14 @@ namespace HST.Game
     public sealed class Minion : ICharacter
     {
         public readonly string name;
-        public int atk { get; private set; }
-        public int health { get; private set; }
-
         public bool awake { get; private set; }
+
+        public bool taunt { get; set; }
+        public bool stealth { get; set; }
+        public bool charge { get; set; }
+        public bool divineShield { get; set; }
+        public bool windfury { get; set; }
+
         public readonly IList<IEffect> effects;
 
         public Minion(string name, int attack, int health, IList<IEffect> effects)
@@ -23,35 +27,29 @@ namespace HST.Game
             awake = false;
         }
 
+        #region IDamageGiver, IDamageTaker, ICharacter
+        public int atk { get; private set; }
+        public int health { get; private set; }
         public bool canAttack
         {
             get
             {
-                //kai: and later check for frozen, etc
-                return awake && atk > 0;
+                return awake && atk > 0 && !frozen;
             }
         }
-        public void Attack(Game g, IDamageTaker victim)
+        public bool frozen
         {
-            Logger.Log(string.Format("{0} attacking", this));
-
-            victim.ReceiveAttack(g, this);
-
-            awake = false;  // back to sleep until next turn
+            get;
+            set;
         }
-        public void ReceiveAttack(Game g, IDamageGiver attacker)
+        public void ReceiveAttack(int dmg)
         {
-            //KAI: here we need to loop effects first
-            health -= attacker.atk;
-
-            if (health <= 0)
-            {
-                Logger.Log(string.Format("{0} has been KILLED!", this));
-
-                GlobalGameEvent.Instance.FireMinionDeath(g, this);
-            }
+            health -= dmg;
+            Logger.Log(string.Format("{0} receiving attack of {1} health->{2}", name, dmg, health));
         }
+        #endregion
 
+        //KAI: VISIBILITY - only called from Hero
         public void OnNewTurn(Game game)
         {
             awake = true;
@@ -61,56 +59,17 @@ namespace HST.Game
         {
             return string.Format("Minion: {0}, atk {1}, hp {2}{3}", name, atk, health, awake ? "" : " ZZZ ");
         }
-    }
 
-    public sealed class MinionFactory
-    {
-        MinionFactory() { }
-        static MinionFactory _instance;
-        static public MinionFactory Instance
+        public Minion Clone()
         {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = new MinionFactory();
-                }
-                return _instance;
-            }
-        }
+            var clone = new Minion(name, atk, health, new List<IEffect>(effects));
+            clone.taunt = this.taunt;
+            clone.stealth = this.stealth;
+            clone.charge = this.charge;
+            clone.divineShield = this.divineShield;
+            clone.windfury = this.windfury;
 
-        class MinionType
-        {
-            public readonly string name;
-            public readonly int atk;
-            public readonly int health;
-
-            public MinionType(string name, int atk, int health)
-            {
-                this.name = name;
-                this.atk = atk;
-                this.health = health;
-            }
-        }
-        readonly IList<MinionType> minionTypes = new List<MinionType>();
-
-        /// <summary>
-        /// Returns the ID associated with the minion
-        /// </summary>
-        /// <returns></returns>
-        public int AddMinionType(string name, int atk, int health)
-        {
-            var minionID = minionTypes.Count;
-            minionTypes.Add(new MinionType(name, atk, health));
-
-            return minionID;
-        }
-
-        public Minion CreateMinion(int id)
-        {
-            var spec = minionTypes[id];
-
-            return new Minion(spec.name, spec.atk, spec.health, null);
+            return clone;
         }
     }
 }

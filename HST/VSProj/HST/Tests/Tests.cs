@@ -31,7 +31,7 @@ public sealed class Tests
         var e = array.GetEnumerator();
     }
 
-    static void PopulateRandomDeck(Deck<Card4> deck)
+    static void PopulateRandomDeck(Deck<AbstractCard> deck)
     {
         for (int i = 0; i < Game.DECKSIZE; ++i)
         {
@@ -43,25 +43,29 @@ public sealed class Tests
 
     void TestDeck()
     {
-        var deck = new Deck<Card4>(Game.DECKSIZE);
+        var deck = new Deck<AbstractCard>(Game.DECKSIZE);
         PopulateRandomDeck(deck);
 
         // test shuffle
         deck.Shuffle();
     }
 
-    static void LoadCards()
+    static string LoadFile(string filename)
     {
-        string file = "C:\\source\\unity\\HST\\Assets\\cards.json";
-
-        using (var cards = new System.IO.StreamReader(file))
+        using (var file = new System.IO.StreamReader(filename))
         {
-            string jsonText = cards.ReadToEnd();
-
-            CardFactory.Instance.LoadCards(jsonText);
+            string text = file.ReadToEnd();
+            return text;
         }
     }
-    static void LoadDeck(string filename, Deck<Card4> deck)
+    static void LoadCards()
+    {
+        string jsonText = LoadFile("C:\\source\\unity\\HST\\Assets\\cards.json");
+        string jsonTextSupplemental = LoadFile("C:\\source\\unity\\HST\\Assets\\cardsSupplemental.json");
+
+        CardFactory.Instance.LoadCards(jsonText, jsonTextSupplemental);
+    }
+    static void LoadDeck(string filename, Deck<AbstractCard> deck)
     {
         using (var cards = new System.IO.StreamReader(filename))
         {
@@ -97,9 +101,9 @@ public sealed class Tests
         DebugUtils.Assert(game.heros[1].hand.size == Game.INITIAL_DRAW + 1);
 
         // mulligan cards costing more than 3
-        Func<Hand<Card4>, Hand<Card4>> pickRandom = (hand) =>
+        Func<Hand<AbstractCard>, Hand<AbstractCard>> pickRandom = (hand) =>
         {
-            var toMulligan = new Hand<Card4>();
+            var toMulligan = new Hand<AbstractCard>();
             foreach (var card in hand)
             {
                 if (card.cost > 3)
@@ -144,18 +148,16 @@ public sealed class Tests
         {
             if (card.cost <= game.turnHero.mana)
             {
-                Action<Hero> minionPositionNeeded = (hero) =>
-                {
-                    GlobalGameEvent.Instance.FireMinionPositionChosen(hero, 0);
-                };
-                GlobalGameEvent.Instance.MinionPositionNeeded += minionPositionNeeded;
-                
-                card.Play(game);
-
-                GlobalGameEvent.Instance.MinionPositionNeeded -= minionPositionNeeded;
-
                 logger.Log(string.Format("{0} plays card {1}", game.turnHero.heroClass.ToString(), card));
                 logger.Log(game.turnHero.ToStringBrief());
+
+                if (card is MinionCard)
+                {
+                    ((MinionCard)card).Play(game, game.turnHero, 0);
+                }
+                else
+                {
+                }
                 return;
             }
         }
@@ -202,7 +204,7 @@ public sealed class Tests
             victim = game.turnDefender;
         }
 
-        game.Attack(attacker, victim);
+        //game.Attack(attacker, victim);
     }
 
 }

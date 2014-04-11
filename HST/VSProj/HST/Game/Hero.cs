@@ -10,11 +10,12 @@ namespace HST.Game
 
         public int atk { get; private set; }
         public int health { get; private set; }
+        public bool frozen { get; set; }
         public int mana { get; private set; }
-        public int crystals { get; private set; }
+        public int crystals { get; set; }
 
-        public Deck<Card4> deck { get; private set; }
-        public Hand<Card4> hand { get; private set; }
+        public Deck<AbstractCard> deck { get; private set; }
+        public Hand<AbstractCard> hand { get; private set; }
         public Playfield field { get; private set; }
 
         static readonly int START_HEALTH = 30;
@@ -27,15 +28,9 @@ namespace HST.Game
             mana = 0;
             crystals = 0;
 
-            deck = new Deck<Card4>(Game.DECKSIZE);
-            hand = new Hand<Card4>();
+            deck = new Deck<AbstractCard>(Game.DECKSIZE);
+            hand = new Hand<AbstractCard>();
             field = new Playfield();
-
-            //KAI: never unsubscribes...
-            GlobalGameEvent.Instance.NewTurn += OnNewTurn;
-            GlobalGameEvent.Instance.CardPlayStarted += OnCardPlayStarted;
-            GlobalGameEvent.Instance.CardPlayCompleted += OnCardPlayCompleted;
-            GlobalGameEvent.Instance.MinionDeath += OnMinionDeath;
         }
         static public Hero CreateHero(CLASS heroClass)
         {
@@ -51,12 +46,12 @@ namespace HST.Game
             }
         }
 
-        public void Mulligan(Hand<Card4> cardsToMully)
+        public void Mulligan(Hand<AbstractCard> cardsToMully)
         {
             DebugUtils.Assert(cardsToMully.size < Game.DECKSIZE);
 
             // rebuild a new deck with the undrawn and mully'ed cards, then shuffle it
-            var newDeck = new Deck<Card4>(Game.DECKSIZE - hand.size + cardsToMully.size);
+            var newDeck = new Deck<AbstractCard>(Game.DECKSIZE - hand.size + cardsToMully.size);
             int newDeckIndex = 0;
             while (deck.remaining > 0)
             {
@@ -77,18 +72,11 @@ namespace HST.Game
         }
 
         public bool canAttack { get { return false; } } // not yet
-        public void Attack(Game g, IDamageTaker victim) { }
-        public void ReceiveAttack(Game g, IDamageGiver attacker)
+        public void ReceiveAttack(int dmg)
         {
-            var oldHealth = this.health;
-            this.health -= attacker.atk;
+            this.health -= dmg;
 
-            Logger.Log(string.Format("{0} receiving attack from {1}, health {2}->{3}", heroClass, attacker, oldHealth, health));
-        }
-
-        public void ReceiveAttack(IEffect effect)
-        {
-            throw new System.NotImplementedException();
+            Logger.Log(string.Format("{0} receiving attack of {1} health->{2}", heroClass, dmg, health));
         }
 
         // events //////////////////////////////////////
@@ -106,8 +94,8 @@ namespace HST.Game
             field.OnNewTurn(g);
         }
 
-        Card4 _currentCard = null;
-        void OnCardPlayStarted(Hero h, Card4 c)
+        AbstractCard _currentCard = null;
+        void OnCardPlayStarted(Hero h, AbstractCard c)
         {
             //KAI: weak...
             _currentCard = h == this ? c : null;
