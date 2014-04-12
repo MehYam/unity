@@ -15,8 +15,8 @@ namespace HST.Game
         public bool taunt { get; set; }
         public bool stealth { get; set; }
         public bool divineShield { get; set; }
-        public bool windfury { get; private set; }
-        public bool charge { get; private set; }
+        public bool windfury { get; set; }
+        public bool charge { get; set; }
 
         public readonly IList<IEffect> effects;
 
@@ -98,7 +98,7 @@ namespace HST.Game
             if (windfury) sb.Append("Windfury ");
             if (frozen) sb.Append("Frozen ");
 
-            return string.Format("Minion: {0}, atk {1}, hp {2}, attacks {3}, {4}", name, atk, health, attacksLeft, sb.ToString());
+            return string.Format("Minion: {0}, atk {1}, hp {2}, attacksLeft {3}... {4}", name, atk, health, attacksLeft, sb.ToString());
         }
 
         public Minion Clone()

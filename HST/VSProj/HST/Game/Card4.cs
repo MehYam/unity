@@ -159,9 +159,14 @@ namespace HST.Game
                         var overload = MJSON.SafeGetBool(card, "overload");
                         var spellpower = MJSON.SafeGetBool(card, "spellpower");
 
-                        newCard = new MinionCard(cardID, name, text, cost, 
-                            new Minion(name, atk, health, null)
-                        );
+                        var minionTemplate = new Minion(name, atk, health, null);
+                        minionTemplate.charge = charge;
+                        minionTemplate.divineShield = divineShield;
+                        minionTemplate.stealth = stealth;
+                        minionTemplate.taunt = taunt;
+                        minionTemplate.windfury = windfury;
+
+                        newCard = new MinionCard(cardID, name, text, cost, minionTemplate);
                         break;
                     case CardType.SPELL:
                         //KAI: the card xml has "ReferencedTag", something we should possibly use here
