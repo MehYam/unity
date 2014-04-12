@@ -64,6 +64,9 @@ namespace HST.Game
 
             turnHero = _heros[(turnNumber - 1) % _heros.Length];
             turnDefender = _heros[turnNumber % _heros.Length];
+
+            turnHero.OnNewTurn(this);
+            turnDefender.OnNewTurn(this);
         }
 
         public override string ToString()

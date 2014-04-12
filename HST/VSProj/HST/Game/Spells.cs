@@ -14,7 +14,9 @@ namespace HST.Game
 
         public Action<Game, ICharacter> GetSpellAction(string spellName)
         {
-            return spellActions[spellName];
+            Action<Game, ICharacter> action = null;
+            spellActions.TryGetValue(spellName, out action);
+            return action;
         }
 
         readonly Dictionary<string, Action<Game, ICharacter>> spellActions = new Dictionary<string, Action<Game, ICharacter>>();

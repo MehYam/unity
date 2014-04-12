@@ -80,7 +80,7 @@ namespace HST.Game
         }
 
         // events //////////////////////////////////////
-        void OnNewTurn(Game g)
+        public void OnNewTurn(Game g)
         {
             DebugUtils.Assert(_currentCard == null);
 

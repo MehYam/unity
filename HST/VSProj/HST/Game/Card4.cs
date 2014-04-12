@@ -116,7 +116,7 @@ namespace HST.Game
             };
 
             // create the coin manually, it doesn't show up in our json because the card xml gives it no cost
-            AddCard(new SpellCard("The Coin", THE_COIN, "Gain 1 Mana Crystal this turn only.", 0));
+            AddCard(new SpellCard(THE_COIN, "The Coin", "Gain 1 Mana Crystal this turn only.", 0));
 
             var jsonCards = MJSON.hashtableFromJson(jsonTextCards);
             //var jsonCardSupplemental = MJSON.hashtableFromJson(jsonTextCardSupplemental);

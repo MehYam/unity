@@ -62,7 +62,8 @@ namespace HST.Game
 
         public Minion Clone()
         {
-            var clone = new Minion(name, atk, health, new List<IEffect>(effects));
+            var effectsClone = effects == null ? null : new List<IEffect>(effects);
+            var clone = new Minion(name, atk, health, effectsClone);
             clone.taunt = this.taunt;
             clone.stealth = this.stealth;
             clone.charge = this.charge;

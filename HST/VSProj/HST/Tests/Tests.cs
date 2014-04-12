@@ -61,7 +61,7 @@ public sealed class Tests
     static void LoadCards()
     {
         string jsonText = LoadFile("C:\\source\\unity\\HST\\Assets\\cards.json");
-        string jsonTextSupplemental = LoadFile("C:\\source\\unity\\HST\\Assets\\cardsSupplemental.json");
+        string jsonTextSupplemental = LoadFile("C:\\source\\unity\\HST\\Assets\\cards_supplemental.json");
 
         CardFactory.Instance.LoadCards(jsonText, jsonTextSupplemental);
     }
