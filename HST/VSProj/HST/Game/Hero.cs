@@ -8,9 +8,6 @@ namespace HST.Game
         public enum CLASS { MAGE, WARRIOR, PRIEST, PALADIN, WARLOCK, DRUID, HUNTER, SHAMAN, ROGUE };
         public readonly CLASS heroClass;
 
-        public int atk { get; private set; }
-        public int health { get; private set; }
-        public bool frozen { get; set; }
         public int mana { get; private set; }
         public int crystals { get; set; }
 
@@ -31,6 +28,8 @@ namespace HST.Game
             deck = new Deck<AbstractCard>(Game.DECKSIZE);
             hand = new Hand<AbstractCard>();
             field = new Playfield();
+
+            GlobalGameEvent.Instance.CardPlayComplete += OnCardPlayComplete;
         }
         static public Hero CreateHero(CLASS heroClass)
         {
@@ -71,19 +70,26 @@ namespace HST.Game
             deck = newDeck;
         }
 
+        #region ICharacter implementation
+        public int atk { get; private set; }
+        public int health { get; private set; }
+        public bool frozen { get; set; }
         public bool canAttack { get { return false; } } // not yet
-        public void ReceiveAttack(int dmg)
+        public void Attack(IDamageTaker taker)
+        {
+            throw new System.NotImplementedException();
+        }
+        public void IncomingAttack(int dmg)
         {
             this.health -= dmg;
 
             Logger.Log(string.Format("{0} receiving attack of {1} health->{2}", heroClass, dmg, health));
         }
+        #endregion
 
-        // events //////////////////////////////////////
+        #region events
         public void OnNewTurn(Game g)
         {
-            DebugUtils.Assert(_currentCard == null);
-
             if (g.turnHero == this)
             {
                 crystals = System.Math.Min(crystals + 1, MAX_MANA);
@@ -93,30 +99,17 @@ namespace HST.Game
             }
             field.OnNewTurn(g);
         }
-
-        AbstractCard _currentCard = null;
-        void OnCardPlayStarted(Hero h, AbstractCard c)
+        public void OnCardPlayComplete(Game g, AbstractCard card)
         {
-            //KAI: weak...
-            _currentCard = h == this ? c : null;
-        }
-        void OnCardPlayCompleted()
-        {
-            if (_currentCard != null)
+            if (g.turnHero == this)
             {
-                DebugUtils.Assert(_currentCard.cost <= mana);
+                DebugUtils.Assert(mana >= card.cost);
 
-                mana -= _currentCard.cost;
-                _currentCard = null;
+                mana -= card.cost;
+                hand.PullCard(card);
             }
         }
-        void OnMinionDeath(Game g, Minion m)
-        {
-            if (field.RemoveMinion(m))
-            {
-                Logger.Log(string.Format("Hero {0} sees dead minion, removing from playfield", heroClass));
-            }
-        }
+        #endregion
 
         public override string ToString()
         {

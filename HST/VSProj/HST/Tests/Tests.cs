@@ -148,16 +148,17 @@ public sealed class Tests
         {
             if (card.cost <= game.turnHero.mana)
             {
-                logger.Log(string.Format("{0} plays card {1}", game.turnHero.heroClass.ToString(), card));
-                logger.Log(game.turnHero.ToStringBrief());
+                logger.Log(string.Format("{0} playing card {1}", game.turnHero.heroClass.ToString(), card));
 
                 if (card is MinionCard)
                 {
                     ((MinionCard)card).Play(game, game.turnHero, 0);
                 }
-                else
+                else if (card is SpellCard)
                 {
+                    ((SpellCard)card).Play(game, FindVictim(game));
                 }
+                logger.Log(game.turnHero.ToStringBrief());
                 return;
             }
         }
@@ -184,27 +185,20 @@ public sealed class Tests
             }
             if (attacker != null)
             {
-                Attack(game, attacker);
+                attacker.Attack(FindVictim(game));
             }
         } while (attacker != null);
     }
-    static void Attack(Game game, ICharacter attacker)
+    static ICharacter FindVictim(Game game)
     {
-        ICharacter victim = null;
         var nDefendingMinions = game.turnDefender.field.size;
 
         if (nDefendingMinions > 0)
         {
             // attack a minion
-            victim = game.turnDefender.field[rnd.Next(0, nDefendingMinions)];
+            return game.turnDefender.field[rnd.Next(0, nDefendingMinions)];
         }
-        else
-        {
-            // or hit face
-            victim = game.turnDefender;
-        }
-
-        //game.Attack(attacker, victim);
+        // or hit face
+        return game.turnDefender;
     }
-
 }

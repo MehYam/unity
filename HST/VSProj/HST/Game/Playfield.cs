@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,6 +25,7 @@ namespace HST.Game
         {
             AddMinionAt(0, minion);
         }
+
         // note, minions are "centered" at 0, so the indices run from -3 to +3.  Caller
         // can actually safely pass in any index.
         public void AddMinionAt(int indexFromCenter, Minion minion)
@@ -51,6 +52,8 @@ namespace HST.Game
                     }
                     minions.AddAfter(node, minion);
                 }
+
+                minion.Death += OnMinionDeath;
             }
             else
             {
@@ -58,11 +61,15 @@ namespace HST.Game
             }
         }
 
+        public bool RemoveMinion(Minion minion)
+        {
+            minion.Death -= OnMinionDeath;
+            return minions.Remove(minion);
+        }
+
+        #region events
         public void OnNewTurn(Game game)
         {
-            //KAI: this is an interesting model where we propagate events directly instead.  It
-            // might not be so bad for Game to be the master controller that calls functions directly this way...
-
             if (game.turnHero.field == this)
             {
                 foreach (var minion in this)
@@ -71,11 +78,12 @@ namespace HST.Game
                 }
             }
         }
-
-        public bool RemoveMinion(Minion minion)
+        void OnMinionDeath(Minion minion)
         {
-            return minions.Remove(minion);
+            Logger.Log(string.Format("{0} dies, removing from playfield", minion));
+            RemoveMinion(minion);
         }
+        #endregion
 
         public IEnumerator<Minion> GetEnumerator()
         {

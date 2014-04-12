@@ -9,12 +9,15 @@ namespace HST.Game
     {
         int atk { get; }
         bool canAttack { get; }
+
+        void Attack(IDamageTaker victim);
     }
 
     public interface IDamageTaker
     {
         int health { get; }
-        void ReceiveAttack(int dmg);
+
+        void IncomingAttack(int dmg);
     }
 
     public interface ICharacter : IDamageGiver, IDamageTaker

@@ -35,7 +35,7 @@ namespace HST.Game
             });
             AddSpell("Frostbolt", (game, target) =>
             {
-                target.ReceiveAttack(3);
+                target.IncomingAttack(3);
                 target.frozen = true;
             });
             AddSpell("Redemption", (game, target) =>
@@ -57,9 +57,9 @@ namespace HST.Game
                 var defender = game.turnDefender;
                 foreach (var minion in defender.field)
                 {
-                    minion.ReceiveAttack(attack);
+                    minion.IncomingAttack(attack);
                 }
-                game.turnDefender.ReceiveAttack(2);
+                game.turnDefender.IncomingAttack(2);
             });
             AddSpell("Innervate", (game, target) =>
             {
@@ -76,7 +76,11 @@ namespace HST.Game
                 var minion = target as Minion;
                 //TODO: give the minion +2/+2
 
-                minion.taunt = true;
+                if (minion != null)
+                {
+                    //KAI: unnecessary check
+                    minion.taunt = true;
+                }
             });
             AddSpell("Wild Growth", (game, target) =>
             {
@@ -85,22 +89,22 @@ namespace HST.Game
             AddSpell("Swipe", (game, target) =>
             {
                 //TODO: this assumes target = defender, can target self with this spell
-                target.ReceiveAttack(4);
+                target.IncomingAttack(4);
                 foreach (var minion in game.turnDefender.field)
                 {
                     if (target != minion)
                     {
-                        minion.ReceiveAttack(1);
+                        minion.IncomingAttack(1);
                     }
                 }
                 if (target != game.turnDefender)
                 {
-                    game.turnDefender.ReceiveAttack(1);
+                    game.turnDefender.IncomingAttack(1);
                 }
             });
             AddSpell("Starfire", (game, target) =>
             {
-                target.ReceiveAttack(5);
+                target.IncomingAttack(5);
                 game.turnHero.Draw(1);
             });
             AddSpell("placeholder", (game, target) =>

@@ -31,6 +31,8 @@ namespace HST.Game
 
     public sealed class MinionCard : AbstractCard
     {
+        //public readonly Action<Game, ICharacter> battlecry.
+
         public readonly Minion template;   // we'll call Clone off this minion instance when we want to create one.
         public MinionCard(string id, string name, string text, int cost, Minion template)
             : base(id, name, text, cost)
@@ -41,6 +43,10 @@ namespace HST.Game
         public void Play(Game game, Hero hero, int indexFromCenter)
         {
             hero.field.AddMinionAt(indexFromCenter, template.Clone());
+
+            //KAI: battlecry will complicate this somewhat.
+
+            GlobalGameEvent.Instance.FireCardPlayComplete(game, this);
         }
     }
     public sealed class SpellCard : AbstractCard
@@ -63,6 +69,7 @@ namespace HST.Game
             {
                 spellAction(game, target);
             }
+            GlobalGameEvent.Instance.FireCardPlayComplete(game, this);
         }
     }
     public sealed class WeaponCard : AbstractCard
