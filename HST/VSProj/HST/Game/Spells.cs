@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,15 +24,30 @@ namespace HST.Game
         {
             spellActions[name] = action;
         }
+        static Action<Game, ICharacter> GetManaBumpSpell(int manaBump)
+        {
+            //int manaBumpCopy = manaBump;  // gives each closure its own copy of manaBump
+            Action<Game, ICharacter> retval = (game, target) =>
+            {
+                var hero = game.turnHero;
+                hero.crystals += manaBump;
+                hero.mana += manaBump;
+                Logger.Log("MANA BUMPING .............................. " + manaBump);
+                hero.AddPostTurnAction((postTurnHero) =>
+                {
+                    postTurnHero.crystals -= manaBump;
+                    postTurnHero.mana -= manaBump;
+                    Logger.Log("MANA UNBUMPING  ............................. " + manaBump);
+                });
+            };
+            return retval;
+        }
         SpellFactory() 
         {
             //TODO: all the spell damages need to get modified by any +spell dmg minions
-            AddSpell("The Coin", (game, target) =>
-            {
-                var hero = game.turnHero;
-                
-                //TODO: add a one-turn modifier to the hero that increases his mana and mana crystals by one
-            });
+            AddSpell("The Coin", GetManaBumpSpell(1));
+            AddSpell("Innervate", GetManaBumpSpell(2));
+
             AddSpell("Frostbolt", (game, target) =>
             {
                 target.IncomingAttack(3);
@@ -60,12 +75,6 @@ namespace HST.Game
                     minion.IncomingAttack(attack);
                 }
                 game.turnDefender.IncomingAttack(2);
-            });
-            AddSpell("Innervate", (game, target) =>
-            {
-                var hero = game.turnHero;
-                //TODO: add a one-turn modifier to the hero that increases his mana and mana crystals by two
-
             });
             AddSpell("Claw", (game, target) =>
             {

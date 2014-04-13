@@ -60,7 +60,7 @@ namespace HST.Game  // belongs somewhere more generic, this contains nothing HS-
 
     public class Hand<T> : IEnumerable<T>
     {
-        LinkedList<T> cards = new LinkedList<T>();
+        readonly LinkedList<T> cards = new LinkedList<T>();
 
         public int size { get { return cards.Count; } }
         public T this[int index]
@@ -70,7 +70,10 @@ namespace HST.Game  // belongs somewhere more generic, this contains nothing HS-
                 return cards.ElementAt(index);
             }
         }
-        
+        public void Clear()
+        {
+            cards.Clear();
+        }
         public void AddCard(T card)
         {
             cards.AddLast(card);

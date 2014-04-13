@@ -9,4 +9,12 @@ namespace HST.Game
     {
         void Go(Game game, Hero hero);
     }
+
+    public class Modifier
+    {
+        public readonly bool oneTurn;
+        public readonly int amount;
+
+        public Modifier(bool oneTurn, int amount) { this.oneTurn = oneTurn; this.amount = amount; }
+    }
 }

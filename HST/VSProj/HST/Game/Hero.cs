@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using HST.Util;
 
@@ -8,7 +9,7 @@ namespace HST.Game
         public enum CLASS { MAGE, WARRIOR, PRIEST, PALADIN, WARLOCK, DRUID, HUNTER, SHAMAN, ROGUE };
         public readonly CLASS heroClass;
 
-        public int mana { get; private set; }
+        public int mana { get; set; }
         public int crystals { get; set; }
 
         public Deck<AbstractCard> deck { get; private set; }
@@ -87,11 +88,23 @@ namespace HST.Game
         }
         #endregion
 
+        readonly IList<Action<Hero>> _postTurnActions = new List<Action<Hero>>();
+        public void AddPostTurnAction(Action<Hero> action)
+        {
+            _postTurnActions.Add(action);
+        }
+
         #region events
         public void OnNewTurn(Game g)
         {
             if (g.turnHero == this)
             {
+                foreach (var action in _postTurnActions)
+                {
+                    action(this);
+                }
+                _postTurnActions.Clear();
+
                 crystals = System.Math.Min(crystals + 1, MAX_MANA);
                 mana = crystals;
 

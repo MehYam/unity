@@ -126,6 +126,8 @@ public sealed class Tests
 
         logger.Log("TestGame post-mulligan\n" + game.ToStringBrief());
 
+        //TestManaBump(game);
+
         // play some turns
         const int TURNS = 20;
         for (int plays = 0; plays < TURNS; ++plays)
@@ -136,6 +138,13 @@ public sealed class Tests
             AttackRandomly(game);
             game.NextTurn();
         }
+    }
+    void TestManaBump(Game game)
+    {
+        game.heros[0].hand.Clear();
+        game.heros[1].hand.Clear();
+        game.heros[1].hand.AddCard(CardFactory.Instance.GetCard("The Coin"));
+        game.heros[0].hand.AddCard(CardFactory.Instance.GetCard("Innervate"));
     }
 
     // these ***randomly functions will turn into the move finder part of the AI
