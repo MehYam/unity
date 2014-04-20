@@ -34,6 +34,7 @@ namespace HST.Game
         }
         static public Hero CreateHero(CLASS heroClass)
         {
+            //KAI: remove if this doesn't have a purpose
             return new Hero(heroClass);
         }
 
@@ -88,13 +89,13 @@ namespace HST.Game
         }
         #endregion
 
+        #region events
         readonly IList<Action<Hero>> _postTurnActions = new List<Action<Hero>>();
         public void AddPostTurnAction(Action<Hero> action)
         {
             _postTurnActions.Add(action);
         }
 
-        #region events
         public void OnNewTurn(Game g)
         {
             if (g.turnHero == this)
