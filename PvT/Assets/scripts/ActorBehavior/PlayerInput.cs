@@ -32,7 +32,7 @@ public class PlayerInput : IActorBehavior
             go.rigidbody2D.AddForce(new Vector2(horz * acceleration, vert * acceleration));
         }
 
-        go.rigidbody2D.angularVelocity = 0;
+        //go.rigidbody2D.angularVelocity = 0;
 
         // watch for transition between moving and not moving
         if ((go.rigidbody2D.velocity == Vector2.zero) == isMoving)
