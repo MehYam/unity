@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 /// <summary>
 /// Constants and basic utilities
@@ -23,5 +22,19 @@ public static class Consts
         retval.y = sin * point.x - cos * point.y;
 
         return retval;
+    }
+    static public void RemoveAllChildren(Transform transform)
+    {
+        Debug.Log("Destroying children: " + transform.childCount);
+
+        var children = new GameObject[transform.childCount];
+        for (var i = 0; i < transform.childCount; ++i)
+        {
+            children[i] = transform.GetChild(i).gameObject;
+        }
+        foreach (var child in children)
+        {
+            GameObject.Destroy(child);
+        }
     }
 }
