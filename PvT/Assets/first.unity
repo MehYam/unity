@@ -136,7 +136,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 3
+  orthographic size: 4
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -192,7 +192,9 @@ GameObject:
   m_Component:
   - 4: {fileID: 458618355}
   - 212: {fileID: 458618354}
+  - 50: {fileID: 458618357}
   - 114: {fileID: 458618356}
+  - 114: {fileID: 458618358}
   m_Layer: 0
   m_Name: enemy1
   m_TagString: Untagged
@@ -246,6 +248,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Player: {fileID: 1657511841}
+--- !u!50 &458618357
+Rigidbody2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 458618353}
+  m_Mass: 1
+  m_LinearDrag: 1
+  m_AngularDrag: .0500000007
+  m_GravityScale: 1
+  m_FixedAngle: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+--- !u!114 &458618358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 458618353}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90ab78d35bb107e45b60448d5d16f8f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Magnitude: 3
 --- !u!1001 &502541283
 Prefab:
   m_ObjectHideFlags: 0

@@ -12,41 +12,39 @@ public sealed class CameraFollow : MonoBehaviour
         _preserveCameraZ = camera.transform.localPosition.z;
     }
 
-    Bounds bounds = new Bounds();
+    Rect limit = new Rect();
     void CalcBounds()
     {
-        var borderBottomLeft = new Vector3(Border.transform.FindChild("left").localPosition.x, Border.transform.FindChild("bottom").localPosition.y);
-        var borderTopRight = new Vector3(Border.transform.FindChild("right").localPosition.x, Border.transform.FindChild("top").localPosition.y);
+        var pixels = camera.pixelRect;
+        var screenMin = camera.ScreenToWorldPoint(Vector3.zero);
+        var screenMax = camera.ScreenToWorldPoint(new Vector3(pixels.xMax, pixels.yMax));
+        var worldCoords = new Rect(screenMin.x, screenMax.y, screenMax.x - screenMin.x, screenMax.y - screenMin.y);
 
-        var screenBottomLeft = camera.ScreenToWorldPoint(Vector3.zero);
-        var screenTopRight = camera.ScreenToWorldPoint(new Vector3(Screen.currentResolution.width, Screen.currentResolution.height));
-        var screenWidth = screenTopRight.x - screenBottomLeft.x;
-        var screenHeight = screenTopRight.y - screenBottomLeft.y;
+        Debug.Log(string.Format("screen dims: {0}, world coords: {1}", pixels, worldCoords));
 
-        // KAI: this is broken...
-        //var minX = borderBottomLeft.x + screenWidth / 2;
-        //var maxX = borderTopRight.x - screenWidth / 2;
-        //var minY = borderBottomLeft.y + screenHeight / 2;
-        //var maxY = borderTopRight.y - screenHeight / 2;
-        var foo = 3;
-        var minX = borderBottomLeft.x + foo;
-        var maxX = borderTopRight.x - foo;
-        var minY = borderBottomLeft.y + foo;
-        var maxY = borderTopRight.y - foo;
+        var borderMin = new Vector3(Border.transform.FindChild("left").localPosition.x, Border.transform.FindChild("bottom").localPosition.y);
+        var borderMax = new Vector3(Border.transform.FindChild("right").localPosition.x, Border.transform.FindChild("top").localPosition.y);
 
-        bounds = new Bounds(Vector3.zero, new Vector3(maxX - minX, maxY - minY));
-        Debug.Log(bounds);
+        var halfScreenWidth = (screenMax.x - screenMin.x) / 2;
+        var halfScreenHeight = (screenMax.y - screenMin.y) / 2;
+
+        limit.xMin = borderMin.x + halfScreenWidth;
+        limit.xMax = borderMax.x - halfScreenWidth;
+        limit.yMin = borderMin.y + halfScreenHeight;
+        limit.yMax = borderMax.y - halfScreenHeight;
+
+        Debug.Log(string.Format("Border: {0},{1}, camera limit: {2}", borderMin, borderMax, limit));
     }
 
 	// Update is called once per frame
 	void Update()
     {
-        if (bounds.size.x == 0)
+        if (limit.width == 0)
         {
             CalcBounds();
         }
-        var newX = Mathf.Min(bounds.max.x, Mathf.Max(Target.transform.localPosition.x, bounds.min.x));
-        var newY = Mathf.Min(bounds.max.y, Mathf.Max(Target.transform.localPosition.y, bounds.min.y));
+        var newX = Mathf.Min(limit.xMax, Mathf.Max(Target.transform.localPosition.x, limit.xMin));
+        var newY = Mathf.Min(limit.yMax, Mathf.Max(Target.transform.localPosition.y, limit.yMin));
 
         camera.transform.localPosition = new Vector3(newX, newY, _preserveCameraZ);
 
