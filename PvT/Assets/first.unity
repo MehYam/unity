@@ -192,8 +192,9 @@ GameObject:
   m_Component:
   - 4: {fileID: 458618355}
   - 212: {fileID: 458618354}
+  - 114: {fileID: 458618356}
   m_Layer: 0
-  m_Name: ship2_11_2
+  m_Name: enemy1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -233,6 +234,18 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
+--- !u!114 &458618356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 458618353}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a678b24f2ef6fd743bebc75948587a17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Player: {fileID: 1657511841}
 --- !u!1001 &502541283
 Prefab:
   m_ObjectHideFlags: 0

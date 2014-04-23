@@ -23,6 +23,14 @@ public static class Consts
 
         return retval;
     }
+    static public float DegreesBetweenPoints(Vector2 a, Vector2 b)
+    {
+        return DegreesRotation(a - b);
+    }
+    static public float DegreesRotation(Vector2 point)
+    {
+        return Mathf.Atan2(point.x, point.y) * Mathf.Rad2Deg;
+    }
     static public void RemoveAllChildren(Transform transform)
     {
         Debug.Log("Destroying children: " + transform.childCount);
