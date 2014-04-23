@@ -45,4 +45,12 @@ public static class Consts
             GameObject.Destroy(child);
         }
     }
+    static public Rect GetScreenRectInWorldCoords(Camera camera)
+    {
+        var pixels = camera.pixelRect;
+        var screenMin = camera.ScreenToWorldPoint(Vector3.zero);
+        var screenMax = camera.ScreenToWorldPoint(new Vector3(pixels.xMax, pixels.yMax));
+
+        return new Rect(screenMin.x, screenMax.y, screenMax.x - screenMin.x, screenMax.y - screenMin.y);;
+    }
 }

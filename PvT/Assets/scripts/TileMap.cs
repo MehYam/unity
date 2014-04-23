@@ -89,10 +89,12 @@ public class TileMap : MonoBehaviour
         }
 
         Debug.Log(string.Format("rows, cols {0}, {1}, size {2}", rows, cols, size));
-        Border.transform.FindChild("bottom").localPosition = new Vector2(0, -rows * size.y / 2);
-        Border.transform.FindChild("top").localPosition = new Vector2(0, rows * size.y / 2);
-        Border.transform.FindChild("left").localPosition = new Vector2(-cols * size.x / 2, 0);
-        Border.transform.FindChild("right").localPosition = new Vector2(cols * size.x / 2, 0);
+        const float anchorSizeOffset = 0.3f;
+
+        Border.transform.FindChild("bottom").localPosition = new Vector2(0, (-rows * size.y / 2) - anchorSizeOffset);
+        Border.transform.FindChild("top").localPosition = new Vector2(0, (rows * size.y / 2) + anchorSizeOffset);
+        Border.transform.FindChild("left").localPosition = new Vector2((-cols * size.x / 2) - anchorSizeOffset, 0);
+        Border.transform.FindChild("right").localPosition = new Vector2((cols * size.x / 2) + anchorSizeOffset, 0);
 
     }
 }
