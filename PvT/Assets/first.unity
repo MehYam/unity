@@ -167,8 +167,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf480abf7403bc5418c812aa44d3f3df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxVelocity: 30
-  Acceleration: 10
+  MaxVelocity: 80
+  Acceleration: 20
   Player: {fileID: 1657511839}
 --- !u!114 &359017137
 MonoBehaviour:
@@ -472,7 +472,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Level: {fileID: 4900000, guid: 5c52b2e0b6a396644913789a7fcb1458, type: 3}
   TileAsset: {fileID: 2800000, guid: 2009b102dfe1c374783405120bf34909, type: 3}
-  SpriteOrder: -50
+  SpriteSortingOrder: -50
+  Borders: {fileID: 1070116983}
 --- !u!4 &680386596
 Transform:
   m_ObjectHideFlags: 0
@@ -645,7 +646,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 1070116984}
   m_Layer: 0
-  m_Name: bounds
+  m_Name: borders
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
