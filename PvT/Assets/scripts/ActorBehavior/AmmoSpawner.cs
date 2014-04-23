@@ -20,6 +20,8 @@ public sealed class AmmoSpawner : MonoBehaviour
                 ammo.transform.localPosition = transform.localPosition + new Vector3(startPoint.x, startPoint.y);
 
                 _lastFire = Time.time;
+
+                Debug.Log(Input.mousePosition);
             }
         }
 	}

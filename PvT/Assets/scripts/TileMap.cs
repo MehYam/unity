@@ -7,7 +7,7 @@ public class TileMap : MonoBehaviour
     public TextAsset Level;
     public Texture2D TileAsset;
     public int SpriteSortingOrder = -10;
-    public GameObject Borders;
+    public GameObject Border;
 
     struct Tile
     {
@@ -89,10 +89,10 @@ public class TileMap : MonoBehaviour
         }
 
         Debug.Log(string.Format("rows, cols {0}, {1}, size {2}", rows, cols, size));
-        Borders.transform.FindChild("bottom").localPosition = new Vector2(0, -rows * size.y / 2);
-        Borders.transform.FindChild("top").localPosition = new Vector2(0, rows * size.y / 2);
-        Borders.transform.FindChild("left").localPosition = new Vector2(-cols * size.x / 2, 0);
-        Borders.transform.FindChild("right").localPosition = new Vector2(cols * size.x / 2, 0);
+        Border.transform.FindChild("bottom").localPosition = new Vector2(0, -rows * size.y / 2);
+        Border.transform.FindChild("top").localPosition = new Vector2(0, rows * size.y / 2);
+        Border.transform.FindChild("left").localPosition = new Vector2(-cols * size.x / 2, 0);
+        Border.transform.FindChild("right").localPosition = new Vector2(cols * size.x / 2, 0);
 
     }
 }

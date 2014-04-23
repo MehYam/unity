@@ -14,7 +14,7 @@ public sealed class TimeToLive : MonoBehaviour
     {
         if (Seconds > 0 && (Time.time - _start) > Seconds)
         {
-            Debug.Log("Destroying.........");
+            //Debug.Log("Destroying.........");
             Destroy(gameObject);
         }
 	}

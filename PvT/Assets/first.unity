@@ -181,7 +181,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06a50bfc93135bd4fa0be8afe7c0fcb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 1657511839}
+  Target: {fileID: 1657511839}
+  Border: {fileID: 1070116983}
 --- !u!1 &458618353
 GameObject:
   m_ObjectHideFlags: 0
@@ -453,7 +454,7 @@ GameObject:
   - 4: {fileID: 680386596}
   - 114: {fileID: 680386595}
   m_Layer: 0
-  m_Name: ground
+  m_Name: map
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -473,7 +474,7 @@ MonoBehaviour:
   Level: {fileID: 4900000, guid: 5c52b2e0b6a396644913789a7fcb1458, type: 3}
   TileAsset: {fileID: 2800000, guid: 2009b102dfe1c374783405120bf34909, type: 3}
   SpriteSortingOrder: -50
-  Borders: {fileID: 1070116983}
+  Border: {fileID: 1070116983}
 --- !u!4 &680386596
 Transform:
   m_ObjectHideFlags: 0
@@ -646,7 +647,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 1070116984}
   m_Layer: 0
-  m_Name: borders
+  m_Name: border
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
