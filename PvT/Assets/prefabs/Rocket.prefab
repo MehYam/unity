@@ -9,7 +9,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 400000}
   m_Layer: 0
-  m_Name: RocketFlame
+  m_Name: rocketFlame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -151,7 +151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd62f0a5986db7c4080a66f8346b3865, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Acceleration: .400000006
+  Acceleration: .600000024
 --- !u!212 &21200000
 SpriteRenderer:
   m_ObjectHideFlags: 1
