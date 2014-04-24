@@ -88,7 +88,7 @@ public class TileMap : MonoBehaviour
             );
         }
 
-        Debug.Log(string.Format("rows, cols {0}, {1}, size {2}", rows, cols, size));
+        Consts.Log("rows, cols {0}, {1}, size {2}", rows, cols, size);
         const float anchorSizeOffset = 0.3f;
 
         Border.transform.FindChild("bottom").localPosition = new Vector2(0, (-rows * size.y / 2) - anchorSizeOffset);

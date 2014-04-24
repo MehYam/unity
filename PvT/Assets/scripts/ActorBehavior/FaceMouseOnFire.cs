@@ -3,7 +3,7 @@ using System.Collections;
 
 public sealed class FaceMouseOnFire : IActorBehavior
 {
-	public void Update(GameObject go)
+	public void FixedUpdate(GameObject go)
     {
         if (Input.GetButton("Fire1"))
         {

@@ -12,9 +12,8 @@ public class PlayerInput : IActorBehavior
         this.acceleration = acceleration;
     }
 
-    // Update is called once per frame
     bool isMoving = true;
-	public void Update(GameObject go)
+	public void FixedUpdate(GameObject go)
     {
         var horz = Input.GetAxis("Horizontal");
         var vert = Input.GetAxis("Vertical");

@@ -53,4 +53,10 @@ public static class Consts
 
         return new Rect(screenMin.x, screenMax.y, screenMax.x - screenMin.x, screenMax.y - screenMin.y);;
     }
+
+    static public void Log(string fmt, params object[] args)
+    {
+        Debug.Log(string.Format(fmt, args));
+    }
+
 }

@@ -10,7 +10,7 @@ public sealed class Ammo : MonoBehaviour
         _force = Consts.RotatePoint(new Vector2(Acceleration, 0), transform.rotation.eulerAngles.z);
 	}
 
-	void Update()
+	void FixedUpdate()
     {
         var rb = GetComponent<Rigidbody2D>();
         rb.AddForce(_force);

@@ -8,7 +8,7 @@ using System.Collections.Generic;
 // 2) it lets us manage the execution order of those Update()'s man
 public interface IActorBehavior
 {
-    void Update(GameObject go);
+    void FixedUpdate(GameObject go);
 }
 
 public sealed class CompositeBehavior : IActorBehavior
@@ -20,11 +20,11 @@ public sealed class CompositeBehavior : IActorBehavior
         subBehaviors.Add(behavior);
     }
 
-    public void Update(GameObject go)
+    public void FixedUpdate(GameObject go)
     {
         foreach (var behavior in subBehaviors)
         {
-            behavior.Update(go);
+            behavior.FixedUpdate(go);
         }
     }
 }
