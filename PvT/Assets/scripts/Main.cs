@@ -10,6 +10,9 @@ public class Main : MonoBehaviour
 	// Use this for initialization
 	void Start()
     {
+        //Application.targetFrameRate = 3;
+        //QualitySettings.vSyncCount = 2;
+
         Physics2D.gravity = Vector2.zero;
 
         var behaviors = new CompositeBehavior();

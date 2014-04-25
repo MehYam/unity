@@ -31,6 +31,16 @@ public static class Consts
     {
         return Mathf.Atan2(point.x, point.y) * Mathf.Rad2Deg;
     }
+    		// returns a signed difference between two angles useful for evolving one to the other
+	static public float diffRadians(float source, float target)
+	{
+		var raw = target - source;
+		return Mathf.Atan2(Mathf.Sin(raw), Mathf.Cos(raw));
+	}
+    static public float diffAngle(float source, float target)
+    {
+        return diffRadians(source * Mathf.Deg2Rad, target * Mathf.Deg2Rad) * Mathf.Rad2Deg;
+    }
     static public void RemoveAllChildren(Transform transform)
     {
         Debug.Log("Destroying children: " + transform.childCount);
