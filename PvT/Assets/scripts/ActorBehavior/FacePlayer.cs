@@ -14,11 +14,7 @@ public class FacePlayer : MonoBehaviour
 
         // implement a crude rotational drag by "softening" the delta.  KAI: look into relying more on the physics engine to handle this
         var angleDelta = Consts.diffAngle(previous.eulerAngles.z, newRot.eulerAngles.z);
-
-        var pre = angleDelta;
-        var prez = previous.eulerAngles.z;
         angleDelta *= (1 - RotationalInertia);
-
         transform.Rotate(0, 0, angleDelta);
 	}
 }

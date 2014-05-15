@@ -1,0 +1,366 @@
+{
+	"BEE":
+	{
+		"asset": "ship2_0",
+		"health": "40",
+		"maxSpeed": "5",
+		"acceleration": "0.05",
+		"inertia": "0",
+		"collision": "33",
+		"reward": "5",
+		"behaviors":
+		[
+		]
+	},
+	"GREENK":
+	{
+		"asset": "ship2_1",
+		"health": "20",
+		"maxSpeed": "1.5",
+		"acceleration": "0.1",
+		"inertia": "0",
+		"collision": "10",
+		"reward": "5",
+		"behaviors":
+		[
+		]
+	},
+	"MOTH":
+	{
+		"asset": "ship2_7",
+		"health": "30",
+		"maxSpeed": "3",
+		"acceleration": "0.1",
+		"inertia": "0",
+		"collision": "15",
+		"reward": "10",
+		"behaviors":
+		[
+		]
+	},
+	"OSPREY":
+	{
+		"asset": "ship2_3",
+		"health": "100",
+		"maxSpeed": "1.5",
+		"acceleration": "0.15",
+		"inertia": "0",
+		"collision": "33",
+		"reward": "15",
+		"behaviors":
+		[
+		]
+	},
+	"BAT":
+	{
+		"asset": "ship2_2",
+		"health": "100",
+		"maxSpeed": "2",
+		"acceleration": "0.05",
+		"inertia": "0",
+		"collision": "20",
+		"reward": "15",
+		"behaviors":
+		[
+		]
+	},
+	"GHOST":
+	{
+		"asset": "ship2_6",
+		"health": "65",
+		"maxSpeed": "3",
+		"acceleration": "0.05",
+		"inertia": "0.1",
+		"collision": "50",
+		"reward": "25",
+		"behaviors":
+		[
+		]
+	},
+	"GREENK2":
+	{
+		"asset": "ship2_1_0",
+		"health": "80",
+		"maxSpeed": "1.5",
+		"acceleration": "0.1",
+		"inertia": "0",
+		"collision": "50",
+		"reward": "15",
+		"behaviors":
+		[
+		]
+	},
+	"CYGNUS":
+	{
+		"asset": "ship2_5",
+		"health": "125",
+		"maxSpeed": "6",
+		"acceleration": "0.25",
+		"inertia": "0.05",
+		"collision": "66",
+		"reward": "30",
+		"behaviors":
+		[
+		]
+	},
+	"ROCINANTE":
+	{
+		"asset": "ship2_10",
+		"health": "180",
+		"maxSpeed": "3",
+		"acceleration": "0.25",
+		"inertia": "0.05",
+		"collision": "66",
+		"reward": "35",
+		"behaviors":
+		[
+		]
+	},
+	"BEE2":
+	{
+		"asset": "ship2_0_0",
+		"health": "120",
+		"maxSpeed": "5",
+		"acceleration": "0.05",
+		"inertia": "0.02",
+		"collision": "50",
+		"reward": "50",
+		"behaviors":
+		[
+		]
+	},
+	"FLY":
+	{
+		"asset": "ship2_4",
+		"health": "180",
+		"maxSpeed": "1.5",
+		"acceleration": "0.2",
+		"inertia": "0",
+		"collision": "75",
+		"reward": "20",
+		"behaviors":
+		[
+		]
+	},
+	"MOTH2":
+	{
+		"asset": "ship2_7_0",
+		"health": "180",
+		"maxSpeed": "4",
+		"acceleration": "0.1",
+		"inertia": "0",
+		"collision": "66",
+		"reward": "45",
+		"behaviors":
+		[
+		]
+	},
+	"BAT2":
+	{
+		"asset": "ship2_2_0",
+		"health": "300",
+		"maxSpeed": "2",
+		"acceleration": "0.05",
+		"inertia": "0",
+		"collision": "20",
+		"reward": "65",
+		"behaviors":
+		[
+		]
+	},
+	"BLUEK":
+	{
+		"asset": "ship2_1_1",
+		"health": "250",
+		"maxSpeed": "1.5",
+		"acceleration": "0.1",
+		"inertia": "0",
+		"collision": "75",
+		"reward": "30",
+		"behaviors":
+		[
+		]
+	},
+	"CYGNUS2":
+	{
+		"asset": "ship2_5_0",
+		"health": "400",
+		"maxSpeed": "6",
+		"acceleration": "0.25",
+		"inertia": "0.05",
+		"collision": "125",
+		"reward": "100",
+		"behaviors":
+		[
+		]
+	},
+	"OSPREY2":
+	{
+		"asset": "ship2_3_0",
+		"health": "400",
+		"maxSpeed": "1.5",
+		"acceleration": "0.15",
+		"inertia": "0.05",
+		"collision": "100",
+		"reward": "100",
+		"behaviors":
+		[
+		]
+	},
+	"ROCINANTE2":
+	{
+		"asset": "ship2_10_1",
+		"health": "600",
+		"maxSpeed": "3",
+		"acceleration": "0.25",
+		"inertia": "0.05",
+		"collision": "125",
+		"reward": "125",
+		"behaviors":
+		[
+		]
+	},
+	"BAT3":
+	{
+		"asset": "ship2_2_1",
+		"health": "600",
+		"maxSpeed": "2",
+		"acceleration": "0.05",
+		"inertia": "0",
+		"collision": "20",
+		"reward": "125",
+		"behaviors":
+		[
+		]
+	},
+	"GHOST2":
+	{
+		"asset": "ship2_6_0",
+		"health": "500",
+		"maxSpeed": "3",
+		"acceleration": "0.05",
+		"inertia": "0.1",
+		"collision": "50",
+		"reward": "110",
+		"behaviors":
+		[
+		]
+	},
+	"PIKE":
+	{
+		"asset": "ship2_11_1",
+		"health": "500",
+		"maxSpeed": "2",
+		"acceleration": "0.1",
+		"inertia": "0",
+		"collision": "100",
+		"reward": "80",
+		"behaviors":
+		[
+		]
+	},
+	"CYGNUS3":
+	{
+		"asset": "ship2_5_1",
+		"health": "800",
+		"maxSpeed": "6",
+		"acceleration": "0.25",
+		"inertia": "0.05",
+		"collision": "125",
+		"reward": "150",
+		"behaviors":
+		[
+		]
+	},
+	"BEE3":
+	{
+		"asset": "ship2_0_1",
+		"health": "500",
+		"maxSpeed": "5",
+		"acceleration": "0.05",
+		"inertia": "0",
+		"collision": "100",
+		"reward": "400",
+		"behaviors":
+		[
+		]
+	},
+	"FLY3":
+	{
+		"asset": "ship2_4_1",
+		"health": "1000",
+		"maxSpeed": "1.5",
+		"acceleration": "0.1",
+		"inertia": "0",
+		"collision": "100",
+		"reward": "200",
+		"behaviors":
+		[
+		]
+	},
+	"ESOX":
+	{
+		"asset": "ship2_11_2",
+		"health": "1000",
+		"maxSpeed": "2",
+		"acceleration": "0.1",
+		"inertia": "0",
+		"collision": "100",
+		"reward": "400",
+		"behaviors":
+		[
+		]
+	},
+	"STEALTH":
+	{
+		"asset": "ship2_9_1",
+		"health": "1000",
+		"maxSpeed": "4",
+		"acceleration": "0.1",
+		"inertia": "0",
+		"collision": "150",
+		"reward": "500",
+		"behaviors":
+		[
+		]
+	},
+	"GHOST3":
+	{
+		"asset": "ship2_6_1",
+		"health": "1000",
+		"maxSpeed": "3",
+		"acceleration": "0.05",
+		"inertia": "0.1",
+		"collision": "150",
+		"reward": "400",
+		"behaviors":
+		[
+		]
+	},
+	"OSPREY3":
+	{
+		"asset": "ship2_3_1",
+		"health": "2000",
+		"maxSpeed": "2",
+		"acceleration": "1",
+		"inertia": "0",
+		"collision": "200",
+		"reward": "600",
+		"behaviors":
+		[
+		]
+	},
+	"OSPREY3_C":
+	{
+		"asset": "ship2_3_1",
+		"health": "2000",
+		"maxSpeed": "2",
+		"acceleration": "1",
+		"inertia": "0",
+		"collision": "200",
+		"reward": "800",
+		"behaviors":
+		[
+		]
+	},
+}
