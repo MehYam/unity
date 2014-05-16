@@ -795,6 +795,11 @@ public static class MJSON
         object value = node[name];
         return value == null ? 0 : int.Parse(value.ToString());
     }
+    public static float SafeGetFloat(Hashtable node, string name)
+    {
+        object value = node[name];
+        return value == null ? float.NaN : float.Parse(value.ToString());
+    }
     public static bool SafeGetBool(Hashtable node, string name)
     {
         var value = SafeGetValue(node, name);

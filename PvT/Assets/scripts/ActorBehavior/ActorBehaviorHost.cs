@@ -23,7 +23,7 @@ public class ActorBehaviorHost : MonoBehaviour
         {
             Debug.DrawRay(contact.point, contact.normal, Color.white);
         }
-        GameState.Instance.HandleCollision(transform.localPosition);
+        Main.Instance.gameState.HandleCollision(transform.localPosition);
         //Debug.Log(collision.relativeVelocity.magnitude);
     }
 }
