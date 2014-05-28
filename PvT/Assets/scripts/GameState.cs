@@ -25,6 +25,9 @@ public sealed class GameState
     {
         StartNextWave();
     }
+
+    const int ENEMY_LAYER = 8;
+    int _liveEnemies = 0;
     void StartNextWave()
     {
         var wave = _levels[0].NextWave();
@@ -37,6 +40,9 @@ public sealed class GameState
             {
                 var go = (GameObject)GameObject.Instantiate(prefab);
                 go.transform.localPosition = new Vector3(Random.Range(-5, 5), Random.Range(-5, 5));
+                go.layer = ENEMY_LAYER;
+
+                ++_liveEnemies;
             }
         }
     }
@@ -49,7 +55,17 @@ public sealed class GameState
         var anim = boom.GetComponent<Animation>();
         anim.Play();
 
-        GameObject.Destroy(contact.collider.gameObject);
+        var go = contact.collider.gameObject;
+        if (go.layer == ENEMY_LAYER)
+        {
+            --_liveEnemies;
+        }
+        GameObject.Destroy(go);
+
+        if (_liveEnemies == 0)
+        {
+            StartNextWave();
+        }
     }
 
     static Dictionary<string, Enemy> LoadEnemies(string enemyJSON)
