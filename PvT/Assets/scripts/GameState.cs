@@ -11,19 +11,45 @@ public sealed class GameState
     readonly IList<Level> _levels;
     public GameState(string strEnemies, string strLevels)
     {
-        Debug.LogWarning("GameState constructor " + GetHashCode());
+        Debug.Log("GameState constructor " + GetHashCode());
 
         _enemyLookup = LoadEnemies(strEnemies);
         _levels = LoadLevels(strLevels);
     }
+    
+    public void Start()
+    {
+        StartNextLevel();
+    }
+    void StartNextLevel()
+    {
+        StartNextWave();
+    }
+    void StartNextWave()
+    {
+        var wave = _levels[0].NextWave();
+        foreach (var squad in wave.squads)
+        {
+            var enemy = _enemyLookup[squad.enemyID];
+            Debug.Log("planes/" + enemy.assetID);
+            var prefab = Resources.Load<GameObject>("planes/" + enemy.assetID);
+            for (int i = 0; i < squad.count; ++i)
+            {
+                var go = (GameObject)GameObject.Instantiate(prefab);
+                go.transform.localPosition = new Vector3(Random.Range(-5, 5), Random.Range(-5, 5));
+            }
+        }
+    }
 
-    public void HandleCollision(Vector2 where)
+    public void HandleCollision(ContactPoint2D contact)
     {
         var boom = (GameObject)GameObject.Instantiate(Main.Instance.Explosion);
-        boom.transform.localPosition = where;
+        boom.transform.localPosition = contact.point;
 
         var anim = boom.GetComponent<Animation>();
         anim.Play();
+
+        GameObject.Destroy(contact.collider.gameObject);
     }
 
     static Dictionary<string, Enemy> LoadEnemies(string enemyJSON)
@@ -38,7 +64,7 @@ public sealed class GameState
 
             retval[name] = new Enemy(
                 name,
-                MJSON.SafeGetValue(enemy, "assetID"),
+                MJSON.SafeGetValue(enemy, "asset"),
                 MJSON.SafeGetInt(enemy, "health"),
                 MJSON.SafeGetFloat(enemy, "maxSpeed"),
                 MJSON.SafeGetFloat(enemy, "acceleration"),
@@ -58,7 +84,7 @@ public sealed class GameState
         foreach (var strLevel in levelStrings)
         {
             var level = LoadLevel(strLevel);
-            if (level.waves.Count > 0)
+            if (level.numWaves > 0)
             {
                 retval.Add(level);
             }
@@ -141,6 +167,13 @@ public sealed class Level
         public Wave(IList<Squad> squads) { this.squads = squads; }
     }
 
-    public readonly IList<Wave> waves;
+    readonly IList<Wave> waves;
+    int nextWave = 0;
     public Level(IList<Wave> waves) { this.waves = waves; }
+
+    public Wave NextWave()
+    {
+        return nextWave <= waves.Count ? waves[nextWave++] : null;
+    }
+    public int numWaves { get { return waves.Count; } }
 }

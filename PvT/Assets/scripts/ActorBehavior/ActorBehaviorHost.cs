@@ -22,8 +22,8 @@ public class ActorBehaviorHost : MonoBehaviour
         foreach (ContactPoint2D contact in collision.contacts)
         {
             Debug.DrawRay(contact.point, contact.normal, Color.white);
+            Main.Instance.gameState.HandleCollision(contact);
         }
-        Main.Instance.gameState.HandleCollision(transform.localPosition);
         //Debug.Log(collision.relativeVelocity.magnitude);
     }
 }

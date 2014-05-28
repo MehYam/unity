@@ -37,7 +37,7 @@ public class PlayerInput : IActorBehavior
         if ((go.rigidbody2D.velocity == Vector2.zero) == isMoving)
         {
             isMoving = !isMoving;
-            Debug.Log("Moving: " + isMoving);
+            //Debug.Log("Moving: " + isMoving);
         }
     }
 }
