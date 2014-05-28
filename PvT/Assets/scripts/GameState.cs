@@ -39,6 +39,8 @@ public sealed class GameState
             for (int i = 0; i < squad.count; ++i)
             {
                 var go = (GameObject)GameObject.Instantiate(prefab);
+                go.AddComponent<DropShadow>();
+
                 go.transform.localPosition = new Vector3(Random.Range(-5, 5), Random.Range(-5, 5));
                 go.layer = ENEMY_LAYER;
 
