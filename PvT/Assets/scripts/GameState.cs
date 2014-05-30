@@ -7,13 +7,13 @@ using PvT.Util;
 
 public sealed class GameState
 {
-    readonly Dictionary<string, Vehicle> _enemyLookup;  // need ReadOnlyDictionary here
+    readonly Dictionary<string, Vehicle> _planeLookup;  // need ReadOnlyDictionary here
     readonly IList<Level> _levels;
     public GameState(string strEnemies, string strLevels)
     {
         Debug.Log("GameState constructor " + GetHashCode());
 
-        _enemyLookup = LoadEnemies(strEnemies);
+        _planeLookup = LoadEnemies(strEnemies);
         _levels = LoadLevels(strLevels);
     }
     
@@ -33,24 +33,30 @@ public sealed class GameState
         var wave = _levels[0].NextWave();
         foreach (var squad in wave.squads)
         {
-            var enemy = _enemyLookup[squad.enemyID];
-            Debug.Log("planes/" + enemy.assetID);
-            var prefab = Resources.Load<GameObject>("planes/" + enemy.assetID);
+            var plane = _planeLookup[squad.enemyID];
+            Debug.Log("planes/" + plane.assetID);
+            var prefab = Resources.Load<GameObject>("planes/" + plane.assetID);
             for (int i = 0; i < squad.count; ++i)
             {
-                var go = (GameObject)GameObject.Instantiate(prefab);
-                go.AddComponent<DropShadow>();
-                var body = go.AddComponent<Rigidbody2D>();
-
-                body.mass = enemy.mass;
-                body.drag = 1;
-
-                go.transform.localPosition = new Vector3(Random.Range(-5, 5), Random.Range(-5, 5));
-                go.layer = ENEMY_LAYER;
-
+                SpawnEnemyPlane(prefab, plane);
                 ++_liveEnemies;
             }
         }
+    }
+
+    static void SpawnEnemyPlane(GameObject prefab, Vehicle plane)
+    {
+        var go = (GameObject)GameObject.Instantiate(prefab);
+        go.AddComponent<DropShadow>();
+        var body = go.AddComponent<Rigidbody2D>();
+
+        body.mass = plane.mass;
+        body.drag = 1;
+
+        var actor = go.AddComponent<Actor>();
+
+        go.transform.localPosition = new Vector3(Random.Range(-5, 5), Random.Range(-5, 5));
+        go.layer = ENEMY_LAYER;
     }
 
     public void HandleCollision(ContactPoint2D contact)

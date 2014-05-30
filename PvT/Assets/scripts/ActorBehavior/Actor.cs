@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class ActorBehaviorHost : MonoBehaviour
+public class Actor : MonoBehaviour
 {
     public IActorBehavior behavior;
 	

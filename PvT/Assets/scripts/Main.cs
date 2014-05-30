@@ -37,7 +37,7 @@ public class Main : MonoBehaviour
         behaviors.AddBehavior(new FaceForward());
         behaviors.AddBehavior(new FaceMouseOnFire());
 
-        Player.GetComponent<ActorBehaviorHost>().behavior = behaviors;
+        Player.GetComponent<Actor>().behavior = behaviors;
 
         // begin the game
         gameState.Start();
