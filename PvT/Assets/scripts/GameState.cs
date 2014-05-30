@@ -54,6 +54,8 @@ public sealed class GameState
         body.drag = 1;
 
         var actor = go.AddComponent<Actor>();
+        actor.vehicle = plane;
+        actor.behavior = EnemyActorBehaviors.Instance.Get(actor.vehicle.behaviorKey);
 
         go.transform.localPosition = new Vector3(Random.Range(-5, 5), Random.Range(-5, 5));
         go.layer = ENEMY_LAYER;
@@ -100,7 +102,8 @@ public sealed class GameState
                 MJSON.SafeGetFloat(enemy, "acceleration"),
                 MJSON.SafeGetFloat(enemy, "inertia"),
                 MJSON.SafeGetFloat(enemy, "collision"),
-                MJSON.SafeGetInt(enemy, "reward")
+                MJSON.SafeGetInt(enemy, "reward"),
+                MJSON.SafeGetValue(enemy, "behavior")
             );
         }
         return retval;
@@ -167,8 +170,9 @@ public sealed class Vehicle
     public readonly float inertia;
     public readonly float collDmg;
     public readonly int reward;
+    public readonly string behaviorKey;
 
-    public Vehicle(string name, string assetID, int health, float mass, float maxSpeed, float acceleration, float inertia, float collDmg, int reward) 
+    public Vehicle(string name, string assetID, int health, float mass, float maxSpeed, float acceleration, float inertia, float collDmg, int reward, string behaviorKey) 
     {
         this.name = name;
         this.assetID = assetID;
@@ -179,6 +183,7 @@ public sealed class Vehicle
         this.inertia = inertia;
         this.collDmg = collDmg;
         this.reward = reward;
+        this.behaviorKey = behaviorKey;
     }
 }
 

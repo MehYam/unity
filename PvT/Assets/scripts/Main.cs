@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
+// KAI: this and GameState both do the same thing - i.e. Player should probably 
+// come from GameState instead?
 public class Main : MonoBehaviour
 {
     public TextAsset Enemies;
@@ -33,9 +35,9 @@ public class Main : MonoBehaviour
         Physics2D.gravity = Vector2.zero;
 
         var behaviors = new CompositeBehavior();
-        behaviors.AddBehavior(new PlayerInput(MaxVelocity, Acceleration));
-        behaviors.AddBehavior(new FaceForward());
-        behaviors.AddBehavior(new FaceMouseOnFire());
+        behaviors.Add(new PlayerInput(MaxVelocity, Acceleration));
+        behaviors.Add(new FaceForward());
+        behaviors.Add(new FaceMouseOnFire());
 
         Player.GetComponent<Actor>().behavior = behaviors;
 

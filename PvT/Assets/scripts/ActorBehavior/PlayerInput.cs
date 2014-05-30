@@ -13,8 +13,10 @@ public class PlayerInput : IActorBehavior
     }
 
     bool isMoving = true;
-	public void FixedUpdate(GameObject go)
+	public void FixedUpdate(Actor actor)
     {
+        var go = actor.gameObject;
+
         var horz = Input.GetAxis("Horizontal");
         var vert = Input.GetAxis("Vertical");
         var vel = go.rigidbody2D.velocity;
@@ -28,7 +30,7 @@ public class PlayerInput : IActorBehavior
         }
         if (horz != 0 || vert != 0)
         {
-            go.rigidbody2D.AddForce(new Vector2(horz * acceleration, vert * acceleration));
+            actor.gameObject.rigidbody2D.AddForce(new Vector2(horz * acceleration, vert * acceleration));
         }
 
         //go.rigidbody2D.angularVelocity = 0;

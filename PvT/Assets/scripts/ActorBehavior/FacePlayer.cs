@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
+[System.Obsolete("use FacePlayerBehavior")]
 public class FacePlayer : MonoBehaviour
 {
     public Transform Player;

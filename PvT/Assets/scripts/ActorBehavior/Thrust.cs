@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
+[System.Obsolete("use ThrustBehavior")]
 public class Thrust : MonoBehaviour
 {
     public float Magnitude = 3;
