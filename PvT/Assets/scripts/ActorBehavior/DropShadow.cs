@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class DropShadow : MonoBehaviour
@@ -21,6 +21,7 @@ public class DropShadow : MonoBehaviour
         var shadowRenderer = shadow.AddComponent<SpriteRenderer>();
         shadowRenderer.sprite = sourceRenderer.sprite;
         shadowRenderer.material = Resources.Load<Material>("DropShadowMaterial");
+        shadowRenderer.sortingOrder = -1;
 
         _shadow = shadow;
 	}

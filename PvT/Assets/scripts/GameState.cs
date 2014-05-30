@@ -7,7 +7,7 @@ using PvT.Util;
 
 public sealed class GameState
 {
-    readonly Dictionary<string, Enemy> _enemyLookup;  // need ReadOnlyDictionary here
+    readonly Dictionary<string, Vehicle> _enemyLookup;  // need ReadOnlyDictionary here
     readonly IList<Level> _levels;
     public GameState(string strEnemies, string strLevels)
     {
@@ -40,6 +40,10 @@ public sealed class GameState
             {
                 var go = (GameObject)GameObject.Instantiate(prefab);
                 go.AddComponent<DropShadow>();
+                var body = go.AddComponent<Rigidbody2D>();
+
+                body.mass = enemy.mass;
+                body.drag = 1;
 
                 go.transform.localPosition = new Vector3(Random.Range(-5, 5), Random.Range(-5, 5));
                 go.layer = ENEMY_LAYER;
@@ -57,22 +61,23 @@ public sealed class GameState
         var anim = boom.GetComponent<Animation>();
         anim.Play();
 
-        var go = contact.collider.gameObject;
-        if (go.layer == ENEMY_LAYER)
-        {
-            --_liveEnemies;
-        }
-        GameObject.Destroy(go);
 
-        if (_liveEnemies == 0)
-        {
-            StartNextWave();
-        }
+        //var go = contact.collider.gameObject;
+        //if (go.layer == ENEMY_LAYER)
+        //{
+        //    --_liveEnemies;
+        //}
+        //GameObject.Destroy(go);
+
+        //if (_liveEnemies == 0)
+        //{
+        //    StartNextWave();
+        //}
     }
 
-    static Dictionary<string, Enemy> LoadEnemies(string enemyJSON)
+    static Dictionary<string, Vehicle> LoadEnemies(string enemyJSON)
     {
-        var retval = new Dictionary<string, Enemy>();
+        var retval = new Dictionary<string, Vehicle>();
 
         var json = MJSON.hashtableFromJson(enemyJSON);
         foreach (DictionaryEntry entry in json)
@@ -80,10 +85,11 @@ public sealed class GameState
             var name = (string)entry.Key;
             var enemy = (Hashtable)entry.Value;
 
-            retval[name] = new Enemy(
+            retval[name] = new Vehicle(
                 name,
                 MJSON.SafeGetValue(enemy, "asset"),
                 MJSON.SafeGetInt(enemy, "health"),
+                MJSON.SafeGetFloat(enemy, "mass"),
                 MJSON.SafeGetFloat(enemy, "maxSpeed"),
                 MJSON.SafeGetFloat(enemy, "acceleration"),
                 MJSON.SafeGetFloat(enemy, "inertia"),
@@ -144,22 +150,24 @@ public sealed class GameState
     }
 }
 
-public sealed class Enemy
+public sealed class Vehicle
 {
     public readonly string name;
     public readonly string assetID;
     public readonly int health;
+    public readonly float mass;
     public readonly float maxSpeed;
     public readonly float acceleration;
     public readonly float inertia;
     public readonly float collDmg;
     public readonly int reward;
 
-    public Enemy(string name, string assetID, int health, float maxSpeed, float acceleration, float inertia, float collDmg, int reward) 
+    public Vehicle(string name, string assetID, int health, float mass, float maxSpeed, float acceleration, float inertia, float collDmg, int reward) 
     {
         this.name = name;
         this.assetID = assetID;
         this.health = health;
+        this.mass = mass;
         this.maxSpeed = maxSpeed;
         this.acceleration = acceleration;
         this.inertia = inertia;

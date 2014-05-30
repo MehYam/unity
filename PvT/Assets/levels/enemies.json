@@ -3,51 +3,49 @@
 	{
 		"asset": "ship2_0",
 		"health": "40",
+		"mass": "1",
 		"maxSpeed": "5",
 		"acceleration": "0.05",
 		"inertia": "0",
 		"collision": "33",
 		"reward": "5",
-		"behaviors":
-		[
-		]
+		"behavior": "BEE_BEHAVIOR"
 	},
 	"GREENK":
 	{
 		"asset": "ship2_1",
 		"health": "20",
+		"mass": "2",
 		"maxSpeed": "1.5",
 		"acceleration": "0.1",
 		"inertia": "0",
 		"collision": "10",
 		"reward": "5",
-		"behaviors":
-		[
-		]
+		"behavior": "GREENK_BEHAVIOR"
 	},
 	"MOTH":
 	{
 		"asset": "ship2_7",
 		"health": "30",
+		"mass": "2.5",
 		"maxSpeed": "3",
 		"acceleration": "0.1",
 		"inertia": "0",
 		"collision": "15",
 		"reward": "10",
-		"behaviors":
-		[
-		]
+		"behavior": "MOTH_BEHAVIOR"
 	},
 	"OSPREY":
 	{
 		"asset": "ship2_3",
 		"health": "100",
+		"mass": "30",
 		"maxSpeed": "1.5",
 		"acceleration": "0.15",
 		"inertia": "0",
 		"collision": "33",
 		"reward": "15",
-		"behaviors":
+		"behavior":
 		[
 		]
 	},
@@ -55,12 +53,13 @@
 	{
 		"asset": "ship2_2",
 		"health": "100",
+		"mass": "2.5",
 		"maxSpeed": "2",
 		"acceleration": "0.05",
 		"inertia": "0",
 		"collision": "20",
 		"reward": "15",
-		"behaviors":
+		"behavior":
 		[
 		]
 	},
@@ -68,12 +67,13 @@
 	{
 		"asset": "ship2_6",
 		"health": "65",
+		"mass": "1",
 		"maxSpeed": "3",
 		"acceleration": "0.05",
 		"inertia": "0.1",
 		"collision": "50",
 		"reward": "25",
-		"behaviors":
+		"behavior":
 		[
 		]
 	},
@@ -81,12 +81,13 @@
 	{
 		"asset": "ship2_1_0",
 		"health": "80",
+		"mass": "2",
 		"maxSpeed": "1.5",
 		"acceleration": "0.1",
 		"inertia": "0",
 		"collision": "50",
 		"reward": "15",
-		"behaviors":
+		"behavior":
 		[
 		]
 	},
@@ -94,12 +95,13 @@
 	{
 		"asset": "ship2_5",
 		"health": "125",
+		"mass": "3",
 		"maxSpeed": "6",
 		"acceleration": "0.25",
 		"inertia": "0.05",
 		"collision": "66",
 		"reward": "30",
-		"behaviors":
+		"behavior":
 		[
 		]
 	},
@@ -107,12 +109,13 @@
 	{
 		"asset": "ship2_10",
 		"health": "180",
+		"mass": "3",
 		"maxSpeed": "3",
 		"acceleration": "0.25",
 		"inertia": "0.05",
 		"collision": "66",
 		"reward": "35",
-		"behaviors":
+		"behavior":
 		[
 		]
 	},
@@ -120,12 +123,13 @@
 	{
 		"asset": "ship2_0_0",
 		"health": "120",
+		"mass": "1",
 		"maxSpeed": "5",
 		"acceleration": "0.05",
 		"inertia": "0.02",
 		"collision": "50",
 		"reward": "50",
-		"behaviors":
+		"behavior":
 		[
 		]
 	},
@@ -133,12 +137,13 @@
 	{
 		"asset": "ship2_4",
 		"health": "180",
+		"mass": "2",
 		"maxSpeed": "1.5",
 		"acceleration": "0.2",
 		"inertia": "0",
 		"collision": "75",
 		"reward": "20",
-		"behaviors":
+		"behavior":
 		[
 		]
 	},
@@ -146,12 +151,13 @@
 	{
 		"asset": "ship2_7_0",
 		"health": "180",
+		"mass": "2.5",
 		"maxSpeed": "4",
 		"acceleration": "0.1",
 		"inertia": "0",
 		"collision": "66",
 		"reward": "45",
-		"behaviors":
+		"behavior":
 		[
 		]
 	},
@@ -159,12 +165,13 @@
 	{
 		"asset": "ship2_2_0",
 		"health": "300",
+		"mass": "2.5",
 		"maxSpeed": "2",
 		"acceleration": "0.05",
 		"inertia": "0",
 		"collision": "20",
 		"reward": "65",
-		"behaviors":
+		"behavior":
 		[
 		]
 	},
@@ -172,12 +179,13 @@
 	{
 		"asset": "ship2_1_1",
 		"health": "250",
+		"mass": "2",
 		"maxSpeed": "1.5",
 		"acceleration": "0.1",
 		"inertia": "0",
 		"collision": "75",
 		"reward": "30",
-		"behaviors":
+		"behavior":
 		[
 		]
 	},
@@ -185,12 +193,13 @@
 	{
 		"asset": "ship2_5_0",
 		"health": "400",
+		"mass": "3",
 		"maxSpeed": "6",
 		"acceleration": "0.25",
 		"inertia": "0.05",
 		"collision": "125",
 		"reward": "100",
-		"behaviors":
+		"behavior":
 		[
 		]
 	},
@@ -198,12 +207,13 @@
 	{
 		"asset": "ship2_3_0",
 		"health": "400",
+		"mass": "2.5",
 		"maxSpeed": "1.5",
 		"acceleration": "0.15",
 		"inertia": "0.05",
 		"collision": "100",
 		"reward": "100",
-		"behaviors":
+		"behavior":
 		[
 		]
 	},
@@ -211,12 +221,13 @@
 	{
 		"asset": "ship2_10_1",
 		"health": "600",
+		"mass": "3",
 		"maxSpeed": "3",
 		"acceleration": "0.25",
 		"inertia": "0.05",
 		"collision": "125",
 		"reward": "125",
-		"behaviors":
+		"behavior":
 		[
 		]
 	},
@@ -224,12 +235,13 @@
 	{
 		"asset": "ship2_2_1",
 		"health": "600",
+		"mass": "2.5",
 		"maxSpeed": "2",
 		"acceleration": "0.05",
 		"inertia": "0",
 		"collision": "20",
 		"reward": "125",
-		"behaviors":
+		"behavior":
 		[
 		]
 	},
@@ -237,12 +249,13 @@
 	{
 		"asset": "ship2_6_0",
 		"health": "500",
+		"mass": "1",
 		"maxSpeed": "3",
 		"acceleration": "0.05",
 		"inertia": "0.1",
 		"collision": "50",
 		"reward": "110",
-		"behaviors":
+		"behavior":
 		[
 		]
 	},
@@ -250,12 +263,13 @@
 	{
 		"asset": "ship2_11_1",
 		"health": "500",
+		"mass": "5",
 		"maxSpeed": "2",
 		"acceleration": "0.1",
 		"inertia": "0",
 		"collision": "100",
 		"reward": "80",
-		"behaviors":
+		"behavior":
 		[
 		]
 	},
@@ -263,12 +277,13 @@
 	{
 		"asset": "ship2_5_1",
 		"health": "800",
+		"mass": "3",
 		"maxSpeed": "6",
 		"acceleration": "0.25",
 		"inertia": "0.05",
 		"collision": "125",
 		"reward": "150",
-		"behaviors":
+		"behavior":
 		[
 		]
 	},
@@ -276,12 +291,13 @@
 	{
 		"asset": "ship2_0_1",
 		"health": "500",
+		"mass": "1",
 		"maxSpeed": "5",
 		"acceleration": "0.05",
 		"inertia": "0",
 		"collision": "100",
 		"reward": "400",
-		"behaviors":
+		"behavior":
 		[
 		]
 	},
@@ -289,12 +305,13 @@
 	{
 		"asset": "ship2_4_1",
 		"health": "1000",
+		"mass": "5",
 		"maxSpeed": "1.5",
 		"acceleration": "0.1",
 		"inertia": "0",
 		"collision": "100",
 		"reward": "200",
-		"behaviors":
+		"behavior":
 		[
 		]
 	},
@@ -302,12 +319,13 @@
 	{
 		"asset": "ship2_11_2",
 		"health": "1000",
+		"mass": "5",
 		"maxSpeed": "2",
 		"acceleration": "0.1",
 		"inertia": "0",
 		"collision": "100",
 		"reward": "400",
-		"behaviors":
+		"behavior":
 		[
 		]
 	},
@@ -315,12 +333,13 @@
 	{
 		"asset": "ship2_9_1",
 		"health": "1000",
+		"mass": "2",
 		"maxSpeed": "4",
 		"acceleration": "0.1",
 		"inertia": "0",
 		"collision": "150",
 		"reward": "500",
-		"behaviors":
+		"behavior":
 		[
 		]
 	},
@@ -328,12 +347,13 @@
 	{
 		"asset": "ship2_6_1",
 		"health": "1000",
+		"mass": "1",
 		"maxSpeed": "3",
 		"acceleration": "0.05",
 		"inertia": "0.1",
 		"collision": "150",
 		"reward": "400",
-		"behaviors":
+		"behavior":
 		[
 		]
 	},
@@ -341,12 +361,13 @@
 	{
 		"asset": "ship2_3_1",
 		"health": "2000",
+		"mass": "2.5",
 		"maxSpeed": "2",
 		"acceleration": "1",
 		"inertia": "0",
 		"collision": "200",
 		"reward": "600",
-		"behaviors":
+		"behavior":
 		[
 		]
 	},
@@ -354,12 +375,13 @@
 	{
 		"asset": "ship2_3_1",
 		"health": "2000",
+		"mass": "2.5",
 		"maxSpeed": "2",
 		"acceleration": "1",
 		"inertia": "0",
 		"collision": "200",
 		"reward": "800",
-		"behaviors":
+		"behavior":
 		[
 		]
 	}
