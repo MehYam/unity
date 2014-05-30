@@ -7,6 +7,16 @@ public static class Consts
 {
     static public readonly float ACTOR_NOSE_OFFSET = -90;
 
+    /// <summary>
+    /// Flips a coin.  You can set the odds
+    /// </summary>
+    /// <param name="odds">The % of chance of heads</param>
+    /// <returns></returns>
+    static public bool CoinFlip(float odds = 0.5f)
+    {
+        return Random.value >= odds;
+    }
+
     static public Quaternion GetLookAtAngle(Transform transform, Vector2 point)
     {
         return Quaternion.Euler(0, 0, Mathf.Atan2(point.y, point.x) * Mathf.Rad2Deg + ACTOR_NOSE_OFFSET);

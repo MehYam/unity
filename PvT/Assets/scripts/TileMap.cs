@@ -91,10 +91,18 @@ public class TileMap : MonoBehaviour
         Consts.Log("rows, cols {0}, {1}, size {2}", rows, cols, size);
         const float anchorSizeOffset = 0.3f;
 
-        Border.transform.FindChild("bottom").localPosition = new Vector2(0, (-rows * size.y / 2) - anchorSizeOffset);
-        Border.transform.FindChild("top").localPosition = new Vector2(0, (rows * size.y / 2) + anchorSizeOffset);
-        Border.transform.FindChild("left").localPosition = new Vector2((-cols * size.x / 2) - anchorSizeOffset, 0);
-        Border.transform.FindChild("right").localPosition = new Vector2((cols * size.x / 2) + anchorSizeOffset, 0);
+        var bounds = new XRect(
+            (-cols * size.x / 2) - anchorSizeOffset, 
+            (-rows * size.y / 2) - anchorSizeOffset,
+            (cols * size.x / 2) + anchorSizeOffset, 
+            (rows * size.y / 2) + anchorSizeOffset
+           );
 
+        Border.transform.FindChild("bottom").localPosition = new Vector2(0, bounds.bottom);
+        Border.transform.FindChild("top").localPosition = new Vector2(0, bounds.top);
+        Border.transform.FindChild("left").localPosition = new Vector2(bounds.left, 0);
+        Border.transform.FindChild("right").localPosition = new Vector2(bounds.right, 0);
+
+        GlobalGameEvent.Instance.FireMapReady(this, bounds);
     }
 }

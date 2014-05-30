@@ -15,9 +15,20 @@ public sealed class GameState
 
         _planeLookup = LoadEnemies(strEnemies);
         _levels = LoadLevels(strLevels);
+
+        GlobalGameEvent.Instance.MapReady += OnMapReady;
     }
-    
-    public void Start()
+
+    public XRect WorldBounds { get; private set; }
+    void OnMapReady(TileMap map, XRect bounds)
+    {
+        GlobalGameEvent.Instance.MapReady -= OnMapReady;
+        WorldBounds = bounds;
+
+        Start();
+    }
+
+    void Start()
     {
         StartNextLevel();
     }
@@ -44,7 +55,7 @@ public sealed class GameState
         }
     }
 
-    static void SpawnEnemyPlane(GameObject prefab, Vehicle plane)
+    void SpawnEnemyPlane(GameObject prefab, Vehicle plane)
     {
         var go = (GameObject)GameObject.Instantiate(prefab);
         go.AddComponent<DropShadow>();
@@ -57,7 +68,24 @@ public sealed class GameState
         actor.vehicle = plane;
         actor.behavior = EnemyActorBehaviors.Instance.Get(actor.vehicle.behaviorKey);
 
-        go.transform.localPosition = new Vector3(Random.Range(-5, 5), Random.Range(-5, 5));
+        // put the actor at the edge
+        Vector3 spawnLocation;
+        var bounds = new XRect(WorldBounds);
+        Debug.Log(bounds);
+        bounds.Inflate(-1);
+        Debug.Log(bounds);
+
+        if (Consts.CoinFlip())
+        {
+            spawnLocation = new Vector3(Random.Range(bounds.min.x, bounds.max.x), Consts.CoinFlip() ? bounds.min.y : bounds.max.y);
+        }
+        else
+        {
+            spawnLocation = new Vector3(Consts.CoinFlip() ? bounds.min.x : bounds.max.x, Random.Range(bounds.min.y, bounds.max.y));
+        }
+        Debug.Log(spawnLocation);
+        go.transform.localPosition = spawnLocation;
+
         go.layer = ENEMY_LAYER;
     }
 
@@ -66,9 +94,13 @@ public sealed class GameState
         var boom = (GameObject)GameObject.Instantiate(Main.Instance.Explosion);
         boom.transform.localPosition = contact.point;
 
-        var anim = boom.GetComponent<Animation>();
-        anim.Play();
+        if (contact.collider.gameObject == Main.Instance.Player)
+        {
+            var anim = boom.GetComponent<Animation>();
+            anim.Play();
 
+            Debug.Log("player collision");
+        }
 
         //var go = contact.collider.gameObject;
         //if (go.layer == ENEMY_LAYER)
