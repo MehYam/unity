@@ -99,9 +99,7 @@ public sealed class GameState
         // put the actor at the edge
         Vector3 spawnLocation;
         var bounds = new XRect(WorldBounds);
-        Debug.Log(bounds);
         bounds.Inflate(-1);
-        Debug.Log(bounds);
 
         if (Consts.CoinFlip())
         {
