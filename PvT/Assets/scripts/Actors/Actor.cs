@@ -3,16 +3,31 @@ using System.Collections;
 
 public class Actor : MonoBehaviour
 {
+    public float timeToLive = 0;
     public VehicleType vehicle;
     public IActorBehavior behavior { private get; set; }
 
-    public Actor(VehicleType vehicle) { this.vehicle = vehicle; }
+    void Start()
+    {
+        if (timeToLive > 0)
+        {
+            timeToLive += Time.fixedTime;
+        }
+    }
 
     void FixedUpdate()
     {
         if (behavior != null)
         {
             behavior.FixedUpdate(this);
+        }
+        if (timeToLive > 0)
+        {
+            if (Time.fixedTime > timeToLive)
+            {
+                Debug.Log("Destroying");
+                Destroy(this.gameObject);
+            }
         }
 	}
 

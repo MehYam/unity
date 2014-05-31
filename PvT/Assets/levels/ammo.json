@@ -1,0 +1,58 @@
+{
+	"BULLET":
+	{
+		"asset": "bullet",
+		"mass": "",
+		"maxSpeed": "",
+		"acceleration": "5",
+		"inertia": "",
+	},
+	"CANNONROUND0":
+	{
+		"asset": "cannonround0",
+		"mass": "",
+		"maxSpeed": "",
+		"acceleration": "10",
+		"inertia": "",
+	},
+	"CANNONROUND1":
+	{
+		"asset": "cannonround1",
+		"mass": "",
+		"maxSpeed": "",
+		"acceleration": "10",
+		"inertia": "",
+	},
+	"FUSIONBLAST":
+	{
+		"asset": "fusionBlast",
+		"mass": "",
+		"maxSpeed": "",
+		"acceleration": "10",
+		"inertia": "",
+	},
+	"LASER":
+	{
+		"asset": "laser",
+		"mass": "",
+		"maxSpeed": "",
+		"acceleration": "10",
+		"inertia": "",
+	},
+	"ROCKET":
+	{
+		"asset": "rocket",
+		"mass": "",
+		"maxSpeed": "",
+		"acceleration": "10",
+		"inertia": "",
+	},
+	"SHIELD":
+	{
+		"asset": "shield",
+		"mass": "",
+		"maxSpeed": "",
+		"acceleration": "10",
+		"inertia": "",
+	}
+}

@@ -26,7 +26,7 @@ public sealed class VehicleType
         public FirePoint(Vector2 point, float angle) { this.point = point; this.angle = angle; }
     }
 
-    public readonly FirePoint[] firePoints;
+    public readonly FirePoint[] firePoints; // the behavior's in charge of which FirePoint to when firing ammo
     public readonly GameObject prefab;
 
     public VehicleType(string name, string assetID, int health, float mass, float maxSpeed, float acceleration, float inertia, float collDmg, int reward, string behaviorKey, FirePoint[] firePoints, GameObject prefab)

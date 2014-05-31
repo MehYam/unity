@@ -94,10 +94,7 @@ public sealed class ActorBehaviorFactory
     {
         get
         {
-            if (_facePlayer == null)
-            {
-                _facePlayer = new FacePlayerBehavior();
-            }
+            if (_facePlayer == null){_facePlayer = new FacePlayerBehavior();}
             return _facePlayer;
         }
     }
@@ -106,10 +103,7 @@ public sealed class ActorBehaviorFactory
     {
         get
         {
-            if (_followPlayer == null)
-            {
-                _followPlayer = new CompositeBehavior(facePlayer, thrust);
-            }
+            if (_followPlayer == null){_followPlayer = new CompositeBehavior(facePlayer, thrust);}
             return _followPlayer;
         }
     }
@@ -118,13 +112,20 @@ public sealed class ActorBehaviorFactory
     {
         get
         {
-            if (_thrust == null)
-            {
-                _thrust = new ThrustBehavior();
-            }
+            if (_thrust == null){_thrust = new ThrustBehavior();}
             return _thrust;
         }
     }
+
+    public IActorBehavior CreatePatrol(RateLimiter rate)
+    {
+        return new Patrol(rate);
+    }
+    public IActorBehavior CreateAutofire(RateLimiter rate, params Ammo[] ammo)
+    {
+        return new AutofireBehavior(rate, ammo);
+    }
+
 }
 
 sealed class FacePlayerBehavior : IActorBehavior
@@ -149,7 +150,30 @@ sealed class ThrustBehavior : IActorBehavior
     {
         var thrustLookAt = new Vector2(0, actor.vehicle.acceleration * 10);
 
-        // now rotate the point in the direction of the actor, and apply the trust in that direction
+        // apply the thrust in the direction of the actor
+        thrustLookAt = Consts.RotatePoint(thrustLookAt, -Consts.ACTOR_NOSE_OFFSET - actor.gameObject.transform.rotation.eulerAngles.z);
+        actor.gameObject.rigidbody2D.AddForce(thrustLookAt);
+    }
+}
+
+sealed class Patrol : IActorBehavior
+{
+    readonly RateLimiter rate;
+    Vector2 nextTarget;
+
+    public Patrol(RateLimiter rate)
+    {
+        this.rate = rate;
+
+        var bounds = Main.Instance.gameState.WorldBounds;
+        nextTarget = new Vector2(Consts.CoinFlip() ? bounds.left : bounds.right, Random.Range(bounds.bottom, bounds.top));
+    }
+
+    public void FixedUpdate(Actor actor)
+    {
+        var thrustLookAt = new Vector2(0, actor.vehicle.acceleration * 10);
+
+        // apply the thrust in the direction of the actor
         thrustLookAt = Consts.RotatePoint(thrustLookAt, -Consts.ACTOR_NOSE_OFFSET - actor.gameObject.transform.rotation.eulerAngles.z);
         actor.gameObject.rigidbody2D.AddForce(thrustLookAt);
     }
@@ -158,12 +182,21 @@ sealed class ThrustBehavior : IActorBehavior
 sealed class AutofireBehavior : IActorBehavior
 {
     readonly RateLimiter rate = null;
+    readonly Ammo[] ammo = null;
 
+    public AutofireBehavior(RateLimiter rate, Ammo[] ammo)
+    {
+        this.ammo = ammo;
+        this.rate = rate;
+    }
     public void FixedUpdate(Actor actor)
     {
         if (rate.now)
         {
-
+            foreach (var round in ammo)
+            {
+                Main.Instance.gameState.SpawnAmmo(actor, round.type);
+            }
         }
     }
 }

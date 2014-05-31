@@ -798,14 +798,21 @@ public static class MJSON
     public static float SafeGetFloat(Hashtable node, string name)
     {
         object value = node[name];
-        return value == null ? float.NaN : float.Parse(value.ToString());
+        if (value != null)
+        {
+            float result = 0;
+            if (float.TryParse(value.ToString(), out result))
+            {
+                return result;
+            }
+        }
+        return float.NaN;
     }
     public static bool SafeGetBool(Hashtable node, string name)
     {
         var value = SafeGetValue(node, name);
         return value != null && value != "0" && string.Compare(value, "false", true) != 0;
     }
-
 }
 
 #endregion

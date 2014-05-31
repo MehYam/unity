@@ -5,7 +5,8 @@ using System.Collections;
 // come from GameState instead?
 public class Main : MonoBehaviour
 {
-    public TextAsset Enemies;
+    public TextAsset Vehicles;
+    public TextAsset Ammo;
     public TextAsset Levels;
     public GameObject Explosion;
 
@@ -27,7 +28,7 @@ public class Main : MonoBehaviour
         _instance = this;
 
         // prime the game state
-        gameState = new GameState(Enemies.text, Levels.text);
+        gameState = new GameState(Vehicles.text, Ammo.text, Levels.text);
 
         //Application.targetFrameRate = 3;
         //QualitySettings.vSyncCount = 2;

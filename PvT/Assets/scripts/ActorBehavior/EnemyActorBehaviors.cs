@@ -26,10 +26,28 @@ public sealed class EnemyActorBehaviors
         return retval;
     }
 
+    void ChaseAttackFlee(Ammo[] ammo)
+    {
+        var retval = new SequencedBehavior();
+        retval.AddBehavior(ActorBehaviorFactory.Instance.followPlayer, new RateLimiter(5));
+    }
     readonly Dictionary<string, IActorBehavior> _behaviors = new Dictionary<string, IActorBehavior>();
     EnemyActorBehaviors()
     {
+        var game = Main.Instance.gameState;
+
         _behaviors["GREENK_BEHAVIOR"] = ActorBehaviorFactory.Instance.followPlayer;
-        _behaviors["MOTH_BEHAVIOR"] = null;
+
+        _behaviors["MOTH_BEHAVIOR"] = ActorBehaviorFactory.Instance.CreateAutofire(
+            new RateLimiter(2),
+            new Ammo(game.GetVehicle("BULLET"), 0),
+            new Ammo(game.GetVehicle("CANNONROUND0"), 1)
+        );
+
+        // moth:
+        // - chase
+        // - aim and shoot
+        // - roam
+        //_behaviors["MOTH_BEHAVIOR"] = ChaseAttackFlee();
     }
 }

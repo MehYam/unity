@@ -7,13 +7,15 @@ using PvT.Util;
 
 public sealed class GameState
 {
-    readonly Dictionary<string, VehicleType> _planeLookup;  // need ReadOnlyDictionary here
+    readonly Dictionary<string, VehicleType> _vehicleLookup = new Dictionary<string,VehicleType>();  // need ReadOnlyDictionary here
     readonly IList<Level> _levels;
-    public GameState(string strEnemies, string strLevels)
+    public GameState(string strVehicles, string strAmmo, string strLevels)
     {
         Debug.Log("GameState constructor " + GetHashCode());
 
-        _planeLookup = LoadVehicles(strEnemies);
+        LoadVehicles(strVehicles, "planes/", _vehicleLookup);
+        LoadVehicles(strAmmo, "ammo/", _vehicleLookup);
+
         _levels = LoadLevels(strLevels);
 
         GlobalGameEvent.Instance.MapReady += OnMapReady;
@@ -44,20 +46,20 @@ public sealed class GameState
         var wave = _levels[0].NextWave();
         foreach (var squad in wave.squads)
         {
-            var plane = _planeLookup[squad.enemyID];
+            var plane = _vehicleLookup[squad.enemyID];
             Debug.Log("planes/" + plane.assetID);
 
             for (int i = 0; i < squad.count; ++i)
             {
-                SpawnEnemyPlane(plane.prefab, plane);
+                SpawnEnemyPlane(plane);
                 ++_liveEnemies;
             }
         }
     }
 
-    void SpawnEnemyPlane(GameObject prefab, VehicleType plane)
+    void SpawnEnemyPlane(VehicleType plane)
     {
-        var go = (GameObject)GameObject.Instantiate(prefab);
+        var go = (GameObject)GameObject.Instantiate(plane.prefab);
         go.AddComponent<DropShadow>();
         var body = go.AddComponent<Rigidbody2D>();
 
@@ -83,6 +85,29 @@ public sealed class GameState
         }
         go.transform.localPosition = spawnLocation;
         go.layer = ENEMY_LAYER;
+    }
+
+    public VehicleType GetVehicle(string type)
+    {
+        return _vehicleLookup[type];
+    }
+
+    //kai: this ain't perfect
+    public void SpawnAmmo(Actor launcher, VehicleType type)
+    {
+        var go = (GameObject)GameObject.Instantiate(type.prefab);
+        var body = go.AddComponent<Rigidbody2D>();
+
+        body.mass = 1;
+        body.drag = 0;
+
+        var actor = go.AddComponent<Actor>();
+        actor.vehicle = type;
+        actor.timeToLive = 2;
+        actor.transform.localPosition = launcher.transform.localPosition;
+        actor.behavior = ActorBehaviorFactory.Instance.thrust;
+
+        //KAI: not everything should get thrust, some should just get a velocity and hold it
     }
 
     public void HandleCollision(ContactPoint2D contact)
@@ -111,10 +136,8 @@ public sealed class GameState
         //}
     }
 
-    static Dictionary<string, VehicleType> LoadVehicles(string enemyJSON)
+    static void LoadVehicles(string enemyJSON, string path, Dictionary<string, VehicleType> results)
     {
-        var retval = new Dictionary<string, VehicleType>();
-
         var json = MJSON.hashtableFromJson(enemyJSON);
         foreach (DictionaryEntry entry in json)
         {
@@ -122,8 +145,10 @@ public sealed class GameState
             var enemy = (Hashtable)entry.Value;
             var assetID = MJSON.SafeGetValue(enemy, "asset");
 
+            Debug.Log("loading " + assetID);
+
             // load the asset and extract the firepoints
-            var prefab = Resources.Load<GameObject>("planes/" + assetID);
+            var prefab = Resources.Load<GameObject>(path + assetID);
             VehicleType.FirePoint[] firePoints = null;
             if (prefab != null)
             {
@@ -141,7 +166,7 @@ public sealed class GameState
                 firePoints = tmp.ToArray();
             }
 
-            retval[name] = new VehicleType(
+            results[name] = new VehicleType(
                 name,
                 assetID,
                 MJSON.SafeGetInt(enemy, "health"),
@@ -156,7 +181,6 @@ public sealed class GameState
                 prefab
             );
         }
-        return retval;
     }
 
     static IList<Level> LoadLevels(string strLevels)

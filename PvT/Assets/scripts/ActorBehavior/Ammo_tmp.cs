@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public sealed class Ammo : MonoBehaviour
+public sealed class Ammo_tmp : MonoBehaviour
 {
     public float Acceleration;
     Vector2 _force = Vector2.zero;
