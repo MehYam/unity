@@ -11,6 +11,9 @@ public interface IActorBehavior
     void FixedUpdate(Actor actor);
 }
 
+/// <summary>
+/// A behavior that runs N sub-behaviors at once
+/// </summary>
 public sealed class CompositeBehavior : IActorBehavior
 {
     readonly IList<IActorBehavior> subBehaviors = new List<IActorBehavior>();
@@ -34,6 +37,9 @@ public sealed class CompositeBehavior : IActorBehavior
     }
 }
 
+/// <summary>
+/// A behavior that runs a bunch of sub-behaviors in sequence
+/// </summary>
 public sealed class SequencedBehavior: IActorBehavior
 {
     struct Item
@@ -60,9 +66,10 @@ public sealed class SequencedBehavior: IActorBehavior
     {
         if (subBehaviors.Count > 0)
         {
-            if (subBehaviors[currentItem].rate.Now)
+            if (subBehaviors[currentItem].rate.now)
             {
                 ++currentItem;
+                subBehaviors[currentItem].rate.Start();
             }
             if (currentItem >= subBehaviors.Count)
             {
@@ -145,5 +152,18 @@ sealed class ThrustBehavior : IActorBehavior
         // now rotate the point in the direction of the actor, and apply the trust in that direction
         thrustLookAt = Consts.RotatePoint(thrustLookAt, -Consts.ACTOR_NOSE_OFFSET - actor.gameObject.transform.rotation.eulerAngles.z);
         actor.gameObject.rigidbody2D.AddForce(thrustLookAt);
+    }
+}
+
+sealed class AutofireBehavior : IActorBehavior
+{
+    readonly RateLimiter rate = null;
+
+    public void FixedUpdate(Actor actor)
+    {
+        if (rate.now)
+        {
+
+        }
     }
 }

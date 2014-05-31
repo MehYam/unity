@@ -7,13 +7,13 @@ using PvT.Util;
 
 public sealed class GameState
 {
-    readonly Dictionary<string, Vehicle> _planeLookup;  // need ReadOnlyDictionary here
+    readonly Dictionary<string, VehicleType> _planeLookup;  // need ReadOnlyDictionary here
     readonly IList<Level> _levels;
     public GameState(string strEnemies, string strLevels)
     {
         Debug.Log("GameState constructor " + GetHashCode());
 
-        _planeLookup = LoadEnemies(strEnemies);
+        _planeLookup = LoadVehicles(strEnemies);
         _levels = LoadLevels(strLevels);
 
         GlobalGameEvent.Instance.MapReady += OnMapReady;
@@ -47,43 +47,15 @@ public sealed class GameState
             var plane = _planeLookup[squad.enemyID];
             Debug.Log("planes/" + plane.assetID);
 
-            var cachedPrefab = GetCachedPlanePrefab(plane.assetID);
             for (int i = 0; i < squad.count; ++i)
             {
-                SpawnEnemyPlane(cachedPrefab.prefab, plane);
+                SpawnEnemyPlane(plane.prefab, plane);
                 ++_liveEnemies;
             }
         }
     }
 
-    readonly Dictionary<string, CachedVehiclePrefab> _planePrefabs = new Dictionary<string, CachedVehiclePrefab>();
-    CachedVehiclePrefab GetCachedPlanePrefab(string id)
-    {
-        CachedVehiclePrefab retval;
-        if (!_planePrefabs.TryGetValue(id, out retval))
-        {
-            var prefab = Resources.Load<GameObject>("planes/" + id);
-
-            // extract the FirePoints, cache them and the processed fire points
-            var firePoints = prefab.GetComponentsInChildren<FirePoint>();
-            var vehicleFirePoints = new List<VehicleFirePoint>(firePoints.Length);
-            foreach (var point in firePoints)
-            {
-                vehicleFirePoints.Add(new VehicleFirePoint(
-                    new Vector2(point.transform.localPosition.x, point.transform.localPosition.y),
-                    point.transform.localEulerAngles.z)
-                );
-            }
-
-            retval = new CachedVehiclePrefab(prefab, new List<VehicleFirePoint>(vehicleFirePoints));
-            _planePrefabs[id] = retval;
-
-            Debug.LogWarning("created " + id);
-        }
-        return retval;
-    }
-    
-    void SpawnEnemyPlane(GameObject prefab, Vehicle plane)
+    void SpawnEnemyPlane(GameObject prefab, VehicleType plane)
     {
         var go = (GameObject)GameObject.Instantiate(prefab);
         go.AddComponent<DropShadow>();
@@ -109,9 +81,7 @@ public sealed class GameState
         {
             spawnLocation = new Vector3(Consts.CoinFlip() ? bounds.min.x : bounds.max.x, Random.Range(bounds.min.y, bounds.max.y));
         }
-        Debug.Log(spawnLocation);
         go.transform.localPosition = spawnLocation;
-
         go.layer = ENEMY_LAYER;
     }
 
@@ -141,19 +111,39 @@ public sealed class GameState
         //}
     }
 
-    static Dictionary<string, Vehicle> LoadEnemies(string enemyJSON)
+    static Dictionary<string, VehicleType> LoadVehicles(string enemyJSON)
     {
-        var retval = new Dictionary<string, Vehicle>();
+        var retval = new Dictionary<string, VehicleType>();
 
         var json = MJSON.hashtableFromJson(enemyJSON);
         foreach (DictionaryEntry entry in json)
         {
             var name = (string)entry.Key;
             var enemy = (Hashtable)entry.Value;
+            var assetID = MJSON.SafeGetValue(enemy, "asset");
 
-            retval[name] = new Vehicle(
+            // load the asset and extract the firepoints
+            var prefab = Resources.Load<GameObject>("planes/" + assetID);
+            VehicleType.FirePoint[] firePoints = null;
+            if (prefab != null)
+            {
+                var firePointGameObjects = prefab.GetComponentsInChildren<FirePoint>();
+                var tmp = new List<VehicleType.FirePoint>(firePointGameObjects.Length);
+                foreach (var point in firePointGameObjects)
+                {
+                    tmp.Add(new VehicleType.FirePoint(
+                        new Vector2(point.transform.localPosition.x, point.transform.localPosition.y),
+                        point.transform.localEulerAngles.z)
+                    );
+
+                    GameObject.Destroy(point.gameObject);
+                }
+                firePoints = tmp.ToArray();
+            }
+
+            retval[name] = new VehicleType(
                 name,
-                MJSON.SafeGetValue(enemy, "asset"),
+                assetID,
                 MJSON.SafeGetInt(enemy, "health"),
                 MJSON.SafeGetFloat(enemy, "mass"),
                 MJSON.SafeGetFloat(enemy, "maxSpeed"),
@@ -161,7 +151,9 @@ public sealed class GameState
                 MJSON.SafeGetFloat(enemy, "inertia"),
                 MJSON.SafeGetFloat(enemy, "collision"),
                 MJSON.SafeGetInt(enemy, "reward"),
-                MJSON.SafeGetValue(enemy, "behavior")
+                MJSON.SafeGetValue(enemy, "behavior"),
+                firePoints,
+                prefab
             );
         }
         return retval;
@@ -214,53 +206,6 @@ public sealed class GameState
     {
         var parts = squad.Split(',');
         return new Level.Squad(parts[0], int.Parse(parts[1]));
-    }
-}
-
-public sealed class Vehicle
-{
-    public readonly string name;
-    public readonly string assetID;
-    public readonly int health;
-    public readonly float mass;
-    public readonly float maxSpeed;
-    public readonly float acceleration;
-    public readonly float inertia;
-    public readonly float collDmg;
-    public readonly int reward;
-    public readonly string behaviorKey;
-
-    public Vehicle(string name, string assetID, int health, float mass, float maxSpeed, float acceleration, float inertia, float collDmg, int reward, string behaviorKey) 
-    {
-        this.name = name;
-        this.assetID = assetID;
-        this.health = health;
-        this.mass = mass;
-        this.maxSpeed = maxSpeed;
-        this.acceleration = acceleration;
-        this.inertia = inertia;
-        this.collDmg = collDmg;
-        this.reward = reward;
-        this.behaviorKey = behaviorKey;
-    }
-}
-
-public sealed class VehicleFirePoint
-{
-    public readonly Vector2 point;
-    public readonly float angle;
-
-    public VehicleFirePoint(Vector2 point, float angle) { this.point = point; this.angle = angle; }
-}
-public sealed class CachedVehiclePrefab
-{
-    public readonly GameObject prefab;  // this is a prefab with the FirePoints removed
-    public readonly ReadOnlyCollection<VehicleFirePoint> firePoints;
-
-    public CachedVehiclePrefab(GameObject prefab, IList<VehicleFirePoint> firePoints)
-    {
-        this.prefab = prefab;
-        this.firePoints = new ReadOnlyCollection<VehicleFirePoint>(firePoints);
     }
 }
 

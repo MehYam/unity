@@ -3,10 +3,10 @@ using System.Collections;
 
 public class Actor : MonoBehaviour
 {
-    public Vehicle vehicle;
+    public VehicleType vehicle;
     public IActorBehavior behavior { private get; set; }
 
-    public Actor(Vehicle vehicle) { this.vehicle = vehicle; }
+    public Actor(VehicleType vehicle) { this.vehicle = vehicle; }
 
     void FixedUpdate()
     {

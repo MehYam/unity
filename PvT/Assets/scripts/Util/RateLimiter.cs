@@ -23,7 +23,7 @@ public sealed class RateLimiter
         _baseRate = _randomness = rate;
     }
 
-    void CalcNext()
+    public void Start()
     {
         float delta = Time.fixedTime + 
             _baseRate != _randomness ? Random.Range(_baseRate, _randomness) : _baseRate;
@@ -31,13 +31,13 @@ public sealed class RateLimiter
         _next = Time.fixedTime + delta;
     }
 
-    public bool Now
+    public bool now
     {
         get
         {
             if (Time.fixedTime > _next)
             {
-                CalcNext();
+                Start();
                 return true;
             }
             return false;
