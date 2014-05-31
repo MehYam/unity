@@ -46,15 +46,43 @@ public sealed class GameState
         {
             var plane = _planeLookup[squad.enemyID];
             Debug.Log("planes/" + plane.assetID);
-            var prefab = Resources.Load<GameObject>("planes/" + plane.assetID);
+
+            var cachedPrefab = GetCachedPlanePrefab(plane.assetID);
             for (int i = 0; i < squad.count; ++i)
             {
-                SpawnEnemyPlane(prefab, plane);
+                SpawnEnemyPlane(cachedPrefab.prefab, plane);
                 ++_liveEnemies;
             }
         }
     }
 
+    readonly Dictionary<string, CachedVehiclePrefab> _planePrefabs = new Dictionary<string, CachedVehiclePrefab>();
+    CachedVehiclePrefab GetCachedPlanePrefab(string id)
+    {
+        CachedVehiclePrefab retval;
+        if (!_planePrefabs.TryGetValue(id, out retval))
+        {
+            var prefab = Resources.Load<GameObject>("planes/" + id);
+
+            // extract the FirePoints, cache them and the processed fire points
+            var firePoints = prefab.GetComponentsInChildren<FirePoint>();
+            var vehicleFirePoints = new List<VehicleFirePoint>(firePoints.Length);
+            foreach (var point in firePoints)
+            {
+                vehicleFirePoints.Add(new VehicleFirePoint(
+                    new Vector2(point.transform.localPosition.x, point.transform.localPosition.y),
+                    point.transform.localEulerAngles.z)
+                );
+            }
+
+            retval = new CachedVehiclePrefab(prefab, new List<VehicleFirePoint>(vehicleFirePoints));
+            _planePrefabs[id] = retval;
+
+            Debug.LogWarning("created " + id);
+        }
+        return retval;
+    }
+    
     void SpawnEnemyPlane(GameObject prefab, Vehicle plane)
     {
         var go = (GameObject)GameObject.Instantiate(prefab);
@@ -216,6 +244,25 @@ public sealed class Vehicle
         this.collDmg = collDmg;
         this.reward = reward;
         this.behaviorKey = behaviorKey;
+    }
+}
+
+public sealed class VehicleFirePoint
+{
+    public readonly Vector2 point;
+    public readonly float angle;
+
+    public VehicleFirePoint(Vector2 point, float angle) { this.point = point; this.angle = angle; }
+}
+public sealed class CachedVehiclePrefab
+{
+    public readonly GameObject prefab;  // this is a prefab with the FirePoints removed
+    public readonly ReadOnlyCollection<VehicleFirePoint> firePoints;
+
+    public CachedVehiclePrefab(GameObject prefab, IList<VehicleFirePoint> firePoints)
+    {
+        this.prefab = prefab;
+        this.firePoints = new ReadOnlyCollection<VehicleFirePoint>(firePoints);
     }
 }
 

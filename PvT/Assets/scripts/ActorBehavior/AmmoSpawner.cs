@@ -9,18 +9,15 @@ public sealed class AmmoSpawner : MonoBehaviour
     float _lastFire;
 	void FixedUpdate()
     {
-        if (Input.GetButton("Fire1"))
+        if ((Time.time - _lastFire) > Rate && (Input.GetButton("Fire1") || Input.GetButton("Jump")))
         {
-            if ((Time.time - _lastFire) > Rate)
-            {
-                var ammo = (GameObject)GameObject.Instantiate(Ammo);
-                ammo.transform.rotation = transform.rotation;
+            var ammo = (GameObject)GameObject.Instantiate(Ammo);
+            ammo.transform.rotation = transform.rotation;
 
-                var startPoint = Consts.RotatePoint(Offset, -Consts.ACTOR_NOSE_OFFSET - ammo.transform.rotation.eulerAngles.z);
-                ammo.transform.localPosition = transform.localPosition + new Vector3(startPoint.x, startPoint.y);
+            var startPoint = Consts.RotatePoint(Offset, -Consts.ACTOR_NOSE_OFFSET - ammo.transform.rotation.eulerAngles.z);
+            ammo.transform.localPosition = transform.localPosition + new Vector3(startPoint.x, startPoint.y);
 
-                _lastFire = Time.time;
-            }
+            _lastFire = Time.time;
         }
 	}
 }
