@@ -39,7 +39,6 @@ public sealed class GameState
         StartNextWave();
     }
 
-    const int ENEMY_LAYER = 8;
     int _liveEnemies = 0;
     void StartNextWave()
     {
@@ -47,19 +46,19 @@ public sealed class GameState
         foreach (var squad in wave.squads)
         {
             var plane = _vehicleLookup[squad.enemyID];
-            Debug.Log("planes/" + plane.assetID);
-
             for (int i = 0; i < squad.count; ++i)
             {
-                SpawnEnemyPlane(plane);
+                SpawnMob(plane);
                 ++_liveEnemies;
             }
         }
     }
 
-    void SpawnEnemyPlane(VehicleType plane)
+    void SpawnMob(VehicleType plane)
     {
         var go = (GameObject)GameObject.Instantiate(plane.prefab);
+        go.SetActive(true);
+
         go.AddComponent<DropShadow>();
         var body = go.AddComponent<Rigidbody2D>();
 
@@ -84,7 +83,7 @@ public sealed class GameState
             spawnLocation = new Vector3(Consts.CoinFlip() ? bounds.min.x : bounds.max.x, Random.Range(bounds.min.y, bounds.max.y));
         }
         go.transform.localPosition = spawnLocation;
-        go.layer = ENEMY_LAYER;
+        go.layer = Consts.MOB_LAYER;
     }
 
     public VehicleType GetVehicle(string type)
@@ -93,19 +92,25 @@ public sealed class GameState
     }
 
     //kai: this ain't perfect
-    public void SpawnAmmo(Actor launcher, VehicleType type)
+    public void SpawnMobAmmo(Actor launcher, VehicleType type, VehicleType.Weapon weapon)
     {
         var go = (GameObject)GameObject.Instantiate(type.prefab);
+        go.SetActive(true);
+
         var body = go.AddComponent<Rigidbody2D>();
 
         body.mass = 1;
         body.drag = 0;
 
-        var actor = go.AddComponent<Actor>();
-        actor.vehicle = type;
-        actor.timeToLive = 2;
-        actor.transform.localPosition = launcher.transform.localPosition;
-        actor.behavior = ActorBehaviorFactory.Instance.thrust;
+        var ammo = go.AddComponent<Actor>();
+        ammo.vehicle = type;
+        ammo.timeToLive = 2;
+        ammo.transform.localPosition = Consts.Add(launcher.transform.localPosition, weapon.offset);
+        ammo.transform.localRotation = launcher.transform.localRotation;
+        ammo.transform.Rotate(0, 0, weapon.angle);
+
+        ammo.behavior = ActorBehaviorFactory.Instance.thrust;
+        go.layer = Consts.MOB_AMMO_LAYER;
 
         //KAI: not everything should get thrust, some should just get a velocity and hold it
     }
@@ -142,42 +147,36 @@ public sealed class GameState
         foreach (DictionaryEntry entry in json)
         {
             var name = (string)entry.Key;
-            var enemy = (Hashtable)entry.Value;
-            var assetID = MJSON.SafeGetValue(enemy, "asset");
-
-            Debug.Log("loading " + assetID);
+            var vehicle = (Hashtable)entry.Value;
+            var assetID = MJSON.SafeGetValue(vehicle, "asset");
 
             // load the asset and extract the firepoints
             var prefab = Resources.Load<GameObject>(path + assetID);
-            VehicleType.FirePoint[] firePoints = null;
-            if (prefab != null)
+
+            VehicleType.Weapon[] weapons = null;
+            var payload = MJSON.SafeGetArray(vehicle, "payload");
+            if (payload != null)
             {
-                var firePointGameObjects = prefab.GetComponentsInChildren<FirePoint>();
-                var tmp = new List<VehicleType.FirePoint>(firePointGameObjects.Length);
-                foreach (var point in firePointGameObjects)
+                weapons = new VehicleType.Weapon[payload.Count];
+
+                int i = 0;
+                foreach (string ammo in payload)
                 {
-                    tmp.Add(new VehicleType.FirePoint(
-                        new Vector2(point.transform.localPosition.x, point.transform.localPosition.y),
-                        point.transform.localEulerAngles.z)
-                    );
-
-                    GameObject.Destroy(point.gameObject);
+                    weapons[i++] = VehicleType.Weapon.FromString(ammo);
                 }
-                firePoints = tmp.ToArray();
             }
-
             results[name] = new VehicleType(
                 name,
                 assetID,
-                MJSON.SafeGetInt(enemy, "health"),
-                MJSON.SafeGetFloat(enemy, "mass"),
-                MJSON.SafeGetFloat(enemy, "maxSpeed"),
-                MJSON.SafeGetFloat(enemy, "acceleration"),
-                MJSON.SafeGetFloat(enemy, "inertia"),
-                MJSON.SafeGetFloat(enemy, "collision"),
-                MJSON.SafeGetInt(enemy, "reward"),
-                MJSON.SafeGetValue(enemy, "behavior"),
-                firePoints,
+                MJSON.SafeGetInt(vehicle, "health"),
+                MJSON.SafeGetFloat(vehicle, "mass"),
+                MJSON.SafeGetFloat(vehicle, "maxSpeed"),
+                MJSON.SafeGetFloat(vehicle, "acceleration"),
+                MJSON.SafeGetFloat(vehicle, "inertia"),
+                MJSON.SafeGetFloat(vehicle, "collision"),
+                MJSON.SafeGetInt(vehicle, "reward"),
+                MJSON.SafeGetValue(vehicle, "behavior"),
+                weapons,
                 prefab
             );
         }

@@ -5,6 +5,15 @@ using UnityEngine;
 /// </summary>
 public static class Consts
 {
+    // Scene layers
+    static public readonly int MOB_LAYER = 8;
+    static public readonly int MOB_AMMO_LAYER = 9;
+    static public readonly int FRIENDLY_AMMO_LAYER = 10;
+    static public readonly int FRIENDLY_LAYER = 11;
+    static public readonly int ENVIRONMENT_LAYER = 12;
+
+    static public readonly int PixelsToUnits = 100;
+
     static public readonly float ACTOR_NOSE_OFFSET = -90;
 
     /// <summary>
@@ -51,6 +60,15 @@ public static class Consts
     {
         return diffRadians(source * Mathf.Deg2Rad, target * Mathf.Deg2Rad) * Mathf.Rad2Deg;
     }
+    static public Vector3 Add(Vector2 a, Vector3 b)
+    {
+        return new Vector3(a.x + b.x, a.y + b.y, b.z);
+    }
+    static public Vector2 Add(Vector3 a, Vector2 b)
+    {
+        return new Vector2(a.x + b.x, a.y + b.y);
+    }
+
     static public void RemoveAllChildren(Transform transform)
     {
         Debug.Log("Destroying children: " + transform.childCount);

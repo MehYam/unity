@@ -25,7 +25,6 @@ public class Actor : MonoBehaviour
         {
             if (Time.fixedTime > timeToLive)
             {
-                Debug.Log("Destroying");
                 Destroy(this.gameObject);
             }
         }

@@ -18,18 +18,41 @@ public sealed class VehicleType
 
     public readonly string behaviorKey;
 
-    public sealed class FirePoint
+    public sealed class Weapon
     {
-        public readonly Vector2 point;
-        public readonly float angle;
+        public readonly string type; // KAI: convert to enum
+		public readonly int dmg;
+		public readonly Vector2 offset;
+		public readonly float angle;
+		public readonly int level; // KAI: nuke this.... turn it instead into a new type
 
-        public FirePoint(Vector2 point, float angle) { this.point = point; this.angle = angle; }
+        public Weapon(string type, int dmg, Vector2 offset, float angle, int level) 
+        {
+            this.type = type;
+            this.dmg = dmg;
+            this.offset = offset;
+            this.angle = angle;
+            this.level = level;
+        }
+
+        static public Weapon FromString(string str)
+        {
+            var parts = str.Split(',');
+            string type = parts[0];
+            int dmg = int.Parse(parts[1]);
+            float x = float.Parse(parts[2]) / Consts.PixelsToUnits;
+            float y = -float.Parse(parts[3]) / Consts.PixelsToUnits;
+            float angle = parts.Length > 4 ? float.Parse(parts[4]) : 0;
+            int level = parts.Length > 5 ? int.Parse(parts[5]) : 0;
+
+            return new Weapon(type, dmg, new Vector2(x, y), angle, level);
+        }
     }
 
-    public readonly FirePoint[] firePoints; // the behavior's in charge of which FirePoint to when firing ammo
+    public readonly Weapon[] weapons; // the behavior's in charge of which FirePoint to when firing ammo
     public readonly GameObject prefab;
 
-    public VehicleType(string name, string assetID, int health, float mass, float maxSpeed, float acceleration, float inertia, float collDmg, int reward, string behaviorKey, FirePoint[] firePoints, GameObject prefab)
+    public VehicleType(string name, string assetID, int health, float mass, float maxSpeed, float acceleration, float inertia, float collDmg, int reward, string behaviorKey, Weapon[] firePoints, GameObject prefab)
     {
         this.name = name;
         this.assetID = assetID;
@@ -41,7 +64,7 @@ public sealed class VehicleType
         this.collDmg = collDmg;
         this.reward = reward;
         this.behaviorKey = behaviorKey;
-        this.firePoints = firePoints;
+        this.weapons = firePoints;
         this.prefab = prefab;
     }
 }

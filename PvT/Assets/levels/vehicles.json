@@ -9,7 +9,11 @@
 		"inertia": "0",
 		"collision": "33",
 		"reward": "5",
-		"behavior": "BEE_BEHAVIOR"
+		"behavior": "BEE_BEHAVIOR",
+		"payload":
+		[
+			"BULLET, 20, 0, -10, 0, 1"
+		]
 	},
 	"GREENK":
 	{
@@ -33,7 +37,11 @@
 		"inertia": "0",
 		"collision": "15",
 		"reward": "10",
-		"behavior": "MOTH_BEHAVIOR"
+		"behavior": "MOTH_BEHAVIOR",
+		"payload":
+		[
+			"BULLET, 10, 0, -20, 0, 1"
+		]
 	},
 	"OSPREY":
 	{
@@ -45,8 +53,12 @@
 		"inertia": "0",
 		"collision": "33",
 		"reward": "15",
-		"behavior":
+		"behavior": "",
+		"firepoints": "",
+		"payload":
 		[
+			"LASER, 10, -35, -15",
+			"LASER, 10,  35, -15"
 		]
 	},
 	"BAT":
@@ -59,8 +71,10 @@
 		"inertia": "0",
 		"collision": "20",
 		"reward": "15",
-		"behavior":
+		"payload":
 		[
+			"ROCKET, 20, -20, -10, 0, 3",
+			"ROCKET, 20,  20, -10, 0, 3"
 		]
 	},
 	"GHOST":
@@ -73,8 +87,10 @@
 		"inertia": "0.1",
 		"collision": "50",
 		"reward": "25",
-		"behavior":
+		"payload":
 		[
+			"LASER, 15, -10, -5",
+			"LASER, 15,  10, -5"
 		]
 	},
 	"GREENK2":
@@ -101,8 +117,10 @@
 		"inertia": "0.05",
 		"collision": "66",
 		"reward": "30",
-		"behavior":
+		"payload":
 		[
+			"LASER, 20, -25,  0, 0, 3",
+			"LASER, 20,  25,  0, 0, 3"
 		]
 	},
 	"ROCINANTE":
@@ -115,8 +133,10 @@
 		"inertia": "0.05",
 		"collision": "66",
 		"reward": "35",
-		"behavior":
+		"payload":
 		[
+			"FUSION, 40, -25, 0, 0",
+			"FUSION, 40,  25, 0, 0"
 		]
 	},
 	"BEE2":
@@ -129,8 +149,10 @@
 		"inertia": "0.02",
 		"collision": "50",
 		"reward": "50",
-		"behavior":
+		"payload":
 		[
+			"BULLET, 20, -10, -15, 0, 1",
+			"BULLET, 20,  10, -15, 0, 1"
 		]
 	},
 	"FLY":
@@ -142,10 +164,7 @@
 		"acceleration": "0.2",
 		"inertia": "0",
 		"collision": "75",
-		"reward": "20",
-		"behavior":
-		[
-		]
+		"reward": "20"
 	},
 	"MOTH2":
 	{
@@ -157,8 +176,10 @@
 		"inertia": "0",
 		"collision": "66",
 		"reward": "45",
-		"behavior":
+		"payload":
 		[
+			"BULLET, 40, 0, -20, 5, 2",
+			"BULLET, 40, 0, -20,-5, 2"
 		]
 	},
 	"BAT2":
@@ -171,8 +192,12 @@
 		"inertia": "0",
 		"collision": "20",
 		"reward": "65",
-		"behavior":
+		"payload":
 		[
+			"ROCKET, 40, -20, -10, 0, 3",
+			"ROCKET, 40, -15,  -5, 0, 3",
+			"ROCKET, 40,  20,   5, 0, 3",
+			"ROCKET, 40,  20, -10, 0, 3"
 		]
 	},
 	"BLUEK":
@@ -185,8 +210,9 @@
 		"inertia": "0",
 		"collision": "75",
 		"reward": "30",
-		"behavior":
+		"payload":
 		[
+			"FUSION, 66, 0, -15"
 		]
 	},
 	"CYGNUS2":
@@ -199,8 +225,12 @@
 		"inertia": "0.05",
 		"collision": "125",
 		"reward": "100",
-		"behavior":
+		"payload":
 		[
+			"LASER, 40, -25,  0, 0, 0",
+			"LASER, 40,  25,  0, 0, 0",
+			"LASER, 40, -19, -5, 0, 0",
+			"LASER, 40,  19, -5, 0, 0"
 		]
 	},
 	"OSPREY2":
@@ -213,8 +243,12 @@
 		"inertia": "0.05",
 		"collision": "100",
 		"reward": "100",
-		"behavior":
+		"payload":
 		[
+			"LASER, 33, -37, -32, 0, 5",
+			"LASER, 33, -16, -32, 0, 5",
+			"LASER, 33,  16, -32, 0, 5",
+			"LASER, 33,  37, -32, 0, 5"
 		]
 	},
 	"ROCINANTE2":
@@ -227,8 +261,10 @@
 		"inertia": "0.05",
 		"collision": "125",
 		"reward": "125",
-		"behavior":
+		"payload":
 		[
+			"FUSION, 55, -25, 0, 0",
+			"FUSION, 55,  25, 0, 0"
 		]
 	},
 	"BAT3":
@@ -241,8 +277,12 @@
 		"inertia": "0",
 		"collision": "20",
 		"reward": "125",
-		"behavior":
+		"payload":
 		[
+			"BULLET, 50, -20, -10, 0, 3",
+			"BULLET, 50, -15,  -5, 0, 3",
+			"BULLET, 50,  20,   5, 0, 3",
+			"BULLET, 50,  20, -10, 0, 3"
 		]
 	},
 	"GHOST2":
@@ -255,8 +295,10 @@
 		"inertia": "0.1",
 		"collision": "50",
 		"reward": "110",
-		"behavior":
+		"payload":
 		[
+			"LASER, 80, -10, -5, 0, 1",
+			"LASER, 80,  10, -5, 0, 1"
 		]
 	},
 	"PIKE":
@@ -269,8 +311,12 @@
 		"inertia": "0",
 		"collision": "100",
 		"reward": "80",
-		"behavior":
+		"payload":
 		[
+			"LASER, 10, -30, 10, 0, 0",
+			"LASER, 20, -20, 0, 0, 0",
+			"LASER, 20,  20, 0, 0, 0",
+			"LASER, 10,  30, 10, 0, 0"
 		]
 	},
 	"CYGNUS3":
@@ -283,8 +329,14 @@
 		"inertia": "0.05",
 		"collision": "125",
 		"reward": "150",
-		"behavior":
+		"payload":
 		[
+			"LASER, 20, -30, 5, 0, 3",
+			"LASER, 20, -24, 0, 0, 3",
+			"LASER, 20, -19, -5, 0, 3",
+			"LASER, 20,  19, -5, 0, 3",
+			"LASER, 20,  24, 0, 0, 3",
+			"LASER, 20,  30, 5, 0, 3"
 		]
 	},
 	"BEE3":
@@ -297,8 +349,11 @@
 		"inertia": "0",
 		"collision": "100",
 		"reward": "400",
-		"behavior":
+		"payload":
 		[
+			"BULLET, 30, -15, 0, -10, 4",
+			"BULLET, 30,  15, 0,  10, 4",
+			"BULLET, 30,   0, -10, 0, 4"
 		]
 	},
 	"FLY3":
@@ -311,8 +366,9 @@
 		"inertia": "0",
 		"collision": "100",
 		"reward": "200",
-		"behavior":
+		"payload":
 		[
+			"ROCKET, 100, 0, -15, 0, 0"
 		]
 	},
 	"ESOX":
@@ -325,8 +381,14 @@
 		"inertia": "0",
 		"collision": "100",
 		"reward": "400",
-		"behavior":
+		"payload":
 		[
+			"LASER, 10, -30, 10, 0, 0",
+			"LASER, 20, -20, 0, 0, 0",
+			"LASER, 30, -5, -10, 0, 0",
+			"LASER, 30,  5, -10, 0, 0",
+			"LASER, 20,  20, 0, 0, 0",
+			"LASER, 10,  30, 10, 0, 0"
 		]
 	},
 	"STEALTH":
@@ -339,8 +401,12 @@
 		"inertia": "0",
 		"collision": "150",
 		"reward": "500",
-		"behavior":
+		"payload":
 		[
+			"ROCKET, 150, -30, -10, 0, 0",
+			"ROCKET, 150,  30, -10, 0, 0",
+			"ROCKET, 150, -15, -20, 0, 0",
+			"ROCKET, 150,  15, -20, 0, 0"
 		]
 	},
 	"GHOST3":
@@ -353,8 +419,10 @@
 		"inertia": "0.1",
 		"collision": "150",
 		"reward": "400",
-		"behavior":
+		"payload":
 		[
+			"LASER, 120, -10, -5",
+			"LASER, 120,  10, -5"
 		]
 	},
 	"OSPREY3":
@@ -367,8 +435,14 @@
 		"inertia": "0",
 		"collision": "200",
 		"reward": "600",
-		"behavior":
+		"payload":
 		[
+			"LASER, 40, -63, -35, 0, 4",
+			"LASER, 40, -43, -35, 0, 4",
+			"LASER, 40, -23, -35, 0, 4",
+			"LASER, 40,  23, -35, 0, 4",
+			"LASER, 40,  43, -35, 0, 4",
+			"LASER, 40,  63, -35, 0, 4"
 		]
 	},
 	"OSPREY3_C":
@@ -381,8 +455,14 @@
 		"inertia": "0",
 		"collision": "200",
 		"reward": "800",
-		"behavior":
+		"payload":
 		[
+			"LASER, 40, -63, -35, 0, 4",
+			"LASER, 40, -43, -35, 0, 4",
+			"LASER, 40, -23, -35, 0, 4",
+			"LASER, 40,  23, -35, 0, 4",
+			"LASER, 40,  43, -35, 0, 4",
+			"LASER, 40,  63, -35, 0, 4"
 		]
 	}
 }

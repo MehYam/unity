@@ -26,7 +26,7 @@ public sealed class EnemyActorBehaviors
         return retval;
     }
 
-    void ChaseAttackFlee(Ammo[] ammo)
+    void ChaseAttackFlee()
     {
         var retval = new SequencedBehavior();
         retval.AddBehavior(ActorBehaviorFactory.Instance.followPlayer, new RateLimiter(5));
@@ -39,9 +39,7 @@ public sealed class EnemyActorBehaviors
         _behaviors["GREENK_BEHAVIOR"] = ActorBehaviorFactory.Instance.followPlayer;
 
         _behaviors["MOTH_BEHAVIOR"] = ActorBehaviorFactory.Instance.CreateAutofire(
-            new RateLimiter(2),
-            new Ammo(game.GetVehicle("BULLET"), 0),
-            new Ammo(game.GetVehicle("CANNONROUND0"), 1)
+            new RateLimiter(1)
         );
 
         // moth:

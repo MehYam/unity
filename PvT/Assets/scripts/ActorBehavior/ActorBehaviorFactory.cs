@@ -121,9 +121,9 @@ public sealed class ActorBehaviorFactory
     {
         return new Patrol(rate);
     }
-    public IActorBehavior CreateAutofire(RateLimiter rate, params Ammo[] ammo)
+    public IActorBehavior CreateAutofire(RateLimiter rate)
     {
-        return new AutofireBehavior(rate, ammo);
+        return new AutofireBehavior(rate);
     }
 
 }
@@ -182,20 +182,20 @@ sealed class Patrol : IActorBehavior
 sealed class AutofireBehavior : IActorBehavior
 {
     readonly RateLimiter rate = null;
-    readonly Ammo[] ammo = null;
 
-    public AutofireBehavior(RateLimiter rate, Ammo[] ammo)
+    public AutofireBehavior(RateLimiter rate)
     {
-        this.ammo = ammo;
         this.rate = rate;
     }
     public void FixedUpdate(Actor actor)
     {
         if (rate.now)
         {
-            foreach (var round in ammo)
+            var game = Main.Instance.gameState;
+            foreach (var weapon in actor.vehicle.weapons)
             {
-                Main.Instance.gameState.SpawnAmmo(actor, round.type);
+                var ammo = game.GetVehicle(weapon.type);
+                game.SpawnMobAmmo(actor, ammo, weapon);
             }
         }
     }

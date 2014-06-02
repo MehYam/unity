@@ -813,6 +813,11 @@ public static class MJSON
         var value = SafeGetValue(node, name);
         return value != null && value != "0" && string.Compare(value, "false", true) != 0;
     }
+    public static ArrayList SafeGetArray(Hashtable node, string name)
+    {
+        var value = node[name] as ArrayList;
+        return value == null ? new ArrayList() : value;
+    }
 }
 
 #endregion
