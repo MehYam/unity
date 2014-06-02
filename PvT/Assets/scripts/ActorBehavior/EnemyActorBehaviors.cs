@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections.Generic;
 
 /// <summary>
@@ -21,9 +22,9 @@ public sealed class EnemyActorBehaviors
     }
     public IActorBehavior Get(string key)
     {
-        IActorBehavior retval = null;
-        _behaviors.TryGetValue(key, out retval);
-        return retval;
+        Func<IActorBehavior> retval = null;
+        _behaviorFactory.TryGetValue(key, out retval);
+        return retval != null ? retval() : null;
     }
 
     void ChaseAttackFlee()
@@ -31,16 +32,19 @@ public sealed class EnemyActorBehaviors
         var retval = new SequencedBehavior();
         retval.AddBehavior(ActorBehaviorFactory.Instance.followPlayer, new RateLimiter(5));
     }
-    readonly Dictionary<string, IActorBehavior> _behaviors = new Dictionary<string, IActorBehavior>();
+    readonly Dictionary<string, Func<IActorBehavior>> _behaviorFactory = new Dictionary<string, Func<IActorBehavior>>();
     EnemyActorBehaviors()
     {
         var game = Main.Instance.gameState;
 
-        _behaviors["GREENK_BEHAVIOR"] = ActorBehaviorFactory.Instance.followPlayer;
-
-        _behaviors["MOTH_BEHAVIOR"] = ActorBehaviorFactory.Instance.CreateAutofire(
-            new RateLimiter(1)
-        );
+        _behaviorFactory["GREENK_BEHAVIOR"] = () =>
+        {
+            return ActorBehaviorFactory.Instance.followPlayer;
+        };
+        _behaviorFactory["MOTH_BEHAVIOR"] = () =>
+        {
+            return ActorBehaviorFactory.Instance.CreateAutofire(new RateLimiter(1));
+        };
 
         // moth:
         // - chase
