@@ -30,7 +30,7 @@ public sealed class EnemyActorBehaviors
     void ChaseAttackFlee()
     {
         var retval = new SequencedBehavior();
-        retval.AddBehavior(ActorBehaviorFactory.Instance.followPlayer, new RateLimiter(5));
+        retval.Add(ActorBehaviorFactory.Instance.followPlayer, new RateLimiter(5));
     }
     readonly Dictionary<string, Func<IActorBehavior>> _behaviorFactory = new Dictionary<string, Func<IActorBehavior>>();
     EnemyActorBehaviors()
@@ -43,7 +43,15 @@ public sealed class EnemyActorBehaviors
         };
         _behaviorFactory["MOTH_BEHAVIOR"] = () =>
         {
-            return ActorBehaviorFactory.Instance.CreateAutofire(new RateLimiter(1));
+            var retval = new SequencedBehavior();
+            retval.Add(ActorBehaviorFactory.Instance.followPlayer, new RateLimiter(3, 2));
+            retval.Add(
+                new CompositeBehavior(ActorBehaviorFactory.Instance.CreateAutofire(new RateLimiter(1)),
+                                      ActorBehaviorFactory.Instance.facePlayer),
+                new RateLimiter(2,2)
+            );
+            retval.Add(ActorBehaviorFactory.Instance.CreatePatrol(new RateLimiter(2)), new RateLimiter(3,5));
+            return retval;
         };
 
         // moth:

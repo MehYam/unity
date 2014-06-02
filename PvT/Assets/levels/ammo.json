@@ -4,7 +4,7 @@
 		"asset": "bullet",
 		"mass": "",
 		"maxSpeed": "",
-		"acceleration": "1",
+		"acceleration": "0.05",
 		"inertia": "",
 	},
 	"CANNONROUND0":

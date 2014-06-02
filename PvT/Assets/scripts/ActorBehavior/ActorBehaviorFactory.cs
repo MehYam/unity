@@ -58,7 +58,7 @@ public sealed class SequencedBehavior: IActorBehavior
     /// </summary>
     /// <param name="b">The behavior to add</param>
     /// <param name="duration">The duration over which to run the behavior</param>
-    public void AddBehavior(IActorBehavior b, RateLimiter rate)
+    public void Add(IActorBehavior b, RateLimiter rate)
     {
         subBehaviors.Add(new Item(b, rate));
     }
@@ -66,14 +66,14 @@ public sealed class SequencedBehavior: IActorBehavior
     {
         if (subBehaviors.Count > 0)
         {
-            if (subBehaviors[currentItem].rate.now)
+            if (subBehaviors[currentItem].rate.reached)
             {
                 ++currentItem;
+                if (currentItem >= subBehaviors.Count)
+                {
+                    currentItem = 0;
+                }
                 subBehaviors[currentItem].rate.Start();
-            }
-            if (currentItem >= subBehaviors.Count)
-            {
-                currentItem = 0;
             }
             subBehaviors[currentItem].behavior.FixedUpdate(actor);
         }
@@ -189,7 +189,7 @@ sealed class AutofireBehavior : IActorBehavior
     }
     public void FixedUpdate(Actor actor)
     {
-        if (rate.now)
+        if (rate.reached)
         {
             var game = Main.Instance.gameState;
             foreach (var weapon in actor.vehicle.weapons)

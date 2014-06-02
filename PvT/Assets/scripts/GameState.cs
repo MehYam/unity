@@ -63,7 +63,7 @@ public sealed class GameState
         var body = go.AddComponent<Rigidbody2D>();
 
         body.mass = plane.mass;
-        body.drag = 1;
+        body.drag = 0.1f;
 
         var actor = go.AddComponent<Actor>();
         actor.vehicle = plane;
@@ -130,17 +130,17 @@ public sealed class GameState
             anim.Play();
         }
 
-        //var go = contact.collider.gameObject;
-        //if (go.layer == ENEMY_LAYER)
-        //{
-        //    --_liveEnemies;
-        //}
-        //GameObject.Destroy(go);
+        var go = contact.collider.gameObject;
+        if (go.layer == Consts.MOB_LAYER)
+        {
+            --_liveEnemies;
+            GameObject.Destroy(go);
+        }
 
-        //if (_liveEnemies == 0)
-        //{
-        //    StartNextWave();
-        //}
+        if (_liveEnemies == 0)
+        {
+            StartNextWave();
+        }
     }
 
     static void LoadVehicles(string enemyJSON, string path, Dictionary<string, VehicleType> results)
@@ -173,7 +173,7 @@ public sealed class GameState
                 MJSON.SafeGetInt(vehicle, "health"),
                 MJSON.SafeGetFloat(vehicle, "mass"),
                 MJSON.SafeGetFloat(vehicle, "maxSpeed"),
-                MJSON.SafeGetFloat(vehicle, "acceleration"),
+                MJSON.SafeGetFloat(vehicle, "acceleration") * 15,
                 MJSON.SafeGetFloat(vehicle, "inertia"),
                 MJSON.SafeGetFloat(vehicle, "collision"),
                 MJSON.SafeGetInt(vehicle, "reward"),

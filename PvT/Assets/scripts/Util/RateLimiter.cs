@@ -31,7 +31,7 @@ public sealed class RateLimiter
         _next = Time.fixedTime + delta;
     }
 
-    public bool now
+    public bool reached
     {
         get
         {
