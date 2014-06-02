@@ -12,6 +12,8 @@ public static class Consts
     static public readonly int FRIENDLY_LAYER = 11;
     static public readonly int ENVIRONMENT_LAYER = 12;
 
+    static public readonly int AMMO_SORT_ORDER = -10;
+
     static public readonly int PixelsToUnits = 100;
 
     static public readonly float ACTOR_NOSE_OFFSET = -90;

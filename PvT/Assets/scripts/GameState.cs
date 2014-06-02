@@ -102,12 +102,16 @@ public sealed class GameState
         body.mass = 1;
         body.drag = 0;
 
+        var sprite = go.GetComponent<SpriteRenderer>();
+        sprite.sortingOrder = Consts.AMMO_SORT_ORDER;
+
         var ammo = go.AddComponent<Actor>();
         ammo.vehicle = type;
         ammo.timeToLive = 2;
-        ammo.transform.localPosition = Consts.Add(launcher.transform.localPosition, weapon.offset);
+        var rotatedOffset = Consts.RotatePoint(weapon.offset, -launcher.transform.localRotation.eulerAngles.z - Consts.ACTOR_NOSE_OFFSET);
+
+        ammo.transform.localPosition = Consts.Add(launcher.transform.localPosition, rotatedOffset);
         ammo.transform.localRotation = launcher.transform.localRotation;
-        ammo.transform.Rotate(0, 0, weapon.angle);
 
         ammo.behavior = ActorBehaviorFactory.Instance.thrust;
         go.layer = Consts.MOB_AMMO_LAYER;
@@ -124,8 +128,6 @@ public sealed class GameState
         {
             var anim = boom.GetComponent<Animation>();
             anim.Play();
-
-            Debug.Log("player collision");
         }
 
         //var go = contact.collider.gameObject;
