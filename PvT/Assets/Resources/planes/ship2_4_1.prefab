@@ -11,7 +11,7 @@ GameObject:
   - 212: {fileID: 21200000}
   - 60: {fileID: 6000000}
   m_Layer: 0
-  m_Name: ship2_1
+  m_Name: ship2_4_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -24,7 +24,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 9.67831516, y: -14.1497726, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -40,10 +40,15 @@ PolygonCollider2D:
   m_IsTrigger: 0
   m_Poly:
     m_Paths:
-    - - {x: -.0338077545, y: .363821983}
-      - {x: -.450294495, y: -.00677394867}
-      - {x: .00559616089, y: -.321472645}
-      - {x: .473822594, y: -.0108904839}
+    - - {x: -.179236412, y: .00831413269}
+      - {x: -.440515518, y: -.543999672}
+      - {x: -.00613307953, y: -.408802032}
+      - {x: .465000004, y: -.574999988}
+      - {x: .465000004, y: -.514999986}
+      - {x: .142801285, y: .121404648}
+      - {x: .417015076, y: .530169487}
+      - {x: -.0101013184, y: .38634491}
+      - {x: -.388281822, y: .54864502}
 --- !u!212 &21200000
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -64,7 +69,7 @@ SpriteRenderer:
   m_ScaleInLightmap: 1
   m_SortingLayerID: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: b2eb4b7337fab9a44832054fd597f94f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b1c0bb675f6431946981d62f5f272de0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &100100000
 Prefab:

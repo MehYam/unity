@@ -45,11 +45,18 @@ public sealed class GameState
         var wave = _levels[0].NextWave();
         foreach (var squad in wave.squads)
         {
-            var plane = _vehicleLookup[squad.enemyID];
-            for (int i = 0; i < squad.count; ++i)
+            VehicleType plane = null;
+            if (_vehicleLookup.TryGetValue(squad.enemyID, out plane))
             {
-                SpawnMob(plane);
-                ++_liveEnemies;
+                for (int i = 0; i < squad.count; ++i)
+                {
+                    SpawnMob(plane);
+                    ++_liveEnemies;
+                }
+            }
+            else
+            {
+                Debug.LogError("VehicleType not found for enemy " + squad.enemyID);
             }
         }
     }
