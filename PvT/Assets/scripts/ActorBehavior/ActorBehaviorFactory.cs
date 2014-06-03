@@ -148,7 +148,7 @@ sealed class ThrustBehavior : IActorBehavior
 {
     public void FixedUpdate(Actor actor)
     {
-        var thrustLookAt = new Vector2(0, actor.vehicle.acceleration * 10);
+        var thrustLookAt = new Vector2(0, actor.vehicle.acceleration);
 
         // apply the thrust in the direction of the actor
         thrustLookAt = Consts.RotatePoint(thrustLookAt, -Consts.ACTOR_NOSE_OFFSET - actor.gameObject.transform.rotation.eulerAngles.z);
@@ -171,7 +171,7 @@ sealed class Patrol : IActorBehavior
 
     public void FixedUpdate(Actor actor)
     {
-        var thrustLookAt = new Vector2(0, actor.vehicle.acceleration * 10);
+        var thrustLookAt = new Vector2(0, actor.vehicle.acceleration);
 
         // apply the thrust in the direction of the actor
         thrustLookAt = Consts.RotatePoint(thrustLookAt, -Consts.ACTOR_NOSE_OFFSET - actor.gameObject.transform.rotation.eulerAngles.z);

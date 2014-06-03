@@ -20,7 +20,7 @@ public class Main : MonoBehaviour
         get { return _instance; }
     }
 
-    public GameState gameState { get; private set; }
+    public GameController gameState { get; private set; }
 
     // Use this for initialization
 	void Start()
@@ -28,7 +28,7 @@ public class Main : MonoBehaviour
         _instance = this;
 
         // prime the game state
-        gameState = new GameState(Vehicles.text, Ammo.text, Levels.text);
+        gameState = new GameController(Vehicles.text, Ammo.text, Levels.text);
 
         //Application.targetFrameRate = 3;
         //QualitySettings.vSyncCount = 2;
