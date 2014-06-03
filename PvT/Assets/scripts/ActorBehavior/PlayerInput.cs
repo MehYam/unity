@@ -3,10 +3,10 @@ using System.Collections;
 
 public class PlayerInput : IActorBehavior
 {
-    readonly int maxVelocity;
-    readonly int acceleration;
+    readonly float maxVelocity;
+    readonly float acceleration;
 
-    public PlayerInput(int maxVelocity, int acceleration)
+    public PlayerInput(float maxVelocity, float acceleration)
     {
         this.maxVelocity = maxVelocity;
         this.acceleration = acceleration;

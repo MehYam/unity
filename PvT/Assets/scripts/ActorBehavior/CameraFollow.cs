@@ -30,15 +30,18 @@ public sealed class CameraFollow : MonoBehaviour
 	// Update is called once per frame
 	void Update()
     {
-        if (limit.width == 0)
+        if (Target != null)
         {
-            CalcBounds();
+            if (limit.width == 0)
+            {
+                CalcBounds();
+            }
+            var newX = Mathf.Min(limit.xMax, Mathf.Max(Target.transform.localPosition.x, limit.xMin));
+            var newY = Mathf.Min(limit.yMax, Mathf.Max(Target.transform.localPosition.y, limit.yMin));
+
+            camera.transform.localPosition = new Vector3(newX, newY, _preserveCameraZ);
+
+            //camera.transform.localPosition = new Vector3(newX, Target.transform.localPosition.y, _preserveCameraZ);
         }
-        var newX = Mathf.Min(limit.xMax, Mathf.Max(Target.transform.localPosition.x, limit.xMin));
-        var newY = Mathf.Min(limit.yMax, Mathf.Max(Target.transform.localPosition.y, limit.yMin));
-
-        camera.transform.localPosition = new Vector3(newX, newY, _preserveCameraZ);
-
-        //camera.transform.localPosition = new Vector3(newX, Target.transform.localPosition.y, _preserveCameraZ);
 	}
 }

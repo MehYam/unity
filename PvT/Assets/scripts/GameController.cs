@@ -5,6 +5,8 @@ using System.Collections.ObjectModel;
 
 public sealed class GameController
 {
+    public GameObject player { get; private set; }
+
     readonly Loader _loader;
     public GameController(string strVehicles, string strAmmo, string strLevels)
     {
@@ -21,6 +23,7 @@ public sealed class GameController
         GlobalGameEvent.Instance.MapReady -= OnMapReady;
         WorldBounds = bounds;
 
+        SpawnPlayer(_loader.GetVehicle("GREENK"));
         Start();
     }
 
@@ -55,18 +58,41 @@ public sealed class GameController
         }
     }
 
-    void SpawnMob(VehicleType plane)
+    GameObject SpawnVehicle(VehicleType v)
     {
-        var go = (GameObject)GameObject.Instantiate(plane.prefab);
-        go.SetActive(true);
-
+        var go = (GameObject)GameObject.Instantiate(v.prefab);
+        go.AddComponent<Actor>();
         go.AddComponent<DropShadow>();
-        var body = go.AddComponent<Rigidbody2D>();
+        go.name = v.name;
 
-        body.mass = plane.mass;
+        var body = go.AddComponent<Rigidbody2D>();
+        body.mass = v.mass;
         body.drag = 0.1f;
 
-        var actor = go.AddComponent<Actor>();
+        return go;
+    }
+
+    void SpawnPlayer(VehicleType plane)
+    {
+        var go = SpawnVehicle(plane);
+        var behaviors = new CompositeBehavior();
+        behaviors.Add(new PlayerInput(plane.maxSpeed * 10000, plane.acceleration));
+        behaviors.Add(new FaceForward());
+        behaviors.Add(new FaceMouseOnFire());
+
+        go.GetComponent<Actor>().behavior = behaviors;
+        player = go;
+
+        Camera.main.GetComponent<CameraFollow>().Target = go;
+
+        GlobalGameEvent.Instance.FirePlayerSpawned(go);
+    }
+
+    void SpawnMob(VehicleType plane)
+    {
+        var go = SpawnVehicle(plane);
+        go.name += " enemy";
+        var actor = go.GetComponent<Actor>();
         actor.vehicle = plane;
         actor.behavior = EnemyActorBehaviors.Instance.Get(actor.vehicle.behaviorKey);
 
@@ -97,7 +123,6 @@ public sealed class GameController
     public void SpawnMobAmmo(Actor launcher, VehicleType type, VehicleType.Weapon weapon)
     {
         var go = (GameObject)GameObject.Instantiate(type.prefab);
-        go.SetActive(true);
 
         var body = go.AddComponent<Rigidbody2D>();
 
@@ -126,7 +151,7 @@ public sealed class GameController
         var boom = (GameObject)GameObject.Instantiate(Main.Instance.Explosion);
         boom.transform.localPosition = contact.point;
 
-        if (contact.collider.gameObject == Main.Instance.Player)
+        if (contact.collider.gameObject == Main.Instance.game.player)
         {
             var anim = boom.GetComponent<Animation>();
             anim.Play();

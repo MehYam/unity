@@ -135,7 +135,7 @@ sealed class FacePlayerBehavior : IActorBehavior
     {
         var go = actor.gameObject;
         var previous = go.transform.localRotation;
-        var newRot = Consts.GetLookAtAngle(go.transform, Main.Instance.Player.transform.localPosition - go.transform.localPosition);
+        var newRot = Consts.GetLookAtAngle(go.transform, Main.Instance.game.player.transform.localPosition - go.transform.localPosition);
 
         // implement a crude rotational drag by "softening" the delta.  KAI: look into relying more on the physics engine to handle this
         var angleDelta = Consts.diffAngle(previous.eulerAngles.z, newRot.eulerAngles.z);
@@ -165,7 +165,7 @@ sealed class Patrol : IActorBehavior
     {
         this.rate = rate;
 
-        var bounds = Main.Instance.gameState.WorldBounds;
+        var bounds = Main.Instance.game.WorldBounds;
         nextTarget = new Vector2(Consts.CoinFlip() ? bounds.left : bounds.right, Random.Range(bounds.bottom, bounds.top));
     }
 
@@ -191,7 +191,7 @@ sealed class AutofireBehavior : IActorBehavior
     {
         if (rate.reached)
         {
-            var game = Main.Instance.gameState;
+            var game = Main.Instance.game;
             foreach (var weapon in actor.vehicle.weapons)
             {
                 var ammo = game.GetVehicle(weapon.type);

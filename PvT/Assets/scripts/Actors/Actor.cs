@@ -39,7 +39,7 @@ public class Actor : MonoBehaviour
         foreach (ContactPoint2D contact in collision.contacts)
         {
             Debug.DrawRay(contact.point, contact.normal, Color.white);
-            Main.Instance.gameState.HandleCollision(contact);
+            Main.Instance.game.HandleCollision(contact);
         }
         //Debug.Log(collision.relativeVelocity.magnitude);
     }

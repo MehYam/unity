@@ -28,4 +28,7 @@ class GlobalGameEvent
 
     public event Action<TileMap, XRect> MapReady = delegate { };
     public void FireMapReady(TileMap map, XRect bounds) { MapReady(map, bounds); }
+
+    public event Action<GameObject> PlayerSpawned = delegate { };
+    public void FirePlayerSpawned(GameObject player) { PlayerSpawned(player); }
 }

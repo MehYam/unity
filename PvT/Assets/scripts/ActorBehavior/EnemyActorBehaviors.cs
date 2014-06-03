@@ -35,7 +35,7 @@ public sealed class EnemyActorBehaviors
     readonly Dictionary<string, Func<IActorBehavior>> _behaviorFactory = new Dictionary<string, Func<IActorBehavior>>();
     EnemyActorBehaviors()
     {
-        var game = Main.Instance.gameState;
+        var game = Main.Instance.game;
 
         _behaviorFactory["GREENK_BEHAVIOR"] = () =>
         {

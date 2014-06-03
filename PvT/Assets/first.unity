@@ -132,7 +132,7 @@ MonoBehaviour:
   Explosion: {fileID: 100000, guid: d107776b1023bca4ca899ffcf1fd7b9b, type: 2}
   MaxVelocity: 80
   Acceleration: 20
-  Player: {fileID: 1937437661}
+  Player: {fileID: 0}
 --- !u!1 &52789968
 GameObject:
   m_ObjectHideFlags: 0
@@ -701,7 +701,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06a50bfc93135bd4fa0be8afe7c0fcb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Target: {fileID: 1937437661}
+  Target: {fileID: 0}
   Border: {fileID: 1070116983}
 --- !u!1 &458618353
 GameObject:
@@ -904,7 +904,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &566963588
 Transform:
   m_ObjectHideFlags: 0
@@ -2072,7 +2072,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1937437662
 Transform:
   m_ObjectHideFlags: 0
