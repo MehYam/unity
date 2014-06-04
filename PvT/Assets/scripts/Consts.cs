@@ -6,12 +6,14 @@ using UnityEngine;
 public static class Consts
 {
     // Scene layers
-    static public readonly int MOB_LAYER = 8;
-    static public readonly int MOB_AMMO_LAYER = 9;
-    static public readonly int FRIENDLY_AMMO_LAYER = 10;
-    static public readonly int FRIENDLY_LAYER = 11;
-    static public readonly int ENVIRONMENT_LAYER = 12;
-
+    public enum Layer : int
+    {
+        MOB = 8, 
+        MOB_AMMO = 9,
+        FRIENDLY_AMMO = 10,
+        FRIENDLY = 11,
+        ENVIRONMENT = 12
+    };
     static public readonly int AMMO_SORT_ORDER = -10;
 
     static public readonly int PixelsToUnits = 100;

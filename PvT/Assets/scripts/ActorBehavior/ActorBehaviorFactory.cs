@@ -190,7 +190,7 @@ sealed class AutofireBehavior : IActorBehavior
             foreach (var weapon in actor.vehicle.worldObject.weapons)
             {
                 var ammo = game.GetVehicle(weapon.type);
-                game.SpawnMobAmmo(actor, ammo, weapon);
+                game.SpawnAmmo(actor, ammo, weapon, false);
             }
         }
     }

@@ -22,7 +22,10 @@ public sealed class GameController
         GlobalGameEvent.Instance.MapReady -= OnMapReady;
         WorldBounds = bounds;
 
-        SpawnPlayer(_loader.GetVehicle("CYGNUS"));
+        var playerVehicle = _loader.GetVehicle("CYGNUS");
+        var player = SpawnVehicle(playerVehicle);
+        SetPlayer(player, playerVehicle);
+
         Start();
     }
 
@@ -70,9 +73,8 @@ public sealed class GameController
         return go;
     }
 
-    void SpawnPlayer(VehicleType plane)
+    void SetPlayer(GameObject go, VehicleType vehicle)
     {
-        var go = SpawnVehicle(plane);
         go.transform.localPosition = Vector3.zero;
 
         var behaviors = new CompositeBehavior();
@@ -110,7 +112,7 @@ public sealed class GameController
             spawnLocation = new Vector3(Consts.CoinFlip() ? bounds.min.x : bounds.max.x, Random.Range(bounds.min.y, bounds.max.y));
         }
         go.transform.localPosition = spawnLocation;
-        go.layer = Consts.MOB_LAYER;
+        go.layer = (int)Consts.Layer.MOB;
     }
 
     public VehicleType GetVehicle(string type)
@@ -120,7 +122,7 @@ public sealed class GameController
     }
 
     //kai: this ain't perfect
-    public void SpawnMobAmmo(Actor launcher, VehicleType type, WorldObjectType.Weapon weapon)
+    public void SpawnAmmo(Actor launcher, VehicleType type, WorldObjectType.Weapon weapon, bool player)
     {
         var go = (GameObject)GameObject.Instantiate(type.worldObject.prefab);
 
@@ -141,7 +143,8 @@ public sealed class GameController
         ammo.transform.localRotation = launcher.transform.localRotation;
 
         ammo.behavior = ActorBehaviorFactory.Instance.thrust;
-        go.layer = Consts.MOB_AMMO_LAYER;
+
+        go.layer = (int)(player ? Consts.Layer.FRIENDLY_AMMO : Consts.Layer.MOB_AMMO);
 
         //KAI: not everything should get thrust, some should just get a velocity and hold it
     }
@@ -158,7 +161,7 @@ public sealed class GameController
         }
 
         var go = contact.collider.gameObject;
-        if (go.layer == Consts.MOB_LAYER)
+        if (go.layer == (int)Consts.Layer.MOB)
         {
             --_liveEnemies;
             GameObject.Destroy(go);
