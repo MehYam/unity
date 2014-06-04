@@ -6,12 +6,11 @@ using System.Collections;
 public class Main : MonoBehaviour
 {
     public TextAsset Vehicles;
+    public TextAsset TankHulls;
+    public TextAsset TankTurrets;
     public TextAsset Ammo;
     public TextAsset Levels;
     public GameObject Explosion;
-
-    public int MaxVelocity = 40;  //KAI: the downside is that we can't modify these at runtime from the IDE... unless you implement for it.
-    public int Acceleration = 5;
 
     static Main _instance;
     static public Main Instance
@@ -27,7 +26,8 @@ public class Main : MonoBehaviour
         _instance = this;
 
         // prime the game state
-        game = new GameController(Vehicles.text, Ammo.text, Levels.text);
+        var loader = new Loader(Vehicles.text, Ammo.text, TankHulls.text, TankTurrets.text, Levels.text);
+        game = new GameController(loader);
 
         //Application.targetFrameRate = 3;
         //QualitySettings.vSyncCount = 2;

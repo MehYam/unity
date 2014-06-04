@@ -119,7 +119,7 @@ public sealed class ActorBehaviorFactory
 
     public IActorBehavior CreatePatrol(RateLimiter rate)
     {
-        return new Patrol(rate);
+        return new Patrol();
     }
     public IActorBehavior CreateAutofire(RateLimiter rate)
     {
@@ -158,15 +158,10 @@ sealed class ThrustBehavior : IActorBehavior
 
 sealed class Patrol : IActorBehavior
 {
-    readonly RateLimiter rate;
-    Vector2 nextTarget;
-
-    public Patrol(RateLimiter rate)
+    public Patrol()
     {
-        this.rate = rate;
-
-        var bounds = Main.Instance.game.WorldBounds;
-        nextTarget = new Vector2(Consts.CoinFlip() ? bounds.left : bounds.right, Random.Range(bounds.bottom, bounds.top));
+        //var bounds = Main.Instance.game.WorldBounds;
+        //nextTarget = new Vector2(Consts.CoinFlip() ? bounds.left : bounds.right, Random.Range(bounds.bottom, bounds.top));
     }
 
     public void FixedUpdate(Actor actor)
@@ -192,7 +187,7 @@ sealed class AutofireBehavior : IActorBehavior
         if (rate.reached)
         {
             var game = Main.Instance.game;
-            foreach (var weapon in actor.vehicle.weapons)
+            foreach (var weapon in actor.vehicle.worldObject.weapons)
             {
                 var ammo = game.GetVehicle(weapon.type);
                 game.SpawnMobAmmo(actor, ammo, weapon);

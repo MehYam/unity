@@ -8,12 +8,11 @@ public sealed class GameController
     public GameObject player { get; private set; }
 
     readonly Loader _loader;
-    public GameController(string strVehicles, string strAmmo, string strLevels)
+    public GameController(Loader loader)
     {
         Debug.Log("GameState constructor " + GetHashCode());
 
-        _loader = new Loader(strVehicles, strAmmo, strLevels);
-
+        _loader = loader;
         GlobalGameEvent.Instance.MapReady += OnMapReady;
     }
 
@@ -23,7 +22,7 @@ public sealed class GameController
         GlobalGameEvent.Instance.MapReady -= OnMapReady;
         WorldBounds = bounds;
 
-        SpawnPlayer(_loader.GetVehicle("GREENK"));
+        SpawnPlayer(_loader.GetVehicle("CYGNUS"));
         Start();
     }
 
@@ -60,21 +59,22 @@ public sealed class GameController
 
     GameObject SpawnVehicle(VehicleType v)
     {
-        var go = (GameObject)GameObject.Instantiate(v.prefab);
+        var go = (GameObject)GameObject.Instantiate(v.worldObject.prefab);
         go.AddComponent<Actor>();
         go.AddComponent<DropShadow>();
-        go.name = v.name;
+        go.name = v.worldObject.name;
 
         var body = go.AddComponent<Rigidbody2D>();
-        body.mass = v.mass;
+        body.mass = v.worldObject.mass;
         body.drag = 0.1f;
-
         return go;
     }
 
     void SpawnPlayer(VehicleType plane)
     {
         var go = SpawnVehicle(plane);
+        go.transform.localPosition = Vector3.zero;
+
         var behaviors = new CompositeBehavior();
         behaviors.Add(new PlayerInput(plane.maxSpeed * 10000, plane.acceleration));
         behaviors.Add(new FaceForward());
@@ -94,7 +94,7 @@ public sealed class GameController
         go.name += " enemy";
         var actor = go.GetComponent<Actor>();
         actor.vehicle = plane;
-        actor.behavior = EnemyActorBehaviors.Instance.Get(actor.vehicle.behaviorKey);
+        actor.behavior = EnemyActorBehaviors.Instance.Get(actor.vehicle.worldObject.behaviorKey);
 
         // put the actor at the edge
         Vector3 spawnLocation;
@@ -120,9 +120,9 @@ public sealed class GameController
     }
 
     //kai: this ain't perfect
-    public void SpawnMobAmmo(Actor launcher, VehicleType type, VehicleType.Weapon weapon)
+    public void SpawnMobAmmo(Actor launcher, VehicleType type, WorldObjectType.Weapon weapon)
     {
-        var go = (GameObject)GameObject.Instantiate(type.prefab);
+        var go = (GameObject)GameObject.Instantiate(type.worldObject.prefab);
 
         var body = go.AddComponent<Rigidbody2D>();
 

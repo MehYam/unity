@@ -1,0 +1,57 @@
+{
+	"tankturret0":
+	{
+		"asset": "tankturret0",
+		"health": "",
+		"mass": "",
+		"behavior": "",
+		"pivotY": "50",
+		"payload":
+		[
+		]			
+	},
+	"tankturret1":
+	{
+		"asset": "tankturret1",
+		"health": "",
+		"mass": "",
+		"behavior": "",
+		"pivotY": "36",
+		"payload":
+		[
+		]			
+	},
+	"tankturret2":
+	{
+		"asset": "tankturret2",
+		"health": "",
+		"mass": "",
+		"behavior": "",
+		"pivotY": "50",
+		"payload":
+		[
+		]			
+	},
+	"tankturret3":
+	{
+		"asset": "tankturret3",
+		"health": "",
+		"mass": "",
+		"behavior": "",
+		"pivotY": "30",
+		"payload":
+		[
+		]			
+	},
+	"tankturret4":
+	{
+		"asset": "tankturret4",
+		"health": "",
+		"mass": "",
+		"behavior": "",
+		"pivotY": "33",
+		"payload":
+		[
+		]			
+	}
+}

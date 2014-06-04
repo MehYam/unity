@@ -7,63 +7,116 @@ using PvT.Util;
 
 public class Loader
 {
-    readonly Dictionary<string, VehicleType> _vehicleLookup = new Dictionary<string, VehicleType>();  // need ReadOnlyDictionary here
+    // need ReadOnlyDictionary's here
+    readonly Dictionary<string, VehicleType> _vehicleLookup = new Dictionary<string, VehicleType>();
+    readonly Dictionary<string, TankHullType> _tankHullLookup = new Dictionary<string, TankHullType>();
+    readonly Dictionary<string, TankTurretType> _tankTurretLookup = new Dictionary<string, TankTurretType>();
 
     public readonly ReadOnlyCollection<Level> levels;
 
-    public Loader(string strVehicles, string strAmmo, string strLevels)
+    public Loader(string strVehicles, string strAmmo, string strHulls, string strTurrets, string strLevels)
     {
         LoadVehicles(strVehicles, "planes/", _vehicleLookup);
         LoadVehicles(strAmmo, "ammo/", _vehicleLookup);
 
+        LoadTankHulls(strHulls, "tanks/", _tankHullLookup);
+        LoadTankTurrets(strTurrets, "tanks/", _tankTurretLookup);
+
         levels = new ReadOnlyCollection<Level>(LoadLevels(strLevels));
     }
 
-    public VehicleType GetVehicle(string type)
+    public VehicleType GetVehicle(string type)  // planes, ammo
     {
         VehicleType retval = null;
         _vehicleLookup.TryGetValue(type, out retval);
         return retval;
     }
-
-    static void LoadVehicles(string enemyJSON, string path, Dictionary<string, VehicleType> results)
+    public TankHullType GetTankHull(string type)
     {
-        var json = MJSON.hashtableFromJson(enemyJSON);
+        TankHullType retval = null;
+        _tankHullLookup.TryGetValue(type, out retval);
+        return retval;
+    }
+    public TankTurretType GetTankTurret(string type)
+    {
+        TankTurretType retval = null;
+        _tankTurretLookup.TryGetValue(type, out retval);
+        return retval;
+    }
+
+    static WorldObjectType LoadWorldObject(string name, Hashtable obj, string assetPath)
+    {
+        var assetID = MJSON.SafeGetValue(obj, "asset");
+
+        // load the asset and extract the firepoints
+        var prefab = Resources.Load<GameObject>(assetPath + assetID);
+
+        WorldObjectType.Weapon[] weapons = null;
+        var payload = MJSON.SafeGetArray(obj, "payload");
+        if (payload != null)
+        {
+            weapons = new WorldObjectType.Weapon[payload.Count];
+
+            int i = 0;
+            foreach (string ammo in payload)
+            {
+                weapons[i++] = WorldObjectType.Weapon.FromString(ammo);
+            }
+        }
+        return new WorldObjectType(
+            prefab,
+            name,
+            assetID,
+            MJSON.SafeGetValue(obj, "behavior"),
+            MJSON.SafeGetFloat(obj, "mass"),
+            weapons
+        );
+    }
+    static VehicleType LoadVehicleType(WorldObjectType worldObject, Hashtable node)
+    {
+        return new VehicleType(
+                worldObject,
+                MJSON.SafeGetInt(node, "health"),
+                MJSON.SafeGetFloat(node, "maxSpeed"),
+                MJSON.SafeGetFloat(node, "acceleration") * 15,
+                MJSON.SafeGetFloat(node, "inertia"),
+                MJSON.SafeGetFloat(node, "collision"),
+                MJSON.SafeGetInt(node, "reward")
+        );
+    }
+    static void LoadVehicles(string strJSON, string assetPath, Dictionary<string, VehicleType> results)
+    {
+        var json = MJSON.hashtableFromJson(strJSON);
         foreach (DictionaryEntry entry in json)
         {
-            var name = (string)entry.Key;
-            var vehicle = (Hashtable)entry.Value;
-            var assetID = MJSON.SafeGetValue(vehicle, "asset");
+            var node = (Hashtable)entry.Value;
+            var worldObject = LoadWorldObject((string)entry.Key, node, assetPath);
+            results[worldObject.name] = LoadVehicleType(worldObject, node);
+        }
+    }
+    static void LoadTankHulls(string strJSON, string assetPath, Dictionary<string, TankHullType> results)
+    {
+        var json = MJSON.hashtableFromJson(strJSON);
+        foreach (DictionaryEntry entry in json)
+        {
+            var node = (Hashtable)entry.Value;
+            var worldObject = LoadWorldObject((string)entry.Key, node, assetPath);
 
-            // load the asset and extract the firepoints
-            var prefab = Resources.Load<GameObject>(path + assetID);
-
-            VehicleType.Weapon[] weapons = null;
-            var payload = MJSON.SafeGetArray(vehicle, "payload");
-            if (payload != null)
-            {
-                weapons = new VehicleType.Weapon[payload.Count];
-
-                int i = 0;
-                foreach (string ammo in payload)
-                {
-                    weapons[i++] = VehicleType.Weapon.FromString(ammo);
-                }
-            }
-            results[name] = new VehicleType(
-                name,
-                assetID,
-                MJSON.SafeGetInt(vehicle, "health"),
-                MJSON.SafeGetFloat(vehicle, "mass"),
-                MJSON.SafeGetFloat(vehicle, "maxSpeed"),
-                MJSON.SafeGetFloat(vehicle, "acceleration") * 15,
-                MJSON.SafeGetFloat(vehicle, "inertia"),
-                MJSON.SafeGetFloat(vehicle, "collision"),
-                MJSON.SafeGetInt(vehicle, "reward"),
-                MJSON.SafeGetValue(vehicle, "behavior"),
-                weapons,
-                prefab
-            );
+            Debug.Log(worldObject.name);
+            var vehicle = LoadVehicleType(worldObject, node);
+            var pivotY = MJSON.SafeGetFloat(node, "pivotY");
+            results[worldObject.name] = new TankHullType(vehicle, pivotY);
+        }
+    }
+    static void LoadTankTurrets(string strJSON, string assetPath, Dictionary<string, TankTurretType> results)
+    {
+        var json = MJSON.hashtableFromJson(strJSON);
+        foreach (DictionaryEntry entry in json)
+        {
+            var node = (Hashtable)entry.Value;
+            var worldObject = LoadWorldObject((string)entry.Key, node, assetPath);
+            var pivotY = MJSON.SafeGetFloat(node, "pivotY");
+            results[worldObject.name] = new TankTurretType(worldObject, pivotY);
         }
     }
 

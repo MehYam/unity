@@ -1,0 +1,82 @@
+{
+	"tankhull0":
+	{
+		"asset": "tankhull0",
+		"health": "",
+		"mass": "1",
+		"maxSpeed": "5",
+		"acceleration": "0.05",
+		"inertia": "0",
+		"collision": "33",
+		"reward": "5",
+		"behavior": "",
+		"pivotY": "52",
+		"payload":
+		[
+		]
+	},
+	"tankhull1":
+	{
+		"asset": "tankhull1",
+		"health": "",
+		"mass": "1",
+		"maxSpeed": "5",
+		"acceleration": "0.05",
+		"inertia": "0",
+		"collision": "33",
+		"reward": "5",
+		"behavior": "",
+		"pivotY": "55",
+		"payload":
+		[
+		]
+	},
+	"tankhull2":
+	{
+		"asset": "tankhull2",
+		"health": "",
+		"mass": "1",
+		"maxSpeed": "5",
+		"acceleration": "0.05",
+		"inertia": "0",
+		"collision": "33",
+		"reward": "5",
+		"behavior": "",
+		"pivotY": "71",
+		"payload":
+		[
+		]
+	},
+	"tankhull3":
+	{
+		"asset": "tankhull3",
+		"health": "",
+		"mass": "1",
+		"maxSpeed": "5",
+		"acceleration": "0.05",
+		"inertia": "0",
+		"collision": "33",
+		"reward": "5",
+		"behavior": "",
+		"pivotY": "50",
+		"payload":
+		[
+		]
+	},
+	"tankhull4":
+	{
+		"asset": "tankhull4",
+		"health": "",
+		"mass": "1",
+		"maxSpeed": "5",
+		"acceleration": "0.05",
+		"inertia": "0",
+		"collision": "33",
+		"reward": "5",
+		"behavior": "",
+		"pivotY": "32",
+		"payload":
+		[
+		]
+	}	
+}

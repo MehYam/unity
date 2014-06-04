@@ -127,12 +127,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Vehicles: {fileID: 4900000, guid: 6f0130c3e04f4334aa58240080c71032, type: 3}
+  TankHulls: {fileID: 4900000, guid: 642b1cee0fc5ae24d8f8823d544a1af8, type: 3}
+  TankTurrets: {fileID: 4900000, guid: a7265d908f2e32d4aa5e18d2c247c427, type: 3}
   Ammo: {fileID: 4900000, guid: a4b492bf4e95fc14184e1d6c79489364, type: 3}
   Levels: {fileID: 4900000, guid: 77022b18d2b218d4eae167bb0696d069, type: 3}
   Explosion: {fileID: 100000, guid: d107776b1023bca4ca899ffcf1fd7b9b, type: 2}
-  MaxVelocity: 80
-  Acceleration: 20
-  Player: {fileID: 0}
 --- !u!1 &52789968
 GameObject:
   m_ObjectHideFlags: 0
@@ -1643,7 +1642,7 @@ GameObject:
   - 114: {fileID: 1657511845}
   - 114: {fileID: 1657511846}
   m_Layer: 11
-  m_Name: player
+  m_Name: 
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
