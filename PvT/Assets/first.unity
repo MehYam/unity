@@ -131,6 +131,7 @@ MonoBehaviour:
   TankTurrets: {fileID: 4900000, guid: a7265d908f2e32d4aa5e18d2c247c427, type: 3}
   Ammo: {fileID: 4900000, guid: a4b492bf4e95fc14184e1d6c79489364, type: 3}
   Levels: {fileID: 4900000, guid: 77022b18d2b218d4eae167bb0696d069, type: 3}
+  AI: {fileID: 4900000, guid: f099c617aea0bc3489690336e990cb2b, type: 3}
   Explosion: {fileID: 100000, guid: d107776b1023bca4ca899ffcf1fd7b9b, type: 2}
 --- !u!1 &52789968
 GameObject:

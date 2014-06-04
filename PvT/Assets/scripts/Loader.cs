@@ -10,7 +10,7 @@ public class Loader
     // need ReadOnlyDictionary's here
     readonly Dictionary<string, VehicleType> _vehicleLookup = new Dictionary<string, VehicleType>();
     readonly Dictionary<string, TankHullType> _tankHullLookup = new Dictionary<string, TankHullType>();
-    readonly Dictionary<string, TankTurretType> _tankTurretLookup = new Dictionary<string, TankTurretType>();
+    readonly Dictionary<string, TankPartType> _tankTurretLookup = new Dictionary<string, TankPartType>();
     readonly Dictionary<string, AI> _ai;
 
     public readonly ReadOnlyCollection<Level> levels;
@@ -40,9 +40,9 @@ public class Loader
         _tankHullLookup.TryGetValue(type, out retval);
         return retval;
     }
-    public TankTurretType GetTankTurret(string type)
+    public TankPartType GetTankPart(string type)
     {
-        TankTurretType retval = null;
+        TankPartType retval = null;
         _tankTurretLookup.TryGetValue(type, out retval);
         return retval;
     }
@@ -115,7 +115,7 @@ public class Loader
             results[worldObject.name] = new TankHullType(vehicle, pivotY);
         }
     }
-    static void LoadTankTurrets(string strJSON, string assetPath, Dictionary<string, TankTurretType> results)
+    static void LoadTankTurrets(string strJSON, string assetPath, Dictionary<string, TankPartType> results)
     {
         var json = MJSON.hashtableFromJson(strJSON);
         foreach (DictionaryEntry entry in json)
@@ -123,7 +123,7 @@ public class Loader
             var node = (Hashtable)entry.Value;
             var worldObject = LoadWorldObject((string)entry.Key, node, assetPath);
             var pivotY = MJSON.SafeGetFloat(node, "pivotY");
-            results[worldObject.name] = new TankTurretType(worldObject, pivotY);
+            results[worldObject.name] = new TankPartType(worldObject, pivotY);
         }
     }
 

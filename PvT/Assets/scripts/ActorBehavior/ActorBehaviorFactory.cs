@@ -116,7 +116,24 @@ public sealed class ActorBehaviorFactory
             return _thrust;
         }
     }
-
+    IActorBehavior _faceMouseOnFire;
+    public IActorBehavior faceMouseOnFire
+    {
+        get
+        {
+            if (_faceMouseOnFire == null) { _faceMouseOnFire = new FaceMouseOnFire(); }
+            return _faceMouseOnFire;
+        }
+    }
+    IActorBehavior _faceForward;
+    public IActorBehavior faceForward
+    {
+        get
+        {
+            if (_faceForward == null) { _faceForward = new FaceForward(); }
+            return _faceForward;
+        }
+    }
     public IActorBehavior CreatePatrol(RateLimiter rate)
     {
         return new Patrol();
@@ -176,6 +193,34 @@ sealed class Patrol : IActorBehavior
         // apply the thrust in the direction of the actor
         thrustLookAt = Consts.RotatePoint(thrustLookAt, -Consts.ACTOR_NOSE_OFFSET - actor.gameObject.transform.rotation.eulerAngles.z);
         actor.gameObject.rigidbody2D.AddForce(thrustLookAt);
+    }
+}
+
+sealed class FaceForward : IActorBehavior
+{
+    public void FixedUpdate(Actor actor)
+    {
+        var go = actor.gameObject;
+        if (go.rigidbody2D.velocity != Vector2.zero)
+        {
+            go.transform.rotation = Consts.GetLookAtAngle(go.transform, go.rigidbody2D.velocity);
+        }
+    }
+}
+
+sealed class FaceMouseOnFire : IActorBehavior
+{
+    public void FixedUpdate(Actor actor)
+    {
+        if (Input.GetButton("Fire1"))
+        {
+            // point towards the mouse when firing
+            var go = actor.gameObject;
+            var mouse = Input.mousePosition;
+            var screenPoint = Camera.main.WorldToScreenPoint(go.transform.position);
+            var lookDirection = new Vector2(mouse.x - screenPoint.x, mouse.y - screenPoint.y);
+            go.transform.rotation = Consts.GetLookAtAngle(go.transform, lookDirection);
+        }
     }
 }
 

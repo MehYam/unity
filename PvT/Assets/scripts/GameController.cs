@@ -1,3 +1,5 @@
+//#define PLAYER_AS_PLANE
+
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,18 +18,22 @@ public sealed class GameController
         GlobalGameEvent.Instance.MapReady += OnMapReady;
     }
 
+
+
     public XRect WorldBounds { get; private set; }
     void OnMapReady(TileMap map, XRect bounds)
     {
         GlobalGameEvent.Instance.MapReady -= OnMapReady;
         WorldBounds = bounds;
 
+#if PLAYER_AS_PLANE
         var playerVehicle = loader.GetVehicle("CYGNUS");
         var player = SpawnWorldObject(playerVehicle);
         InitPlayer(player, playerVehicle);
-
+        AddPlayerPlaneBehaviors(player, playerVehicle);
+#else
         TestTank();
-
+#endif
         Start();
     }
 
@@ -37,7 +43,7 @@ public sealed class GameController
     }
     void StartNextLevel()
     {
-        StartNextWave();
+        //StartNextWave();
     }
 
     int _liveEnemies = 0;
@@ -62,35 +68,54 @@ public sealed class GameController
         }
     }
 
-    GameObject SpawnWorldObject(WorldObjectType worldObject)
+    GameObject SpawnWorldObject(WorldObjectType worldObject, bool physics = true)
     {
-        var go = (GameObject)GameObject.Instantiate(worldObject.prefab);
+        var go = worldObject.Spawn();
         var actor = go.AddComponent<Actor>();
         actor.worldObject = worldObject;
 
         go.AddComponent<DropShadow>();
         go.name = worldObject.name;
 
-        var body = go.AddComponent<Rigidbody2D>();
-        body.mass = worldObject.mass;
-        body.drag = 0.1f;
+        if (physics)
+        {
+            var body = go.AddComponent<Rigidbody2D>();
+            body.mass = float.IsNaN(worldObject.mass) ? 0 : worldObject.mass;
+            body.drag = 0.1f;
+        }
         return go;
     }
 
-    void InitPlayer(GameObject go, VehicleType vehicle)
+    void AddPlayerPlaneBehaviors(GameObject go, VehicleType vehicle)
     {
-        go.name += " player";
-        go.transform.localPosition = Vector3.zero;
-
         var behaviors = new CompositeBehavior();
         behaviors.Add(new PlayerInput(vehicle.maxSpeed * 10000, vehicle.acceleration));
-        behaviors.Add(new FaceForward());
-        behaviors.Add(new FaceMouseOnFire());
+        behaviors.Add(ActorBehaviorFactory.Instance.faceForward);
+        behaviors.Add(ActorBehaviorFactory.Instance.faceMouseOnFire);
         behaviors.Add(ActorBehaviorFactory.Instance.CreatePlayerfire(
                 ActorBehaviorFactory.Instance.CreateAutofire(new RateLimiter(0.5f)))
         );
 
         go.GetComponent<Actor>().behavior = behaviors;
+    }
+    void AddPlayerTankBehaviors(GameObject hull, GameObject turret, VehicleType hullType, WorldObjectType turretType)
+    {
+        var behaviors = new CompositeBehavior();
+        behaviors.Add(new PlayerInput(hullType.maxSpeed * 10000, hullType.acceleration));
+        behaviors.Add(new FaceForward());
+        behaviors.Add(ActorBehaviorFactory.Instance.CreatePlayerfire(
+                ActorBehaviorFactory.Instance.CreateAutofire(new RateLimiter(0.5f)))
+        );
+
+        turret.GetComponent<Actor>().behavior = 
+            new FaceMouseOnFire();
+
+        hull.GetComponent<Actor>().behavior = behaviors;
+    }
+    void InitPlayer(GameObject go, VehicleType vehicle)
+    {
+        go.name += " player";
+        go.transform.localPosition = Vector3.zero;
 
         player = go;
 
@@ -102,7 +127,33 @@ public sealed class GameController
     void TestTank()
     {
         var hull = loader.GetTankHull("tankhull0");
-        var turret = loader.GetTankTurret("tankturret0");
+        var turret = loader.GetTankPart("tankturret0");
+        var tread = loader.GetTankPart("tanktreadParent");
+
+        var hullWO = SpawnWorldObject(hull);
+        var turretWO = SpawnWorldObject(turret, false);
+
+        var treadLeft = tread.Spawn();
+        var treadRight = tread.Spawn();
+
+        turretWO.transform.parent = hullWO.transform;
+        treadLeft.transform.parent = hullWO.transform;
+        treadRight.transform.parent = hullWO.transform;
+
+        var hullSprite = hullWO.GetComponent<SpriteRenderer>();
+        hullSprite.sortingOrder = -2;
+
+        var hullBounds = hullSprite.sprite.bounds;
+        var pivotY = hullBounds.min.y + hull.turretPivotY / Consts.PixelsToUnits;
+
+        turretWO.GetComponent<SpriteRenderer>().sortingOrder = -1;
+        turretWO.gameObject.transform.localPosition = new Vector3(0, pivotY);
+
+        treadLeft.gameObject.transform.localPosition = new Vector3(hullBounds.min.x, 0);
+        treadRight.gameObject.transform.localPosition = new Vector3(hullBounds.max.x, 0);
+
+        InitPlayer(hullWO, hull);
+        AddPlayerTankBehaviors(hullWO, turretWO, hull, turret);
     }
 
     void SpawnMob(VehicleType vehicle)
@@ -136,7 +187,7 @@ public sealed class GameController
     //kai: this ain't perfect
     public void SpawnAmmo(Actor launcher, VehicleType type, WorldObjectType.Weapon weapon, bool player)
     {
-        var go = (GameObject)GameObject.Instantiate(type.prefab);
+        var go = type.Spawn();
 
         var body = go.AddComponent<Rigidbody2D>();
 

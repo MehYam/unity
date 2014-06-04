@@ -3,7 +3,7 @@ using System.Collections;
 
 public class WorldObjectType
 {
-    public readonly GameObject prefab;
+    readonly GameObject prefab;
 
     public readonly string name;
     public readonly string assetID;  //KAI: enum? int?  not string.
@@ -27,7 +27,10 @@ public class WorldObjectType
         this.mass = rhs.mass;
         this.weapons = rhs.weapons;
     }
-
+    public GameObject Spawn()
+    {
+        return (GameObject)GameObject.Instantiate(prefab);
+    }
     public sealed class Weapon
     {
         public readonly string type; // KAI: convert to enum
@@ -118,15 +121,15 @@ public sealed class TankHullType : VehicleType
     }
 }
 
-public sealed class TankTurretType : WorldObjectType
+public sealed class TankPartType : WorldObjectType
 {
     public readonly float hullPivotY;
-    public TankTurretType(GameObject prefab, string name, string assetID, float mass, Weapon[] weapons, float hullPivotY) :
+    public TankPartType(GameObject prefab, string name, string assetID, float mass, Weapon[] weapons, float hullPivotY) :
         base(prefab, name, assetID, mass, weapons)
     {
         this.hullPivotY = hullPivotY;
     }
-    public TankTurretType(WorldObjectType baseClass, float hullPivotY) : 
+    public TankPartType(WorldObjectType baseClass, float hullPivotY) : 
         base(baseClass)
     {
         this.hullPivotY = hullPivotY;
