@@ -7,12 +7,12 @@ public sealed class GameController
 {
     public GameObject player { get; private set; }
 
-    readonly Loader _loader;
+    public Loader loader { get; private set; }
     public GameController(Loader loader)
     {
         Debug.Log("GameState constructor " + GetHashCode());
 
-        _loader = loader;
+        this.loader = loader;
         GlobalGameEvent.Instance.MapReady += OnMapReady;
     }
 
@@ -22,9 +22,11 @@ public sealed class GameController
         GlobalGameEvent.Instance.MapReady -= OnMapReady;
         WorldBounds = bounds;
 
-        var playerVehicle = _loader.GetVehicle("CYGNUS");
-        var player = SpawnVehicle(playerVehicle);
-        SetPlayer(player, playerVehicle);
+        var playerVehicle = loader.GetVehicle("CYGNUS");
+        var player = SpawnWorldObject(playerVehicle);
+        InitPlayer(player, playerVehicle);
+
+        TestTank();
 
         Start();
     }
@@ -41,10 +43,10 @@ public sealed class GameController
     int _liveEnemies = 0;
     void StartNextWave()
     {
-        var wave = _loader.levels[0].NextWave();
+        var wave = loader.levels[0].NextWave();
         foreach (var squad in wave.squads)
         {
-            VehicleType v = _loader.GetVehicle(squad.enemyID);
+            VehicleType v = loader.GetVehicle(squad.enemyID);
             if (v != null)
             {
                 for (int i = 0; i < squad.count; ++i)
@@ -60,29 +62,36 @@ public sealed class GameController
         }
     }
 
-    GameObject SpawnVehicle(VehicleType v)
+    GameObject SpawnWorldObject(WorldObjectType worldObject)
     {
-        var go = (GameObject)GameObject.Instantiate(v.worldObject.prefab);
-        go.AddComponent<Actor>();
+        var go = (GameObject)GameObject.Instantiate(worldObject.prefab);
+        var actor = go.AddComponent<Actor>();
+        actor.worldObject = worldObject;
+
         go.AddComponent<DropShadow>();
-        go.name = v.worldObject.name;
+        go.name = worldObject.name;
 
         var body = go.AddComponent<Rigidbody2D>();
-        body.mass = v.worldObject.mass;
+        body.mass = worldObject.mass;
         body.drag = 0.1f;
         return go;
     }
 
-    void SetPlayer(GameObject go, VehicleType vehicle)
+    void InitPlayer(GameObject go, VehicleType vehicle)
     {
+        go.name += " player";
         go.transform.localPosition = Vector3.zero;
 
         var behaviors = new CompositeBehavior();
-        behaviors.Add(new PlayerInput(plane.maxSpeed * 10000, plane.acceleration));
+        behaviors.Add(new PlayerInput(vehicle.maxSpeed * 10000, vehicle.acceleration));
         behaviors.Add(new FaceForward());
         behaviors.Add(new FaceMouseOnFire());
+        behaviors.Add(ActorBehaviorFactory.Instance.CreatePlayerfire(
+                ActorBehaviorFactory.Instance.CreateAutofire(new RateLimiter(0.5f)))
+        );
 
         go.GetComponent<Actor>().behavior = behaviors;
+
         player = go;
 
         Camera.main.GetComponent<CameraFollow>().Target = go;
@@ -90,13 +99,22 @@ public sealed class GameController
         GlobalGameEvent.Instance.FirePlayerSpawned(go);
     }
 
-    void SpawnMob(VehicleType plane)
+    void TestTank()
     {
-        var go = SpawnVehicle(plane);
+        var hull = loader.GetTankHull("tankhull0");
+        var turret = loader.GetTankTurret("tankturret0");
+    }
+
+    void SpawnMob(VehicleType vehicle)
+    {
+        var go = SpawnWorldObject(vehicle);
         go.name += " enemy";
-        var actor = go.GetComponent<Actor>();
-        actor.vehicle = plane;
-        actor.behavior = EnemyActorBehaviors.Instance.Get(actor.vehicle.worldObject.behaviorKey);
+
+        var ai = loader.GetAI(vehicle.name);
+        if (ai != null)
+        {
+            go.GetComponent<Actor>().behavior = ActorBehaviorScripts.Instance.Get(ai.behavior);
+        }
 
         // put the actor at the edge
         Vector3 spawnLocation;
@@ -115,16 +133,10 @@ public sealed class GameController
         go.layer = (int)Consts.Layer.MOB;
     }
 
-    public VehicleType GetVehicle(string type)
-    {
-        //KAI: cleanup
-        return _loader.GetVehicle(type);
-    }
-
     //kai: this ain't perfect
     public void SpawnAmmo(Actor launcher, VehicleType type, WorldObjectType.Weapon weapon, bool player)
     {
-        var go = (GameObject)GameObject.Instantiate(type.worldObject.prefab);
+        var go = (GameObject)GameObject.Instantiate(type.prefab);
 
         var body = go.AddComponent<Rigidbody2D>();
 
@@ -135,7 +147,7 @@ public sealed class GameController
         sprite.sortingOrder = Consts.AMMO_SORT_ORDER;
 
         var ammo = go.AddComponent<Actor>();
-        ammo.vehicle = type;
+        ammo.worldObject = type;
         ammo.timeToLive = 2;
         var rotatedOffset = Consts.RotatePoint(weapon.offset, -launcher.transform.localRotation.eulerAngles.z - Consts.ACTOR_NOSE_OFFSET);
 

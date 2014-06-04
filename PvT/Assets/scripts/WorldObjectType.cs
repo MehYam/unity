@@ -7,20 +7,25 @@ public class WorldObjectType
 
     public readonly string name;
     public readonly string assetID;  //KAI: enum? int?  not string.
-    public readonly string behaviorKey;  //KAI: enum? int?  not string.
     public readonly float mass;
 
     public readonly Weapon[] weapons; // the behavior's in charge of choosing a weapon and firing it
 
-    public WorldObjectType(GameObject prefab, string name, string assetID, string behaviorKey, float mass, Weapon[] weapons)
+    public WorldObjectType(GameObject prefab, string name, string assetID, float mass, Weapon[] weapons)
     {
         this.prefab = prefab;
-
         this.name = name;
         this.assetID = assetID;
         this.mass = mass;
-        this.behaviorKey = behaviorKey;
         this.weapons = weapons;
+    }
+    public WorldObjectType(WorldObjectType rhs)
+    {
+        this.prefab = rhs.prefab;
+        this.name = rhs.name;
+        this.assetID = rhs.assetID;
+        this.mass = rhs.mass;
+        this.weapons = rhs.weapons;
     }
 
     public sealed class Weapon
@@ -52,51 +57,78 @@ public class WorldObjectType
 
             return new Weapon(type, dmg, new Vector2(x, y), angle, level);
         }
+
+        public override string ToString()
+        {
+            return string.Format("Weapon {0} dmg {1} level {2}", type, dmg, level);
+        }
     }
 }
 
-public sealed class VehicleType
+public class VehicleType : WorldObjectType
 {
-    public readonly WorldObjectType worldObject;
     public readonly int health;
     public readonly float maxSpeed;
     public readonly float acceleration;
     public readonly float inertia;
     public readonly float collDmg;
-    public readonly int reward;
 
-    public VehicleType(WorldObjectType worldObject, int health, float maxSpeed, float acceleration, float inertia, float collDmg, int reward)
+    public VehicleType(GameObject prefab, string name, string assetID, float mass, Weapon[] weapons, int health, float maxSpeed, float acceleration, float inertia, float collDmg) :
+        base(prefab, name, assetID, mass, weapons)
     {
-        this.worldObject = worldObject;
         this.health = health;
         this.maxSpeed = maxSpeed;
         this.acceleration = acceleration;
         this.inertia = inertia;
         this.collDmg = collDmg;
-        this.reward = reward;
+    }
+    public VehicleType(WorldObjectType baseClass, int health, float maxSpeed, float acceleration, float inertia, float collDmg) :
+        base(baseClass)
+    {
+        this.health = health;
+        this.maxSpeed = maxSpeed;
+        this.acceleration = acceleration;
+        this.inertia = inertia;
+        this.collDmg = collDmg;
+    }
+    public VehicleType(VehicleType rhs) :
+        base(rhs)
+    {
+        this.health = rhs.health;
+        this.maxSpeed = rhs.maxSpeed;
+        this.acceleration = rhs.acceleration;
+        this.inertia = rhs.inertia;
+        this.collDmg = rhs.collDmg;
     }
 }
 
-public sealed class TankHullType
+public sealed class TankHullType : VehicleType
 {
-    public readonly VehicleType vehicle;
     public readonly float turretPivotY;
 
-    public TankHullType(VehicleType vehicle, float turretPivotY)
+    public TankHullType(GameObject prefab, string name, string assetID, float mass, Weapon[] weapons, int health, float maxSpeed, float acceleration, float inertia, float collDmg, float turretPivotY)
+        : base(prefab, name, assetID, mass, weapons, health, maxSpeed, acceleration, inertia, collDmg)
     {
-        this.vehicle = vehicle;
+        this.turretPivotY = turretPivotY;
+    }
+    public TankHullType(VehicleType baseClass, float turretPivotY) :
+        base(baseClass)
+    {
         this.turretPivotY = turretPivotY;
     }
 }
 
-public sealed class TankTurretType
+public sealed class TankTurretType : WorldObjectType
 {
-    public readonly WorldObjectType worldObject;
     public readonly float hullPivotY;
-
-    public TankTurretType(WorldObjectType worldObject, float hullPivotY)
+    public TankTurretType(GameObject prefab, string name, string assetID, float mass, Weapon[] weapons, float hullPivotY) :
+        base(prefab, name, assetID, mass, weapons)
     {
-        this.worldObject = worldObject;
+        this.hullPivotY = hullPivotY;
+    }
+    public TankTurretType(WorldObjectType baseClass, float hullPivotY) : 
+        base(baseClass)
+    {
         this.hullPivotY = hullPivotY;
     }
 }

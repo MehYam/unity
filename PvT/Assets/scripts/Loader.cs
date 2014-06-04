@@ -11,10 +11,11 @@ public class Loader
     readonly Dictionary<string, VehicleType> _vehicleLookup = new Dictionary<string, VehicleType>();
     readonly Dictionary<string, TankHullType> _tankHullLookup = new Dictionary<string, TankHullType>();
     readonly Dictionary<string, TankTurretType> _tankTurretLookup = new Dictionary<string, TankTurretType>();
+    readonly Dictionary<string, AI> _ai;
 
     public readonly ReadOnlyCollection<Level> levels;
 
-    public Loader(string strVehicles, string strAmmo, string strHulls, string strTurrets, string strLevels)
+    public Loader(string strVehicles, string strAmmo, string strHulls, string strTurrets, string strLevels, string strAI)
     {
         LoadVehicles(strVehicles, "planes/", _vehicleLookup);
         LoadVehicles(strAmmo, "ammo/", _vehicleLookup);
@@ -23,6 +24,8 @@ public class Loader
         LoadTankTurrets(strTurrets, "tanks/", _tankTurretLookup);
 
         levels = new ReadOnlyCollection<Level>(LoadLevels(strLevels));
+
+        _ai = LoadAI(strAI);
     }
 
     public VehicleType GetVehicle(string type)  // planes, ammo
@@ -43,6 +46,12 @@ public class Loader
         _tankTurretLookup.TryGetValue(type, out retval);
         return retval;
     }
+    public AI GetAI(string key)
+    {
+        AI retval = null;
+        _ai.TryGetValue(key, out retval);
+        return retval;
+    }
 
     static WorldObjectType LoadWorldObject(string name, Hashtable obj, string assetPath)
     {
@@ -60,14 +69,14 @@ public class Loader
             int i = 0;
             foreach (string ammo in payload)
             {
-                weapons[i++] = WorldObjectType.Weapon.FromString(ammo);
+                var weapon = WorldObjectType.Weapon.FromString(ammo);
+                weapons[i++] = weapon;
             }
         }
         return new WorldObjectType(
             prefab,
             name,
             assetID,
-            MJSON.SafeGetValue(obj, "behavior"),
             MJSON.SafeGetFloat(obj, "mass"),
             weapons
         );
@@ -80,8 +89,7 @@ public class Loader
                 MJSON.SafeGetFloat(node, "maxSpeed"),
                 MJSON.SafeGetFloat(node, "acceleration") * 15,
                 MJSON.SafeGetFloat(node, "inertia"),
-                MJSON.SafeGetFloat(node, "collision"),
-                MJSON.SafeGetInt(node, "reward")
+                MJSON.SafeGetFloat(node, "collision")
         );
     }
     static void LoadVehicles(string strJSON, string assetPath, Dictionary<string, VehicleType> results)
@@ -102,7 +110,6 @@ public class Loader
             var node = (Hashtable)entry.Value;
             var worldObject = LoadWorldObject((string)entry.Key, node, assetPath);
 
-            Debug.Log(worldObject.name);
             var vehicle = LoadVehicleType(worldObject, node);
             var pivotY = MJSON.SafeGetFloat(node, "pivotY");
             results[worldObject.name] = new TankHullType(vehicle, pivotY);
@@ -167,5 +174,39 @@ public class Loader
     {
         var parts = squad.Split(',');
         return new Level.Squad(parts[0], int.Parse(parts[1]));
+    }
+
+    static Dictionary<string, AI> LoadAI(string ai)
+    {
+        var retval = new Dictionary<string, AI>();
+        var json = MJSON.hashtableFromJson(ai);
+        foreach (DictionaryEntry entry in json)
+        {
+            var name = (string)entry.Key;
+            var node = (Hashtable)entry.Value;
+
+            retval[name] = new AI(name,
+                MJSON.SafeGetValue(node, "vehicle"),
+                MJSON.SafeGetValue(node, "behavior"),
+                MJSON.SafeGetInt(node, "reward")
+            );
+        }
+        return retval;
+    }
+}
+
+public sealed class AI
+{
+    public readonly string name;
+    public readonly string vehicleType; //KAI: enum
+    public readonly string behavior; //KAI: enum
+    public readonly int reward;
+
+    public AI(string name, string vehicleType, string behavior, int reward)
+    {
+        this.name = name;
+        this.vehicleType = vehicleType;
+        this.behavior = behavior;
+        this.reward = reward;
     }
 }

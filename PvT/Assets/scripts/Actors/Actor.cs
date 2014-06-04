@@ -4,7 +4,7 @@ using System.Collections;
 public class Actor : MonoBehaviour
 {
     public float timeToLive = 0;
-    public VehicleType vehicle;
+    public WorldObjectType worldObject;
     public IActorBehavior behavior { private get; set; }
 
     void Start()

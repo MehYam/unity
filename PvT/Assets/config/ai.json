@@ -1,0 +1,146 @@
+{
+	"BEE":
+	{
+		"vehicle": "BEE",
+		"behavior": "BEE_BEHAVIOR",
+		"reward": "5"
+	},
+	"GREENK":
+	{
+		"vehicle": "GREENK",
+		"behavior": "GREENK_BEHAVIOR",
+		"reward": "5"
+	},
+	"MOTH":
+	{
+		"vehicle": "MOTH",
+		"behavior": "MOTH_BEHAVIOR",
+		"reward": "10"
+	},
+	"OSPREY":
+	{
+		"vehicle": "OSPREY",
+		"behavior": "",
+		"reward": "15"
+	},
+	"BAT":
+	{
+		"vehicle": "BAT",
+		"reward": "15"
+	},
+	"GHOST":
+	{
+		"vehicle": "GHOST",
+		"reward": "25"
+	},
+	"GREENK2":
+	{
+		"vehicle": "GREENK2",
+		"reward": "15"
+	},
+	"CYGNUS":
+	{
+		"vehicle": "CYGNUS",
+		"reward": "30"
+	},
+	"ROCINANTE":
+	{
+		"vehicle": "ROCINANTE",
+		"reward": "35"
+	},
+	"BEE2":
+	{
+		"vehicle": "BEE2",
+		"reward": "50",
+	},
+	"FLY":
+	{
+		"vehicle": "FLY",
+		"reward": "20"
+	},
+	"MOTH2":
+	{
+		"vehicle": "ship2_7_0",
+		"reward": "45",
+	},
+	"BAT2":
+	{
+		"vehicle": "ship2_2_0",
+		"reward": "65",
+	},
+	"BLUEK":
+	{
+		"vehicle": "ship2_1_1",
+		"reward": "30",
+	},
+	"CYGNUS2":
+	{
+		"vehicle": "ship2_5_0",
+		"reward": "100",
+	},
+	"OSPREY2":
+	{
+		"vehicle": "ship2_3_0",
+		"reward": "100",
+	},
+	"ROCINANTE2":
+	{
+		"vehicle": "ship2_10_1",
+		"reward": "125",
+	},
+	"BAT3":
+	{
+		"vehicle": "ship2_2_1",
+		"reward": "125",
+	},
+	"GHOST2":
+	{
+		"vehicle": "ship2_6_0",
+		"reward": "110",
+	},
+	"PIKE":
+	{
+		"vehicle": "ship2_11_1",
+		"reward": "80",
+	},
+	"CYGNUS3":
+	{
+		"vehicle": "ship2_5_1",
+		"reward": "150",
+	},
+	"BEE3":
+	{
+		"vehicle": "ship2_0_1",
+		"reward": "400",
+	},
+	"FLY3":
+	{
+		"vehicle": "ship2_4_1",
+		"reward": "200",
+	},
+	"ESOX":
+	{
+		"vehicle": "ship2_11_2",
+		"reward": "400",
+	},
+	"STEALTH":
+	{
+		"vehicle": "ship2_9_1",
+		"reward": "500",
+	},
+	"GHOST3":
+	{
+		"vehicle": "ship2_6_1",
+		"reward": "400",
+	},
+	"OSPREY3":
+	{
+		"vehicle": "ship2_3_1",
+		"reward": "600",
+	},
+	"OSPREY3_C":
+	{
+		"vehicle": "ship2_3_1",
+		"reward": "800",
+	}	
+}

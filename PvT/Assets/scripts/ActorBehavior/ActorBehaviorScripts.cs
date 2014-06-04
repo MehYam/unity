@@ -6,16 +6,16 @@ using System.Collections.Generic;
 /// This is used to map AI from the vehicles.json config file to actual C# objects.  There's also
 /// AI coded directly here that's too complex to be defined in the configs.
 /// </summary>
-public sealed class EnemyActorBehaviors
+public sealed class ActorBehaviorScripts
 {
-    static EnemyActorBehaviors _instance;
-    static public EnemyActorBehaviors Instance
+    static ActorBehaviorScripts _instance;
+    static public ActorBehaviorScripts Instance
     {
         get
         {
             if (_instance == null)
             {
-                _instance = new EnemyActorBehaviors();
+                _instance = new ActorBehaviorScripts();
             }
             return _instance;
         }
@@ -33,7 +33,7 @@ public sealed class EnemyActorBehaviors
         retval.Add(ActorBehaviorFactory.Instance.followPlayer, new RateLimiter(5));
     }
     readonly Dictionary<string, Func<IActorBehavior>> _behaviorFactory = new Dictionary<string, Func<IActorBehavior>>();
-    EnemyActorBehaviors()
+    ActorBehaviorScripts()
     {
         //var game = Main.Instance.game;
 

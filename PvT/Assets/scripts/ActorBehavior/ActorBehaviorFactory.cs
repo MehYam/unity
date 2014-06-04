@@ -125,7 +125,10 @@ public sealed class ActorBehaviorFactory
     {
         return new AutofireBehavior(rate);
     }
-
+    public IActorBehavior CreatePlayerfire(IActorBehavior onFireBehavior)
+    {
+        return new PlayerfireBehavior(onFireBehavior);
+    }
 }
 
 sealed class FacePlayerBehavior : IActorBehavior
@@ -148,7 +151,8 @@ sealed class ThrustBehavior : IActorBehavior
 {
     public void FixedUpdate(Actor actor)
     {
-        var thrustLookAt = new Vector2(0, actor.vehicle.acceleration);
+        var v = (VehicleType)actor.worldObject;
+        var thrustLookAt = new Vector2(0, v.acceleration);
 
         // apply the thrust in the direction of the actor
         thrustLookAt = Consts.RotatePoint(thrustLookAt, -Consts.ACTOR_NOSE_OFFSET - actor.gameObject.transform.rotation.eulerAngles.z);
@@ -166,7 +170,8 @@ sealed class Patrol : IActorBehavior
 
     public void FixedUpdate(Actor actor)
     {
-        var thrustLookAt = new Vector2(0, actor.vehicle.acceleration);
+        var v = (VehicleType)actor.worldObject;
+        var thrustLookAt = new Vector2(0, v.acceleration);
 
         // apply the thrust in the direction of the actor
         thrustLookAt = Consts.RotatePoint(thrustLookAt, -Consts.ACTOR_NOSE_OFFSET - actor.gameObject.transform.rotation.eulerAngles.z);
@@ -187,11 +192,29 @@ sealed class AutofireBehavior : IActorBehavior
         if (rate.reached)
         {
             var game = Main.Instance.game;
-            foreach (var weapon in actor.vehicle.worldObject.weapons)
+
+            foreach (var weapon in actor.worldObject.weapons)
             {
-                var ammo = game.GetVehicle(weapon.type);
+                var ammo = game.loader.GetVehicle(weapon.type);
                 game.SpawnAmmo(actor, ammo, weapon, false);
             }
         }
     }
 }
+
+sealed class PlayerfireBehavior : IActorBehavior
+{
+    readonly IActorBehavior onFire;
+    public PlayerfireBehavior(IActorBehavior onFire)
+    {
+        this.onFire = onFire;
+    }
+    public void FixedUpdate(Actor actor)
+    {
+        if ((Input.GetButton("Fire1") || Input.GetButton("Jump")))
+        {
+            onFire.FixedUpdate(actor);
+        }
+    }
+}
+
