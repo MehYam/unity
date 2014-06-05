@@ -12,7 +12,7 @@
 		"behavior": "BEE_BEHAVIOR",
 		"payload":
 		[
-			"BULLET, 20, 0, -10, 0, 1"
+			"BULLET, 20, 0, 0, 0, 1"
 		]
 	},
 	"GREENK":
@@ -40,7 +40,7 @@
 		"behavior": "MOTH_BEHAVIOR",
 		"payload":
 		[
-			"BULLET, 10, 0, -20, 0, 1"
+			"BULLET, 10, 0, 0, 0, 1"
 		]
 	},
 	"OSPREY":
@@ -57,8 +57,8 @@
 		"firepoints": "",
 		"payload":
 		[
-			"LASER, 10, -35, -15",
-			"LASER, 10,  35, -15"
+			"LASER, 10, -68, 0",
+			"LASER, 10,  68, 0"
 		]
 	},
 	"BAT":

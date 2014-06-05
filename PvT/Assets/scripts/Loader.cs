@@ -61,6 +61,7 @@ public class Loader
 
         // load the asset and extract the firepoints
         var prefab = Resources.Load<GameObject>(assetPath + assetID);
+        prefab.transform.localPosition = Vector3.zero;
 
         WorldObjectType.Weapon[] weapons = null;
         var payload = MJSON.SafeGetArray(obj, "payload");
@@ -74,8 +75,9 @@ public class Loader
             {
                 var bounds = sprite.bounds;
                 offsetY = bounds.max.y;
-            }
 
+                Debug.Log(string.Format("{0} bounds {1} offsetY {2}", name, bounds, offsetY));
+            }
             weapons = new WorldObjectType.Weapon[payload.Count];
 
             int i = 0;

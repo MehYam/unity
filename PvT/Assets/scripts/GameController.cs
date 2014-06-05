@@ -1,4 +1,4 @@
-//#define PLAYER_AS_PLANE
+#define PLAYER_AS_PLANE
 #define DEBUG_AMMO
 
 using UnityEngine;
