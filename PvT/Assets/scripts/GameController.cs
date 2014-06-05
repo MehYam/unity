@@ -1,4 +1,5 @@
 //#define PLAYER_AS_PLANE
+#define DEBUG_AMMO
 
 using UnityEngine;
 using System.Collections;
@@ -32,7 +33,10 @@ public sealed class GameController
         InitPlayer(player, playerVehicle);
         AddPlayerPlaneBehaviors(player, playerVehicle);
 #else
-        TestTank();
+        var tankHelper = new TankSpawnHelper(this, "tankhull0", "tankturret0");
+        InitPlayer(tankHelper.hullGO, tankHelper.hull);
+        AddPlayerTankBehaviors(tankHelper);
+
 #endif
         Start();
     }
@@ -86,76 +90,6 @@ public sealed class GameController
         return go;
     }
 
-    void AddPlayerPlaneBehaviors(GameObject go, VehicleType vehicle)
-    {
-        var behaviors = new CompositeBehavior();
-        behaviors.Add(new PlayerInput(vehicle.maxSpeed * 10000, vehicle.acceleration));
-        behaviors.Add(ActorBehaviorFactory.Instance.faceForward);
-        behaviors.Add(ActorBehaviorFactory.Instance.faceMouseOnFire);
-        behaviors.Add(ActorBehaviorFactory.Instance.CreatePlayerfire(
-                ActorBehaviorFactory.Instance.CreateAutofire(new RateLimiter(0.5f)))
-        );
-
-        go.GetComponent<Actor>().behavior = behaviors;
-    }
-    void AddPlayerTankBehaviors(GameObject hull, GameObject turret, VehicleType hullType, WorldObjectType turretType)
-    {
-        var behaviors = new CompositeBehavior();
-        behaviors.Add(new PlayerInput(hullType.maxSpeed * 10000, hullType.acceleration));
-        behaviors.Add(new FaceForward());
-        behaviors.Add(ActorBehaviorFactory.Instance.CreatePlayerfire(
-                ActorBehaviorFactory.Instance.CreateAutofire(new RateLimiter(0.5f)))
-        );
-
-        turret.GetComponent<Actor>().behavior = 
-            new FaceMouseOnFire();
-
-        hull.GetComponent<Actor>().behavior = behaviors;
-    }
-    void InitPlayer(GameObject go, VehicleType vehicle)
-    {
-        go.name += " player";
-        go.transform.localPosition = Vector3.zero;
-
-        player = go;
-
-        Camera.main.GetComponent<CameraFollow>().Target = go;
-
-        GlobalGameEvent.Instance.FirePlayerSpawned(go);
-    }
-
-    void TestTank()
-    {
-        var hull = loader.GetTankHull("tankhull0");
-        var turret = loader.GetTankPart("tankturret0");
-        var tread = loader.GetTankPart("tanktreadParent");
-
-        var hullWO = SpawnWorldObject(hull);
-        var turretWO = SpawnWorldObject(turret, false);
-
-        var treadLeft = tread.Spawn();
-        var treadRight = tread.Spawn();
-
-        turretWO.transform.parent = hullWO.transform;
-        treadLeft.transform.parent = hullWO.transform;
-        treadRight.transform.parent = hullWO.transform;
-
-        var hullSprite = hullWO.GetComponent<SpriteRenderer>();
-        hullSprite.sortingOrder = -2;
-
-        var hullBounds = hullSprite.sprite.bounds;
-        var pivotY = hullBounds.min.y + hull.turretPivotY / Consts.PixelsToUnits;
-
-        turretWO.GetComponent<SpriteRenderer>().sortingOrder = -1;
-        turretWO.gameObject.transform.localPosition = new Vector3(0, pivotY);
-
-        treadLeft.gameObject.transform.localPosition = new Vector3(hullBounds.min.x, 0);
-        treadRight.gameObject.transform.localPosition = new Vector3(hullBounds.max.x, 0);
-
-        InitPlayer(hullWO, hull);
-        AddPlayerTankBehaviors(hullWO, turretWO, hull, turret);
-    }
-
     void SpawnMob(VehicleType vehicle)
     {
         var go = SpawnWorldObject(vehicle);
@@ -188,28 +122,109 @@ public sealed class GameController
     public void SpawnAmmo(Actor launcher, VehicleType type, WorldObjectType.Weapon weapon, bool player)
     {
         var go = type.Spawn();
-
         var body = go.AddComponent<Rigidbody2D>();
 
         body.mass = 1;
         body.drag = 0;
 
         var sprite = go.GetComponent<SpriteRenderer>();
+#if DEBUG_AMMO
+        sprite.sortingOrder = 10;
+#else
         sprite.sortingOrder = Consts.AMMO_SORT_ORDER;
-
+#endif
         var ammo = go.AddComponent<Actor>();
         ammo.worldObject = type;
         ammo.timeToLive = 2;
-        var rotatedOffset = Consts.RotatePoint(weapon.offset, -launcher.transform.localRotation.eulerAngles.z - Consts.ACTOR_NOSE_OFFSET);
+        var rotatedOffset = Consts.RotatePoint(weapon.offset, -launcher.transform.rotation.eulerAngles.z - Consts.ACTOR_NOSE_OFFSET);
 
-        ammo.transform.localPosition = Consts.Add(launcher.transform.localPosition, rotatedOffset);
-        ammo.transform.localRotation = launcher.transform.localRotation;
+        ammo.transform.localPosition = Consts.Add(launcher.transform.position, rotatedOffset);
+        ammo.transform.localRotation = launcher.transform.rotation;
 
         ammo.behavior = ActorBehaviorFactory.Instance.thrust;
 
         go.layer = (int)(player ? Consts.Layer.FRIENDLY_AMMO : Consts.Layer.MOB_AMMO);
 
         //KAI: not everything should get thrust, some should just get a velocity and hold it
+    }
+
+    sealed class TankSpawnHelper
+    {
+        public readonly TankHullType hull;
+        public readonly TankPartType turret;
+        public readonly GameObject hullGO;
+        public readonly GameObject turretGO;
+        public TankSpawnHelper(GameController game, string tankHull, string tankTurret)
+        {
+            hull = game.loader.GetTankHull(tankHull);
+            turret = game.loader.GetTankPart(tankTurret);
+            var tread = game.loader.GetTankPart("tanktreadParent");
+
+            hullGO = game.SpawnWorldObject(hull);
+            turretGO = game.SpawnWorldObject(turret, false);
+            var treadLeft = tread.Spawn();
+            var treadRight = tread.Spawn();
+
+            turretGO.transform.parent = hullGO.transform;
+            treadLeft.transform.parent = hullGO.transform;
+            treadRight.transform.parent = hullGO.transform;
+
+            var hullSprite = hullGO.GetComponent<SpriteRenderer>();
+            hullSprite.sortingOrder = -2;
+
+            var hullBounds = hullSprite.sprite.bounds;
+            var pivotY = hullBounds.min.y + hull.turretPivotY / Consts.PixelsToUnits;
+
+            turretGO.GetComponent<SpriteRenderer>().sortingOrder = -1;
+            turretGO.gameObject.transform.localPosition = new Vector3(0, pivotY);
+
+            treadLeft.gameObject.transform.Rotate(0, 0, 180);
+            treadRight.gameObject.transform.Rotate(0, 0, 180);
+            treadLeft.gameObject.transform.localPosition = new Vector3(hullBounds.min.x, 0);
+            treadRight.gameObject.transform.localPosition = new Vector3(hullBounds.max.x, 0);
+        }
+    }
+
+    void AddPlayerPlaneBehaviors(GameObject go, VehicleType vehicle)
+    {
+        var behaviors = new CompositeBehavior();
+        behaviors.Add(new PlayerInput(vehicle.maxSpeed * 10000, vehicle.acceleration));
+        behaviors.Add(ActorBehaviorFactory.Instance.faceForward);
+        behaviors.Add(ActorBehaviorFactory.Instance.faceMouseOnFire);
+        behaviors.Add(ActorBehaviorFactory.Instance.CreatePlayerfire(
+                ActorBehaviorFactory.Instance.CreateAutofire(new RateLimiter(0.5f)))
+        );
+
+        go.GetComponent<Actor>().behavior = behaviors;
+    }
+    void AddPlayerTankBehaviors(TankSpawnHelper tankHelper)
+    {
+        var bf =ActorBehaviorFactory.Instance;
+
+        // hull
+        var behaviors = new CompositeBehavior();
+        behaviors.Add(new PlayerInput(tankHelper.hull.maxSpeed * 10000, tankHelper.hull.acceleration));
+        behaviors.Add(bf.faceForward);
+        behaviors.Add(bf.CreatePlayerfire(bf.CreateAutofire(new RateLimiter(0.5f))));
+        tankHelper.hullGO.GetComponent<Actor>().behavior = behaviors;
+
+        // turret
+        tankHelper.turretGO.GetComponent<Actor>().behavior = new CompositeBehavior(
+            new FaceMouseOnFire(),
+            bf.CreatePlayerfire(bf.CreateAutofire(new RateLimiter(0.5f)))
+        );
+
+    }
+    void InitPlayer(GameObject go, VehicleType vehicle)
+    {
+        go.name += " player";
+        go.transform.localPosition = Vector3.zero;
+
+        player = go;
+
+        Camera.main.GetComponent<CameraFollow>().Target = go;
+
+        GlobalGameEvent.Instance.FirePlayerSpawned(go);
     }
 
     public void HandleCollision(ContactPoint2D contact)

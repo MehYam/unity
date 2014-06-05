@@ -8,6 +8,7 @@
 		"pivotY": "50",
 		"payload":
 		[
+			"CANNONROUND0, 10, 0, -130, 0, 0"
 		]			
 	},
 	"tankturret1":
@@ -19,6 +20,9 @@
 		"pivotY": "36",
 		"payload":
 		[
+			"CANNONROUND0, 26, 0, -55, 0, 0",
+			"CANNONROUND0, 26, -15, -20, -5, 0",
+			"CANNONROUND0, 26, 15, -20, 5, 0"
 		]			
 	},
 	"tankturret2":
