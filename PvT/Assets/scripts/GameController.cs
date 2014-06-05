@@ -74,7 +74,7 @@ public sealed class GameController
 
     GameObject SpawnWorldObject(WorldObjectType worldObject, bool physics = true)
     {
-        var go = worldObject.Spawn();
+        var go = worldObject.ToGameObject();
         var actor = go.AddComponent<Actor>();
         actor.worldObject = worldObject;
 
@@ -121,7 +121,7 @@ public sealed class GameController
     //kai: this ain't perfect
     public void SpawnAmmo(Actor launcher, VehicleType type, WorldObjectType.Weapon weapon, bool player)
     {
-        var go = type.Spawn();
+        var go = type.ToGameObject();
         var body = go.AddComponent<Rigidbody2D>();
 
         body.mass = 1;
@@ -165,8 +165,10 @@ public sealed class GameController
             hullGO = game.SpawnWorldObject(hull);
             turretGO = game.SpawnWorldObject(turret, false);
 
-            treadLeft = tread.Spawn();
-            treadRight = tread.Spawn();
+            hullGO.rigidbody2D.drag = 1;
+
+            treadLeft = tread.ToGameObject();
+            treadRight = tread.ToGameObject();
             treadLeft.name = "treadLeft";
             treadRight.name = "treadRight";
 

@@ -27,7 +27,7 @@ public class WorldObjectType
         this.mass = rhs.mass;
         this.weapons = rhs.weapons;
     }
-    public GameObject Spawn()
+    public GameObject ToGameObject()
     {
         return (GameObject)GameObject.Instantiate(prefab);
     }

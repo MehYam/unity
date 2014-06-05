@@ -8,6 +8,7 @@ using PvT.Util;
 public class Loader
 {
     // need ReadOnlyDictionary's here
+    readonly Dictionary<string, WorldObjectType> _miscLookup;
     readonly Dictionary<string, VehicleType> _vehicleLookup = new Dictionary<string, VehicleType>();
     readonly Dictionary<string, TankHullType> _tankHullLookup = new Dictionary<string, TankHullType>();
     readonly Dictionary<string, TankPartType> _tankTurretLookup = new Dictionary<string, TankPartType>();
@@ -15,8 +16,9 @@ public class Loader
 
     public readonly ReadOnlyCollection<Level> levels;
 
-    public Loader(string strVehicles, string strAmmo, string strHulls, string strTurrets, string strLevels, string strAI)
+    public Loader(string strVehicles, string strAmmo, string strHulls, string strTurrets, string strLevels, string strAI, string strMisc)
     {
+        _miscLookup = LoadMisc(strMisc, "other/");
         LoadVehicles(strVehicles, "planes/", _vehicleLookup);
         LoadVehicles(strAmmo, "ammo/", _vehicleLookup);
 
@@ -80,6 +82,20 @@ public class Loader
             MJSON.SafeGetFloat(obj, "mass"),
             weapons
         );
+    }
+    //KAI: the value of this is quite slim - putting these into WorldObjectTypes doesn't do
+    //much except make it easy to call ToGameObject()
+    static Dictionary<string, WorldObjectType> LoadMisc(string strJSON, string assetPath)
+    {
+        var retval = new Dictionary<string, WorldObjectType>();
+        var json = MJSON.hashtableFromJson(strJSON);
+        foreach (DictionaryEntry entry in json)
+        {
+            var node = (Hashtable)entry.Value;
+            var name = (string)entry.Key;
+            retval[name] = LoadWorldObject(name, node, assetPath);
+        }
+        return retval;
     }
     static VehicleType LoadVehicleType(WorldObjectType worldObject, Hashtable node)
     {

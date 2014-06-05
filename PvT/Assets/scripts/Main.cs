@@ -11,6 +11,8 @@ public class Main : MonoBehaviour
     public TextAsset Ammo;
     public TextAsset Levels;
     public TextAsset AI;
+    public TextAsset Misc;
+
     public GameObject Explosion;
 
     static Main _instance;
@@ -27,7 +29,7 @@ public class Main : MonoBehaviour
         _instance = this;
 
         // prime the game state
-        var loader = new Loader(Vehicles.text, Ammo.text, TankHulls.text, TankTurrets.text, Levels.text, AI.text);
+        var loader = new Loader(Vehicles.text, Ammo.text, TankHulls.text, TankTurrets.text, Levels.text, AI.text, Misc.text);
         game = new GameController(loader);
 
         //Application.targetFrameRate = 3;

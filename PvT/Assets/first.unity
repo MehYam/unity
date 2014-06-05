@@ -132,6 +132,7 @@ MonoBehaviour:
   Ammo: {fileID: 4900000, guid: a4b492bf4e95fc14184e1d6c79489364, type: 3}
   Levels: {fileID: 4900000, guid: 77022b18d2b218d4eae167bb0696d069, type: 3}
   AI: {fileID: 4900000, guid: f099c617aea0bc3489690336e990cb2b, type: 3}
+  Misc: {fileID: 4900000, guid: fe79f9de671e9fb41a1b62a9e434d791, type: 3}
   Explosion: {fileID: 100000, guid: d107776b1023bca4ca899ffcf1fd7b9b, type: 2}
 --- !u!1 &52789968
 GameObject:
@@ -1601,7 +1602,7 @@ GameObject:
   - 114: {fileID: 1657511845}
   - 114: {fileID: 1657511846}
   m_Layer: 11
-  m_Name: 
+  m_Name: player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
