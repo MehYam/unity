@@ -8,7 +8,7 @@
 		"pivotY": "50",
 		"payload":
 		[
-			"CANNONROUND0, 10, 0, -130, 0, 0"
+			"CANNONROUND0, 10, 0, 0, 0, 0"
 		]			
 	},
 	"tankturret1":
@@ -20,9 +20,9 @@
 		"pivotY": "36",
 		"payload":
 		[
-			"CANNONROUND0, 26, 0, -55, 0, 0",
-			"CANNONROUND0, 26, -15, -20, -5, 0",
-			"CANNONROUND0, 26, 15, -20, 5, 0"
+			"CANNONROUND0, 26,   0,   0,  0, 0",
+			"CANNONROUND0, 26, -29, -74, -5, 0",
+			"CANNONROUND0, 26,  29, -74,  5, 0"
 		]			
 	},
 	"tankturret2":
@@ -34,6 +34,8 @@
 		"pivotY": "50",
 		"payload":
 		[
+			"FUSION, 60, 0, 0, -2.5, 0",
+			"FUSION, 60, 0, 0,  2.5, 0"
 		]			
 	},
 	"tankturret3":
@@ -41,10 +43,13 @@
 		"asset": "tankturret3",
 		"health": "",
 		"mass": "",
-		"behavior": "",
+		"behavior": "TANKTURRET3_BEHAVIOR",
 		"pivotY": "30",
 		"payload":
 		[
+			"ROCKET, 100, -20, 0, -10",
+			"ROCKET, 100,   0, 0,   0",
+			"ROCKET, 100,  20, 0,  10"
 		]			
 	},
 	"tankturret4":
@@ -56,6 +61,9 @@
 		"pivotY": "33",
 		"payload":
 		[
+			"CANNONROUND0, 75, -60,   -79, -90",
+			"CANNONROUND0, 75,   0,     0,   0",
+			"CANNONROUND0, 75,  60,   -79,  90"
 		]			
 	},
 	"tanktreadParent":

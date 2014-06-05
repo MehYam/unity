@@ -23,7 +23,7 @@
 		"acceleration": "10",
 		"inertia": "",
 	},
-	"FUSIONBLAST":
+	"FUSION":
 	{
 		"asset": "fusionBlast",
 		"mass": "",

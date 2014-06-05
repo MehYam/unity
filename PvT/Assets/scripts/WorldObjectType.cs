@@ -48,13 +48,13 @@ public class WorldObjectType
             this.level = level;
         }
 
-        static public Weapon FromString(string str)
+        static public Weapon FromString(string str, float offsetY = 0)
         {
             var parts = str.Split(',');
             string type = parts[0];
             int dmg = int.Parse(parts[1]);
             float x = float.Parse(parts[2]) / Consts.PixelsToUnits;
-            float y = -float.Parse(parts[3]) / Consts.PixelsToUnits;
+            float y = offsetY + float.Parse(parts[3])/Consts.PixelsToUnits;
             float angle = parts.Length > 4 ? float.Parse(parts[4]) : 0;
             int level = parts.Length > 5 ? int.Parse(parts[5]) : 0;
 

@@ -19,8 +19,6 @@ public sealed class GameController
         GlobalGameEvent.Instance.MapReady += OnMapReady;
     }
 
-
-
     public XRect WorldBounds { get; private set; }
     void OnMapReady(TileMap map, XRect bounds)
     {
@@ -28,12 +26,12 @@ public sealed class GameController
         WorldBounds = bounds;
 
 #if PLAYER_AS_PLANE
-        var playerVehicle = loader.GetVehicle("CYGNUS");
+        var playerVehicle = loader.GetVehicle("OSPREY");
         var player = SpawnWorldObject(playerVehicle);
         InitPlayer(player, playerVehicle);
         AddPlayerPlaneBehaviors(player, playerVehicle);
 #else
-        var tankHelper = new TankSpawnHelper(this, "tankhull0", "tankturret0");
+        var tankHelper = new TankSpawnHelper(this, "tankhull4", "tankturret3");
         InitPlayer(tankHelper.hullGO, tankHelper.hull);
         AddPlayerTankBehaviors(tankHelper);
 
@@ -43,7 +41,7 @@ public sealed class GameController
 
     void Start()
     {
-        StartNextLevel();
+        //StartNextLevel();
     }
     void StartNextLevel()
     {
@@ -136,12 +134,12 @@ public sealed class GameController
         var ammo = go.AddComponent<Actor>();
         ammo.worldObject = type;
         ammo.timeToLive = 2;
-        var rotatedOffset = Consts.RotatePoint(weapon.offset, -launcher.transform.rotation.eulerAngles.z - Consts.ACTOR_NOSE_OFFSET);
 
-        ammo.transform.localPosition = Consts.Add(launcher.transform.position, rotatedOffset);
-        ammo.transform.localRotation = launcher.transform.rotation;
+        ammo.transform.localPosition = Consts.Add(launcher.transform.position, weapon.offset);
+        ammo.transform.RotateAround(launcher.transform.position, Vector3.forward, launcher.transform.rotation.eulerAngles.z);
 
-        ammo.behavior = ActorBehaviorFactory.Instance.thrust;
+        ammo.transform.Rotate(0, 0, -weapon.angle);
+        //ammo.behavior = ActorBehaviorFactory.Instance.thrust;
 
         go.layer = (int)(player ? Consts.Layer.FRIENDLY_AMMO : Consts.Layer.MOB_AMMO);
 

@@ -14,7 +14,7 @@ public static class Consts
         FRIENDLY = 11,
         ENVIRONMENT = 12
     };
-    static public readonly int AMMO_SORT_ORDER = -10;
+    static public readonly int AMMO_SORT_ORDER = -1;
 
     static public readonly int PixelsToUnits = 100;
 

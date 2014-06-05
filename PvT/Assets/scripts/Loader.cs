@@ -66,12 +66,22 @@ public class Loader
         var payload = MJSON.SafeGetArray(obj, "payload");
         if (payload != null)
         {
+            // programmatically determine the top of the sprite, since the weapon's Y offset
+            // is done in terms of the top of the image.  This is confusing.
+            float offsetY = 0;
+            var sprite = prefab.GetComponent<SpriteRenderer>();
+            if (sprite != null)
+            {
+                var bounds = sprite.bounds;
+                offsetY = bounds.max.y;
+            }
+
             weapons = new WorldObjectType.Weapon[payload.Count];
 
             int i = 0;
             foreach (string ammo in payload)
             {
-                var weapon = WorldObjectType.Weapon.FromString(ammo);
+                var weapon = WorldObjectType.Weapon.FromString(ammo, offsetY);
                 weapons[i++] = weapon;
             }
         }
