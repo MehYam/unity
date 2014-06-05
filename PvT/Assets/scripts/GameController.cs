@@ -47,7 +47,7 @@ public sealed class GameController
     }
     void StartNextLevel()
     {
-        //StartNextWave();
+        StartNextWave();
     }
 
     int _liveEnemies = 0;
@@ -154,6 +154,8 @@ public sealed class GameController
         public readonly TankPartType turret;
         public readonly GameObject hullGO;
         public readonly GameObject turretGO;
+        public readonly GameObject treadLeft;
+        public readonly GameObject treadRight;
         public TankSpawnHelper(GameController game, string tankHull, string tankTurret)
         {
             hull = game.loader.GetTankHull(tankHull);
@@ -162,8 +164,11 @@ public sealed class GameController
 
             hullGO = game.SpawnWorldObject(hull);
             turretGO = game.SpawnWorldObject(turret, false);
-            var treadLeft = tread.Spawn();
-            var treadRight = tread.Spawn();
+
+            treadLeft = tread.Spawn();
+            treadRight = tread.Spawn();
+            treadLeft.name = "treadLeft";
+            treadRight.name = "treadRight";
 
             turretGO.transform.parent = hullGO.transform;
             treadLeft.transform.parent = hullGO.transform;
@@ -206,11 +211,12 @@ public sealed class GameController
         behaviors.Add(new PlayerInput(tankHelper.hull.maxSpeed * 10000, tankHelper.hull.acceleration));
         behaviors.Add(bf.faceForward);
         behaviors.Add(bf.CreatePlayerfire(bf.CreateAutofire(new RateLimiter(0.5f))));
+        behaviors.Add(bf.CreateTankTreadAnimator(tankHelper.treadLeft, tankHelper.treadRight));
         tankHelper.hullGO.GetComponent<Actor>().behavior = behaviors;
 
         // turret
         tankHelper.turretGO.GetComponent<Actor>().behavior = new CompositeBehavior(
-            new FaceMouseOnFire(),
+            bf.faceMouse,
             bf.CreatePlayerfire(bf.CreateAutofire(new RateLimiter(0.5f)))
         );
 

@@ -413,7 +413,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 126356243}
   - 212: {fileID: 126356245}
-  - 114: {fileID: 126356244}
   - 114: {fileID: 126356246}
   - 50: {fileID: 126356247}
   - 60: {fileID: 126356248}
@@ -437,19 +436,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 566963588}
   m_RootOrder: 2
---- !u!114 &126356244
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 126356242}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a678b24f2ef6fd743bebc75948587a17, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Player: {fileID: 1657511841}
-  RotationalInertia: .999000013
 --- !u!212 &126356245
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -714,7 +700,6 @@ GameObject:
   - 212: {fileID: 458618354}
   - 50: {fileID: 458618357}
   - 60: {fileID: 458618359}
-  - 114: {fileID: 458618356}
   - 114: {fileID: 458618358}
   - 114: {fileID: 458618360}
   m_Layer: 0
@@ -758,19 +743,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 566963588}
   m_RootOrder: 0
---- !u!114 &458618356
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 458618353}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a678b24f2ef6fd743bebc75948587a17, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Player: {fileID: 1657511841}
-  RotationalInertia: .300000012
 --- !u!50 &458618357
 Rigidbody2D:
   m_ObjectHideFlags: 0
@@ -992,7 +964,6 @@ GameObject:
   - 4: {fileID: 621631671}
   - 212: {fileID: 621631674}
   - 50: {fileID: 621631672}
-  - 114: {fileID: 621631673}
   - 114: {fileID: 621631675}
   - 60: {fileID: 621631676}
   - 114: {fileID: 621631677}
@@ -1030,19 +1001,6 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
---- !u!114 &621631673
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 621631670}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a678b24f2ef6fd743bebc75948587a17, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Player: {fileID: 1657511841}
-  RotationalInertia: .899999976
 --- !u!212 &621631674
 SpriteRenderer:
   m_ObjectHideFlags: 0

@@ -116,12 +116,21 @@ public sealed class ActorBehaviorFactory
             return _thrust;
         }
     }
+    IActorBehavior _faceMouse;
+    public IActorBehavior faceMouse
+    {
+        get
+        {
+            if (_faceMouse == null) { _faceMouse = new FaceMouse(); }
+            return _faceMouse;
+        }
+    }
     IActorBehavior _faceMouseOnFire;
     public IActorBehavior faceMouseOnFire
     {
         get
         {
-            if (_faceMouseOnFire == null) { _faceMouseOnFire = new FaceMouseOnFire(); }
+            if (_faceMouseOnFire == null) { _faceMouseOnFire = new FaceMouse(true); }
             return _faceMouseOnFire;
         }
     }
@@ -145,6 +154,10 @@ public sealed class ActorBehaviorFactory
     public IActorBehavior CreatePlayerfire(IActorBehavior onFireBehavior)
     {
         return new PlayerfireBehavior(onFireBehavior);
+    }
+    public IActorBehavior CreateTankTreadAnimator(GameObject treadLeft, GameObject treadRight)
+    {
+        return new TankTreadAnimator(treadLeft, treadRight);
     }
 }
 
@@ -208,11 +221,16 @@ sealed class FaceForward : IActorBehavior
     }
 }
 
-sealed class FaceMouseOnFire : IActorBehavior
+sealed class FaceMouse : IActorBehavior
 {
+    readonly bool whileFiring;
+    public FaceMouse(bool whileFiring = false)
+    {
+        this.whileFiring = whileFiring;
+    }
     public void FixedUpdate(Actor actor)
     {
-        if (Input.GetButton("Fire1"))
+        if (!whileFiring || Input.GetButton("Fire1"))
         {
             // point towards the mouse when firing
             var go = actor.gameObject;
@@ -260,6 +278,21 @@ sealed class PlayerfireBehavior : IActorBehavior
         {
             onFire.FixedUpdate(actor);
         }
+    }
+}
+
+sealed class TankTreadAnimator : IActorBehavior
+{
+    readonly Animator left;
+    readonly Animator right;
+    public TankTreadAnimator(GameObject treadLeft, GameObject treadRight)
+    {
+        left = treadLeft.GetComponentInChildren<Animator>();
+        right = treadRight.GetComponentInChildren<Animator>();
+    }
+    public void FixedUpdate(Actor actor)
+    {
+        left.speed = right.speed = actor.rigidbody2D.velocity.sqrMagnitude;
     }
 }
 
