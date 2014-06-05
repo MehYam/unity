@@ -26,7 +26,7 @@ public sealed class GameController
         WorldBounds = bounds;
 
 #if PLAYER_AS_PLANE
-        var playerVehicle = loader.GetVehicle("OSPREY");
+        var playerVehicle = loader.GetVehicle("OSPREY3");
         var player = SpawnWorldObject(playerVehicle);
         InitPlayer(player, playerVehicle);
         AddPlayerPlaneBehaviors(player, playerVehicle);
@@ -135,7 +135,14 @@ public sealed class GameController
         ammo.worldObject = type;
         ammo.timeToLive = 2;
 
-        ammo.transform.localPosition = Consts.Add(launcher.transform.position, weapon.offset);
+        var scale = launcher.transform.localScale;
+        var scaledOffset = new Vector2(weapon.offset.x, weapon.offset.y);
+        scaledOffset.Scale(scale);
+        scaledOffset.y = weapon.offset.y;  //KAI: not sure why....
+
+        Debug.Log(string.Format("{0} -> {1}, scale {2}", weapon.offset, scaledOffset, scale));
+
+        ammo.transform.localPosition = Consts.Add(launcher.transform.position, scaledOffset);
         ammo.transform.RotateAround(launcher.transform.position, Vector3.forward, launcher.transform.rotation.eulerAngles.z);
 
         ammo.transform.Rotate(0, 0, -weapon.angle);
