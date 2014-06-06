@@ -41,7 +41,7 @@ public sealed class GameController
 
     void Start()
     {
-        //StartNextLevel();
+        StartNextLevel();
     }
     void StartNextLevel()
     {
@@ -117,7 +117,7 @@ public sealed class GameController
     }
 
     //kai: this ain't perfect
-    public void SpawnAmmo(Actor launcher, VehicleType type, WorldObjectType.Weapon weapon, bool player)
+    public void SpawnAmmo(Actor launcher, VehicleType type, WorldObjectType.Weapon weapon, Consts.Layer layer)
     {
         var go = type.ToGameObject();
         var body = go.AddComponent<Rigidbody2D>();
@@ -148,7 +148,7 @@ public sealed class GameController
         ammo.transform.Rotate(0, 0, -weapon.angle);
         //ammo.behavior = ActorBehaviorFactory.Instance.thrust;
 
-        go.layer = (int)(player ? Consts.Layer.FRIENDLY_AMMO : Consts.Layer.MOB_AMMO);
+        go.layer = (int)layer;
 
         //KAI: not everything should get thrust, some should just get a velocity and hold it
     }
@@ -204,7 +204,7 @@ public sealed class GameController
         behaviors.Add(ActorBehaviorFactory.Instance.faceForward);
         behaviors.Add(ActorBehaviorFactory.Instance.faceMouseOnFire);
         behaviors.Add(ActorBehaviorFactory.Instance.CreatePlayerfire(
-                ActorBehaviorFactory.Instance.CreateAutofire(new RateLimiter(0.5f)))
+                ActorBehaviorFactory.Instance.CreateAutofire(new RateLimiter(0.5f), Consts.Layer.FRIENDLY_AMMO))
         );
 
         go.GetComponent<Actor>().behavior = behaviors;
@@ -217,14 +217,14 @@ public sealed class GameController
         var behaviors = new CompositeBehavior();
         behaviors.Add(new PlayerInput());
         behaviors.Add(bf.faceForward);
-        behaviors.Add(bf.CreatePlayerfire(bf.CreateAutofire(new RateLimiter(0.5f))));
+        behaviors.Add(bf.CreatePlayerfire(bf.CreateAutofire(new RateLimiter(0.5f), Consts.Layer.FRIENDLY_AMMO)));
         behaviors.Add(bf.CreateTankTreadAnimator(tankHelper.treadLeft, tankHelper.treadRight));
         tankHelper.hullGO.GetComponent<Actor>().behavior = behaviors;
 
         // turret
         tankHelper.turretGO.GetComponent<Actor>().behavior = new CompositeBehavior(
             bf.faceMouse,
-            bf.CreatePlayerfire(bf.CreateAutofire(new RateLimiter(0.5f)))
+            bf.CreatePlayerfire(bf.CreateAutofire(new RateLimiter(0.5f), Consts.Layer.FRIENDLY_AMMO))
         );
 
     }
@@ -243,20 +243,17 @@ public sealed class GameController
 
     public void HandleCollision(ContactPoint2D contact)
     {
-        var boom = (GameObject)GameObject.Instantiate(Main.Instance.Explosion);
-        boom.transform.localPosition = contact.point;
-
         if (contact.collider.gameObject == Main.Instance.game.player)
         {
-            var anim = boom.GetComponent<Animation>();
-            anim.Play();
+            var boom = (GameObject)GameObject.Instantiate(Main.Instance.Explosion);
+            boom.transform.localPosition = contact.point;
         }
 
         var go = contact.collider.gameObject;
         if (go.layer == (int)Consts.Layer.MOB)
         {
-            --_liveEnemies;
-            GameObject.Destroy(go);
+            //--_liveEnemies;
+            //GameObject.Destroy(go);
         }
 
         if (_liveEnemies == 0)

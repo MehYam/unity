@@ -30,6 +30,12 @@ public class Loader
         _ai = LoadAI(strAI);
     }
 
+    public WorldObjectType GetMisc(string type)
+    {
+        WorldObjectType retval = null;
+        _miscLookup.TryGetValue(type, out retval);
+        return retval;
+    }
     public VehicleType GetVehicle(string type)  // planes, ammo
     {
         VehicleType retval = null;

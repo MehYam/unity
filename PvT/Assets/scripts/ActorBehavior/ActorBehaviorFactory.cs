@@ -147,9 +147,9 @@ public sealed class ActorBehaviorFactory
     {
         return new Patrol();
     }
-    public IActorBehavior CreateAutofire(RateLimiter rate)
+    public IActorBehavior CreateAutofire(RateLimiter rate, Consts.Layer layer)
     {
-        return new AutofireBehavior(rate);
+        return new AutofireBehavior(rate, layer);
     }
     public IActorBehavior CreatePlayerfire(IActorBehavior onFireBehavior)
     {
@@ -245,21 +245,22 @@ sealed class FaceMouse : IActorBehavior
 sealed class AutofireBehavior : IActorBehavior
 {
     readonly RateLimiter rate = null;
+    readonly Consts.Layer layer;
 
-    public AutofireBehavior(RateLimiter rate)
+    public AutofireBehavior(RateLimiter rate, Consts.Layer layer)
     {
         this.rate = rate;
+        this.layer = layer;
     }
     public void FixedUpdate(Actor actor)
     {
         if (rate.reached)
         {
             var game = Main.Instance.game;
-
             foreach (var weapon in actor.worldObject.weapons)
             {
                 var ammo = game.loader.GetVehicle(weapon.type);
-                game.SpawnAmmo(actor, ammo, weapon, false);
+                game.SpawnAmmo(actor, ammo, weapon, layer);
             }
         }
     }

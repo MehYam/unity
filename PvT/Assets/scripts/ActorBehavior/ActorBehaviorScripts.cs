@@ -46,7 +46,7 @@ public sealed class ActorBehaviorScripts
             var retval = new SequencedBehavior();
             retval.Add(ActorBehaviorFactory.Instance.followPlayer, new RateLimiter(3, 2));
             retval.Add(
-                new CompositeBehavior(ActorBehaviorFactory.Instance.CreateAutofire(new RateLimiter(1)),
+                new CompositeBehavior(ActorBehaviorFactory.Instance.CreateAutofire(new RateLimiter(1), Consts.Layer.MOB_AMMO),
                                       ActorBehaviorFactory.Instance.facePlayer),
                 new RateLimiter(2,2)
             );

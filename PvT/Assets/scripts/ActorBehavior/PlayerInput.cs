@@ -13,7 +13,6 @@ public class PlayerInput : IActorBehavior
             vehicle = (VehicleType)actor.worldObject;
         }
         var go = actor.gameObject;
-        var body = go.rigidbody2D;
 
         var horz = Input.GetAxis("Horizontal");
         var vert = Input.GetAxis("Vertical");
