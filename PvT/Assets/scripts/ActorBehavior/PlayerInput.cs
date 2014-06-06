@@ -3,34 +3,23 @@ using System.Collections;
 
 public class PlayerInput : IActorBehavior
 {
-    readonly float maxVelocity;
-    readonly float acceleration;
-
-    public PlayerInput(float maxVelocity, float acceleration)
-    {
-        this.maxVelocity = maxVelocity;
-        this.acceleration = acceleration;
-    }
-
+    VehicleType vehicle;
     bool isMoving = true;
-	public void FixedUpdate(Actor actor)
+
+    public void FixedUpdate(Actor actor)
     {
+        if (vehicle == null)
+        {
+            vehicle = (VehicleType)actor.worldObject;
+        }
         var go = actor.gameObject;
+        var body = go.rigidbody2D;
 
         var horz = Input.GetAxis("Horizontal");
         var vert = Input.GetAxis("Vertical");
-        var vel = go.rigidbody2D.velocity;
-        if (Mathf.Abs(vel.x) > maxVelocity)
-        {
-            horz = 0;
-        }
-        if (Mathf.Abs(vel.y) > maxVelocity)
-        {
-            vert = 0;
-        }
         if (horz != 0 || vert != 0)
         {
-            actor.gameObject.rigidbody2D.AddForce(new Vector2(horz * acceleration, vert * acceleration));
+            actor.gameObject.rigidbody2D.AddForce(new Vector2(horz * vehicle.acceleration, vert * vehicle.acceleration));
         }
 
         //go.rigidbody2D.angularVelocity = 0;

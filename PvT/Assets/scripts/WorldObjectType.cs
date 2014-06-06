@@ -7,15 +7,20 @@ public class WorldObjectType
 
     public readonly string name;
     public readonly string assetID;  //KAI: enum? int?  not string.
+    
     public readonly float mass;
+    public readonly float maxSpeed;
+    public readonly float sqrMaxSpeed; // useful for comparing vector magnitudes
 
     public readonly Weapon[] weapons; // the behavior's in charge of choosing a weapon and firing it
 
-    public WorldObjectType(GameObject prefab, string name, string assetID, float mass, Weapon[] weapons)
+    public WorldObjectType(GameObject prefab, string name, string assetID, float mass, float maxSpeed, Weapon[] weapons)
     {
         this.prefab = prefab;
         this.name = name;
         this.assetID = assetID;
+        this.maxSpeed = maxSpeed;
+        this.sqrMaxSpeed = (float)System.Math.Pow(maxSpeed, 2);
         this.mass = mass;
         this.weapons = weapons;
     }
@@ -25,11 +30,17 @@ public class WorldObjectType
         this.name = rhs.name;
         this.assetID = rhs.assetID;
         this.mass = rhs.mass;
+        this.maxSpeed = rhs.maxSpeed;
+        this.sqrMaxSpeed = rhs.sqrMaxSpeed;
         this.weapons = rhs.weapons;
     }
     public GameObject ToGameObject()
     {
         return (GameObject)GameObject.Instantiate(prefab);
+    }
+    public override string ToString()
+    {
+        return string.Format("{0} {1} mass {2} maxSpeed {3}");
     }
     public sealed class Weapon
     {
@@ -71,25 +82,22 @@ public class WorldObjectType
 public class VehicleType : WorldObjectType
 {
     public readonly int health;
-    public readonly float maxSpeed;
     public readonly float acceleration;
     public readonly float inertia;
     public readonly float collDmg;
 
     public VehicleType(GameObject prefab, string name, string assetID, float mass, Weapon[] weapons, int health, float maxSpeed, float acceleration, float inertia, float collDmg) :
-        base(prefab, name, assetID, mass, weapons)
+        base(prefab, name, assetID, mass, maxSpeed, weapons)
     {
         this.health = health;
-        this.maxSpeed = maxSpeed;
         this.acceleration = acceleration;
         this.inertia = inertia;
         this.collDmg = collDmg;
     }
-    public VehicleType(WorldObjectType baseClass, int health, float maxSpeed, float acceleration, float inertia, float collDmg) :
+    public VehicleType(WorldObjectType baseClass, int health, float acceleration, float inertia, float collDmg) :
         base(baseClass)
     {
         this.health = health;
-        this.maxSpeed = maxSpeed;
         this.acceleration = acceleration;
         this.inertia = inertia;
         this.collDmg = collDmg;
@@ -98,7 +106,6 @@ public class VehicleType : WorldObjectType
         base(rhs)
     {
         this.health = rhs.health;
-        this.maxSpeed = rhs.maxSpeed;
         this.acceleration = rhs.acceleration;
         this.inertia = rhs.inertia;
         this.collDmg = rhs.collDmg;
@@ -125,7 +132,7 @@ public sealed class TankPartType : WorldObjectType
 {
     public readonly float hullPivotY;
     public TankPartType(GameObject prefab, string name, string assetID, float mass, Weapon[] weapons, float hullPivotY) :
-        base(prefab, name, assetID, mass, weapons)
+        base(prefab, name, assetID, mass, float.NaN, weapons)
     {
         this.hullPivotY = hullPivotY;
     }

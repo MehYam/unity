@@ -28,6 +28,10 @@ public class Actor : MonoBehaviour
                 Destroy(this.gameObject);
             }
         }
+        if (worldObject.maxSpeed > 0 && rigidbody2D.velocity.sqrMagnitude > worldObject.sqrMaxSpeed)
+        {
+            rigidbody2D.velocity = Vector2.ClampMagnitude(rigidbody2D.velocity, worldObject.maxSpeed);
+        }
 	}
 
     void OnTriggerEnter2D(Collider2D other)

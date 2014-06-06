@@ -26,7 +26,7 @@ public sealed class GameController
         WorldBounds = bounds;
 
 #if PLAYER_AS_PLANE
-        var playerVehicle = loader.GetVehicle("OSPREY3");
+        var playerVehicle = loader.GetVehicle("BEE");
         var player = SpawnWorldObject(playerVehicle);
         InitPlayer(player, playerVehicle);
         AddPlayerPlaneBehaviors(player, playerVehicle);
@@ -140,7 +140,7 @@ public sealed class GameController
         scaledOffset.Scale(scale);
         scaledOffset.y = weapon.offset.y;  //KAI: not sure why....
 
-        Debug.Log(string.Format("{0} -> {1}, scale {2}", weapon.offset, scaledOffset, scale));
+        //Debug.Log(string.Format("{0} -> {1}, scale {2}", weapon.offset, scaledOffset, scale));
 
         ammo.transform.localPosition = Consts.Add(launcher.transform.position, scaledOffset);
         ammo.transform.RotateAround(launcher.transform.position, Vector3.forward, launcher.transform.rotation.eulerAngles.z);
@@ -200,7 +200,7 @@ public sealed class GameController
     void AddPlayerPlaneBehaviors(GameObject go, VehicleType vehicle)
     {
         var behaviors = new CompositeBehavior();
-        behaviors.Add(new PlayerInput(vehicle.maxSpeed * 10000, vehicle.acceleration));
+        behaviors.Add(new PlayerInput());
         behaviors.Add(ActorBehaviorFactory.Instance.faceForward);
         behaviors.Add(ActorBehaviorFactory.Instance.faceMouseOnFire);
         behaviors.Add(ActorBehaviorFactory.Instance.CreatePlayerfire(
@@ -215,7 +215,7 @@ public sealed class GameController
 
         // hull
         var behaviors = new CompositeBehavior();
-        behaviors.Add(new PlayerInput(tankHelper.hull.maxSpeed * 10000, tankHelper.hull.acceleration));
+        behaviors.Add(new PlayerInput());
         behaviors.Add(bf.faceForward);
         behaviors.Add(bf.CreatePlayerfire(bf.CreateAutofire(new RateLimiter(0.5f))));
         behaviors.Add(bf.CreateTankTreadAnimator(tankHelper.treadLeft, tankHelper.treadRight));
@@ -232,6 +232,7 @@ public sealed class GameController
     {
         go.name += " player";
         go.transform.localPosition = Vector3.zero;
+        go.layer = (int)Consts.Layer.FRIENDLY;
 
         player = go;
 

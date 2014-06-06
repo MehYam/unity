@@ -76,7 +76,7 @@ public class Loader
                 var bounds = sprite.bounds;
                 offsetY = bounds.max.y;
 
-                Debug.Log(string.Format("{0} bounds {1} offsetY {2}", name, bounds, offsetY));
+                //Debug.Log(string.Format("{0} bounds {1} offsetY {2}", name, bounds, offsetY));
             }
             weapons = new WorldObjectType.Weapon[payload.Count];
 
@@ -92,6 +92,7 @@ public class Loader
             name,
             assetID,
             MJSON.SafeGetFloat(obj, "mass"),
+            MJSON.SafeGetFloat(obj, "maxSpeed"),
             weapons
         );
     }
@@ -114,7 +115,6 @@ public class Loader
         return new VehicleType(
                 worldObject,
                 MJSON.SafeGetInt(node, "health"),
-                MJSON.SafeGetFloat(node, "maxSpeed"),
                 MJSON.SafeGetFloat(node, "acceleration") * 15,
                 MJSON.SafeGetFloat(node, "inertia"),
                 MJSON.SafeGetFloat(node, "collision")
