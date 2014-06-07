@@ -1,4 +1,3 @@
-#define PLAYER_AS_PLANE
 #define DEBUG_AMMO
 
 using UnityEngine;
@@ -25,22 +24,26 @@ public sealed class GameController
         GlobalGameEvent.Instance.MapReady -= OnMapReady;
         WorldBounds = bounds;
 
-#if PLAYER_AS_PLANE
-        var playerVehicle = loader.GetVehicle("BEE");
-        var player = SpawnWorldObject(playerVehicle);
-        InitPlayer(player, playerVehicle);
-        AddPlayerPlaneBehaviors(player, playerVehicle);
-#else
-        var tankHelper = new TankSpawnHelper(this, "tankhull4", "tankturret3");
-        InitPlayer(tankHelper.hullGO, tankHelper.hull);
-        AddPlayerTankBehaviors(tankHelper);
-
-#endif
         Start();
     }
 
     void Start()
     {
+        var main = Main.Instance;
+        if (main.defaultIsPlane)
+        {
+            var playerVehicle = loader.GetVehicle(main.defaultPlane);
+            var player = SpawnWorldObject(playerVehicle);
+            InitPlayer(player, playerVehicle);
+            AddPlayerPlaneBehaviors(player, playerVehicle);
+        }
+        else
+        {
+            var tankHelper = new TankSpawnHelper(this, main.defaultTank, main.defaultTurret);
+            InitPlayer(tankHelper.hullGO, tankHelper.hull);
+            AddPlayerTankBehaviors(tankHelper);
+        }
+
         StartNextLevel();
     }
     void StartNextLevel()
@@ -83,7 +86,7 @@ public sealed class GameController
         {
             var body = go.AddComponent<Rigidbody2D>();
             body.mass = float.IsNaN(worldObject.mass) ? 0 : worldObject.mass;
-            body.drag = 0.1f;
+            body.drag = 1;
         }
         return go;
     }

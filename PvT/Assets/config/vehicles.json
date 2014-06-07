@@ -6,6 +6,7 @@
 		"mass": "1",
 		"maxSpeed": "5",
 		"acceleration": "0.5",
+		"inertia": "0",
 		"collision": "33",
 		"reward": "5",
 		"behavior": "BEE_BEHAVIOR",

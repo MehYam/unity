@@ -1,8 +1,7 @@
+using UnityEditor;
 using UnityEngine;
 using System.Collections;
 
-// KAI: this and GameState both do the same thing - i.e. Player should probably 
-// come from GameState instead?
 public class Main : MonoBehaviour
 {
     public TextAsset Vehicles;
@@ -14,6 +13,11 @@ public class Main : MonoBehaviour
     public TextAsset Misc;
 
     public GameObject Explosion;
+
+    public string defaultPlane = "BEE";
+    public string defaultTank = "tankhull0";
+    public string defaultTurret = "tankturret0";
+    public bool defaultIsPlane = true;
 
     static Main _instance;
     static public Main Instance
@@ -28,7 +32,6 @@ public class Main : MonoBehaviour
     {
         _instance = this;
 
-        // prime the game state
         var loader = new Loader(Vehicles.text, Ammo.text, TankHulls.text, TankTurrets.text, Levels.text, AI.text, Misc.text);
         game = new GameController(loader);
 
@@ -36,9 +39,22 @@ public class Main : MonoBehaviour
         //QualitySettings.vSyncCount = 2;
 
         Physics2D.gravity = Vector2.zero;
+
+        GlobalGameEvent.Instance.MapReady += OnMapReady;
 	}
+    public void Debug_Respawn()
+    {
+    }
     void OnDestroy()
     {
+        Debug.Log("Main.OnDestroy");
+
         _instance = null;
+        GlobalGameEvent.Instance.MapReady -= OnMapReady;
+    }
+
+    void OnMapReady(TileMap map, XRect bounds)
+    {
+        Selection.objects = new Object[] { GameObject.Find("_gameState") };
     }
 }
