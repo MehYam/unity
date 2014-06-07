@@ -18,6 +18,17 @@ public sealed class GameController
         GlobalGameEvent.Instance.MapReady += OnMapReady;
     }
 
+    //KAI: some nice way to mark this as dev only?
+    public void Debug_Respawn(Loader loader)
+    {
+        if (player != null)
+        {
+            GameObject.Destroy(player);
+        }
+        loader = loader;
+        SpawnPlayer();
+    }
+
     public XRect WorldBounds { get; private set; }
     void OnMapReady(TileMap map, XRect bounds)
     {
@@ -28,6 +39,11 @@ public sealed class GameController
     }
 
     void Start()
+    {
+        SpawnPlayer();
+        StartNextLevel();
+    }
+    void SpawnPlayer()
     {
         var main = Main.Instance;
         if (main.defaultIsPlane)
@@ -43,8 +59,6 @@ public sealed class GameController
             InitPlayer(tankHelper.hullGO, tankHelper.hull);
             AddPlayerTankBehaviors(tankHelper);
         }
-
-        StartNextLevel();
     }
     void StartNextLevel()
     {

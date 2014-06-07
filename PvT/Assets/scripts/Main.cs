@@ -34,16 +34,15 @@ public class Main : MonoBehaviour
 
         var loader = new Loader(Vehicles.text, Ammo.text, TankHulls.text, TankTurrets.text, Levels.text, AI.text, Misc.text);
         game = new GameController(loader);
+        GlobalGameEvent.Instance.MapReady += OnMapReady;
 
         //Application.targetFrameRate = 3;
         //QualitySettings.vSyncCount = 2;
-
         Physics2D.gravity = Vector2.zero;
-
-        GlobalGameEvent.Instance.MapReady += OnMapReady;
 	}
     public void Debug_Respawn()
     {
+        game.Debug_Respawn(new Loader(Vehicles.text, Ammo.text, TankHulls.text, TankTurrets.text, Levels.text, AI.text, Misc.text));
     }
     void OnDestroy()
     {
