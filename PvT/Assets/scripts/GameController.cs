@@ -48,6 +48,7 @@ public sealed class GameController
         var main = Main.Instance;
         if (main.defaultIsPlane)
         {
+            Debug.Log("spawning " + main.defaultPlane);
             var playerVehicle = loader.GetVehicle(main.defaultPlane);
             var player = SpawnWorldObject(playerVehicle);
             InitPlayer(player, playerVehicle);
@@ -100,7 +101,7 @@ public sealed class GameController
         {
             var body = go.AddComponent<Rigidbody2D>();
             body.mass = float.IsNaN(worldObject.mass) ? 0 : worldObject.mass;
-            body.drag = 1;
+            body.drag = 0.5f;
         }
         return go;
     }
