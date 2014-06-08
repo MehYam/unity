@@ -3,6 +3,9 @@ using System.Collections;
 
 public class Actor : MonoBehaviour
 {
+    public float health;
+    public float collisionDamage;
+
     public float timeToLive = 0;
     public WorldObjectType worldObject;
     public IActorBehavior behavior { private get; set; }
@@ -21,16 +24,15 @@ public class Actor : MonoBehaviour
         {
             behavior.FixedUpdate(this);
         }
-        if (timeToLive > 0)
-        {
-            if (Time.fixedTime > timeToLive)
-            {
-                Destroy(this.gameObject);
-            }
-        }
         if (worldObject.maxSpeed > 0 && rigidbody2D.velocity.sqrMagnitude > worldObject.sqrMaxSpeed)
         {
             rigidbody2D.velocity = Vector2.ClampMagnitude(rigidbody2D.velocity, worldObject.maxSpeed);
+        }
+        
+        if (((timeToLive > 0) && Time.fixedTime > timeToLive) ||
+            (health <= 0))
+        {
+            Destroy(this.gameObject);
         }
 	}
 

@@ -3,47 +3,47 @@
 	{
 		"asset": "bullet",
 		"mass": "",
-		"maxSpeed": "",
-		"acceleration": "0.05",
+		"maxSpeed": "8",
+		"acceleration": "",
 		"inertia": "",
 	},
 	"CANNONROUND0":
 	{
 		"asset": "cannonround0",
 		"mass": "",
-		"maxSpeed": "",
-		"acceleration": "1",
+		"maxSpeed": "16",
+		"acceleration": "",
 		"inertia": "",
 	},
 	"CANNONROUND1":
 	{
 		"asset": "cannonround1",
 		"mass": "",
-		"maxSpeed": "",
-		"acceleration": "10",
+		"maxSpeed": "16",
+		"acceleration": "",
 		"inertia": "",
 	},
 	"FUSION":
 	{
 		"asset": "fusionBlast",
 		"mass": "",
-		"maxSpeed": "",
-		"acceleration": "10",
+		"maxSpeed": "5",
+		"acceleration": "",
 		"inertia": "",
 	},
 	"LASER":
 	{
 		"asset": "laser",
 		"mass": "",
-		"maxSpeed": "",
-		"acceleration": "10",
+		"maxSpeed": "5",
+		"acceleration": "",
 		"inertia": "",
 	},
 	"ROCKET":
 	{
 		"asset": "rocket",
-		"mass": "",
-		"maxSpeed": "",
+		"mass": "0.5",
+		"maxSpeed": "20",
 		"acceleration": "10",
 		"inertia": "",
 	},
@@ -51,8 +51,8 @@
 	{
 		"asset": "shield",
 		"mass": "",
-		"maxSpeed": "",
-		"acceleration": "10",
+		"maxSpeed": "3",
+		"acceleration": "",
 		"inertia": "",
 	}
 }

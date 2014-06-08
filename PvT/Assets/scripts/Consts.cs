@@ -34,6 +34,11 @@ public static class Consts
     {
         return Quaternion.Euler(0, 0, Mathf.Atan2(point.y, point.x) * Mathf.Rad2Deg + ACTOR_NOSE_OFFSET);
     }
+    static public Vector2 GetLookAtVector(float angle, float magnitude)
+    {
+        var vector = new Vector2(0, magnitude);
+        return RotatePoint(vector, -Consts.ACTOR_NOSE_OFFSET - angle);
+    }
     static public Vector2 RotatePoint(Vector2 point, float degrees)
     {
         var radians = (degrees - ACTOR_NOSE_OFFSET) * Mathf.Deg2Rad;

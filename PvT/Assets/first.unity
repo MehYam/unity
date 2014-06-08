@@ -134,7 +134,7 @@ MonoBehaviour:
   AI: {fileID: 4900000, guid: f099c617aea0bc3489690336e990cb2b, type: 3}
   Misc: {fileID: 4900000, guid: fe79f9de671e9fb41a1b62a9e434d791, type: 3}
   Explosion: {fileID: 100000, guid: d107776b1023bca4ca899ffcf1fd7b9b, type: 2}
-  defaultPlane: greenk
+  defaultPlane: bat
   defaultTank: tankhull0
   defaultTurret: tankturret0
   defaultIsPlane: 1
@@ -1644,6 +1644,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e03719fed5f4e0c4e99a7b41c6369c2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  health: 0
+  collisionDamage: 0
   timeToLive: 0
 --- !u!58 &1657511843
 CircleCollider2D:
@@ -2098,6 +2100,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e03719fed5f4e0c4e99a7b41c6369c2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  health: 0
+  collisionDamage: 0
   timeToLive: 0
 --- !u!50 &1937437667
 Rigidbody2D:

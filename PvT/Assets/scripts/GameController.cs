@@ -1,4 +1,4 @@
-#define DEBUG_AMMO
+//#define DEBUG_AMMO
 
 using UnityEngine;
 using System.Collections;
@@ -94,6 +94,10 @@ public sealed class GameController
         var actor = go.AddComponent<Actor>();
         actor.worldObject = worldObject;
 
+        //KAI: this whole hierarchy seems messy and in need of simplification.  It would be easier if it had no types...
+        actor.health = Mathf.Max(1, worldObject.health);
+        Debug.Log(worldObject.name + " " + actor.health);
+
         go.AddComponent<DropShadow>();
         go.name = worldObject.name;
 
@@ -139,8 +143,6 @@ public sealed class GameController
     {
         var go = type.ToGameObject();
         var body = go.AddComponent<Rigidbody2D>();
-
-        body.mass = 1;
         body.drag = 0;
 
         var sprite = go.GetComponent<SpriteRenderer>();
@@ -152,6 +154,8 @@ public sealed class GameController
         var ammo = go.AddComponent<Actor>();
         ammo.worldObject = type;
         ammo.timeToLive = 2;
+        ammo.health = Mathf.Max(1, type.health);
+
 
         var scale = launcher.transform.localScale;
         var scaledOffset = new Vector2(weapon.offset.x, weapon.offset.y);
@@ -164,11 +168,20 @@ public sealed class GameController
         ammo.transform.RotateAround(launcher.transform.position, Vector3.forward, launcher.transform.rotation.eulerAngles.z);
 
         ammo.transform.Rotate(0, 0, -weapon.angle);
-        //ammo.behavior = ActorBehaviorFactory.Instance.thrust;
+        if (type.acceleration == 0)
+        {
+            // give the ammo instant acceleration
+            body.mass = 0;
+            body.velocity = Consts.GetLookAtVector(ammo.transform.rotation.eulerAngles.z, type.maxSpeed);
+        }
+        else
+        {
+            // treat the ammo like a vehicle (i.e. rocket)
+            body.mass = type.mass;
+            ammo.behavior = ActorBehaviorFactory.Instance.thrust;
+        }
 
         go.layer = (int)layer;
-
-        //KAI: not everything should get thrust, some should just get a velocity and hold it
     }
 
     sealed class TankSpawnHelper

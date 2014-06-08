@@ -182,11 +182,9 @@ sealed class ThrustBehavior : IActorBehavior
     public void FixedUpdate(Actor actor)
     {
         var v = (VehicleType)actor.worldObject;
-        var thrustLookAt = new Vector2(0, v.acceleration);
+        var thrustVector = Consts.GetLookAtVector(actor.gameObject.transform.rotation.eulerAngles.z, v.acceleration);
 
-        // apply the thrust in the direction of the actor
-        thrustLookAt = Consts.RotatePoint(thrustLookAt, -Consts.ACTOR_NOSE_OFFSET - actor.gameObject.transform.rotation.eulerAngles.z);
-        actor.gameObject.rigidbody2D.AddForce(thrustLookAt);
+        actor.gameObject.rigidbody2D.AddForce(thrustVector);
     }
 }
 

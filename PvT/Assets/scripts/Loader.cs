@@ -114,6 +114,7 @@ public class Loader
             assetID,
             MJSON.SafeGetFloat(obj, "mass"),
             MJSON.SafeGetFloat(obj, "maxSpeed"),
+            MJSON.SafeGetFloat(obj, "health"),
             weapons
         );
     }
@@ -135,7 +136,6 @@ public class Loader
     {
         return new VehicleType(
                 worldObject,
-                MJSON.SafeGetInt(node, "health"),
                 MJSON.SafeGetFloat(node, "acceleration"),
                 MJSON.SafeGetFloat(node, "inertia"),
                 MJSON.SafeGetFloat(node, "collision")
