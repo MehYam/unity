@@ -1,7 +1,9 @@
 using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 
 using PvT.Util;
 
@@ -9,9 +11,9 @@ public class Loader
 {
     // need ReadOnlyDictionary's here
     readonly Dictionary<string, WorldObjectType> _miscLookup;
-    readonly Dictionary<string, VehicleType> _vehicleLookup = new Dictionary<string, VehicleType>();
-    readonly Dictionary<string, TankHullType> _tankHullLookup = new Dictionary<string, TankHullType>();
-    readonly Dictionary<string, TankPartType> _tankTurretLookup = new Dictionary<string, TankPartType>();
+    readonly Dictionary<string, VehicleType> _vehicleLookup = new Dictionary<string, VehicleType>(StringComparer.OrdinalIgnoreCase);
+    readonly Dictionary<string, TankHullType> _tankHullLookup = new Dictionary<string, TankHullType>(StringComparer.OrdinalIgnoreCase);
+    readonly Dictionary<string, TankPartType> _tankTurretLookup = new Dictionary<string, TankPartType>(StringComparer.OrdinalIgnoreCase);
     readonly Dictionary<string, AI> _ai;
 
     public readonly ReadOnlyCollection<Level> levels;
@@ -20,6 +22,9 @@ public class Loader
     {
         _miscLookup = LoadMisc(strMisc, "other/");
         LoadVehicles(strVehicles, "planes/", _vehicleLookup);
+
+        //ExportCSV("c:\\source\\unity\\PvT\\planes.csv", _vehicleLookup);
+
         LoadVehicles(strAmmo, "ammo/", _vehicleLookup);
 
         LoadTankHulls(strHulls, "tanks/", _tankHullLookup);
@@ -28,6 +33,16 @@ public class Loader
         levels = new ReadOnlyCollection<Level>(LoadLevels(strLevels));
 
         _ai = LoadAI(strAI);
+    }
+
+    void ExportCSV(string path, Dictionary<string, VehicleType> items)
+    {
+        var file = File.CreateText(path);
+        foreach (var item in items)
+        {
+            file.WriteLine(item.Value.ToCSV());
+        }
+        file.Close();
     }
 
     public WorldObjectType GetMisc(string type)
@@ -121,7 +136,7 @@ public class Loader
         return new VehicleType(
                 worldObject,
                 MJSON.SafeGetInt(node, "health"),
-                MJSON.SafeGetFloat(node, "acceleration") * 15,
+                MJSON.SafeGetFloat(node, "acceleration"),
                 MJSON.SafeGetFloat(node, "inertia"),
                 MJSON.SafeGetFloat(node, "collision")
         );

@@ -25,7 +25,7 @@ public sealed class GameController
         {
             GameObject.Destroy(player);
         }
-        loader = loader;
+        this.loader = loader;
         SpawnPlayer();
     }
 

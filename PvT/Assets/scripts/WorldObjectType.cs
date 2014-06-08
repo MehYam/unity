@@ -5,6 +5,7 @@ public class WorldObjectType
 {
     readonly GameObject prefab;
 
+    public readonly int index;
     public readonly string name;
     public readonly string assetID;  //KAI: enum? int?  not string.
     
@@ -14,8 +15,10 @@ public class WorldObjectType
 
     public readonly Weapon[] weapons; // the behavior's in charge of choosing a weapon and firing it
 
+    static int s_instances = 0;
     public WorldObjectType(GameObject prefab, string name, string assetID, float mass, float maxSpeed, Weapon[] weapons)
     {
+        this.index = ++s_instances;
         this.prefab = prefab;
         this.name = name;
         this.assetID = assetID;
@@ -26,6 +29,7 @@ public class WorldObjectType
     }
     public WorldObjectType(WorldObjectType rhs)
     {
+        this.index = rhs.index;
         this.prefab = rhs.prefab;
         this.name = rhs.name;
         this.assetID = rhs.assetID;
@@ -40,7 +44,11 @@ public class WorldObjectType
     }
     public override string ToString()
     {
-        return string.Format("{0} {1} mass {2} maxSpeed {3}");
+        return string.Format("{0} {1} mass {2} maxSpeed {3}", name, assetID, mass, maxSpeed);
+    }
+    public virtual string ToCSV()
+    {
+        return string.Format("{4},{0},{1},{2},{3}", name, assetID, mass, maxSpeed, index);
     }
     public sealed class Weapon
     {
@@ -109,6 +117,11 @@ public class VehicleType : WorldObjectType
         this.acceleration = rhs.acceleration;
         this.inertia = rhs.inertia;
         this.collDmg = rhs.collDmg;
+    }
+
+    public override string ToCSV()
+    {
+        return base.ToCSV() + string.Format(",{0},{1},{2},{3}", health, acceleration, inertia, collDmg);
     }
 }
 
