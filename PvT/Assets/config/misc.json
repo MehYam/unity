@@ -46,5 +46,9 @@
 	"smoke2":
 	{
 		"asset": "smoke2"
+	},
+	"vehicleExplosion":
+	{
+		"asset": "vehicleExplosion"
 	}
 }

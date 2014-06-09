@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class Explosion : MonoBehaviour
+public class AnimationTerminator : MonoBehaviour
 {
     public GameObject TargetToRemove;
     void OnComplete()

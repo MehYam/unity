@@ -171,3 +171,68 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!1 &2125817710
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 2125817713}
+  - 114: {fileID: 2125817712}
+  - 114: {fileID: 2125817711}
+  m_Layer: 0
+  m_Name: _gameState
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2125817711
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2125817710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf480abf7403bc5418c812aa44d3f3df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Bounce: {fileID: 6200000, guid: c4e015d2c312dd944b4a529c783e8795, type: 2}
+  Vehicles: {fileID: 4900000, guid: 6f0130c3e04f4334aa58240080c71032, type: 3}
+  TankHulls: {fileID: 4900000, guid: 642b1cee0fc5ae24d8f8823d544a1af8, type: 3}
+  TankTurrets: {fileID: 4900000, guid: a7265d908f2e32d4aa5e18d2c247c427, type: 3}
+  Ammo: {fileID: 4900000, guid: a4b492bf4e95fc14184e1d6c79489364, type: 3}
+  Levels: {fileID: 4900000, guid: 77022b18d2b218d4eae167bb0696d069, type: 3}
+  AI: {fileID: 4900000, guid: f099c617aea0bc3489690336e990cb2b, type: 3}
+  Misc: {fileID: 4900000, guid: fe79f9de671e9fb41a1b62a9e434d791, type: 3}
+  Explosion: {fileID: 100000, guid: d107776b1023bca4ca899ffcf1fd7b9b, type: 2}
+  defaultPlane: bee
+  defaultTank: tankhull0
+  defaultTurret: tankturret0
+  defaultIsPlane: 1
+--- !u!114 &2125817712
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2125817710}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2017611e10443fc4793963d0047f4e4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Log: 0
+--- !u!4 &2125817713
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2125817710}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 1

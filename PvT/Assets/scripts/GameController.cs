@@ -9,8 +9,8 @@ public sealed class GameController
 {
     public GameObject player { get; private set; }
     public Loader loader { get; private set; }
+    public Effects effects { get; private set; }
 
-    readonly Effects effects;
     readonly GameObject ammoParent;
     public GameController(Loader loader)
     {
@@ -287,13 +287,9 @@ public sealed class GameController
         GlobalGameEvent.Instance.FirePlayerSpawned(go);
     }
 
+    //KAI: use global game event
     public void HandleCollision(ContactPoint2D contact)
     {
-        if (contact.collider.gameObject == Main.Instance.game.player)
-        {
-            var boom = effects.GetRandomSmallExplosion().ToGameObject();
-            boom.transform.localPosition = contact.point;
-        }
         var colliderActor = contact.collider.GetComponent<Actor>();
         var otherColliderActor = contact.otherCollider.GetComponent<Actor>();
 
@@ -302,8 +298,15 @@ public sealed class GameController
         if (colliderActor != null && otherColliderActor != null &&
             colliderActor.gameObject.layer != otherColliderActor.gameObject.layer)
         {
+            if (colliderActor.gameObject.layer > otherColliderActor.gameObject.layer)
+            {
+                // this prevents dual collision sparks when two things collide
+                var boom = effects.GetRandomSmallExplosion().ToGameObject();
+                boom.transform.localPosition = contact.point;
+            }
+
             var oldHealth = colliderActor.health;
-            colliderActor.health -= (otherColliderActor.collisionDamage * Random.Range(0.8f, 1.1f));
+            colliderActor.health -= (otherColliderActor.collisionDamage * Random.Range(0.9f, 1.1f));
 
             Debug.Log(string.Format("{0} health from {1} to {2}", colliderActor.name, oldHealth, colliderActor.health));
         }
@@ -313,7 +316,17 @@ public sealed class GameController
             StartNextWave();
         }
     }
+    //KAI: use GlobalGameEvent
+    public void HandleActorDeath(Actor actor)
+    {
+        if (actor.gameObject.layer == (int)Consts.Layer.FRIENDLY || actor.gameObject.layer == (int)Consts.Layer.MOB)
+        {
+            var asplode = effects.GetVehicleExplosion().ToGameObject();
+            asplode.transform.position = actor.transform.position;
+        }
 
+        GameObject.Destroy(actor.gameObject);
+    }
 }
 
 public sealed class Level

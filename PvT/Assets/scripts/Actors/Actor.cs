@@ -32,7 +32,7 @@ public class Actor : MonoBehaviour
         if (((timeToLive > 0) && Time.fixedTime > timeToLive) ||
             (health <= 0))
         {
-            Destroy(this.gameObject);
+            Main.Instance.game.HandleActorDeath(this);
         }
 	}
 

@@ -77,7 +77,10 @@ public static class Consts
     {
         return new Vector2(a.x + b.x, a.y + b.y);
     }
-
+    static public Vector3 ScatterRandomly(float radius)
+    {
+        return new Vector3(Random.Range(-radius, radius), Random.Range(-radius, radius));
+    }
     static public void RemoveAllChildren(Transform transform)
     {
         Debug.Log("Destroying children: " + transform.childCount);
