@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -37,9 +37,7 @@ public sealed class Effects
 
     static WorldObjectType Rand(IList<WorldObjectType> container)
     {
-        var index = Random.Range(0, container.Count);
-        Debug.Log(container.Count + " -> " + index);
-        return container[Random.Range(0, container.Count - 1)];
+        return container[Random.Range(0, container.Count)];
     }
     public WorldObjectType GetRandomExplosion()
     {

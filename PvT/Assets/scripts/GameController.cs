@@ -310,21 +310,25 @@ public sealed class GameController
 
             Debug.Log(string.Format("{0} health from {1} to {2}", colliderActor.name, oldHealth, colliderActor.health));
         }
-
-        if (_liveEnemies == 0)
-        {
-            StartNextWave();
-        }
     }
     //KAI: use GlobalGameEvent
     public void HandleActorDeath(Actor actor)
     {
-        if (actor.gameObject.layer == (int)Consts.Layer.FRIENDLY || actor.gameObject.layer == (int)Consts.Layer.MOB)
+        var enemy = actor.gameObject.layer == (int)Consts.Layer.MOB;
+        if (actor.gameObject.layer == (int)Consts.Layer.FRIENDLY || enemy)
         {
             var asplode = effects.GetVehicleExplosion().ToGameObject();
             asplode.transform.position = actor.transform.position;
-        }
 
+            if (enemy)
+            {
+                --_liveEnemies;
+                if (_liveEnemies == 0)
+                {
+                    StartNextWave();
+                }
+            }
+        }
         GameObject.Destroy(actor.gameObject);
     }
 }

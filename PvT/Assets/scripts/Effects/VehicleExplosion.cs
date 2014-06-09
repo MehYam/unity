@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 
 public class VehicleExplosion : MonoBehaviour
@@ -24,11 +24,11 @@ public class VehicleExplosion : MonoBehaviour
             smoke.transform.parent = transform;
 
             smoke.transform.Rotate(0, 0, Random.Range(0, 360));
-            smoke.transform.localPosition = Consts.ScatterRandomly(0.5f);
+            smoke.transform.localPosition = Consts.ScatterRandomly(0.25f);
 
             explosion = game.effects.GetRandomSmallExplosion().ToGameObject();
             explosion.transform.parent = transform;
-            explosion.transform.localPosition = Consts.ScatterRandomly(0.3f);
+            explosion.transform.localPosition = Consts.ScatterRandomly(0.5f);
 
             yield return new WaitForSeconds(Random.Range(0.01f, 0.05f));
         }
