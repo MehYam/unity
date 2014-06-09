@@ -283,10 +283,7 @@ public sealed class GameController
                 boom.transform.localPosition = contact.point;
             }
 
-            var oldHealth = colliderActor.health;
-            colliderActor.health -= (otherColliderActor.collisionDamage * Random.Range(0.9f, 1.1f));
-
-            Debug.Log(string.Format("{0} health from {1} to {2}", colliderActor.name, oldHealth, colliderActor.health));
+            colliderActor.TakeDamage(otherColliderActor.collisionDamage * Random.Range(0.9f, 1.1f));
         }
     }
     //KAI: use GlobalGameEvent

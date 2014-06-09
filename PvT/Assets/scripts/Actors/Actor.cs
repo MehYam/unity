@@ -3,9 +3,8 @@ using System.Collections;
 
 public class Actor : MonoBehaviour
 {
-    public float health;
+    public float health { get; private set; }
     public float collisionDamage;
-
     public float timeToLive = 0;
     public IActorBehavior behavior { private get; set; }
 
@@ -19,6 +18,24 @@ public class Actor : MonoBehaviour
    
             _worldObject = value;
         }
+    }
+
+    float _lastHealthUpdate = 0;
+    ProgressBar _healthBar;
+    public void TakeDamage(float dmg)
+    {
+        this.health -= dmg;
+
+        if (this.health > 0 && _healthBar == null)
+        {
+            var bar = (GameObject)GameObject.Instantiate(Main.Instance.ProgressBar);
+            _healthBar = bar.GetComponent<ProgressBar>();
+            bar.transform.parent = transform;
+
+            _healthBar.percent = health / worldObject.health;
+            _healthBar.gameObject.SetActive(true);
+        }
+        _lastHealthUpdate = Time.fixedTime;
     }
 
     void Start()
@@ -44,6 +61,22 @@ public class Actor : MonoBehaviour
             (health <= 0))
         {
             Main.Instance.game.HandleActorDeath(this);
+        }
+
+        if (_healthBar && _healthBar.gameObject.activeSelf)
+        {
+            if ((Time.fixedTime - _lastHealthUpdate) > 3)
+            {
+                _healthBar.gameObject.SetActive(false);
+            }
+            else
+            {
+                var level = new Quaternion();
+                level.eulerAngles = Vector3.zero;
+
+                _healthBar.transform.position = transform.position + new Vector3(0, 0.5f);
+                _healthBar.transform.rotation = level;
+            }
         }
 	}
 

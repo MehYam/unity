@@ -15,6 +15,7 @@
 # All platforms:
 Library
 Temp
+obj
 *.csproj
 *.pidb
 *.unityproj

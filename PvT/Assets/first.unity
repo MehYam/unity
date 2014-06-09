@@ -82,7 +82,6 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 3432514}
-  - 114: {fileID: 3432515}
   - 114: {fileID: 3432516}
   m_Layer: 0
   m_Name: _gameState
@@ -103,18 +102,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!114 &3432515
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 3432512}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2017611e10443fc4793963d0047f4e4a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Log: 0
 --- !u!114 &3432516
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -134,11 +121,11 @@ MonoBehaviour:
   Levels: {fileID: 4900000, guid: 77022b18d2b218d4eae167bb0696d069, type: 3}
   AI: {fileID: 4900000, guid: f099c617aea0bc3489690336e990cb2b, type: 3}
   Misc: {fileID: 4900000, guid: fe79f9de671e9fb41a1b62a9e434d791, type: 3}
-  Explosion: {fileID: 100000, guid: d107776b1023bca4ca899ffcf1fd7b9b, type: 2}
+  ProgressBar: {fileID: 100002, guid: 9f7fac8877bdd354c851e5f09a14d302, type: 2}
   defaultPlane: bee
   defaultTank: tankhull0
   defaultTurret: tankturret0
-  defaultIsPlane: 0
+  defaultIsPlane: 1
 --- !u!1 &52789968
 GameObject:
   m_ObjectHideFlags: 0
@@ -1645,7 +1632,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e03719fed5f4e0c4e99a7b41c6369c2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 0
   collisionDamage: 0
   timeToLive: 0
 --- !u!58 &1657511843
@@ -2101,7 +2087,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e03719fed5f4e0c4e99a7b41c6369c2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 0
   collisionDamage: 0
   timeToLive: 0
 --- !u!50 &1937437667

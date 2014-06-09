@@ -14,7 +14,7 @@ public class Main : MonoBehaviour
     public TextAsset AI;
     public TextAsset Misc;
 
-    public GameObject Explosion;
+    public GameObject ProgressBar;
 
     public string defaultPlane = "BEE";
     public string defaultTank = "tankhull0";
