@@ -55,7 +55,7 @@ public sealed class GameController
         {
             Debug.Log("spawning " + main.defaultPlane);
             var playerVehicle = loader.GetVehicle(main.defaultPlane);
-            var player = SpawnVehicle(playerVehicle);
+            var player = playerVehicle.Spawn();
             InitPlayer(player, playerVehicle);
             AddPlayerPlaneBehaviors(player, playerVehicle);
         }
@@ -93,35 +93,9 @@ public sealed class GameController
         }
     }
 
-    //KAI: this whole thing is so fucking sad and easy to call incorrectly.
-    // Spawn should probably be an overridden member function of WorldObjectType.
-    GameObject SpawnWorldObject(WorldObjectType worldObject)
-    {
-        var go = worldObject.ToGameObject();
-        go.name = worldObject.name;
-        var actor = go.AddComponent<Actor>();
-        actor.worldObject = worldObject;
-        actor.health = Mathf.Max(1, worldObject.health);
-        return go;
-    }
-    GameObject SpawnVehicle(VehicleType vehicle)
-    {
-        var go = SpawnWorldObject(vehicle);
-        go.AddComponent<DropShadow>();
-    
-        var body = go.AddComponent<Rigidbody2D>();
-        body.mass = float.IsNaN(vehicle.mass) ? 0 : vehicle.mass;
-        body.drag = 0.5f;
-
-        go.GetComponent<Collider2D>().sharedMaterial = Main.Instance.Bounce;
-
-        go.GetComponent<Actor>().collisionDamage = vehicle.collDmg;
-        return go;
-    }
-
     void SpawnMob(VehicleType vehicle)
     {
-        var go = SpawnVehicle(vehicle);
+        var go = vehicle.Spawn();
         go.name += " enemy";
 
         var ai = loader.GetAI(vehicle.name);
@@ -150,7 +124,7 @@ public sealed class GameController
     //kai: this ain't perfect
     public void SpawnAmmo(Actor launcher, VehicleType type, WorldObjectType.Weapon weapon, Consts.Layer layer)
     {
-        var go = SpawnVehicle(type);
+        var go = type.Spawn();
         go.transform.parent = ammoParent.transform;
 
         var body = go.GetComponent<Rigidbody2D>();
@@ -213,13 +187,11 @@ public sealed class GameController
             turret = game.loader.GetTankPart(tankTurret);
             var tread = game.loader.GetTankPart("tanktreadParent");
 
-            hullGO = game.SpawnVehicle(hull);
-            turretGO = game.SpawnWorldObject(turret);
+            hullGO = hull.Spawn();
+            turretGO = turret.Spawn();
 
-            hullGO.rigidbody2D.drag = 1;
-
-            treadLeft = tread.ToGameObject();
-            treadRight = tread.ToGameObject();
+            treadLeft = tread.ToRawGameObject();
+            treadRight = tread.ToRawGameObject();
             treadLeft.name = "treadLeft";
             treadRight.name = "treadRight";
 
@@ -301,7 +273,7 @@ public sealed class GameController
             if (colliderActor.gameObject.layer > otherColliderActor.gameObject.layer)
             {
                 // this prevents dual collision sparks when two things collide
-                var boom = effects.GetRandomSmallExplosion().ToGameObject();
+                var boom = effects.GetRandomSmallExplosion().ToRawGameObject();
                 boom.transform.localPosition = contact.point;
             }
 
@@ -317,7 +289,7 @@ public sealed class GameController
         var enemy = actor.gameObject.layer == (int)Consts.Layer.MOB;
         if (actor.gameObject.layer == (int)Consts.Layer.FRIENDLY || enemy)
         {
-            var asplode = effects.GetVehicleExplosion().ToGameObject();
+            var asplode = effects.GetVehicleExplosion().ToRawGameObject();
             asplode.transform.position = actor.transform.position;
 
             if (enemy)

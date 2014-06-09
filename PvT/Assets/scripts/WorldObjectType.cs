@@ -41,10 +41,20 @@ public class WorldObjectType
         this.health = rhs.health;
         this.weapons = rhs.weapons;
     }
-    public GameObject ToGameObject()
+    public GameObject ToRawGameObject()
     {
         return (GameObject)GameObject.Instantiate(prefab);
     }
+    public virtual GameObject Spawn()
+    {
+        var go = ToRawGameObject();
+        go.name = name;
+        var actor = go.AddComponent<Actor>();
+        actor.worldObject = this;
+        actor.health = Mathf.Max(1, health);
+        return go;
+    }
+
     public override string ToString()
     {
         return string.Format("{0} {1} mass {2} maxSpeed {3}", name, assetID, mass, maxSpeed);
@@ -117,7 +127,21 @@ public class VehicleType : WorldObjectType
         this.inertia = rhs.inertia;
         this.collDmg = rhs.collDmg;
     }
+    public override GameObject Spawn()
+    {
+        var go = base.Spawn();
 
+        go.AddComponent<DropShadow>();
+
+        var body = go.AddComponent<Rigidbody2D>();
+        body.mass = float.IsNaN(mass) ? 0 : mass;
+        body.drag = 0.5f;
+
+        go.GetComponent<Collider2D>().sharedMaterial = Main.Instance.Bounce;
+        go.GetComponent<Actor>().collisionDamage = collDmg;
+
+        return go;
+    }
     public override string ToCSV()
     {
         return base.ToCSV() + string.Format(",{0},{1},{2},{3}", health, acceleration, inertia, collDmg);
@@ -137,6 +161,12 @@ public sealed class TankHullType : VehicleType
         base(baseClass)
     {
         this.turretPivotY = turretPivotY;
+    }
+    public override GameObject Spawn()
+    {
+        var go = base.Spawn();
+        go.rigidbody2D.drag = 1;
+        return go;
     }
 }
 
