@@ -8,18 +8,19 @@ using System.Collections.ObjectModel;
 public sealed class GameController
 {
     public GameObject player { get; private set; }
-
     public Loader loader { get; private set; }
 
     readonly Effects effects;
+    readonly GameObject ammoParent;
     public GameController(Loader loader)
     {
         Debug.Log("GameState constructor " + GetHashCode());
 
         this.loader = loader;
-        GlobalGameEvent.Instance.MapReady += OnMapReady;
+        this.effects = new Effects(loader);
+        this.ammoParent = GameObject.Find("_ammoParent");
 
-        effects = new Effects(loader);
+        GlobalGameEvent.Instance.MapReady += OnMapReady;
     }
 
     //KAI: some nice way to mark this as dev only?
@@ -150,6 +151,8 @@ public sealed class GameController
     public void SpawnAmmo(Actor launcher, VehicleType type, WorldObjectType.Weapon weapon, Consts.Layer layer)
     {
         var go = SpawnVehicle(type);
+        go.transform.parent = ammoParent.transform;
+
         var body = go.GetComponent<Rigidbody2D>();
         body.drag = 0;
 
@@ -162,9 +165,13 @@ public sealed class GameController
         var ammo = go.GetComponent<Actor>();
         ammo.worldObject = type;
         ammo.timeToLive = 2;
-        ammo.health = Mathf.Max(1, type.health);
         ammo.collisionDamage = weapon.damage;
+        ammo.health = type.health;
 
+        if (float.IsNaN(ammo.health) || ammo.health == 0)
+        {
+            ammo.health = 1;
+        }
         var scale = launcher.transform.localScale;
         var scaledOffset = new Vector2(weapon.offset.x, weapon.offset.y);
         scaledOffset.Scale(scale);
@@ -287,12 +294,18 @@ public sealed class GameController
             var boom = effects.GetRandomSmallExplosion().ToGameObject();
             boom.transform.localPosition = contact.point;
         }
+        var colliderActor = contact.collider.GetComponent<Actor>();
+        var otherColliderActor = contact.otherCollider.GetComponent<Actor>();
 
-        var go = contact.collider.gameObject;
-        if (go.layer == (int)Consts.Layer.MOB)
+        //Debug.Log(string.Format("{0} layer {1} <=> {2} layer {3}", colliderActor.name, colliderActor.gameObject.layer, otherColliderActor.name, otherColliderActor.gameObject.layer));
+
+        if (colliderActor != null && otherColliderActor != null &&
+            colliderActor.gameObject.layer != otherColliderActor.gameObject.layer)
         {
-            //--_liveEnemies;
-            //GameObject.Destroy(go);
+            var oldHealth = colliderActor.health;
+            colliderActor.health -= (otherColliderActor.collisionDamage * Random.Range(0.8f, 1.1f));
+
+            Debug.Log(string.Format("{0} health from {1} to {2}", colliderActor.name, oldHealth, colliderActor.health));
         }
 
         if (_liveEnemies == 0)

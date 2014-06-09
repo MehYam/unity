@@ -13,7 +13,7 @@ public class WorldObjectType
     public readonly float maxSpeed;
     public readonly float sqrMaxSpeed; // useful for comparing vector magnitudes
 
-    public readonly float health;
+    public readonly float health = 1;
     public readonly Weapon[] weapons; // the behavior's in charge of choosing a weapon and firing it
 
     static int s_instances = 0;
