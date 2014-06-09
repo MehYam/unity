@@ -109,7 +109,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 3432512}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2017611e10443fc4793963d0047f4e4a, type: 3}
   m_Name: 
@@ -138,7 +138,7 @@ MonoBehaviour:
   defaultPlane: bee
   defaultTank: tankhull0
   defaultTurret: tankturret0
-  defaultIsPlane: 1
+  defaultIsPlane: 0
 --- !u!1 &52789968
 GameObject:
   m_ObjectHideFlags: 0
