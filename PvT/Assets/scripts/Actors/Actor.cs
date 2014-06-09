@@ -7,8 +7,19 @@ public class Actor : MonoBehaviour
     public float collisionDamage;
 
     public float timeToLive = 0;
-    public WorldObjectType worldObject;
     public IActorBehavior behavior { private get; set; }
+
+    WorldObjectType _worldObject;
+    public WorldObjectType worldObject 
+    {
+        get { return _worldObject; }
+        set
+        {
+            health = (float.IsNaN(value.health) || value.health == 0) ? 1 : value.health;
+   
+            _worldObject = value;
+        }
+    }
 
     void Start()
     {
@@ -44,7 +55,6 @@ public class Actor : MonoBehaviour
     {
         foreach (ContactPoint2D contact in collision.contacts)
         {
-            Debug.DrawRay(contact.point, contact.normal, Color.white);
             Main.Instance.game.HandleCollision(contact);
         }
         //Debug.Log(collision.relativeVelocity.magnitude);

@@ -136,15 +136,9 @@ public sealed class GameController
         sprite.sortingOrder = Consts.AMMO_SORT_ORDER;
 #endif
         var ammo = go.GetComponent<Actor>();
-        ammo.worldObject = type;
         ammo.timeToLive = 2;
         ammo.collisionDamage = weapon.damage;
-        ammo.health = type.health;
 
-        if (float.IsNaN(ammo.health) || ammo.health == 0)
-        {
-            ammo.health = 1;
-        }
         var scale = launcher.transform.localScale;
         var scaledOffset = new Vector2(weapon.offset.x, weapon.offset.y);
         scaledOffset.Scale(scale);

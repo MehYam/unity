@@ -49,9 +49,9 @@ public class WorldObjectType
     {
         var go = ToRawGameObject();
         go.name = name;
+
         var actor = go.AddComponent<Actor>();
         actor.worldObject = this;
-        actor.health = Mathf.Max(1, health);
         return go;
     }
 
@@ -139,7 +139,6 @@ public class VehicleType : WorldObjectType
 
         go.GetComponent<Collider2D>().sharedMaterial = Main.Instance.Bounce;
         go.GetComponent<Actor>().collisionDamage = collDmg;
-
         return go;
     }
     public override string ToCSV()
