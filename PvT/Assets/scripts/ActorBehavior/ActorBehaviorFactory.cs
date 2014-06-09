@@ -143,6 +143,15 @@ public sealed class ActorBehaviorFactory
             return _faceForward;
         }
     }
+    //IActorBehavior _whirl;
+    //public IActorBehavior whirl
+    //{
+    //    get
+    //    {
+    //        if (_whirl == null) { _whirl = new Spin(10); }
+    //        return _whirl;
+    //    }
+    //}
     public IActorBehavior CreatePatrol(RateLimiter rate)
     {
         return new Patrol();

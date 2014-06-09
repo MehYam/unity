@@ -10,5 +10,41 @@
 	"muzzleflash2":
 	{
 		"asset": "muzzleflash2"
+	},
+	"largeExplosion1":
+	{
+		"asset": "largeExplosion1"
+	},
+	"largeExplosion2":
+	{
+		"asset": "largeExplosion2"
+	},
+	"largeExplosion3":
+	{
+		"asset": "largeExplosion3"
+	},
+	"largeExplosion4":
+	{
+		"asset": "largeExplosion4"
+	},
+	"largeExplosion5":
+	{
+		"asset": "largeExplosion5"
+	},
+	"smallExplosion1":
+	{
+		"asset": "smallExplosion1"
+	},
+	"smallExplosion2":
+	{
+		"asset": "smallExplosion2"
+	},
+	"smoke1":
+	{
+		"asset": "smoke1"
+	},
+	"smoke2":
+	{
+		"asset": "smoke2"
 	}
 }

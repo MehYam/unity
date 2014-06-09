@@ -82,6 +82,7 @@ public class Loader
 
         // load the asset and extract the firepoints
         var prefab = Resources.Load<GameObject>(assetPath + assetID);
+        Debug.Log("assetID" + assetID);
         prefab.transform.localPosition = Vector3.zero;
 
         WorldObjectType.Weapon[] weapons = null;

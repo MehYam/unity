@@ -10,12 +10,16 @@ public sealed class GameController
     public GameObject player { get; private set; }
 
     public Loader loader { get; private set; }
+
+    readonly Effects effects;
     public GameController(Loader loader)
     {
         Debug.Log("GameState constructor " + GetHashCode());
 
         this.loader = loader;
         GlobalGameEvent.Instance.MapReady += OnMapReady;
+
+        effects = new Effects(loader);
     }
 
     //KAI: some nice way to mark this as dev only?
@@ -276,7 +280,7 @@ public sealed class GameController
     {
         if (contact.collider.gameObject == Main.Instance.game.player)
         {
-            var boom = (GameObject)GameObject.Instantiate(Main.Instance.Explosion);
+            var boom = effects.GetRandomSmallExplosion().ToGameObject();
             boom.transform.localPosition = contact.point;
         }
 
