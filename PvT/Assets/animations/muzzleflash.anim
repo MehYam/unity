@@ -99,7 +99,7 @@ AnimationClip:
   m_EulerEditorCurves: []
   m_Events:
   - time: .166666672
-    functionName: OnFlashComplete
+    functionName: OnComplete
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

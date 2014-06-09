@@ -121,7 +121,6 @@ public sealed class GameController
         go.layer = (int)Consts.Layer.MOB;
     }
 
-    //kai: this ain't perfect
     public void SpawnAmmo(Actor launcher, VehicleType type, WorldObjectType.Weapon weapon, Consts.Layer layer)
     {
         var go = type.Spawn();
@@ -171,6 +170,19 @@ public sealed class GameController
         }
 
         go.layer = (int)layer;
+
+        if (launcher.worldObject is TankPartType)
+        {
+            // it's a turret
+            SpawnMuzzleFlash(ammo);
+        }
+    }
+
+    void SpawnMuzzleFlash(Actor launcher)
+    {
+        var flash = effects.GetRandomMuzzleFlash().ToRawGameObject();
+        flash.transform.position = launcher.transform.position;
+        flash.transform.rotation = launcher.transform.rotation;
     }
 
     sealed class TankSpawnHelper

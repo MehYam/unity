@@ -2,10 +2,10 @@
 	"tankhull0":
 	{
 		"asset": "tankhull0",
-		"health": "",
+		"health": "800",
 		"mass": "30",
 		"maxSpeed": "30",
-		"acceleration": "15",
+		"acceleration": "60",
 		"inertia": "0",
 		"collision": "33",
 		"reward": "5",
@@ -13,14 +13,14 @@
 		"pivotY": "52",
 		"payload":
 		[
-			"CANNONROUND1, 4, -30, 0, 180",
-			"CANNONROUND1, 4,  30, 0, 180"
+			"CANNONROUND1, 4, -24, -130, 180",
+			"CANNONROUND1, 4,  24, -130, 180"
 		]
 	},
 	"tankhull1":
 	{
 		"asset": "tankhull1",
-		"health": "",
+		"health": "1300",
 		"mass": "30",
 		"maxSpeed": "30",
 		"acceleration": "15",
@@ -36,7 +36,7 @@
 	"tankhull2":
 	{
 		"asset": "tankhull2",
-		"health": "",
+		"health": "2000",
 		"mass": "30",
 		"maxSpeed": "30",
 		"acceleration": "15",
@@ -53,7 +53,7 @@
 	"tankhull3":
 	{
 		"asset": "tankhull3",
-		"health": "",
+		"health": "3000",
 		"mass": "30",
 		"maxSpeed": "30",
 		"acceleration": "15",
@@ -70,7 +70,7 @@
 	"tankhull4":
 	{
 		"asset": "tankhull4",
-		"health": "",
+		"health": "4000",
 		"mass": "30",
 		"maxSpeed": "30",
 		"acceleration": "15",
