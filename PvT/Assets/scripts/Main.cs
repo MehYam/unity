@@ -4,6 +4,8 @@ using System.Collections;
 
 public class Main : MonoBehaviour
 {
+    public PhysicsMaterial2D Bounce;
+
     public TextAsset Vehicles;
     public TextAsset TankHulls;
     public TextAsset TankTurrets;

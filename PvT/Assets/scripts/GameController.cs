@@ -54,7 +54,7 @@ public sealed class GameController
         {
             Debug.Log("spawning " + main.defaultPlane);
             var playerVehicle = loader.GetVehicle(main.defaultPlane);
-            var player = SpawnWorldObject(playerVehicle);
+            var player = SpawnVehicle(playerVehicle);
             InitPlayer(player, playerVehicle);
             AddPlayerPlaneBehaviors(player, playerVehicle);
         }
@@ -92,31 +92,35 @@ public sealed class GameController
         }
     }
 
-    GameObject SpawnWorldObject(WorldObjectType worldObject, bool physics = true)
+    //KAI: this whole thing is so fucking sad and easy to call incorrectly.
+    // Spawn should probably be an overridden member function of WorldObjectType.
+    GameObject SpawnWorldObject(WorldObjectType worldObject)
     {
         var go = worldObject.ToGameObject();
+        go.name = worldObject.name;
         var actor = go.AddComponent<Actor>();
         actor.worldObject = worldObject;
-
-        //KAI: this whole hierarchy seems messy and in need of simplification.  It would be easier if it had no types...
         actor.health = Mathf.Max(1, worldObject.health);
-        Debug.Log(worldObject.name + " " + actor.health);
-
+        return go;
+    }
+    GameObject SpawnVehicle(VehicleType vehicle)
+    {
+        var go = SpawnWorldObject(vehicle);
         go.AddComponent<DropShadow>();
-        go.name = worldObject.name;
+    
+        var body = go.AddComponent<Rigidbody2D>();
+        body.mass = float.IsNaN(vehicle.mass) ? 0 : vehicle.mass;
+        body.drag = 0.5f;
 
-        if (physics)
-        {
-            var body = go.AddComponent<Rigidbody2D>();
-            body.mass = float.IsNaN(worldObject.mass) ? 0 : worldObject.mass;
-            body.drag = 0.5f;
-        }
+        go.GetComponent<Collider2D>().sharedMaterial = Main.Instance.Bounce;
+
+        go.GetComponent<Actor>().collisionDamage = vehicle.collDmg;
         return go;
     }
 
     void SpawnMob(VehicleType vehicle)
     {
-        var go = SpawnWorldObject(vehicle);
+        var go = SpawnVehicle(vehicle);
         go.name += " enemy";
 
         var ai = loader.GetAI(vehicle.name);
@@ -145,8 +149,8 @@ public sealed class GameController
     //kai: this ain't perfect
     public void SpawnAmmo(Actor launcher, VehicleType type, WorldObjectType.Weapon weapon, Consts.Layer layer)
     {
-        var go = type.ToGameObject();
-        var body = go.AddComponent<Rigidbody2D>();
+        var go = SpawnVehicle(type);
+        var body = go.GetComponent<Rigidbody2D>();
         body.drag = 0;
 
         var sprite = go.GetComponent<SpriteRenderer>();
@@ -155,11 +159,11 @@ public sealed class GameController
 #else
         sprite.sortingOrder = Consts.AMMO_SORT_ORDER;
 #endif
-        var ammo = go.AddComponent<Actor>();
+        var ammo = go.GetComponent<Actor>();
         ammo.worldObject = type;
         ammo.timeToLive = 2;
         ammo.health = Mathf.Max(1, type.health);
-
+        ammo.collisionDamage = weapon.damage;
 
         var scale = launcher.transform.localScale;
         var scaledOffset = new Vector2(weapon.offset.x, weapon.offset.y);
@@ -202,8 +206,8 @@ public sealed class GameController
             turret = game.loader.GetTankPart(tankTurret);
             var tread = game.loader.GetTankPart("tanktreadParent");
 
-            hullGO = game.SpawnWorldObject(hull);
-            turretGO = game.SpawnWorldObject(turret, false);
+            hullGO = game.SpawnVehicle(hull);
+            turretGO = game.SpawnWorldObject(turret);
 
             hullGO.rigidbody2D.drag = 1;
 

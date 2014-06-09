@@ -56,7 +56,7 @@ public class WorldObjectType
     public sealed class Weapon
     {
         public readonly string type; // KAI: convert to enum
-        public readonly int dmg;
+        public readonly int damage;
         public readonly Vector2 offset;
         public readonly float angle;
         public readonly int level; // KAI: nuke this.... turn it instead into a new type
@@ -64,7 +64,7 @@ public class WorldObjectType
         public Weapon(string type, int dmg, Vector2 offset, float angle, int level)
         {
             this.type = type;
-            this.dmg = dmg;
+            this.damage = dmg;
             this.offset = offset;
             this.angle = angle;
             this.level = level;
@@ -85,7 +85,7 @@ public class WorldObjectType
 
         public override string ToString()
         {
-            return string.Format("Weapon {0} dmg {1} level {2}", type, dmg, level);
+            return string.Format("Weapon {0} dmg {1} level {2}", type, damage, level);
         }
     }
 }
