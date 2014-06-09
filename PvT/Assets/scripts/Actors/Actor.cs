@@ -26,16 +26,18 @@ public class Actor : MonoBehaviour
     {
         this.health -= dmg;
 
-        if (this.health > 0 && _healthBar == null)
+        if (this.health > 0)
         {
-            var bar = (GameObject)GameObject.Instantiate(Main.Instance.ProgressBar);
-            _healthBar = bar.GetComponent<ProgressBar>();
-            bar.transform.parent = transform;
-
+            if (_healthBar == null)
+            {
+                var bar = (GameObject)GameObject.Instantiate(Main.Instance.ProgressBar);
+                _healthBar = bar.GetComponent<ProgressBar>();
+                bar.transform.parent = transform;
+            }
             _healthBar.percent = health / worldObject.health;
             _healthBar.gameObject.SetActive(true);
         }
-        _lastHealthUpdate = Time.fixedTime;
+        _lastHealthUpdate = Time.time;
     }
 
     void Start()
@@ -62,10 +64,12 @@ public class Actor : MonoBehaviour
         {
             Main.Instance.game.HandleActorDeath(this);
         }
-
+    }
+    void Update()
+    {
         if (_healthBar && _healthBar.gameObject.activeSelf)
         {
-            if ((Time.fixedTime - _lastHealthUpdate) > 3)
+            if ((Time.time - _lastHealthUpdate) > 300)
             {
                 _healthBar.gameObject.SetActive(false);
             }
@@ -76,6 +80,8 @@ public class Actor : MonoBehaviour
 
                 _healthBar.transform.position = transform.position + new Vector3(0, 0.5f);
                 _healthBar.transform.rotation = level;
+                
+                Debug.Log("ROTATING.... " + _healthBar.transform.rotation.eulerAngles.z + " " + _healthBar.transform.localRotation.eulerAngles.z);
             }
         }
 	}

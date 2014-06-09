@@ -2,7 +2,7 @@
 	"BEE":
 	{
 		"asset": "ship2_0",
-		"health": "40",
+		"health": "400",
 		"mass": "1",
 		"maxSpeed": "4",
 		"acceleration": "12",
