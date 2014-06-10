@@ -164,6 +164,10 @@ public sealed class ActorBehaviorFactory
     {
         return new PlayerfireBehavior(onFireBehavior);
     }
+    public IActorBehavior CreateShield()
+    {
+        return new PlayerShieldBehavior();
+    }
     public IActorBehavior CreateTankTreadAnimator(GameObject treadLeft, GameObject treadRight)
     {
         return new TankTreadAnimator(treadLeft, treadRight);
@@ -289,6 +293,44 @@ sealed class PlayerfireBehavior : IActorBehavior
     }
 }
 
+sealed class PlayerShieldBehavior : IActorBehavior
+{
+    GameObject _currentShield;
+    public void FixedUpdate(Actor actor)
+    {
+        var firing = (Input.GetButton("Fire1") || Input.GetButton("Jump"));  //KAI: -> utils class
+        if (firing && _currentShield == null)
+        {
+            var game = Main.Instance.game;
+
+            var shieldWeapon = actor.worldObject.weapons[0];
+            var type = game.loader.GetVehicle(shieldWeapon.type);
+            _currentShield = Main.Instance.game.SpawnAmmo(actor, type, shieldWeapon, Consts.Layer.FRIENDLY);
+
+            var shieldActor = _currentShield.GetComponent<Actor>();
+            shieldActor.timeToLive = 0;
+
+            _currentShield.transform.parent = actor.transform;
+            _currentShield.rigidbody2D.velocity = Vector2.zero;
+        }
+
+        if (_currentShield != null)
+        {
+            if (firing)
+            {
+                _currentShield.transform.localPosition = Vector3.zero;
+                _currentShield.transform.rotation = actor.transform.rotation;
+            }
+            else
+            {
+                _currentShield.transform.parent = GameObject.Find("_ammoParent").transform;
+                _currentShield.rigidbody2D.velocity = actor.rigidbody2D.velocity;
+                _currentShield = null;
+            }
+        }
+    }
+}
+
 sealed class TankTreadAnimator : IActorBehavior
 {
     readonly Animator left;
@@ -303,4 +345,3 @@ sealed class TankTreadAnimator : IActorBehavior
         left.speed = right.speed = actor.rigidbody2D.velocity.sqrMagnitude;
     }
 }
-

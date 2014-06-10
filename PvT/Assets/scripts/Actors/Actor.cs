@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Actor : MonoBehaviour
 {
-    public float health { get; private set; }
+    public float health;// { get; private set; }
     public float collisionDamage;
     public float timeToLive = 0;
     public IActorBehavior behavior { private get; set; }
@@ -80,8 +80,6 @@ public class Actor : MonoBehaviour
 
                 _healthBar.transform.position = transform.position + new Vector3(0, 0.5f);
                 _healthBar.transform.rotation = level;
-                
-                Debug.Log("ROTATING.... " + _healthBar.transform.rotation.eulerAngles.z + " " + _healthBar.transform.localRotation.eulerAngles.z);
             }
         }
 	}

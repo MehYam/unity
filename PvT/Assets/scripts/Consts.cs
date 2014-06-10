@@ -81,6 +81,24 @@ public static class Consts
     {
         return new Vector3(Random.Range(-radius, radius), Random.Range(-radius, radius));
     }
+    /// <summary>
+    /// When you want something to launch out the 'nose' of a launcher
+    /// </summary>
+    /// <param name="launcher">The guy with a nose</param>
+    /// <param name="launchee">The projectile</param>
+    static public void Sneeze(Transform launcher, Transform launchee, Vector2 offset, float angle = 0)
+    {
+        var scale = launcher.localScale;
+        var scaledOffset = new Vector2(offset.x, offset.y);
+        scaledOffset.Scale(scale);
+        scaledOffset.y = offset.y;  //KAI: not sure why....
+
+        launchee.localPosition = Consts.Add(launcher.transform.position, scaledOffset);
+        launchee.RotateAround(launcher.transform.position, Vector3.forward, launcher.transform.rotation.eulerAngles.z);
+
+        launchee.Rotate(0, 0, -angle);
+
+    }
     static public void RemoveAllChildren(Transform transform)
     {
         Debug.Log("Destroying children: " + transform.childCount);

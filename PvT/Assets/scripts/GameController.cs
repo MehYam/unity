@@ -121,7 +121,7 @@ public sealed class GameController
         go.layer = (int)Consts.Layer.MOB;
     }
 
-    public void SpawnAmmo(Actor launcher, VehicleType type, WorldObjectType.Weapon weapon, Consts.Layer layer)
+    public GameObject SpawnAmmo(Actor launcher, VehicleType type, WorldObjectType.Weapon weapon, Consts.Layer layer)
     {
         var go = type.Spawn();
         go.transform.parent = ammoParent.transform;
@@ -139,17 +139,7 @@ public sealed class GameController
         ammo.timeToLive = 2;
         ammo.collisionDamage = weapon.damage;
 
-        var scale = launcher.transform.localScale;
-        var scaledOffset = new Vector2(weapon.offset.x, weapon.offset.y);
-        scaledOffset.Scale(scale);
-        scaledOffset.y = weapon.offset.y;  //KAI: not sure why....
-
-        //Debug.Log(string.Format("{0} -> {1}, scale {2}", weapon.offset, scaledOffset, scale));
-
-        ammo.transform.localPosition = Consts.Add(launcher.transform.position, scaledOffset);
-        ammo.transform.RotateAround(launcher.transform.position, Vector3.forward, launcher.transform.rotation.eulerAngles.z);
-
-        ammo.transform.Rotate(0, 0, -weapon.angle);
+        Consts.Sneeze(launcher.transform, ammo.transform, weapon.offset, weapon.angle);
         if (type.acceleration == 0)
         {
             // give the ammo instant acceleration
@@ -170,6 +160,7 @@ public sealed class GameController
             // it's a turret
             SpawnMuzzleFlash(ammo);
         }
+        return go;
     }
 
     void SpawnMuzzleFlash(Actor launcher)
@@ -227,9 +218,18 @@ public sealed class GameController
         behaviors.Add(new PlayerInput());
         behaviors.Add(ActorBehaviorFactory.Instance.faceForward);
         behaviors.Add(ActorBehaviorFactory.Instance.faceMouseOnFire);
-        behaviors.Add(ActorBehaviorFactory.Instance.CreatePlayerfire(
-                ActorBehaviorFactory.Instance.CreateAutofire(new RateLimiter(0.5f), Consts.Layer.FRIENDLY_AMMO))
-        );
+
+        //KAI: cheeze
+        if (vehicle.weapons[0].type == "SHIELD")
+        {
+            behaviors.Add(ActorBehaviorFactory.Instance.CreateShield());
+        }
+        else
+        {
+            behaviors.Add(ActorBehaviorFactory.Instance.CreatePlayerfire(
+                    ActorBehaviorFactory.Instance.CreateAutofire(new RateLimiter(0.5f), Consts.Layer.FRIENDLY_AMMO))
+            );
+        }
 
         go.GetComponent<Actor>().behavior = behaviors;
     }

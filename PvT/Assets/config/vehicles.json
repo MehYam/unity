@@ -2,7 +2,7 @@
 	"BEE":
 	{
 		"asset": "ship2_0",
-		"health": "400",
+		"health": "40",
 		"mass": "1",
 		"maxSpeed": "4",
 		"acceleration": "12",
@@ -12,7 +12,7 @@
 		"behavior": "BEE_BEHAVIOR",
 		"payload":
 		[
-			"BULLET, 20, 0, 0, 0, 1"
+			"BULLET, 18, 0, 0, 0, 1"
 		]
 	},
 	"GREENK":
@@ -25,14 +25,18 @@
 		"inertia": "0",
 		"collision": "10",
 		"reward": "5",
-		"behavior": "GREENK_BEHAVIOR"
+		"behavior": "GREENK_BEHAVIOR",
+		"payload":
+		[
+			"SHIELD, 100, 0, 0, 0"
+		]
 	},
 	"MOTH":
 	{
 		"asset": "ship2_7",
 		"health": "30",
 		"mass": "2.5",
-		"maxSpeed": "10",
+		"maxSpeed": "8",
 		"acceleration": "20",
 		"inertia": "0",
 		"collision": "15",
@@ -171,7 +175,7 @@
 		"asset": "ship2_7_0",
 		"health": "180",
 		"mass": "2.5",
-		"maxSpeed": "12",
+		"maxSpeed": "10",
 		"acceleration": "20",
 		"inertia": "0",
 		"collision": "66",

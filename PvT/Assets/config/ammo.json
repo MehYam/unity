@@ -51,7 +51,7 @@
 	{
 		"asset": "shield",
 		"mass": "",
-		"maxSpeed": "3",
+		"maxSpeed": "100",
 		"acceleration": "",
 		"inertia": "",
 	}
