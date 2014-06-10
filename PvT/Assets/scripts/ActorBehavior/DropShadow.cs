@@ -13,11 +13,9 @@ public class DropShadow : MonoBehaviour
 
         var shadow = new GameObject();
         shadow.name = "dropshadow";
-        shadow.transform.localScale = transform.localScale;
-        shadow.transform.localRotation = transform.localRotation;
-
         shadow.transform.parent = transform;
-
+        shadow.transform.rotation = transform.rotation;
+        
         var shadowRenderer = shadow.AddComponent<SpriteRenderer>();
         shadowRenderer.sprite = sourceRenderer.sprite;
         shadowRenderer.material = Resources.Load<Material>("DropShadowMaterial");

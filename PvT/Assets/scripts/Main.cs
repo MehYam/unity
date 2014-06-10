@@ -16,10 +16,16 @@ public class Main : MonoBehaviour
 
     public GameObject ProgressBar;
 
+    /// <summary>
+    /// ///////////////////////// debug/dev items
+    /// </summary>
+    public bool wavesActive = true;
     public string defaultPlane = "BEE";
     public string defaultTank = "tankhull0";
     public string defaultTurret = "tankturret0";
     public bool defaultIsPlane = true;
+    /// 
+
 
     static Main _instance;
     static public Main Instance

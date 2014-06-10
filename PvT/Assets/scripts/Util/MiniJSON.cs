@@ -801,9 +801,9 @@ public static class MJSON
         }
         return result;
     }
-    public static float SafeGetFloat(Hashtable node, string name)
+    public static float SafeGetFloat(Hashtable node, string name, float defVal = 0)
     {
-        float result = float.NaN;
+        float result = defVal;
 
         object value = node[name];
         if (value != null)

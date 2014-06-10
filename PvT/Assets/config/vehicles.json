@@ -28,7 +28,7 @@
 		"behavior": "GREENK_BEHAVIOR",
 		"payload":
 		[
-			"SHIELD, 100, 0, 0, 0"
+			"SHIELD, 5, 0, 0, 0"
 		]
 	},
 	"MOTH":

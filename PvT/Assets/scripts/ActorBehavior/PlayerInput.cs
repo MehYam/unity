@@ -18,7 +18,8 @@ public class PlayerInput : IActorBehavior
         var vert = Input.GetAxis("Vertical");
         if (horz != 0 || vert != 0)
         {
-            actor.gameObject.rigidbody2D.AddForce(new Vector2(horz * vehicle.acceleration, vert * vehicle.acceleration));
+            //Debug.Log(actor.acceleration);
+            actor.gameObject.rigidbody2D.AddForce(new Vector2(horz * actor.acceleration, vert * actor.acceleration));
         }
 
         //go.rigidbody2D.angularVelocity = 0;

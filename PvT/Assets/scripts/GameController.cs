@@ -46,7 +46,7 @@ public sealed class GameController
     void Start()
     {
         SpawnPlayer();
-        //StartNextLevel();
+        StartNextLevel();
     }
     void SpawnPlayer()
     {
@@ -74,21 +74,24 @@ public sealed class GameController
     int _liveEnemies = 0;
     void StartNextWave()
     {
-        var wave = loader.levels[0].NextWave();
-        foreach (var squad in wave.squads)
+        if (Main.Instance.wavesActive)
         {
-            VehicleType v = loader.GetVehicle(squad.enemyID);
-            if (v != null)
+            var wave = loader.levels[0].NextWave();
+            foreach (var squad in wave.squads)
             {
-                for (int i = 0; i < squad.count; ++i)
+                VehicleType v = loader.GetVehicle(squad.enemyID);
+                if (v != null)
                 {
-                    SpawnMob(v);
-                    ++_liveEnemies;
+                    for (int i = 0; i < squad.count; ++i)
+                    {
+                        SpawnMob(v);
+                        ++_liveEnemies;
+                    }
                 }
-            }
-            else
-            {
-                Debug.LogError("VehicleType not found for enemy " + squad.enemyID);
+                else
+                {
+                    Debug.LogError("VehicleType not found for enemy " + squad.enemyID);
+                }
             }
         }
     }
@@ -217,7 +220,6 @@ public sealed class GameController
         var behaviors = new CompositeBehavior();
         behaviors.Add(new PlayerInput());
         behaviors.Add(ActorBehaviorFactory.Instance.faceForward);
-        behaviors.Add(ActorBehaviorFactory.Instance.faceMouseOnFire);
 
         //KAI: cheeze
         if (vehicle.weapons[0].type == "SHIELD")
@@ -226,6 +228,7 @@ public sealed class GameController
         }
         else
         {
+            behaviors.Add(ActorBehaviorFactory.Instance.faceMouseOnFire);
             behaviors.Add(ActorBehaviorFactory.Instance.CreatePlayerfire(
                     ActorBehaviorFactory.Instance.CreateAutofire(new RateLimiter(0.5f), Consts.Layer.FRIENDLY_AMMO))
             );

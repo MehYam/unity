@@ -3,15 +3,11 @@ using System.Collections;
 
 public class Actor : MonoBehaviour
 {
-    public bool explodesOnDeath { get; set; }
-    public float health { get; private set; }
-    public float collisionDamage;
-    public IActorBehavior behavior { private get; set; }
-
     public Actor()
     {
         expireTime = EXPIRY_INFINITE;
         explodesOnDeath = true;
+        showsHealthBar = true;
     }
 
     WorldObjectType _worldObject;
@@ -28,10 +24,39 @@ public class Actor : MonoBehaviour
 
     public float expireTime { get; private set; }
 
-    static public readonly float EXPIRY_INFINITE = float.NaN;
+    static public readonly float EXPIRY_INFINITE = 0;
     public void SetExpiry(float secondsFromNow)
     {
-        expireTime = Time.fixedTime + secondsFromNow;
+        expireTime = secondsFromNow == EXPIRY_INFINITE ? EXPIRY_INFINITE : Time.fixedTime + secondsFromNow;
+    }
+
+    public bool showsHealthBar{ get; set; }
+    public bool explodesOnDeath { get; set; }
+    public float health{ get; set; }
+    public float maxSpeed
+    {
+        get
+        {
+            return (_modifier != null) ? worldObject.maxSpeed + _modifier.maxSpeed : worldObject.maxSpeed;
+        }
+    }
+    public float acceleration
+    {
+        get
+        {
+            //KAI: cheese - sort this out
+            var v = (VehicleType) worldObject;
+            return (_modifier != null) ? v.acceleration + _modifier.acceleration : v.acceleration;
+        }
+    }
+    public float collisionDamage;
+    public IActorBehavior behavior { private get; set; }
+
+    ActorModifier _modifier;
+    public void AddModifier(ActorModifier modifier)
+    {
+        Debug.Log("Adding modifier " + modifier);
+        _modifier = modifier;
     }
 
     float _lastHealthUpdate = 0;
@@ -40,7 +65,7 @@ public class Actor : MonoBehaviour
     {
         this.health -= dmg;
 
-        if (this.health > 0)
+        if (showsHealthBar && this.health > 0)
         {
             if (_healthBar == null)
             {
@@ -60,18 +85,23 @@ public class Actor : MonoBehaviour
         {
             behavior.FixedUpdate(this);
         }
-        if (worldObject.maxSpeed > 0 && rigidbody2D.velocity.sqrMagnitude > worldObject.sqrMaxSpeed)
+        if (rigidbody2D != null && worldObject.maxSpeed > 0 && rigidbody2D.velocity.sqrMagnitude > worldObject.sqrMaxSpeed)
         {
-            rigidbody2D.velocity = Vector2.ClampMagnitude(rigidbody2D.velocity, worldObject.maxSpeed);
+            rigidbody2D.velocity = Vector2.ClampMagnitude(rigidbody2D.velocity, maxSpeed);
         }
         if (((expireTime != EXPIRY_INFINITE) && Time.fixedTime >= expireTime) || (health <= 0))
         {
             Main.Instance.game.HandleActorDeath(this);
         }
+        if (_modifier != null && Time.fixedTime > _modifier.expiry)
+        {
+            Debug.Log("removing modifier");
+            _modifier = null;
+        }
     }
     void Update()
     {
-        if (_healthBar && _healthBar.gameObject.activeSelf)
+        if (_healthBar != null && _healthBar.gameObject.activeSelf)
         {
             if ((Time.time - _lastHealthUpdate) > 300)
             {

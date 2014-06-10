@@ -143,15 +143,6 @@ public sealed class ActorBehaviorFactory
             return _faceForward;
         }
     }
-    IActorBehavior _shieldFade;
-    public IActorBehavior fadeWithHealthAndExpiry
-    {
-        get
-        {
-            if (_shieldFade == null) { _shieldFade = new FadeWithHealthAndExpiry(); }
-            return _shieldFade;
-        }
-    }
     //IActorBehavior _whirl;
     //public IActorBehavior whirl
     //{
@@ -176,6 +167,10 @@ public sealed class ActorBehaviorFactory
     public IActorBehavior CreateShield()
     {
         return new PlayerShieldBehavior();
+    }
+    public IActorBehavior CreateFadeWithHealthAndExpiry(float maxHealth)
+    {
+        return new FadeWithHealthAndExpiry(maxHealth);
     }
     public IActorBehavior CreateTankTreadAnimator(GameObject treadLeft, GameObject treadRight)
     {
@@ -204,7 +199,7 @@ sealed class ThrustBehavior : IActorBehavior
     public void FixedUpdate(Actor actor)
     {
         var v = (VehicleType)actor.worldObject;
-        var thrustVector = Consts.GetLookAtVector(actor.gameObject.transform.rotation.eulerAngles.z, v.acceleration);
+        var thrustVector = Consts.GetLookAtVector(actor.gameObject.transform.rotation.eulerAngles.z, actor.acceleration);
 
         actor.gameObject.rigidbody2D.AddForce(thrustVector);
     }
@@ -221,7 +216,7 @@ sealed class Patrol : IActorBehavior
     public void FixedUpdate(Actor actor)
     {
         var v = (VehicleType)actor.worldObject;
-        var thrustLookAt = new Vector2(0, v.acceleration);
+        var thrustLookAt = new Vector2(0, actor.acceleration);
 
         // apply the thrust in the direction of the actor
         thrustLookAt = Consts.RotatePoint(thrustLookAt, -Consts.ACTOR_NOSE_OFFSET - actor.gameObject.transform.rotation.eulerAngles.z);
@@ -304,44 +299,62 @@ sealed class PlayerfireBehavior : IActorBehavior
 
 sealed class PlayerShieldBehavior : IActorBehavior
 {
-    GameObject _currentShield;
+    const float LAUNCH_LIFE = 3;
+    const float SHIELD_RECHARGE = 1;
+    const float BOOST_SECONDS = 0.3f;
+    GameObject _shield;
+    float _lastShieldTime = -SHIELD_RECHARGE;
     public void FixedUpdate(Actor actor)
     {
         var firing = (Input.GetButton("Fire1") || Input.GetButton("Jump"));  //KAI: -> utils class
-        if (firing && _currentShield == null)
+        if (firing)
         {
-            var game = Main.Instance.game;
+            ActorBehaviorFactory.Instance.faceMouse.FixedUpdate(actor);
+            if (_shield == null && (Time.fixedTime - _lastShieldTime >= SHIELD_RECHARGE))
+            {
+                var game = Main.Instance.game;
 
-            var shieldWeapon = actor.worldObject.weapons[0];
-            var type = game.loader.GetVehicle(shieldWeapon.type);
-            _currentShield = Main.Instance.game.SpawnAmmo(actor, type, shieldWeapon, Consts.Layer.FRIENDLY);
+                // create the GameObject
+                var shieldWeapon = actor.worldObject.weapons[0];
+                var type = game.loader.GetVehicle(shieldWeapon.type);
+                _shield = Main.Instance.game.SpawnAmmo(actor, type, shieldWeapon, Consts.Layer.FRIENDLY);
 
-            var shieldActor = _currentShield.GetComponent<Actor>();
-            shieldActor.SetExpiry(Actor.EXPIRY_INFINITE);
-            shieldActor.explodesOnDeath = false;
+                _shield.rigidbody2D.velocity = Vector2.zero;
+                GameObject.Destroy(_shield.rigidbody2D);  //KAI: cheese
 
-            _currentShield.transform.parent = actor.transform;
-            _currentShield.rigidbody2D.velocity = Vector2.zero;
+                // init the Actor
+                var shieldActor = _shield.GetComponent<Actor>();
+                shieldActor.health = actor.worldObject.health;
+                shieldActor.SetExpiry(Actor.EXPIRY_INFINITE);
+                shieldActor.explodesOnDeath = false;
+                shieldActor.showsHealthBar = false;
+                shieldActor.behavior = ActorBehaviorFactory.Instance.CreateFadeWithHealthAndExpiry(actor.worldObject.health);
+
+                _shield.transform.parent = actor.transform;
+                _shield.transform.localPosition = new Vector3(shieldWeapon.offset.x, shieldWeapon.offset.y);
+
+                // boost!
+                actor.AddModifier(new ActorModifier(Time.fixedTime + BOOST_SECONDS, actor.worldObject.maxSpeed * 10, ((VehicleType)(actor.worldObject)).acceleration * 2));
+                _lastShieldTime = Time.fixedTime;
+            }
         }
-
-        if (_currentShield != null)
+        if (!firing && _shield != null)
         {
-            if (firing)
-            {
-                _currentShield.transform.localPosition = Vector3.zero;
-                _currentShield.transform.rotation = actor.transform.rotation;
-            }
-            else
-            {
-                // release shield
-                var shieldActor = _currentShield.GetComponent<Actor>();
-                shieldActor.SetExpiry(3);
-                shieldActor.behavior = ActorBehaviorFactory.Instance.fadeWithHealthAndExpiry;
+            // point the actor to the mouse briefly to fire the shield in that direction
+            ActorBehaviorFactory.Instance.faceMouse.FixedUpdate(actor);
 
-                _currentShield.transform.parent = GameObject.Find("_ammoParent").transform;
-                _currentShield.rigidbody2D.velocity = actor.rigidbody2D.velocity;
-                _currentShield = null;
-            }
+            // release shield
+            var shieldActor = _shield.GetComponent<Actor>();
+            shieldActor.SetExpiry(LAUNCH_LIFE);
+
+            _shield.transform.parent = GameObject.Find("_ammoParent").transform;
+            _shield.AddComponent<Rigidbody2D>();
+            _shield.rigidbody2D.drag = 0;
+            _shield.rigidbody2D.mass = 500;
+            _shield.rigidbody2D.velocity = actor.rigidbody2D.velocity;
+            _shield = null;
+
+            actor.AddModifier(null);  //KAI: cheese
         }
     }
 }
@@ -351,12 +364,21 @@ sealed class PlayerShieldBehavior : IActorBehavior
 /// </summary>
 sealed class FadeWithHealthAndExpiry : IActorBehavior
 {
-    const float END_FADE_SECONDS = 1;
+    readonly float maxHealth;
+
+    public FadeWithHealthAndExpiry(float maxHealth)
+    {
+        // we can't get this for shields since their original health isn't in WorldObjectType, but is derived from
+        // the launcher
+        this.maxHealth = maxHealth;  
+    }
+
+    const float END_FADE_SECONDS = 2;
     public void FixedUpdate(Actor actor)
     {
         // use the percentage of health remaining OR the percentage of the final second of life remaining,
         // whichever is less.  This way the object fades during its last second, even at full health.
-        float pct = actor.health / actor.worldObject.health;
+        float pct = actor.health / maxHealth;
         if (actor.expireTime != Actor.EXPIRY_INFINITE)
         {
             float timeRemaining = actor.expireTime - Time.fixedTime;
@@ -364,7 +386,6 @@ sealed class FadeWithHealthAndExpiry : IActorBehavior
 
             pct = Mathf.Min(pct, timePct);
         }
-        Debug.Log(pct);
         var sprite = actor.GetComponent<SpriteRenderer>();
         sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, pct);
     }
