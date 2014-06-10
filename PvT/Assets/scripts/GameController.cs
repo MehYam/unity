@@ -46,7 +46,7 @@ public sealed class GameController
     void Start()
     {
         SpawnPlayer();
-        StartNextLevel();
+        //StartNextLevel();
     }
     void SpawnPlayer()
     {
@@ -136,7 +136,7 @@ public sealed class GameController
         sprite.sortingOrder = Consts.AMMO_SORT_ORDER;
 #endif
         var ammo = go.GetComponent<Actor>();
-        ammo.timeToLive = 2;
+        ammo.SetExpiry(2);
         ammo.collisionDamage = weapon.damage;
 
         Consts.Sneeze(launcher.transform, ammo.transform, weapon.offset, weapon.angle);
@@ -266,6 +266,7 @@ public sealed class GameController
     }
 
     //KAI: use global game event
+    // or, use subclassing
     public void HandleCollision(ContactPoint2D contact)
     {
         var colliderActor = contact.collider.GetComponent<Actor>();
@@ -290,7 +291,7 @@ public sealed class GameController
     public void HandleActorDeath(Actor actor)
     {
         var enemy = actor.gameObject.layer == (int)Consts.Layer.MOB;
-        if (actor.gameObject.layer == (int)Consts.Layer.FRIENDLY || enemy)
+        if (actor.explodesOnDeath && (enemy || actor.gameObject.layer == (int)Consts.Layer.FRIENDLY))
         {
             var asplode = effects.GetVehicleExplosion().ToRawGameObject();
             asplode.transform.position = actor.transform.position;

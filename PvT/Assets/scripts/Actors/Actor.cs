@@ -3,10 +3,16 @@ using System.Collections;
 
 public class Actor : MonoBehaviour
 {
-    public float health;// { get; private set; }
+    public bool explodesOnDeath { get; set; }
+    public float health { get; private set; }
     public float collisionDamage;
-    public float timeToLive = 0;
     public IActorBehavior behavior { private get; set; }
+
+    public Actor()
+    {
+        expireTime = EXPIRY_INFINITE;
+        explodesOnDeath = true;
+    }
 
     WorldObjectType _worldObject;
     public WorldObjectType worldObject 
@@ -18,6 +24,14 @@ public class Actor : MonoBehaviour
    
             _worldObject = value;
         }
+    }
+
+    public float expireTime { get; private set; }
+
+    static public readonly float EXPIRY_INFINITE = float.NaN;
+    public void SetExpiry(float secondsFromNow)
+    {
+        expireTime = Time.fixedTime + secondsFromNow;
     }
 
     float _lastHealthUpdate = 0;
@@ -40,14 +54,6 @@ public class Actor : MonoBehaviour
         _lastHealthUpdate = Time.time;
     }
 
-    void Start()
-    {
-        if (timeToLive > 0)
-        {
-            timeToLive += Time.fixedTime;
-        }
-    }
-
     void FixedUpdate()
     {
         if (behavior != null)
@@ -58,9 +64,7 @@ public class Actor : MonoBehaviour
         {
             rigidbody2D.velocity = Vector2.ClampMagnitude(rigidbody2D.velocity, worldObject.maxSpeed);
         }
-        
-        if (((timeToLive > 0) && Time.fixedTime > timeToLive) ||
-            (health <= 0))
+        if (((expireTime != EXPIRY_INFINITE) && Time.fixedTime >= expireTime) || (health <= 0))
         {
             Main.Instance.game.HandleActorDeath(this);
         }

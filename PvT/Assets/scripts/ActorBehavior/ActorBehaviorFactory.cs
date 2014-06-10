@@ -143,6 +143,15 @@ public sealed class ActorBehaviorFactory
             return _faceForward;
         }
     }
+    IActorBehavior _shieldFade;
+    public IActorBehavior fadeWithHealthAndExpiry
+    {
+        get
+        {
+            if (_shieldFade == null) { _shieldFade = new FadeWithHealthAndExpiry(); }
+            return _shieldFade;
+        }
+    }
     //IActorBehavior _whirl;
     //public IActorBehavior whirl
     //{
@@ -308,7 +317,8 @@ sealed class PlayerShieldBehavior : IActorBehavior
             _currentShield = Main.Instance.game.SpawnAmmo(actor, type, shieldWeapon, Consts.Layer.FRIENDLY);
 
             var shieldActor = _currentShield.GetComponent<Actor>();
-            shieldActor.timeToLive = 0;
+            shieldActor.SetExpiry(Actor.EXPIRY_INFINITE);
+            shieldActor.explodesOnDeath = false;
 
             _currentShield.transform.parent = actor.transform;
             _currentShield.rigidbody2D.velocity = Vector2.zero;
@@ -323,11 +333,40 @@ sealed class PlayerShieldBehavior : IActorBehavior
             }
             else
             {
+                // release shield
+                var shieldActor = _currentShield.GetComponent<Actor>();
+                shieldActor.SetExpiry(3);
+                shieldActor.behavior = ActorBehaviorFactory.Instance.fadeWithHealthAndExpiry;
+
                 _currentShield.transform.parent = GameObject.Find("_ammoParent").transform;
                 _currentShield.rigidbody2D.velocity = actor.rigidbody2D.velocity;
                 _currentShield = null;
             }
         }
+    }
+}
+
+/// <summary>
+///  Fades out an actor as its death and/or expiry approaches
+/// </summary>
+sealed class FadeWithHealthAndExpiry : IActorBehavior
+{
+    const float END_FADE_SECONDS = 1;
+    public void FixedUpdate(Actor actor)
+    {
+        // use the percentage of health remaining OR the percentage of the final second of life remaining,
+        // whichever is less.  This way the object fades during its last second, even at full health.
+        float pct = actor.health / actor.worldObject.health;
+        if (actor.expireTime != Actor.EXPIRY_INFINITE)
+        {
+            float timeRemaining = actor.expireTime - Time.fixedTime;
+            float timePct = Mathf.Min(END_FADE_SECONDS, timeRemaining);
+
+            pct = Mathf.Min(pct, timePct);
+        }
+        Debug.Log(pct);
+        var sprite = actor.GetComponent<SpriteRenderer>();
+        sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, pct);
     }
 }
 
