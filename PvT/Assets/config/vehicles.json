@@ -1,4 +1,19 @@
 {
+	"HERO":
+	{
+		"asset": "ship2_8",
+		"health": "20",
+		"mass": "0.1",
+		"maxSpeed": "4",
+		"acceleration": "12",
+		"inertia": "0",
+		"collision": "5",
+		"behavior": "HERO_BEHAVIOR",
+		"payload":
+		[
+			"HEROLING, 1, 0, 0, 0, 1"
+		]
+	},
 	"BEE":
 	{
 		"asset": "ship2_0",

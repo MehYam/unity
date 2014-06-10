@@ -54,5 +54,11 @@
 		"maxSpeed": "100",
 		"acceleration": "",
 		"inertia": "",
+	},
+	"HEROLING":
+	{
+		"asset": "heroling",
+		"mass": "",
+		"maxSpeed": "25"		
 	}
 }
