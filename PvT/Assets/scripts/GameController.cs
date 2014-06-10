@@ -308,7 +308,13 @@ public sealed class GameController
                 }
             }
         }
+        var wasPlayer = actor.gameObject == player;
         GameObject.Destroy(actor.gameObject);
+
+        if (wasPlayer)
+        {
+            SpawnPlayer();
+        }
     }
 }
 

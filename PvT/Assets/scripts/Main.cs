@@ -20,7 +20,7 @@ public class Main : MonoBehaviour
     /// ///////////////////////// debug/dev items
     /// </summary>
     public bool wavesActive = true;
-    public string defaultPlane = "BEE";
+    public string defaultPlane = "greenk";
     public string defaultTank = "tankhull0";
     public string defaultTurret = "tankturret0";
     public bool defaultIsPlane = true;
