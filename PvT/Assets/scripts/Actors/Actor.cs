@@ -63,20 +63,23 @@ public class Actor : MonoBehaviour
     ProgressBar _healthBar;
     public void TakeDamage(float dmg)
     {
-        this.health -= dmg;
-
-        if (showsHealthBar && this.health > 0)
+        if (dmg > 0)
         {
-            if (_healthBar == null)
+            this.health -= dmg;
+
+            if (showsHealthBar && this.health > 0)
             {
-                var bar = (GameObject)GameObject.Instantiate(Main.Instance.ProgressBar);
-                _healthBar = bar.GetComponent<ProgressBar>();
-                bar.transform.parent = transform;
+                if (_healthBar == null)
+                {
+                    var bar = (GameObject)GameObject.Instantiate(Main.Instance.ProgressBar);
+                    _healthBar = bar.GetComponent<ProgressBar>();
+                    bar.transform.parent = transform;
+                }
+                _healthBar.percent = health / worldObject.health;
+                _healthBar.gameObject.SetActive(true);
             }
-            _healthBar.percent = health / worldObject.health;
-            _healthBar.gameObject.SetActive(true);
+            _lastHealthUpdate = Time.time;
         }
-        _lastHealthUpdate = Time.time;
     }
 
     void FixedUpdate()
