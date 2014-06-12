@@ -143,6 +143,15 @@ public sealed class ActorBehaviorFactory
             return _faceForward;
         }
     }
+    IActorBehavior _playerGravitate;
+    public IActorBehavior playerGravitate
+    {
+        get
+        {
+            if (_playerGravitate == null) { _playerGravitate = new PlayerGravitate(); }
+            return _playerGravitate;
+        }
+    }
     //IActorBehavior _whirl;
     //public IActorBehavior whirl
     //{
@@ -193,7 +202,17 @@ sealed class FacePlayerBehavior : IActorBehavior
         go.transform.Rotate(0, 0, angleDelta);
     }
 }
+sealed class PlayerGravitate : IActorBehavior
+{
+    public void FixedUpdate(Actor actor)
+    {
+        var go = actor.gameObject;
+        var newRot = Consts.GetLookAtAngle(go.transform, Main.Instance.game.player.transform.localPosition - go.transform.localPosition);
+        var thrustVector = Consts.GetLookAtVector(newRot.eulerAngles.z, actor.acceleration);
 
+        actor.gameObject.rigidbody2D.AddForce(thrustVector);
+    }
+}
 sealed class ThrustBehavior : IActorBehavior
 {
     public void FixedUpdate(Actor actor)

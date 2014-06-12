@@ -12,7 +12,8 @@ public static class Consts
         MOB_AMMO = 9,
         FRIENDLY_AMMO = 10,
         FRIENDLY = 11,
-        ENVIRONMENT = 12
+        ENVIRONMENT = 12,
+        HEROLINGS = 13
     };
     static public readonly int AMMO_SORT_ORDER = -1;
 

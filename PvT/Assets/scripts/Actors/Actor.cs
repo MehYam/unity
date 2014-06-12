@@ -127,10 +127,31 @@ public class Actor : MonoBehaviour
     }
     void OnCollisionEnter2D(Collision2D collision)
     {
+        Debug.Log("collide " + worldObject.name);
         foreach (ContactPoint2D contact in collision.contacts)
         {
-            Main.Instance.game.HandleCollision(contact);
+            if (contact.collider.gameObject.layer != contact.otherCollider.gameObject.layer)
+            {
+                HandleCollision(contact);
+
+                // KAI: check that we only need to handle one
+                break;
+            }
         }
         //Debug.Log(collision.relativeVelocity.magnitude);
+    }
+
+    protected virtual void HandleCollision(ContactPoint2D contact)
+    {
+        //Debug.Log(string.Format("HandleCollision in {0}, between {1} and {2}", name, contact.collider.name, contact.otherCollider.name));
+
+        var collider = contact.collider;
+        var other = contact.otherCollider;
+        if (collider.gameObject.layer > other.gameObject.layer) // prevent duplicate collision sparks
+        {
+            var boom = Main.Instance.game.effects.GetRandomSmallExplosion().ToRawGameObject();
+            boom.transform.localPosition = contact.point;
+        }
+        TakeDamage(collider.GetComponent<Actor>().collisionDamage * Random.Range(0.9f, 1.1f));
     }
 }

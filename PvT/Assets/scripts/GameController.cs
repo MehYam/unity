@@ -128,6 +128,7 @@ public sealed class GameController
     {
         var go = type.Spawn();
         go.transform.parent = ammoParent.transform;
+        go.layer = (int)layer;
 
         var body = go.GetComponent<Rigidbody2D>();
         body.drag = 0;
@@ -138,30 +139,47 @@ public sealed class GameController
 #else
         sprite.sortingOrder = Consts.AMMO_SORT_ORDER;
 #endif
-        var ammo = go.GetComponent<Actor>();
-        ammo.SetExpiry(2);
-        ammo.collisionDamage = weapon.damage;
-
-        Consts.Sneeze(launcher.transform, ammo.transform, weapon.offset, weapon.angle);
+        var actor = go.GetComponent<Actor>();
+        actor.SetExpiry(2);
+        actor.collisionDamage = weapon.damage;
+        Debug.Log("weapon.damage " + weapon.damage);
+        Consts.Sneeze(launcher.transform, actor.transform, weapon.offset, weapon.angle);
         if (type.acceleration == 0)
         {
             // give the ammo instant acceleration
             body.mass = 0;
-            body.velocity = Consts.GetLookAtVector(ammo.transform.rotation.eulerAngles.z, type.maxSpeed);
+            body.velocity = Consts.GetLookAtVector(actor.transform.rotation.eulerAngles.z, type.maxSpeed);
         }
         else
         {
             // treat the ammo like a vehicle (i.e. rocket)
             body.mass = type.mass;
-            ammo.behavior = ActorBehaviorFactory.Instance.thrust;
-        }
+            if (weapon.type == "HEROLING") //KAI: cheeze
+            {
+                actor.SetExpiry(10);
+                actor.behavior = new CompositeBehavior(
+                    ActorBehaviorFactory.Instance.faceForward,
+                    ActorBehaviorFactory.Instance.playerGravitate
+                );
 
-        go.layer = (int)layer;
+                // make it appear on top of mobs and friendlies
+                sprite.sortingOrder = 1;
+
+                // give it a push
+                body.velocity =
+                    launcher.rigidbody2D.velocity + 
+                    Consts.GetLookAtVector(actor.transform.rotation.eulerAngles.z, type.maxSpeed);
+            }
+            else
+            {
+                actor.behavior = ActorBehaviorFactory.Instance.thrust;
+            }
+        }
 
         if (launcher.worldObject is TankPartType)
         {
             // it's a turret
-            SpawnMuzzleFlash(ammo);
+            SpawnMuzzleFlash(actor);
         }
         return go;
     }
@@ -227,10 +245,11 @@ public sealed class GameController
         }
         else
         {
+            var layer = vehicle.name == "HERO" ? Consts.Layer.HEROLINGS : Consts.Layer.FRIENDLY_AMMO;
             behaviors.Add(bf.OnFire(
                 new CompositeBehavior(
                     bf.faceMouse,
-                    bf.CreateAutofire(new RateLimiter(0.5f), Consts.Layer.FRIENDLY_AMMO)
+                    bf.CreateAutofire(new RateLimiter(0.5f), layer)
                 )
             ));
         }

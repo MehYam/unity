@@ -50,7 +50,8 @@ public class WorldObjectType
         var go = ToRawGameObject();
         go.name = name;
 
-        var actor = go.AddComponent<Actor>();
+        //KAI: cheese
+        var actor = this.name == "HEROLING" ? go.AddComponent<HerolingActor>() : go.AddComponent<Actor>();
         actor.worldObject = this;
         return go;
     }

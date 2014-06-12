@@ -58,7 +58,8 @@
 	"HEROLING":
 	{
 		"asset": "heroling",
-		"mass": "",
-		"maxSpeed": "25"		
+		"mass": "1",
+		"maxSpeed": "8",
+		"acceleration": "5"
 	}
 }
