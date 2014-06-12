@@ -3,7 +3,7 @@
 	{
 		"asset": "ship2_8",
 		"health": "20",
-		"mass": "0.1",
+		"mass": "0.2",
 		"maxSpeed": "3",
 		"acceleration": "12",
 		"inertia": "0",

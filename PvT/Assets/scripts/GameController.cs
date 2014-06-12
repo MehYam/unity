@@ -217,21 +217,22 @@ public sealed class GameController
 
     void AddPlayerPlaneBehaviors(GameObject go, VehicleType vehicle)
     {
+        var bf = ActorBehaviorFactory.Instance;
         var behaviors = new CompositeBehavior();
-        behaviors.Add(new PlayerInput());
-        behaviors.Add(ActorBehaviorFactory.Instance.faceForward);
+        behaviors.Add(new PlayerInput(bf.faceForward));
 
-        //KAI: cheeze
-        if (vehicle.weapons[0].type == "SHIELD")
+        if (vehicle.weapons[0].type == "SHIELD") //KAI: cheeze
         {
-            behaviors.Add(ActorBehaviorFactory.Instance.CreateShield());
+            behaviors.Add(bf.CreateShield());
         }
         else
         {
-            behaviors.Add(ActorBehaviorFactory.Instance.faceMouseOnFire);
-            behaviors.Add(ActorBehaviorFactory.Instance.CreatePlayerfire(
-                    ActorBehaviorFactory.Instance.CreateAutofire(new RateLimiter(0.5f), Consts.Layer.FRIENDLY_AMMO))
-            );
+            behaviors.Add(bf.OnFire(
+                new CompositeBehavior(
+                    bf.faceMouse,
+                    bf.CreateAutofire(new RateLimiter(0.5f), Consts.Layer.FRIENDLY_AMMO)
+                )
+            ));
         }
 
         go.GetComponent<Actor>().behavior = behaviors;
@@ -244,14 +245,14 @@ public sealed class GameController
         var behaviors = new CompositeBehavior();
         behaviors.Add(new PlayerInput());
         behaviors.Add(bf.faceForward);
-        behaviors.Add(bf.CreatePlayerfire(bf.CreateAutofire(new RateLimiter(0.5f), Consts.Layer.FRIENDLY_AMMO)));
+        behaviors.Add(bf.OnFire(bf.CreateAutofire(new RateLimiter(0.5f), Consts.Layer.FRIENDLY_AMMO)));
         behaviors.Add(bf.CreateTankTreadAnimator(tankHelper.treadLeft, tankHelper.treadRight));
         tankHelper.hullGO.GetComponent<Actor>().behavior = behaviors;
 
         // turret
         tankHelper.turretGO.GetComponent<Actor>().behavior = new CompositeBehavior(
             bf.faceMouse,
-            bf.CreatePlayerfire(bf.CreateAutofire(new RateLimiter(0.5f), Consts.Layer.FRIENDLY_AMMO))
+            bf.OnFire(bf.CreateAutofire(new RateLimiter(0.5f), Consts.Layer.FRIENDLY_AMMO))
         );
 
     }

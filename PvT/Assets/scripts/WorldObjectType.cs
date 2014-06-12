@@ -136,6 +136,7 @@ public class VehicleType : WorldObjectType
         var body = go.AddComponent<Rigidbody2D>();
         body.mass = float.IsNaN(mass) ? 0 : mass;
         body.drag = 0.5f;
+        body.angularDrag = 5;
 
         go.GetComponent<Collider2D>().sharedMaterial = Main.Instance.Bounce;
         go.GetComponent<Actor>().collisionDamage = collDmg;
@@ -165,6 +166,7 @@ public sealed class TankHullType : VehicleType
     {
         var go = base.Spawn();
         go.rigidbody2D.drag = 1;
+        go.rigidbody2D.angularDrag = 5;
         return go;
     }
 }

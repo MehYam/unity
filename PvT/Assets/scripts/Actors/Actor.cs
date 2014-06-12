@@ -82,7 +82,7 @@ public class Actor : MonoBehaviour
         }
     }
 
-    void FixedUpdate()
+    protected virtual void FixedUpdate()
     {
         if (behavior != null)
         {

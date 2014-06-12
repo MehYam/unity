@@ -6,6 +6,11 @@ public class PlayerInput : IActorBehavior
     VehicleType vehicle;
     bool isMoving = true;
 
+    readonly IActorBehavior duringInput;
+    public PlayerInput(IActorBehavior duringInputBehavior = null)
+    {
+        duringInput = duringInputBehavior;
+    }
     public void FixedUpdate(Actor actor)
     {
         if (vehicle == null)
@@ -20,6 +25,11 @@ public class PlayerInput : IActorBehavior
         {
             //Debug.Log(actor.acceleration);
             actor.gameObject.rigidbody2D.AddForce(new Vector2(horz * actor.acceleration, vert * actor.acceleration));
+
+            if (duringInput != null)
+            {
+                duringInput.FixedUpdate(actor);
+            }
         }
 
         //go.rigidbody2D.angularVelocity = 0;

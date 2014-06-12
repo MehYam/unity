@@ -160,7 +160,7 @@ public sealed class ActorBehaviorFactory
     {
         return new AutofireBehavior(rate, layer);
     }
-    public IActorBehavior CreatePlayerfire(IActorBehavior onFireBehavior)
+    public IActorBehavior OnFire(IActorBehavior onFireBehavior)
     {
         return new PlayerfireBehavior(onFireBehavior);
     }
@@ -198,9 +198,7 @@ sealed class ThrustBehavior : IActorBehavior
 {
     public void FixedUpdate(Actor actor)
     {
-        var v = (VehicleType)actor.worldObject;
         var thrustVector = Consts.GetLookAtVector(actor.gameObject.transform.rotation.eulerAngles.z, actor.acceleration);
-
         actor.gameObject.rigidbody2D.AddForce(thrustVector);
     }
 }
@@ -215,7 +213,6 @@ sealed class Patrol : IActorBehavior
 
     public void FixedUpdate(Actor actor)
     {
-        var v = (VehicleType)actor.worldObject;
         var thrustLookAt = new Vector2(0, actor.acceleration);
 
         // apply the thrust in the direction of the actor
