@@ -50,7 +50,7 @@ public class Actor : MonoBehaviour
         }
     }
     public float collisionDamage;
-    public IActorBehavior behavior { private get; set; }
+    public IActorBehavior behavior { protected get; set; }
 
     ActorModifier _modifier;
     public void AddModifier(ActorModifier modifier)
@@ -127,7 +127,8 @@ public class Actor : MonoBehaviour
     }
     void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log("collide " + worldObject.name);
+        //Debug.Log("collide " + worldObject.name);
+        //Debug.Log(collision.relativeVelocity.magnitude);
         foreach (ContactPoint2D contact in collision.contacts)
         {
             if (contact.collider.gameObject.layer != contact.otherCollider.gameObject.layer)
@@ -138,7 +139,6 @@ public class Actor : MonoBehaviour
                 break;
             }
         }
-        //Debug.Log(collision.relativeVelocity.magnitude);
     }
 
     protected virtual void HandleCollision(ContactPoint2D contact)

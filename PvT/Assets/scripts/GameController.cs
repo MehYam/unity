@@ -142,7 +142,6 @@ public sealed class GameController
         var actor = go.GetComponent<Actor>();
         actor.SetExpiry(2);
         actor.collisionDamage = weapon.damage;
-        Debug.Log("weapon.damage " + weapon.damage);
         Consts.Sneeze(launcher.transform, actor.transform, weapon.offset, weapon.angle);
         if (type.acceleration == 0)
         {
@@ -156,11 +155,8 @@ public sealed class GameController
             body.mass = type.mass;
             if (weapon.type == "HEROLING") //KAI: cheeze
             {
-                actor.SetExpiry(10);
-                actor.behavior = new CompositeBehavior(
-                    ActorBehaviorFactory.Instance.faceForward,
-                    ActorBehaviorFactory.Instance.playerGravitate
-                );
+                actor.SetExpiry(Actor.EXPIRY_INFINITE);
+                actor.behavior = HerolingActor.ROAM_OUT;
 
                 // make it appear on top of mobs and friendlies
                 sprite.sortingOrder = 1;
