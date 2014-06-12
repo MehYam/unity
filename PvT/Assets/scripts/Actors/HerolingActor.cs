@@ -3,12 +3,16 @@ using System.Collections;
 
 public class HerolingActor : Actor
 {
+    static public int ActiveHerolings { get; private set; }
+
     RateLimiter _reabsorbTimeout;
     RateLimiter _launchBoredom;
     void Awake()
     {
         _reabsorbTimeout = new RateLimiter(Consts.HEROLING_UNABSORBABLE);
         _launchBoredom = new RateLimiter(Consts.HEROLING_LAUNCH_BOREDOM);
+
+        ++ActiveHerolings;
     }
 
     protected override void HandleCollision(ContactPoint2D contact)
@@ -82,6 +86,12 @@ public class HerolingActor : Actor
     void Reabsorb()
     {
         GameObject.Destroy(gameObject);
+    }
+    void OnDestroy()
+    {
+        //KAI: need something tighter than this - squishy Unity behavior might make this
+        // number inaccurate
+        --ActiveHerolings;
     }
 
     //KAI: cheese?

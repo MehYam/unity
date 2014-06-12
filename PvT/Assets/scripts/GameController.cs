@@ -153,7 +153,8 @@ public sealed class GameController
         {
             // treat the ammo like a vehicle (i.e. rocket)
             body.mass = type.mass;
-            if (weapon.type == "HEROLING") //KAI: cheeze
+            //KAI: MAJOR CHEESE
+            if (weapon.type == "HEROLING")
             {
                 actor.SetExpiry(Actor.EXPIRY_INFINITE);
                 actor.behavior = HerolingActor.ROAM_OUT;

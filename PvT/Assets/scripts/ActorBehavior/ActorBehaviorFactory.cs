@@ -311,8 +311,12 @@ sealed class AutofireBehavior : IActorBehavior
             var game = Main.Instance.game;
             foreach (var weapon in actor.worldObject.weapons)
             {
-                var ammo = game.loader.GetVehicle(weapon.type);
-                game.SpawnAmmo(actor, ammo, weapon, layer);
+                //KAI: MAJOR CHEESE
+                if (weapon.type != "HEROLING" || HerolingActor.ActiveHerolings < Consts.HEROLING_LIMIT)
+                {
+                    var ammo = game.loader.GetVehicle(weapon.type);
+                    game.SpawnAmmo(actor, ammo, weapon, layer);
+                }
             }
             rate.Start();
         }
