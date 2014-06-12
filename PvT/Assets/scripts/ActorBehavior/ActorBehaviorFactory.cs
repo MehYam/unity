@@ -152,6 +152,15 @@ public sealed class ActorBehaviorFactory
             return _playerGravitate;
         }
     }
+    IActorBehavior _playerHome;
+    public IActorBehavior playerHome
+    {
+        get
+        {
+            if (_playerHome == null) { _playerHome = new PlayerHome(); }
+            return _playerHome;
+        }
+    }
     //IActorBehavior _whirl;
     //public IActorBehavior whirl
     //{
@@ -213,6 +222,18 @@ sealed class PlayerGravitate : IActorBehavior
         actor.gameObject.rigidbody2D.AddForce(thrustVector);
     }
 }
+sealed class PlayerHome : IActorBehavior
+{
+    public void FixedUpdate(Actor actor)
+    {
+        var go = actor.gameObject;
+        var newRot = Consts.GetLookAtAngle(go.transform, Main.Instance.game.player.transform.position - go.transform.position);
+
+        //actor.gameObject.transform.rotation = newRot;
+        actor.gameObject.rigidbody2D.velocity = Consts.GetLookAtVector(newRot.eulerAngles.z, actor.maxSpeed / 2);
+    }
+}
+
 sealed class ThrustBehavior : IActorBehavior
 {
     public void FixedUpdate(Actor actor)
@@ -293,6 +314,7 @@ sealed class AutofireBehavior : IActorBehavior
                 var ammo = game.loader.GetVehicle(weapon.type);
                 game.SpawnAmmo(actor, ammo, weapon, layer);
             }
+            rate.Start();
         }
     }
 }

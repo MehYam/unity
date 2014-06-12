@@ -106,7 +106,7 @@ public class Actor : MonoBehaviour
     {
         if (_healthBar != null && _healthBar.gameObject.activeSelf)
         {
-            if ((Time.time - _lastHealthUpdate) > 300)
+            if ((Time.time - _lastHealthUpdate) > Consts.HEALTH_BAR_TIMEOUT)
             {
                 _healthBar.gameObject.SetActive(false);
             }

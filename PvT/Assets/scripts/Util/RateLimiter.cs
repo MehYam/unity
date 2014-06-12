@@ -12,35 +12,23 @@ public sealed class RateLimiter
     /// </summary>
     /// <param name="baseRate">The number of seconds after which Now returns true</param>
     /// <param name="randomness">Pad the rate with random seconds on each interval</param>
-    public RateLimiter(float baseRate, float randomness)
+    public RateLimiter(float baseRate, float randomness = 0)
     {
         _baseRate = baseRate;
         _randomness = randomness;
-    }
 
-    public RateLimiter(float rate)
-    {
-        _baseRate = _randomness = rate;
+        Start();
     }
-
     public void Start()
     {
-        float delta = Time.fixedTime + 
-            _baseRate != _randomness ? Random.Range(_baseRate, _randomness) : _baseRate;
-
+        float delta = (_randomness > 0) ? Random.Range(_baseRate, _randomness) : _baseRate;
         _next = Time.fixedTime + delta;
     }
-
     public bool reached
     {
         get
         {
-            if (Time.fixedTime > _next)
-            {
-                Start();
-                return true;
-            }
-            return false;
+            return Time.fixedTime > _next;
         }
     }
 }

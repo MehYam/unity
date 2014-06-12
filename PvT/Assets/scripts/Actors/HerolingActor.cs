@@ -1,12 +1,14 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 
 public class HerolingActor : Actor
 {
-    float _start = 0;
+    RateLimiter _reabsorbTimeout;
+    RateLimiter _launchBoredom;
     void Awake()
     {
-        _start = Time.fixedTime;
+        _reabsorbTimeout = new RateLimiter(Consts.HEROLING_UNABSORBABLE);
+        _launchBoredom = new RateLimiter(Consts.HEROLING_LAUNCH_BOREDOM);
     }
 
     protected override void HandleCollision(ContactPoint2D contact)
@@ -21,14 +23,14 @@ public class HerolingActor : Actor
                 }
                 break;
             case Consts.Layer.FRIENDLY:
-                if ((Time.fixedTime - _start) > REABSORB_TIMEOUT)
+                if (_reabsorbTimeout.reached)
                 {
-                    Debug.Log("time " + Time.fixedTime + " start " + _start);
                     Reabsorb();
                 }
                 break;
         }
     }
+    RateLimiter _attachBoredom;
     void AttachToMob(Transform mob)
     {
         Debug.Log("Attaching to " + mob.gameObject.name);
@@ -47,9 +49,9 @@ public class HerolingActor : Actor
         collider2D.enabled = false;
 
         behavior = ATTACHED;
-        _whenAttached = Time.fixedTime;
+        _attachBoredom = new RateLimiter(Consts.HEROLING_ATTACH_BOREDOM);
     }
-    void DetachFromMob()
+    void TimeToGoBack()
     {
         transform.parent = null;
 
@@ -61,19 +63,19 @@ public class HerolingActor : Actor
         behavior = ROAM_BACK;
     }
 
-    const float REABSORB_TIMEOUT = 2;  // two seconds until can be reabsorbed
-    const float ATTACH_BOREDOM = 5;  // five seconds until bored
-    float _whenAttached = 0;
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
 
-        if (_whenAttached > 0 && (Time.fixedTime - _whenAttached) > ATTACH_BOREDOM)
+        if (_launchBoredom != null && _launchBoredom.reached)
         {
-            DetachFromMob();
-
-            Debug.Log("0-------------------------- release");
-            _whenAttached = 0;
+            TimeToGoBack();
+            _launchBoredom = null;
+        }
+        else if (_attachBoredom != null && _attachBoredom.reached)
+        {
+            TimeToGoBack();
+            _attachBoredom = null;
         }
     }
 
@@ -92,6 +94,6 @@ public class HerolingActor : Actor
 
     static readonly IActorBehavior ROAM_BACK = new CompositeBehavior(
         ActorBehaviorFactory.Instance.faceForward,
-        ActorBehaviorFactory.Instance.playerGravitate
+        ActorBehaviorFactory.Instance.playerHome
     );
 }
