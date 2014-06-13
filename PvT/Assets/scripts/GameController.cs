@@ -289,23 +289,8 @@ public sealed class GameController
     // or, use subclassing
     public void HandleCollision(ContactPoint2D contact)
     {
-        var colliderActor = contact.collider.GetComponent<Actor>();
-        var otherColliderActor = contact.otherCollider.GetComponent<Actor>();
-
-        //Debug.Log(string.Format("{0} layer {1} <=> {2} layer {3}", colliderActor.name, colliderActor.gameObject.layer, otherColliderActor.name, otherColliderActor.gameObject.layer));
-
-        if (colliderActor != null && otherColliderActor != null &&
-            colliderActor.gameObject.layer != otherColliderActor.gameObject.layer)
-        {
-            if (colliderActor.gameObject.layer > otherColliderActor.gameObject.layer)
-            {
-                // this prevents dual collision sparks when two things collide
-                var boom = effects.GetRandomSmallExplosion().ToRawGameObject();
-                boom.transform.localPosition = contact.point;
-            }
-
-            colliderActor.TakeDamage(otherColliderActor.collisionDamage * Random.Range(0.9f, 1.1f));
-        }
+        var text = Main.Instance.UI.GetComponent<TextMesh>();
+        text.text = "Active Eukarya: " + HerolingActor.ActiveHerolings;
     }
     //KAI: use GlobalGameEvent
     public void HandleActorDeath(Actor actor)

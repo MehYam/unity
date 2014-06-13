@@ -37,8 +37,6 @@ public class HerolingActor : Actor
     RateLimiter _attachBoredom;
     void AttachToMob(Transform mob)
     {
-        Debug.Log("Attaching to " + mob.gameObject.name);
-
         // attach
         transform.parent = mob;
 

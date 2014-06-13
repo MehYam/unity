@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+//THINK ABOUT REPLACING THESE WITH LAMBDAS.  THAT'S ALL THEY ARE.
 
 // This solves two problems:
 //
@@ -159,6 +160,15 @@ public sealed class ActorBehaviorFactory
         {
             if (_playerHome == null) { _playerHome = new PlayerHome(); }
             return _playerHome;
+        }
+    }
+    IActorBehavior _drift;
+    public IActorBehavior drift
+    {
+        get
+        {
+            if (_drift == null) { _drift = new Drift(); }
+            return _drift;
         }
     }
     //IActorBehavior _whirl;
@@ -445,5 +455,15 @@ sealed class TankTreadAnimator : IActorBehavior
     public void FixedUpdate(Actor actor)
     {
         left.speed = right.speed = actor.rigidbody2D.velocity.sqrMagnitude;
+    }
+}
+
+sealed class Drift : IActorBehavior
+{
+    public void FixedUpdate(Actor actor)
+    {
+        var pos = actor.transform.localPosition;
+        pos.x += Time.fixedDeltaTime * 0.01f;
+        actor.transform.localPosition = pos;
     }
 }

@@ -129,8 +129,10 @@ public class Actor : MonoBehaviour
     {
         //Debug.Log("collide " + worldObject.name);
         //Debug.Log(collision.relativeVelocity.magnitude);
+        var game = Main.Instance.game;
         foreach (ContactPoint2D contact in collision.contacts)
         {
+            game.HandleCollision(contact);
             if (contact.collider.gameObject.layer != contact.otherCollider.gameObject.layer)
             {
                 HandleCollision(contact);

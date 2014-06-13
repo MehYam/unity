@@ -16,6 +16,8 @@ public class Main : MonoBehaviour
 
     public GameObject ProgressBar;
 
+    public GameObject UI;
+
     /// <summary>
     /// ///////////////////////// debug/dev items
     /// </summary>
