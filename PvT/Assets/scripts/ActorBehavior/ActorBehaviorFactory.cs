@@ -204,6 +204,10 @@ public sealed class ActorBehaviorFactory
     {
         return new TankTreadAnimator(treadLeft, treadRight);
     }
+    public IActorBehavior CreateHeroAnimator(GameObject hero)
+    {
+        return new HeroAnimator(hero);
+    }
 }
 
 sealed class FacePlayerBehavior : IActorBehavior
@@ -455,6 +459,19 @@ sealed class TankTreadAnimator : IActorBehavior
     public void FixedUpdate(Actor actor)
     {
         left.speed = right.speed = actor.rigidbody2D.velocity.sqrMagnitude;
+    }
+}
+
+sealed class HeroAnimator : IActorBehavior
+{
+    readonly Animator anim;
+    public HeroAnimator(GameObject hero)
+    {
+        anim = hero.GetComponent<Animator>();
+    }
+    public void FixedUpdate(Actor actor)
+    {
+        anim.speed = 0.01f + actor.rigidbody2D.velocity.sqrMagnitude/10;
     }
 }
 

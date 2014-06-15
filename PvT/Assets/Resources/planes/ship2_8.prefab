@@ -10,6 +10,7 @@ GameObject:
   - 4: {fileID: 400000}
   - 212: {fileID: 21200000}
   - 61: {fileID: 6100000}
+  - 95: {fileID: 9500000}
   m_Layer: 0
   m_Name: ship2_8
   m_TagString: Untagged
@@ -40,6 +41,20 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_Size: {x: .790000021, y: 1.20000005}
   m_Center: {x: 0, y: 0}
+--- !u!95 &9500000
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: d373e2211512f4d4b982b8905cb1fb9d, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 1
+  m_HasTransformHierarchy: 1
 --- !u!212 &21200000
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -21,6 +21,8 @@ public sealed class GameController
         this.ammoParent = GameObject.Find("_ammoParent");
 
         GlobalGameEvent.Instance.MapReady += OnMapReady;
+        GlobalGameEvent.Instance.HerolingAttached += OnHerolingAttached;
+        GlobalGameEvent.Instance.HerolingDetached += OnHerolingDetached;
     }
 
     //KAI: some nice way to mark this as dev only?
@@ -181,6 +183,26 @@ public sealed class GameController
         return go;
     }
 
+    readonly Dictionary<Actor, int> attachments = new Dictionary<Actor, int>();
+    void OnHerolingAttached(Actor attachee)
+    {
+        if (!attachments.ContainsKey(attachee))
+        {
+            attachments[attachee] = 0;
+        }
+        if (++attachments[attachee] >= 2)
+        {
+            Debug.Log("Would possess " + attachee.worldObject);
+        }
+    }
+    void OnHerolingDetached(Actor attachee)
+    {
+        if (--attachments[attachee] == 0)
+        {
+            attachments.Remove(attachee);
+        }
+    }
+
     void SpawnMuzzleFlash(Actor launcher)
     {
         var flash = effects.GetRandomMuzzleFlash().ToRawGameObject();
@@ -242,7 +264,14 @@ public sealed class GameController
         }
         else
         {
-            var layer = vehicle.name == "HERO" ? Consts.Layer.HEROLINGS : Consts.Layer.FRIENDLY_AMMO;
+            //KAI: cheese
+            var hero = vehicle.name == "HERO";
+            var layer = hero ? Consts.Layer.HEROLINGS : Consts.Layer.FRIENDLY_AMMO;
+
+            if (hero)
+            {
+                behaviors.Add(bf.CreateHeroAnimator(go));
+            }
             behaviors.Add(bf.OnFire(
                 new CompositeBehavior(
                     bf.faceMouse,

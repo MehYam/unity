@@ -25,10 +25,20 @@ class GlobalGameEvent
             return _singleton;
         }
     }
+    static public void ReleaseAll()
+    {
+        _singleton = null;
+    }
 
     public event Action<TileMap, XRect> MapReady = delegate { };
     public void FireMapReady(TileMap map, XRect bounds) { MapReady(map, bounds); }
 
     public event Action<GameObject> PlayerSpawned = delegate { };
     public void FirePlayerSpawned(GameObject player) { PlayerSpawned(player); }
+
+    public event Action<Actor> HerolingAttached = delegate { };
+    public event Action<Actor> HerolingDetached = delegate { };
+
+    public void FireHerolingAttached(Actor attachee) { HerolingAttached(attachee); }
+    public void FireHerolingDetached(Actor detachee) { HerolingDetached(detachee); }
 }

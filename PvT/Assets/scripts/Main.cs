@@ -59,7 +59,7 @@ public class Main : MonoBehaviour
         Debug.Log("Main.OnDestroy");
 
         _instance = null;
-        GlobalGameEvent.Instance.MapReady -= OnMapReady;
+        GlobalGameEvent.ReleaseAll();
     }
 
     void OnMapReady(TileMap map, XRect bounds)

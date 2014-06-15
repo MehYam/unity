@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class HerolingActor : Actor
@@ -42,7 +42,8 @@ public class HerolingActor : Actor
 
         // sidle up
         var gimmeAKiss = transform.localPosition;
-        gimmeAKiss.Scale(new Vector3(0.5f, 0.5f));
+        gimmeAKiss = gimmeAKiss + Consts.ScatterRandomly(0.25f);
+        gimmeAKiss.Scale(new Vector3(0.4f, 0.4f));
         transform.localPosition = gimmeAKiss;
 
         // disable physics
@@ -51,11 +52,22 @@ public class HerolingActor : Actor
         collider2D.enabled = false;
 
         behavior = ATTACHED;
+        _launchBoredom = null;
         _attachBoredom = new RateLimiter(Consts.HEROLING_ATTACH_BOREDOM);
+
+        GlobalGameEvent.Instance.FireHerolingAttached(mob.GetComponent<Actor>());
     }
-    void TimeToGoBack()
+    void DetachFromMob()
     {
-        transform.parent = null;
+        if (transform.parent != null)
+        {
+            var parent = transform.parent.GetComponent<Actor>();
+            if (parent != null)
+            {
+                GlobalGameEvent.Instance.FireHerolingDetached(parent);
+            }
+            transform.parent = null;
+        }
 
         // re-enable physics
         rigidbody2D.isKinematic = false;
@@ -68,15 +80,14 @@ public class HerolingActor : Actor
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
-
         if (_launchBoredom != null && _launchBoredom.reached)
         {
-            TimeToGoBack();
+            DetachFromMob();
             _launchBoredom = null;
         }
         else if (_attachBoredom != null && _attachBoredom.reached)
         {
-            TimeToGoBack();
+            DetachFromMob();
             _attachBoredom = null;
         }
     }

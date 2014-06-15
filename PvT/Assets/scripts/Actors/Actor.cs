@@ -132,10 +132,10 @@ public class Actor : MonoBehaviour
         var game = Main.Instance.game;
         foreach (ContactPoint2D contact in collision.contacts)
         {
-            game.HandleCollision(contact);
             if (contact.collider.gameObject.layer != contact.otherCollider.gameObject.layer)
             {
                 HandleCollision(contact);
+                game.HandleCollision(contact);
 
                 // KAI: check that we only need to handle one
                 break;
