@@ -5,6 +5,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
+using PvT.Util;
+
 public sealed class GameController
 {
     public GameObject player { get; private set; }
@@ -159,7 +161,6 @@ public sealed class GameController
             if (weapon.type == "HEROLING")
             {
                 actor.SetExpiry(Actor.EXPIRY_INFINITE);
-                actor.behavior = HerolingActor.ROAM_OUT;
 
                 // make it appear on top of mobs and friendlies
                 sprite.sortingOrder = 1;
@@ -183,24 +184,34 @@ public sealed class GameController
         return go;
     }
 
-    readonly Dictionary<Actor, int> attachments = new Dictionary<Actor, int>();
-    void OnHerolingAttached(Actor attachee)
+    void OnHerolingAttached(Actor host)
     {
-        if (!attachments.ContainsKey(attachee))
+        var herolings = host.GetComponentsInChildren<HerolingActor>();
+        if (herolings.Length > 2)
         {
-            attachments[attachee] = 0;
-        }
-        if (++attachments[attachee] >= 2)
-        {
-            Debug.Log("Would possess " + attachee.worldObject);
+            if (!(host.behavior is BypassedBehavior)) //KAI: wrong, there may be bypassed behaviors not having to do with possession
+            {
+                // act possessed
+                new BypassedBehavior(host, ActorBehaviorFactory.Instance.CreatePossessedBehavior());
+            }
         }
     }
-    void OnHerolingDetached(Actor attachee)
+    void OnHerolingDetached(Actor host)
     {
-        if (--attachments[attachee] == 0)
+        var herolings = host.GetComponentsInChildren<HerolingActor>();
+        if (herolings.Length == 0)
         {
-            attachments.Remove(attachee);
+            var bypass = host.behavior as BypassedBehavior;
+            if (bypass != null)
+            {
+                bypass.Restore();
+            }
         }
+    }
+    void ActPossessed(Actor host)
+    {
+        DebugUtil.Assert(!(host.behavior is BypassedBehavior));
+
     }
 
     void SpawnMuzzleFlash(Actor launcher)

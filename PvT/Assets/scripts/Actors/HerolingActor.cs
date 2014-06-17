@@ -6,11 +6,13 @@ public class HerolingActor : Actor
     static public int ActiveHerolings { get; private set; }
 
     RateLimiter _reabsorbTimeout;
-    RateLimiter _launchBoredom;
+    RateLimiter _roamBoredom;
     void Awake()
     {
         _reabsorbTimeout = new RateLimiter(Consts.HEROLING_UNABSORBABLE);
-        _launchBoredom = new RateLimiter(Consts.HEROLING_LAUNCH_BOREDOM);
+        _roamBoredom = new RateLimiter(Consts.HEROLING_ROAM_BOREDOM);
+
+        behavior = ROAM;
 
         ++ActiveHerolings;
     }
@@ -21,7 +23,7 @@ public class HerolingActor : Actor
         switch ((Consts.Layer)coll.layer)
         {
             case Consts.Layer.MOB:
-                if (behavior == ROAM_OUT)
+                if (behavior == ROAM)
                 {
                     AttachToMob(coll.transform);
                 }
@@ -52,42 +54,41 @@ public class HerolingActor : Actor
         collider2D.enabled = false;
 
         behavior = ATTACHED;
-        _launchBoredom = null;
+        _roamBoredom = null;
         _attachBoredom = new RateLimiter(Consts.HEROLING_ATTACH_BOREDOM);
 
         GlobalGameEvent.Instance.FireHerolingAttached(mob.GetComponent<Actor>());
     }
-    void DetachFromMob()
+    void Return()
     {
-        if (transform.parent != null)
+        if (transform.parent != null)  //KAI: dorked, because all ammo's parented initially
         {
-            var parent = transform.parent.GetComponent<Actor>();
-            if (parent != null)
+            var parentActor = transform.parent.GetComponent<Actor>();
+            if (parentActor != null)
             {
-                GlobalGameEvent.Instance.FireHerolingDetached(parent);
+                transform.parent = null;
+                GlobalGameEvent.Instance.FireHerolingDetached(parentActor);
+
+                // re-enable physics
+                rigidbody2D.isKinematic = false;
+                collider2D.enabled = true;
             }
-            transform.parent = null;
         }
-
-        // re-enable physics
-        rigidbody2D.isKinematic = false;
-        collider2D.enabled = true;
-
         // go back home
-        behavior = ROAM_BACK;
+        behavior = RETURN;
     }
 
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
-        if (_launchBoredom != null && _launchBoredom.reached)
+        if (_roamBoredom != null && _roamBoredom.reached)
         {
-            DetachFromMob();
-            _launchBoredom = null;
+            Return();
+            _roamBoredom = null;
         }
         else if (_attachBoredom != null && _attachBoredom.reached)
         {
-            DetachFromMob();
+            Return();
             _attachBoredom = null;
         }
     }
@@ -104,14 +105,14 @@ public class HerolingActor : Actor
     }
 
     //KAI: cheese?
-    static public readonly IActorBehavior ROAM_OUT = new CompositeBehavior(
+    static readonly IActorBehavior ROAM = new CompositeBehavior(
         ActorBehaviorFactory.Instance.faceForward,
         ActorBehaviorFactory.Instance.playerGravitate
     );
 
     static readonly IActorBehavior ATTACHED = null;
 
-    static readonly IActorBehavior ROAM_BACK = new CompositeBehavior(
+    static readonly IActorBehavior RETURN = new CompositeBehavior(
         ActorBehaviorFactory.Instance.faceForward,
         ActorBehaviorFactory.Instance.playerHome
     );

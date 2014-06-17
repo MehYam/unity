@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+using PvT.Util;
+
 //THINK ABOUT REPLACING THESE WITH LAMBDAS.  THAT'S ALL THEY ARE.
 
 // This solves two problems:
@@ -13,7 +15,7 @@ public interface IActorBehavior
 }
 
 /// <summary>
-/// A behavior that runs N sub-behaviors at once
+/// A behavior list that runs its sub-behaviors at once
 /// </summary>
 public sealed class CompositeBehavior : IActorBehavior
 {
@@ -39,7 +41,7 @@ public sealed class CompositeBehavior : IActorBehavior
 }
 
 /// <summary>
-/// A behavior that runs a bunch of sub-behaviors in sequence
+/// A behavior list that iterates through its behaviors over user-specified intervals
 /// </summary>
 public sealed class SequencedBehavior: IActorBehavior
 {
@@ -80,6 +82,45 @@ public sealed class SequencedBehavior: IActorBehavior
         }
     }
 }
+
+/// <summary>
+/// Allows blocking of a behavior with another one (or none at all)
+/// </summary>
+public sealed class BypassedBehavior : IActorBehavior
+{
+    readonly Actor actor;
+    readonly IActorBehavior currentBehavior;
+    readonly IActorBehavior bypassedBehavior;
+
+    /// <summary>
+    /// Supplants an actor's registered behaviors
+    /// </summary>
+    /// <param name="actor"></param>
+    /// <param name="newBehavior">pass in null to disable behaviors</param>
+    public BypassedBehavior(Actor actor, IActorBehavior newBehavior)
+    {
+        this.actor = actor;
+        this.currentBehavior = newBehavior;
+        this.bypassedBehavior = actor.behavior;
+
+        actor.behavior = this;
+    }
+
+    public void FixedUpdate(Actor actor)
+    {
+        DebugUtil.Assert(actor == this.actor);
+        if (currentBehavior != null)
+        {
+            currentBehavior.FixedUpdate(actor);
+        }
+    }
+
+    public void Restore()
+    {
+        actor.behavior = bypassedBehavior;
+    }
+}
+
 
 //KAI: IActorBehavior could be replaced by lambda's - food for thought.  It would make it easier to
 // allow different types of behaviors that take different signatures.  It also changes the nature of this factory
@@ -207,6 +248,10 @@ public sealed class ActorBehaviorFactory
     public IActorBehavior CreateHeroAnimator(GameObject hero)
     {
         return new HeroAnimator(hero);
+    }
+    public IActorBehavior CreatePossessedBehavior()
+    {
+        return new PossessedBehavior();
     }
 }
 
@@ -484,3 +529,34 @@ sealed class Drift : IActorBehavior
         actor.transform.localPosition = pos;
     }
 }
+
+sealed class PossessedBehavior : IActorBehavior
+{
+    RateLimiter spinRate = new RateLimiter(1, 0.5f);
+    float spinSpeed = 0;
+
+    public PossessedBehavior()
+    {
+        NewSpin();
+    }
+    const float SPIN = 1;
+    const float VIBE = 0.02f;
+    public void FixedUpdate(Actor actor)
+    {
+        if (spinRate.reached)
+        {
+            NewSpin();
+        }
+
+        actor.gameObject.transform.Rotate(0, 0, spinSpeed);
+        actor.gameObject.transform.Translate(Random.Range(-VIBE, VIBE), Random.Range(-VIBE, VIBE), 0);
+    }
+
+    void NewSpin()
+    {
+        spinSpeed = Random.Range(-SPIN, SPIN);
+        spinRate.Start();
+    }
+}
+
+

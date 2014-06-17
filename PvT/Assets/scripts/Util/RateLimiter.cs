@@ -31,4 +31,9 @@ public sealed class RateLimiter
             return Time.fixedTime > _next;
         }
     }
+
+    public override string ToString()
+    {
+        return string.Format("RateLimiter base {0} random {1}, next in {2}", _baseRate, _randomness, _next - Time.fixedTime);
+    }
 }

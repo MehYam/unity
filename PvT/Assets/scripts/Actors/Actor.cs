@@ -50,7 +50,7 @@ public class Actor : MonoBehaviour
         }
     }
     public float collisionDamage;
-    public IActorBehavior behavior { protected get; set; }
+    public IActorBehavior behavior { get; set; }
 
     ActorModifier _modifier;
     public void AddModifier(ActorModifier modifier)
@@ -154,6 +154,10 @@ public class Actor : MonoBehaviour
             var boom = Main.Instance.game.effects.GetRandomSmallExplosion().ToRawGameObject();
             boom.transform.localPosition = contact.point;
         }
-        TakeDamage(collider.GetComponent<Actor>().collisionDamage * Random.Range(0.9f, 1.1f));
+        var actor = collider.GetComponent<Actor>();
+        if (actor != null)
+        {
+            TakeDamage(actor.collisionDamage * Random.Range(0.9f, 1.1f));
+        }
     }
 }
