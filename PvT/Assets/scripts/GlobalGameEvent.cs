@@ -31,14 +31,16 @@ class GlobalGameEvent
     }
 
     public event Action<TileMap, XRect> MapReady = delegate { };
-    public void FireMapReady(TileMap map, XRect bounds) { MapReady(map, bounds); }
-
     public event Action<GameObject> PlayerSpawned = delegate { };
-    public void FirePlayerSpawned(GameObject player) { PlayerSpawned(player); }
-
     public event Action<Actor> HerolingAttached = delegate { };
     public event Action<Actor> HerolingDetached = delegate { };
+    public event Action<Actor> PossessionContact = delegate { };
+    public event Action<Actor> ActorDeath = delegate { };
 
+    public void FireMapReady(TileMap map, XRect bounds) { MapReady(map, bounds); }
+    public void FirePlayerSpawned(GameObject player) { PlayerSpawned(player); }
     public void FireHerolingAttached(Actor attachee) { HerolingAttached(attachee); }
     public void FireHerolingDetached(Actor detachee) { HerolingDetached(detachee); }
+    public void FirePossessionContact(Actor host) { PossessionContact(host); }
+    public void FireActorDeath(Actor actor) { ActorDeath(actor); }
 }

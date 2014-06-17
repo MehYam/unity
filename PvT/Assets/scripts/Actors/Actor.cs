@@ -94,7 +94,7 @@ public class Actor : MonoBehaviour
         }
         if (((expireTime != EXPIRY_INFINITE) && Time.fixedTime >= expireTime) || (health <= 0))
         {
-            Main.Instance.game.HandleActorDeath(this);
+            GlobalGameEvent.Instance.FireActorDeath(this);
         }
         if (_modifier != null && Time.fixedTime > _modifier.expiry)
         {
@@ -135,7 +135,6 @@ public class Actor : MonoBehaviour
             if (contact.collider.gameObject.layer != contact.otherCollider.gameObject.layer)
             {
                 HandleCollision(contact);
-                game.HandleCollision(contact);
 
                 // KAI: check that we only need to handle one
                 break;
@@ -145,19 +144,31 @@ public class Actor : MonoBehaviour
 
     protected virtual void HandleCollision(ContactPoint2D contact)
     {
-        //Debug.Log(string.Format("HandleCollision in {0}, between {1} and {2}", name, contact.collider.name, contact.otherCollider.name));
-
         var collider = contact.collider;
         var other = contact.otherCollider;
-        if (collider.gameObject.layer > other.gameObject.layer) // prevent duplicate collision sparks
+
+        var game = Main.Instance.game;
+        
+        // if a possessed ship is being hit by the hero, run the possession
+        Debug.Log(string.Format("{0} {1} {2}", game.currentlyPossessed, collider.GetComponent<Actor>(), other.GetComponent<Actor>()));
+        if (game.currentlyPossessed == collider.gameObject &&
+            game.player == other.gameObject)
         {
-            var boom = Main.Instance.game.effects.GetRandomSmallExplosion().ToRawGameObject();
-            boom.transform.localPosition = contact.point;
+            Debug.Log("_------------------SHOULD HAPPEN");
+            GlobalGameEvent.Instance.FirePossessionContact(collider.gameObject.GetComponent<Actor>());
         }
-        var actor = collider.GetComponent<Actor>();
-        if (actor != null)
+        else
         {
-            TakeDamage(actor.collisionDamage * Random.Range(0.9f, 1.1f));
+            if (collider.gameObject.layer > other.gameObject.layer) // prevent duplicate collision sparks
+            {
+                var boom = Main.Instance.game.effects.GetRandomSmallExplosion().ToRawGameObject();
+                boom.transform.localPosition = contact.point;
+            }
+            var actor = collider.GetComponent<Actor>();
+            if (actor != null)
+            {
+                TakeDamage(actor.collisionDamage * Random.Range(0.9f, 1.1f));
+            }
         }
     }
 }

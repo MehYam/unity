@@ -12,6 +12,7 @@ public sealed class GameController
     public GameObject player { get; private set; }
     public Loader loader { get; private set; }
     public Effects effects { get; private set; }
+    public GameObject currentlyPossessed { get; private set; }
 
     readonly GameObject ammoParent;
     public GameController(Loader loader)
@@ -25,6 +26,8 @@ public sealed class GameController
         GlobalGameEvent.Instance.MapReady += OnMapReady;
         GlobalGameEvent.Instance.HerolingAttached += OnHerolingAttached;
         GlobalGameEvent.Instance.HerolingDetached += OnHerolingDetached;
+        GlobalGameEvent.Instance.PossessionContact += OnPossessionContact;
+        GlobalGameEvent.Instance.ActorDeath += OnActorDeath;
     }
 
     //KAI: some nice way to mark this as dev only?
@@ -69,6 +72,8 @@ public sealed class GameController
             InitPlayer(tankHelper.hullGO, tankHelper.hull);
             AddPlayerTankBehaviors(tankHelper);
         }
+
+        this.player.gameObject.transform.localPosition = Vector3.zero;
     }
     void StartNextLevel()
     {
@@ -187,12 +192,15 @@ public sealed class GameController
     void OnHerolingAttached(Actor host)
     {
         var herolings = host.GetComponentsInChildren<HerolingActor>();
-        if (herolings.Length > 2)
+        if (herolings.Length >= Consts.POSSESSION_THRESHHOLD)
         {
             if (!(host.behavior is BypassedBehavior)) //KAI: wrong, there may be bypassed behaviors not having to do with possession
             {
                 // act possessed
+                DebugUtil.Assert(!(host.behavior is BypassedBehavior));
                 new BypassedBehavior(host, ActorBehaviorFactory.Instance.CreatePossessedBehavior());
+
+                currentlyPossessed = host.gameObject;
             }
         }
     }
@@ -205,13 +213,25 @@ public sealed class GameController
             if (bypass != null)
             {
                 bypass.Restore();
+
+                currentlyPossessed = null;
             }
         }
     }
-    void ActPossessed(Actor host)
+    void OnPossessionContact(Actor host)
     {
-        DebugUtil.Assert(!(host.behavior is BypassedBehavior));
+        //KAI: might be cleaner to just destroy the enemy, and respawn it as that type, in the same spot
+        var oldHero = player;
 
+        player = host.gameObject;
+        var vehicle = player.GetComponent<Actor>().worldObject as VehicleType;
+        
+        InitPlayer(player, vehicle);
+        AddPlayerPlaneBehaviors(player, vehicle);
+
+        GameObject.Destroy(oldHero);
+    
+        DecrementEnemies();
     }
 
     void SpawnMuzzleFlash(Actor launcher)
@@ -315,7 +335,6 @@ public sealed class GameController
     void InitPlayer(GameObject go, VehicleType vehicle)
     {
         go.name += " player";
-        go.transform.localPosition = Vector3.zero;
         go.layer = (int)Consts.Layer.FRIENDLY;
 
         player = go;
@@ -325,15 +344,7 @@ public sealed class GameController
         GlobalGameEvent.Instance.FirePlayerSpawned(go);
     }
 
-    //KAI: use global game event
-    // or, use subclassing
-    public void HandleCollision(ContactPoint2D contact)
-    {
-        var text = Main.Instance.UI.GetComponent<TextMesh>();
-        text.text = "Active Eukarya: " + HerolingActor.ActiveHerolings;
-    }
-    //KAI: use GlobalGameEvent
-    public void HandleActorDeath(Actor actor)
+    void OnActorDeath(Actor actor)
     {
         var enemy = actor.gameObject.layer == (int)Consts.Layer.MOB;
         if (actor.explodesOnDeath && (enemy || actor.gameObject.layer == (int)Consts.Layer.FRIENDLY))
@@ -343,11 +354,7 @@ public sealed class GameController
 
             if (enemy)
             {
-                --_liveEnemies;
-                if (_liveEnemies == 0)
-                {
-                    StartNextWave();
-                }
+                DecrementEnemies();
             }
         }
         var wasPlayer = actor.gameObject == player;
@@ -356,6 +363,14 @@ public sealed class GameController
         if (wasPlayer)
         {
             SpawnPlayer();
+        }
+    }
+    void DecrementEnemies()
+    {
+        --_liveEnemies;
+        if (_liveEnemies == 0)
+        {
+            StartNextWave();
         }
     }
 }
