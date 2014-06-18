@@ -42,7 +42,22 @@ public class Actor : MonoBehaviour
 
     public bool showsHealthBar{ get; set; }
     public bool explodesOnDeath { get; set; }
-    public float health{ get; set; }
+
+    float _health;
+    public float health
+    {
+        get
+        {
+            return _health;
+        }
+        set
+        {
+            var delta = value - health;
+            _health = value;
+
+            GlobalGameEvent.Instance.FireHealthChange(this, delta);
+        }
+    }
     public float maxSpeed
     {
         get

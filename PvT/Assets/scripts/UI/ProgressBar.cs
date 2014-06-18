@@ -32,6 +32,11 @@ public class ProgressBar : MonoBehaviour
     {
         Layout();
     }
+    void Layout()
+    {
+        Center(BackgroundSprite);
+        Center(ForegroundSprite);
+    }
     static void Center(GameObject spriteGO)
     {
         if (spriteGO != null)
@@ -41,10 +46,5 @@ public class ProgressBar : MonoBehaviour
 
             sprite.transform.localPosition = new Vector3((bounds.min.x - bounds.max.x) / 2, 0);
         }
-    }
-    void Layout()
-    {
-        Center(BackgroundSprite);
-        Center(ForegroundSprite);
     }
 }

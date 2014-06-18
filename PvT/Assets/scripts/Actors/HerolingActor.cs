@@ -15,6 +15,8 @@ public class HerolingActor : Actor
         behavior = ROAM;
 
         ++ActiveHerolings;
+
+        GlobalGameEvent.Instance.FireHerolingLaunched();
     }
 
     protected override void HandleCollision(ContactPoint2D contact)
@@ -102,6 +104,8 @@ public class HerolingActor : Actor
         //KAI: need something tighter than this - squishy Unity behavior might make this
         // number inaccurate
         --ActiveHerolings;
+
+        GlobalGameEvent.Instance.FireHerolingDestroyed();
     }
 
     //KAI: cheese?
