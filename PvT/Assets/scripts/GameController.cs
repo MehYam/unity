@@ -305,11 +305,13 @@ public sealed class GameController
             {
                 behaviors.Add(bf.CreateHeroAnimator(go));
             }
+            var autoFire = bf.CreateAutofire(new RateLimiter(0.5f), layer);
             behaviors.Add(bf.OnFire(
                 new CompositeBehavior(
                     bf.faceMouse,
-                    bf.CreateAutofire(new RateLimiter(0.5f), layer)
-                )
+                    autoFire
+                ),
+                autoFire
             ));
         }
 
@@ -323,14 +325,17 @@ public sealed class GameController
         var behaviors = new CompositeBehavior();
         behaviors.Add(new PlayerInput());
         behaviors.Add(bf.faceForward);
-        behaviors.Add(bf.OnFire(bf.CreateAutofire(new RateLimiter(0.5f), Consts.Layer.FRIENDLY_AMMO)));
+
+        var hullFire = bf.CreateAutofire(new RateLimiter(0.5f), Consts.Layer.FRIENDLY_AMMO);
+        behaviors.Add(bf.OnFire(hullFire, hullFire));
         behaviors.Add(bf.CreateTankTreadAnimator(tankHelper.treadLeft, tankHelper.treadRight));
         tankHelper.hullGO.GetComponent<Actor>().behavior = behaviors;
 
         // turret
+        var turretFire = bf.CreateAutofire(new RateLimiter(0.5f), Consts.Layer.FRIENDLY_AMMO);
         tankHelper.turretGO.GetComponent<Actor>().behavior = new CompositeBehavior(
             bf.faceMouse,
-            bf.OnFire(bf.CreateAutofire(new RateLimiter(0.5f), Consts.Layer.FRIENDLY_AMMO))
+            bf.OnFire(turretFire, turretFire)
         );
 
     }

@@ -229,9 +229,9 @@ public sealed class ActorBehaviorFactory
     {
         return new AutofireBehavior(rate, layer);
     }
-    public IActorBehavior OnFire(IActorBehavior onFireBehavior)
+    public IActorBehavior OnFire(IActorBehavior onPrimary, IActorBehavior onSecondary)
     {
-        return new PlayerfireBehavior(onFireBehavior);
+        return new PlayerfireBehavior(onPrimary, onSecondary);
     }
     public IActorBehavior CreateShield()
     {
@@ -385,15 +385,20 @@ sealed class AutofireBehavior : IActorBehavior
 sealed class PlayerfireBehavior : IActorBehavior
 {
     readonly IActorBehavior onFire;
-    public PlayerfireBehavior(IActorBehavior onFire)
+    readonly IActorBehavior onSecondary;
+    public PlayerfireBehavior(IActorBehavior onFire, IActorBehavior onSecondary)
     {
         this.onFire = onFire;
     }
     public void FixedUpdate(Actor actor)
     {
-        if ((Input.GetButton("Fire1") || Input.GetButton("Jump")))
+        if (onFire != null && Input.GetButton("Fire1"))
         {
             onFire.FixedUpdate(actor);
+        }
+        if (onSecondary != null && Input.GetButton("Jump"))
+        {
+            onSecondary.FixedUpdate(actor);
         }
     }
 }
@@ -405,16 +410,30 @@ sealed class PlayerShieldBehavior : IActorBehavior
     const float BOOST_SECONDS = 0.3f;
     GameObject _shield;
     float _lastShieldTime = -SHIELD_RECHARGE;
+
+    enum State { NONE, FIRING_AT_MOUSE, FIRING_FORWARD }
+    State _prevState;
     public void FixedUpdate(Actor actor)
     {
-        var firing = (Input.GetButton("Fire1") || Input.GetButton("Jump"));  //KAI: -> utils class
-        if (firing)
+        var newState = State.NONE;
+        if (Input.GetButton("Jump"))
         {
-            ActorBehaviorFactory.Instance.faceMouse.FixedUpdate(actor);
+            newState = State.FIRING_FORWARD;
+        }
+        else if (Input.GetButton("Fire1"))
+        {
+            newState = State.FIRING_AT_MOUSE;
+        }
+        if (newState != State.NONE)
+        {
             if (_shield == null && (Time.fixedTime - _lastShieldTime >= SHIELD_RECHARGE))
             {
                 var game = Main.Instance.game;
 
+                if (newState == State.FIRING_AT_MOUSE)
+                {
+                    ActorBehaviorFactory.Instance.faceMouse.FixedUpdate(actor);
+                }
                 // create the GameObject
                 var shieldWeapon = actor.worldObject.weapons[0];
                 var type = game.loader.GetVehicle(shieldWeapon.type);
@@ -439,10 +458,13 @@ sealed class PlayerShieldBehavior : IActorBehavior
                 _lastShieldTime = Time.fixedTime;
             }
         }
-        if (!firing && _shield != null)
+        if (newState == State.NONE && _shield != null)
         {
-            // point the actor to the mouse briefly to fire the shield in that direction
-            ActorBehaviorFactory.Instance.faceMouse.FixedUpdate(actor);
+            // point the actor to the mouse briefly to fire the shield in that direction, if that's how we were firing
+            if (_prevState == State.FIRING_AT_MOUSE)
+            {
+                ActorBehaviorFactory.Instance.faceMouse.FixedUpdate(actor);
+            }
 
             // release shield
             var shieldActor = _shield.GetComponent<Actor>();
@@ -462,6 +484,7 @@ sealed class PlayerShieldBehavior : IActorBehavior
 
             actor.AddModifier(null);  //KAI: cheese
         }
+        _prevState = newState;
     }
 }
 
