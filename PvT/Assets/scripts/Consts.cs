@@ -1,4 +1,5 @@
 using UnityEngine;
+using PvT.Util;
 
 /// <summary>
 /// Constants and basic utilities
@@ -61,6 +62,15 @@ public static class Consts
 
         return retval;
     }
+    static public void LookAt2D(Transform looker, Transform target)
+    {
+        var lookVector = target.position - looker.position;
+        var angle = Quaternion.Euler(0, 0, Mathf.Atan2(lookVector.y, lookVector.x) * Mathf.Rad2Deg);
+
+        looker.rotation = angle;
+        looker.Rotate(0, 0, ACTOR_NOSE_OFFSET);
+    }
+
     static public float DegreesBetweenPoints(Vector2 a, Vector2 b)
     {
         return DegreesRotation(a - b);
@@ -123,13 +133,23 @@ public static class Consts
             GameObject.Destroy(child);
         }
     }
-    static public Rect GetScreenRectInWorldCoords(Camera camera)
-    {
-        var pixels = camera.pixelRect;
-        var screenMin = camera.ScreenToWorldPoint(Vector3.zero);
-        var screenMax = camera.ScreenToWorldPoint(new Vector3(pixels.xMax, pixels.yMax));
 
-        return new Rect(screenMin.x, screenMax.y, screenMax.x - screenMin.x, screenMax.y - screenMin.y);;
+    static float _lastCalcedScreenRectTime = -1;
+    static XRect _screenRect;
+    static public XRect GetScreenRectInWorldCoords(Camera camera)
+    {
+        if (Time.time > _lastCalcedScreenRectTime)
+        {
+            var pixels = camera.pixelRect;
+            var screenMin = camera.ScreenToWorldPoint(Vector3.zero);
+            var screenMax = camera.ScreenToWorldPoint(new Vector3(pixels.xMax, pixels.yMax));
+
+            _screenRect = new XRect(screenMin, screenMax);
+
+            _lastCalcedScreenRectTime = Time.time;
+        }
+        DebugUtil.Assert(_screenRect != null);
+        return _screenRect;
     }
 
     static public void Log(string fmt, params object[] args)

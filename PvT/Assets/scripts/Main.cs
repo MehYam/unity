@@ -15,6 +15,7 @@ public class Main : MonoBehaviour
     public TextAsset Misc;
 
     public GameObject ProgressBar;
+    public GameObject Indicator;
 
     public GameObject UI;
 

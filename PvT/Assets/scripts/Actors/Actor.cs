@@ -10,6 +10,14 @@ public class Actor : MonoBehaviour
         showsHealthBar = true;
     }
 
+    void OnDestroy()
+    {
+        if (_indicator != null)
+        {
+            GameObject.Destroy(_indicator);
+        }
+    }
+
     WorldObjectType _worldObject;
     public WorldObjectType worldObject 
     {
@@ -119,8 +127,41 @@ public class Actor : MonoBehaviour
                 _healthBar.transform.rotation = level;
             }
         }
-	}
+        if (gameObject.layer == (int)Consts.Layer.MOB)
+        {
+            UpdateIndicator();
+        }
+    }
+    const float INDICATOR_MARGIN = 0.06f;
+    GameObject _indicator;
+    void UpdateIndicator()
+    {
+        var rect = Consts.GetScreenRectInWorldCoords(Camera.main);
+        var pos = transform.position;
 
+        if (!rect.Contains(pos))
+        {
+            if (_indicator == null)
+            {
+                //KAI: stick to one way of creating assets?
+                _indicator = (GameObject)GameObject.Instantiate(Main.Instance.Indicator);
+            }
+            Vector2 indPos = new Vector2(0, 0);
+            indPos.x = Mathf.Max(rect.left + INDICATOR_MARGIN, Mathf.Min(rect.right - INDICATOR_MARGIN, pos.x));
+            indPos.y = Mathf.Max(rect.bottom + INDICATOR_MARGIN, Mathf.Min(rect.top - INDICATOR_MARGIN, pos.y));
+
+            _indicator.transform.position = indPos;
+            Consts.LookAt2D(_indicator.transform, transform);
+            _indicator.SetActive(true);
+        }
+        else
+        {
+            if (_indicator != null)
+            {
+                _indicator.SetActive(false);
+            }
+        }
+    }
     void OnTriggerEnter2D(Collider2D other)
     {
         Debug.Log(other);
@@ -129,7 +170,6 @@ public class Actor : MonoBehaviour
     {
         //Debug.Log("collide " + worldObject.name);
         //Debug.Log(collision.relativeVelocity.magnitude);
-        var game = Main.Instance.game;
         foreach (ContactPoint2D contact in collision.contacts)
         {
             if (contact.collider.gameObject.layer != contact.otherCollider.gameObject.layer)
