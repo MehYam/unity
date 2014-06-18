@@ -4,6 +4,14 @@ using System.Collections;
 public class HerolingActor : Actor
 {
     static public int ActiveHerolings { get; private set; }
+    static public void ReturnAll()
+    {
+        var instances = GameObject.FindObjectsOfType<HerolingActor>();
+        foreach (var instance in instances)
+        {
+            instance.Return();
+        }
+    }
 
     RateLimiter _reabsorbTimeout;
     RateLimiter _roamBoredom;

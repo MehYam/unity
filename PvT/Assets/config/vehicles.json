@@ -7,7 +7,7 @@
 		"maxSpeed": "3",
 		"acceleration": "12",
 		"inertia": "0",
-		"collision": "5",
+		"collision": "0",
 		"behavior": "HERO_BEHAVIOR",
 		"payload":
 		[

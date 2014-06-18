@@ -125,7 +125,7 @@ MonoBehaviour:
   Indicator: {fileID: 100000, guid: 34b98b45d023102448965a76fc4c0428, type: 2}
   UI: {fileID: 1850988100}
   wavesActive: 1
-  defaultPlane: hero
+  defaultPlane: greenk
   defaultTank: tankhull0
   defaultTurret: tankturret0
   defaultIsPlane: 1
@@ -485,7 +485,7 @@ GameObject:
   - 114: {fileID: 359017137}
   - 114: {fileID: 359017136}
   m_Layer: 0
-  m_Name: camera
+  m_Name: camera and HUD
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -532,7 +532,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 4
+  orthographic size: 5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -1733,12 +1733,12 @@ TextMesh:
   m_GameObject: {fileID: 1850988100}
   m_Text: Eukarya
   m_OffsetZ: 0
-  m_CharacterSize: .239999995
+  m_CharacterSize: .150000006
   m_LineSpacing: 1
   m_Anchor: 0
   m_Alignment: 0
   m_TabSize: 4
-  m_FontSize: 20
+  m_FontSize: 32
   m_FontStyle: 0
   m_RichText: 1
   m_Font: {fileID: 12800000, guid: 7e1225de7c817314cbe91a8fc9b3c8cc, type: 3}

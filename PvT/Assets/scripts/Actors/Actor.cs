@@ -203,22 +203,22 @@ public class Actor : MonoBehaviour
     protected virtual void HandleCollision(ContactPoint2D contact)
     {
         var collider = contact.collider;
-        var other = contact.otherCollider;
+        var me = contact.otherCollider;
         //Debug.Log(string.Format("Collision {0} to {1}, me {2}", collider.name, other.name, name));
 
-        DebugUtil.Assert(other.gameObject == gameObject);
+        DebugUtil.Assert(me.gameObject == gameObject);
 
         var game = Main.Instance.game;
         
         // if a possessed ship is being hit by the hero, run the possession
         if (game.currentlyPossessed == collider.gameObject &&
-            game.player == other.gameObject)
+            game.player == me.gameObject)
         {
             GlobalGameEvent.Instance.FirePossessionContact(collider.gameObject.GetComponent<Actor>());
         }
         else
         {
-            if (collider.gameObject.layer > other.gameObject.layer) // prevent duplicate collision sparks
+            if (collider.gameObject.layer > me.gameObject.layer) // prevent duplicate collision sparks
             {
                 var boom = Main.Instance.game.effects.GetRandomSmallExplosion().ToRawGameObject();
                 boom.transform.localPosition = contact.point;

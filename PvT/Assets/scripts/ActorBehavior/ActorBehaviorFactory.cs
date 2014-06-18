@@ -452,7 +452,12 @@ sealed class PlayerShieldBehavior : IActorBehavior
             _shield.AddComponent<Rigidbody2D>();
             _shield.rigidbody2D.drag = 0;
             _shield.rigidbody2D.mass = 500;
-            _shield.rigidbody2D.velocity = actor.rigidbody2D.velocity;
+
+            // boost the shield away
+            var shieldBoost = new Vector2();
+            shieldBoost = Consts.GetLookAtVector(_shield.transform.rotation.eulerAngles.z, 1);
+
+            _shield.rigidbody2D.velocity = shieldBoost + actor.rigidbody2D.velocity;
             _shield = null;
 
             actor.AddModifier(null);  //KAI: cheese

@@ -232,6 +232,8 @@ public sealed class GameController
         GameObject.Destroy(oldHero);
     
         DecrementEnemies();
+
+        HerolingActor.ReturnAll();
     }
 
     void SpawnMuzzleFlash(Actor launcher)

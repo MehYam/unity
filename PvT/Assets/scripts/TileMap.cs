@@ -59,7 +59,7 @@ public class TileMap : MonoBehaviour
             tiles[i % (maxHorz + 1), i / (maxVert + 1)] = parsedTiles[i];
         }
 
-        var sprites = Resources.LoadAll<Sprite>("tiles/tiled");
+        var sprites = Resources.LoadAll<Sprite>("tiles/" + TileAsset.name);
         Render(tiles, sprites);
 	}
 
