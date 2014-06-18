@@ -425,7 +425,7 @@ sealed class PlayerShieldBehavior : IActorBehavior
 
                 // init the Actor
                 var shieldActor = _shield.GetComponent<Actor>();
-                shieldActor.health = actor.worldObject.health;
+                shieldActor.health = actor.worldObject.health * Consts.SHIELD_HEALTH_MULTIPLIER;
                 shieldActor.SetExpiry(Actor.EXPIRY_INFINITE);
                 shieldActor.explodesOnDeath = false;
                 shieldActor.showsHealthBar = false;

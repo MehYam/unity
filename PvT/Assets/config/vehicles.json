@@ -2,7 +2,7 @@
 	"HERO":
 	{
 		"asset": "ship2_8",
-		"health": "20",
+		"health": "25",
 		"mass": "0.2",
 		"maxSpeed": "3",
 		"acceleration": "12",

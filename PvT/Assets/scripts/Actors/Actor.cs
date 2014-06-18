@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
+using PvT.Util;
+
 public class Actor : MonoBehaviour
 {
     public Actor()
@@ -172,7 +174,8 @@ public class Actor : MonoBehaviour
         //Debug.Log(collision.relativeVelocity.magnitude);
         foreach (ContactPoint2D contact in collision.contacts)
         {
-            if (contact.collider.gameObject.layer != contact.otherCollider.gameObject.layer)
+            if (contact.otherCollider.gameObject == gameObject &&
+                contact.collider.gameObject.layer != contact.otherCollider.gameObject.layer)
             {
                 HandleCollision(contact);
 
@@ -186,15 +189,16 @@ public class Actor : MonoBehaviour
     {
         var collider = contact.collider;
         var other = contact.otherCollider;
+        //Debug.Log(string.Format("Collision {0} to {1}, me {2}", collider.name, other.name, name));
+
+        DebugUtil.Assert(other.gameObject == gameObject);
 
         var game = Main.Instance.game;
         
         // if a possessed ship is being hit by the hero, run the possession
-        Debug.Log(string.Format("{0} {1} {2}", game.currentlyPossessed, collider.GetComponent<Actor>(), other.GetComponent<Actor>()));
         if (game.currentlyPossessed == collider.gameObject &&
             game.player == other.gameObject)
         {
-            Debug.Log("_------------------SHOULD HAPPEN");
             GlobalGameEvent.Instance.FirePossessionContact(collider.gameObject.GetComponent<Actor>());
         }
         else

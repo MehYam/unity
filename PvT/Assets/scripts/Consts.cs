@@ -31,6 +31,8 @@ public static class Consts
 
     static public readonly float HEALTH_BAR_TIMEOUT = 5;
 
+    static public readonly float SHIELD_HEALTH_MULTIPLIER = 1;
+
     /// <summary>
     /// Flips a coin.  You can set the odds
     /// </summary>
