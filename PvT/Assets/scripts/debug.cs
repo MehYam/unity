@@ -37,7 +37,7 @@ public class debug : MonoBehaviour
         {
             if (_stats.lastInterval > 0)
             {
-                Consts.Log("debug updates: {0}({2}/sec), fixedUpdates: {1}({3}/sec)", _stats.updates, _stats.fixedUpdates, _stats.updates/elapsed, _stats.fixedUpdates/elapsed);
+                PvT.Util.Util.Log("debug updates: {0}({2}/sec), fixedUpdates: {1}({3}/sec)", _stats.updates, _stats.fixedUpdates, _stats.updates/elapsed, _stats.fixedUpdates/elapsed);
             }
             _stats.EndOfInterval();
         }

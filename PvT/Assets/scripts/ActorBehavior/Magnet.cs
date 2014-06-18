@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
+
+using PvT.Util;
 
 public class Magnet : MonoBehaviour
 {
@@ -10,8 +12,8 @@ public class Magnet : MonoBehaviour
         if (Target != null)
         {
             //KAI: should be using world position instead of local position for most of these
-            var angle = Consts.GetLookAtAngle(transform, Target.transform.localPosition - transform.localPosition);
-            var directionVector = Consts.RotatePoint(new Vector2(Magnitude, 0), angle.eulerAngles.z);
+            var angle = Util.GetLookAtAngle(transform, Target.transform.localPosition - transform.localPosition);
+            var directionVector = Util.RotatePoint(new Vector2(Magnitude, 0), angle.eulerAngles.z);
 
             rigidbody2D.AddForce(directionVector);
         }

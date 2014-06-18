@@ -19,6 +19,8 @@ public class Main : MonoBehaviour
 
     public GameObject UI;
 
+    public MainSounds sounds;
+
     /// <summary>
     /// ///////////////////////// debug/dev items
     /// </summary>
@@ -47,8 +49,6 @@ public class Main : MonoBehaviour
         game = new GameController(loader);
         GlobalGameEvent.Instance.MapReady += OnMapReady;
 
-        //Application.targetFrameRate = 3;
-        //QualitySettings.vSyncCount = 2;
         Physics2D.gravity = Vector2.zero;
 	}
     public void Debug_Respawn()

@@ -262,10 +262,10 @@ sealed class FacePlayerBehavior : IActorBehavior
     {
         var go = actor.gameObject;
         var previous = go.transform.localRotation;
-        var newRot = Consts.GetLookAtAngle(go.transform, Main.Instance.game.player.transform.localPosition - go.transform.localPosition);
+        var newRot = Util.GetLookAtAngle(go.transform, Main.Instance.game.player.transform.localPosition - go.transform.localPosition);
 
         // implement a crude rotational drag by "softening" the delta.  KAI: look into relying more on the physics engine to handle this
-        var angleDelta = Consts.diffAngle(previous.eulerAngles.z, newRot.eulerAngles.z);
+        var angleDelta = Util.diffAngle(previous.eulerAngles.z, newRot.eulerAngles.z);
         angleDelta *= (1 - RotationalInertia);
         go.transform.Rotate(0, 0, angleDelta);
     }
@@ -275,8 +275,8 @@ sealed class PlayerGravitate : IActorBehavior
     public void FixedUpdate(Actor actor)
     {
         var go = actor.gameObject;
-        var newRot = Consts.GetLookAtAngle(go.transform, Main.Instance.game.player.transform.localPosition - go.transform.localPosition);
-        var thrustVector = Consts.GetLookAtVector(newRot.eulerAngles.z, actor.acceleration);
+        var newRot = Util.GetLookAtAngle(go.transform, Main.Instance.game.player.transform.localPosition - go.transform.localPosition);
+        var thrustVector = Util.GetLookAtVector(newRot.eulerAngles.z, actor.acceleration);
 
         actor.gameObject.rigidbody2D.AddForce(thrustVector);
     }
@@ -286,10 +286,10 @@ sealed class PlayerHome : IActorBehavior
     public void FixedUpdate(Actor actor)
     {
         var go = actor.gameObject;
-        var newRot = Consts.GetLookAtAngle(go.transform, Main.Instance.game.player.transform.position - go.transform.position);
+        var newRot = Util.GetLookAtAngle(go.transform, Main.Instance.game.player.transform.position - go.transform.position);
 
         //actor.gameObject.transform.rotation = newRot;
-        actor.gameObject.rigidbody2D.velocity = Consts.GetLookAtVector(newRot.eulerAngles.z, actor.maxSpeed / 2);
+        actor.gameObject.rigidbody2D.velocity = Util.GetLookAtVector(newRot.eulerAngles.z, actor.maxSpeed / 2);
     }
 }
 
@@ -297,7 +297,7 @@ sealed class ThrustBehavior : IActorBehavior
 {
     public void FixedUpdate(Actor actor)
     {
-        var thrustVector = Consts.GetLookAtVector(actor.gameObject.transform.rotation.eulerAngles.z, actor.acceleration);
+        var thrustVector = Util.GetLookAtVector(actor.gameObject.transform.rotation.eulerAngles.z, actor.acceleration);
         actor.gameObject.rigidbody2D.AddForce(thrustVector);
     }
 }
@@ -307,7 +307,7 @@ sealed class Patrol : IActorBehavior
     public Patrol()
     {
         //var bounds = Main.Instance.game.WorldBounds;
-        //nextTarget = new Vector2(Consts.CoinFlip() ? bounds.left : bounds.right, Random.Range(bounds.bottom, bounds.top));
+        //nextTarget = new Vector2(Util.CoinFlip() ? bounds.left : bounds.right, Random.Range(bounds.bottom, bounds.top));
     }
 
     public void FixedUpdate(Actor actor)
@@ -315,7 +315,7 @@ sealed class Patrol : IActorBehavior
         var thrustLookAt = new Vector2(0, actor.acceleration);
 
         // apply the thrust in the direction of the actor
-        thrustLookAt = Consts.RotatePoint(thrustLookAt, -Consts.ACTOR_NOSE_OFFSET - actor.gameObject.transform.rotation.eulerAngles.z);
+        thrustLookAt = Util.RotatePoint(thrustLookAt, -Util.ACTOR_NOSE_OFFSET - actor.gameObject.transform.rotation.eulerAngles.z);
         actor.gameObject.rigidbody2D.AddForce(thrustLookAt);
     }
 }
@@ -327,7 +327,7 @@ sealed class FaceForward : IActorBehavior
         var go = actor.gameObject;
         if (go.rigidbody2D.velocity != Vector2.zero)
         {
-            go.transform.rotation = Consts.GetLookAtAngle(go.transform, go.rigidbody2D.velocity);
+            go.transform.rotation = Util.GetLookAtAngle(go.transform, go.rigidbody2D.velocity);
         }
     }
 }
@@ -348,7 +348,7 @@ sealed class FaceMouse : IActorBehavior
             var mouse = Input.mousePosition;
             var screenPoint = Camera.main.WorldToScreenPoint(go.transform.position);
             var lookDirection = new Vector2(mouse.x - screenPoint.x, mouse.y - screenPoint.y);
-            go.transform.rotation = Consts.GetLookAtAngle(go.transform, lookDirection);
+            go.transform.rotation = Util.GetLookAtAngle(go.transform, lookDirection);
         }
     }
 }
@@ -389,6 +389,7 @@ sealed class PlayerfireBehavior : IActorBehavior
     public PlayerfireBehavior(IActorBehavior onFire, IActorBehavior onSecondary)
     {
         this.onFire = onFire;
+        this.onSecondary = onSecondary;
     }
     public void FixedUpdate(Actor actor)
     {
@@ -426,14 +427,14 @@ sealed class PlayerShieldBehavior : IActorBehavior
         }
         if (newState != State.NONE)
         {
+            if (newState == State.FIRING_AT_MOUSE)
+            {
+                ActorBehaviorFactory.Instance.faceMouse.FixedUpdate(actor);
+            }
             if (_shield == null && (Time.fixedTime - _lastShieldTime >= SHIELD_RECHARGE))
             {
                 var game = Main.Instance.game;
 
-                if (newState == State.FIRING_AT_MOUSE)
-                {
-                    ActorBehaviorFactory.Instance.faceMouse.FixedUpdate(actor);
-                }
                 // create the GameObject
                 var shieldWeapon = actor.worldObject.weapons[0];
                 var type = game.loader.GetVehicle(shieldWeapon.type);
@@ -472,14 +473,15 @@ sealed class PlayerShieldBehavior : IActorBehavior
 
             _shield.transform.parent = GameObject.Find("_ammoParent").transform;
             _shield.AddComponent<Rigidbody2D>();
-            _shield.rigidbody2D.drag = 0;
+            _shield.rigidbody2D.drag = 1;
             _shield.rigidbody2D.mass = 500;
 
             // boost the shield away
             var shieldBoost = new Vector2();
-            shieldBoost = Consts.GetLookAtVector(_shield.transform.rotation.eulerAngles.z, 1);
+            shieldBoost = Util.GetLookAtVector(_shield.transform.rotation.eulerAngles.z, Consts.SHIELD_BOOST) + actor.rigidbody2D.velocity;
+            shieldBoost = Vector2.ClampMagnitude(shieldBoost, actor.worldObject.maxSpeed * 4);
 
-            _shield.rigidbody2D.velocity = shieldBoost + actor.rigidbody2D.velocity;
+            _shield.rigidbody2D.velocity = shieldBoost;
             _shield = null;
 
             actor.AddModifier(null);  //KAI: cheese

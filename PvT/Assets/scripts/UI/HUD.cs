@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
+using PvT.Util;
+
 public sealed class HUD : MonoBehaviour
 {
     public GameObject topLeftPanel;
@@ -19,7 +21,7 @@ public sealed class HUD : MonoBehaviour
         gge.HealthChange += OnHealthChange;
 
         // layout
-        var rect = Consts.GetScreenRectInWorldCoords(Camera.main);
+        var rect = Util.GetScreenRectInWorldCoords(Camera.main);
         topLeftPanel.transform.position = new Vector3(rect.left, rect.top);
     }
 

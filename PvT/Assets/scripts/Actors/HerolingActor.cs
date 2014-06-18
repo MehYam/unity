@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
+using PvT.Util;
+
 public class HerolingActor : Actor
 {
     static public int ActiveHerolings { get; private set; }
@@ -54,7 +56,7 @@ public class HerolingActor : Actor
 
         // sidle up
         var gimmeAKiss = transform.localPosition;
-        gimmeAKiss = gimmeAKiss + Consts.ScatterRandomly(0.25f);
+        gimmeAKiss = gimmeAKiss + Util.ScatterRandomly(0.25f);
         gimmeAKiss.Scale(new Vector3(0.4f, 0.4f));
         transform.localPosition = gimmeAKiss;
 

@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+using PvT.Util;
+
 // [ExecuteInEditMode] there are some issues with this, see comment in Start()
 public class TileMap : MonoBehaviour
 {
@@ -88,7 +90,7 @@ public class TileMap : MonoBehaviour
             );
         }
 
-        Consts.Log("rows, cols {0}, {1}, size {2}", rows, cols, size);
+        Util.Log("rows, cols {0}, {1}, size {2}", rows, cols, size);
         const float anchorSizeOffset = 0.3f;
 
         var bounds = new XRect(

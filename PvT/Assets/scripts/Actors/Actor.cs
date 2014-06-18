@@ -80,7 +80,6 @@ public class Actor : MonoBehaviour
     ActorModifier _modifier;
     public void AddModifier(ActorModifier modifier)
     {
-        Debug.Log("Adding modifier " + modifier);
         _modifier = modifier;
     }
 
@@ -123,7 +122,6 @@ public class Actor : MonoBehaviour
         }
         if (_modifier != null && Time.fixedTime > _modifier.expiry)
         {
-            Debug.Log("removing modifier");
             _modifier = null;
         }
     }
@@ -153,7 +151,7 @@ public class Actor : MonoBehaviour
     GameObject _indicator;
     void UpdateIndicator()
     {
-        var rect = Consts.GetScreenRectInWorldCoords(Camera.main);
+        var rect = Util.GetScreenRectInWorldCoords(Camera.main);
         var pos = transform.position;
 
         if (!rect.Contains(pos))
@@ -168,7 +166,7 @@ public class Actor : MonoBehaviour
             indPos.y = Mathf.Max(rect.bottom + INDICATOR_MARGIN, Mathf.Min(rect.top - INDICATOR_MARGIN, pos.y));
 
             _indicator.transform.position = indPos;
-            Consts.LookAt2D(_indicator.transform, transform);
+            Util.LookAt2D(_indicator.transform, transform);
             _indicator.SetActive(true);
         }
         else

@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
+using PvT.Util;
+
 public sealed class CameraFollow : MonoBehaviour
 {
     public GameObject Target;
@@ -15,7 +17,7 @@ public sealed class CameraFollow : MonoBehaviour
     Rect limit = new Rect();
     void CalcBounds()
     {
-        var screenInWorld = Consts.GetScreenRectInWorldCoords(camera);
+        var screenInWorld = Util.GetScreenRectInWorldCoords(camera);
 
         var borderMin = new Vector3(Border.transform.FindChild("left").localPosition.x, Border.transform.FindChild("bottom").localPosition.y);
         var borderMax = new Vector3(Border.transform.FindChild("right").localPosition.x, Border.transform.FindChild("top").localPosition.y);
@@ -24,7 +26,7 @@ public sealed class CameraFollow : MonoBehaviour
         limit.height = (borderMax.y - borderMin.y) - screenInWorld.height;
         limit.center = Vector2.zero;
 
-        Consts.Log("Border: {0},{1}, camera limit: {2} {3},{4}", borderMin, borderMax, limit, limit.xMin, limit.xMax);
+        Util.Log("Border: {0},{1}, camera limit: {2} {3},{4}", borderMin, borderMax, limit, limit.xMin, limit.xMax);
     }
 
 	// Update is called once per frame

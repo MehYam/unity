@@ -121,13 +121,13 @@ public sealed class GameController
         var bounds = new XRect(WorldBounds);
         bounds.Inflate(-1);
 
-        if (Consts.CoinFlip())
+        if (Util.CoinFlip())
         {
-            spawnLocation = new Vector3(Random.Range(bounds.min.x, bounds.max.x), Consts.CoinFlip() ? bounds.min.y : bounds.max.y);
+            spawnLocation = new Vector3(Random.Range(bounds.min.x, bounds.max.x), Util.CoinFlip() ? bounds.min.y : bounds.max.y);
         }
         else
         {
-            spawnLocation = new Vector3(Consts.CoinFlip() ? bounds.min.x : bounds.max.x, Random.Range(bounds.min.y, bounds.max.y));
+            spawnLocation = new Vector3(Util.CoinFlip() ? bounds.min.x : bounds.max.x, Random.Range(bounds.min.y, bounds.max.y));
         }
         go.transform.localPosition = spawnLocation;
         go.layer = (int)Consts.Layer.MOB;
@@ -151,12 +151,12 @@ public sealed class GameController
         var actor = go.GetComponent<Actor>();
         actor.SetExpiry(2);
         actor.collisionDamage = weapon.damage;
-        Consts.Sneeze(launcher.transform, actor.transform, weapon.offset, weapon.angle);
+        Util.Sneeze(launcher.transform, actor.transform, weapon.offset, weapon.angle);
         if (type.acceleration == 0)
         {
             // give the ammo instant acceleration
             body.mass = 0;
-            body.velocity = Consts.GetLookAtVector(actor.transform.rotation.eulerAngles.z, type.maxSpeed);
+            body.velocity = Util.GetLookAtVector(actor.transform.rotation.eulerAngles.z, type.maxSpeed);
         }
         else
         {
@@ -173,7 +173,7 @@ public sealed class GameController
                 // give it a push
                 body.velocity =
                     launcher.rigidbody2D.velocity + 
-                    Consts.GetLookAtVector(actor.transform.rotation.eulerAngles.z, type.maxSpeed);
+                    Util.GetLookAtVector(actor.transform.rotation.eulerAngles.z, type.maxSpeed);
             }
             else
             {
@@ -186,6 +186,8 @@ public sealed class GameController
             // it's a turret
             SpawnMuzzleFlash(actor);
         }
+
+        AudioSource.PlayClipAtPoint(Main.Instance.sounds.Bullet, launcher.transform.position);
         return go;
     }
 
@@ -289,7 +291,7 @@ public sealed class GameController
     {
         var bf = ActorBehaviorFactory.Instance;
         var behaviors = new CompositeBehavior();
-        behaviors.Add(new PlayerInput(bf.faceForward));
+        behaviors.Add(new PlayerInput(vehicle, bf.faceForward));
 
         if (vehicle.weapons[0].type == "SHIELD") //KAI: cheeze
         {
@@ -323,7 +325,7 @@ public sealed class GameController
 
         // hull
         var behaviors = new CompositeBehavior();
-        behaviors.Add(new PlayerInput());
+        behaviors.Add(new PlayerInput(tankHelper.hull));
         behaviors.Add(bf.faceForward);
 
         var hullFire = bf.CreateAutofire(new RateLimiter(0.5f), Consts.Layer.FRIENDLY_AMMO);
@@ -343,6 +345,7 @@ public sealed class GameController
     {
         go.name += " player";
         go.layer = (int)Consts.Layer.FRIENDLY;
+        go.AddComponent<AudioListener>();
 
         player = go;
 
@@ -364,9 +367,13 @@ public sealed class GameController
                 DecrementEnemies();
             }
         }
+        if (enemy)
+        {
+            AudioSource.PlayClipAtPoint(Main.Instance.sounds.Explosion1, actor.gameObject.transform.position);
+        }
+
         var wasPlayer = actor.gameObject == player;
         GameObject.Destroy(actor.gameObject);
-
         if (wasPlayer)
         {
             SpawnPlayer();

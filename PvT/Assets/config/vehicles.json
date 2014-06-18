@@ -36,7 +36,7 @@
 		"health": "20",
 		"mass": "2",
 		"maxSpeed": "2",
-		"acceleration": "10",
+		"acceleration": "20",
 		"inertia": "0",
 		"collision": "10",
 		"reward": "5",
