@@ -7,6 +7,7 @@ public class Main : MonoBehaviour
     public PhysicsMaterial2D Bounce;
 
     public TextAsset Vehicles;
+    public TextAsset Tanks;
     public TextAsset TankHulls;
     public TextAsset TankTurrets;
     public TextAsset Ammo;
@@ -25,10 +26,7 @@ public class Main : MonoBehaviour
     /// ///////////////////////// debug/dev items
     /// </summary>
     public bool wavesActive = true;
-    public string defaultPlane = "greenk";
-    public string defaultTank = "tankhull0";
-    public string defaultTurret = "tankturret0";
-    public bool defaultIsPlane = true;
+    public string defaultVehicle = "hero";
     /// 
 
 
@@ -45,15 +43,18 @@ public class Main : MonoBehaviour
     {
         _instance = this;
 
-        var loader = new Loader(Vehicles.text, Ammo.text, TankHulls.text, TankTurrets.text, Levels.text, AI.text, Misc.text);
-        game = new GameController(loader);
+        game = new GameController(CreateLoader());
         GlobalGameEvent.Instance.MapReady += OnMapReady;
 
         Physics2D.gravity = Vector2.zero;
 	}
+    Loader CreateLoader()
+    {
+        return new Loader(Vehicles.text, Tanks.text, TankHulls.text, TankTurrets.text, Ammo.text, Levels.text, AI.text, Misc.text);
+    }
     public void Debug_Respawn()
     {
-        game.Debug_Respawn(new Loader(Vehicles.text, Ammo.text, TankHulls.text, TankTurrets.text, Levels.text, AI.text, Misc.text));
+        game.Debug_Respawn(CreateLoader());
     }
     void OnDestroy()
     {

@@ -230,13 +230,20 @@ public sealed class ActorBehaviorFactory
     //        return _whirl;
     //    }
     //}
-    public IActorBehavior CreatePatrol(RateLimiter rate)
+    public IActorBehavior CreateRoam(RateLimiter rate)
     {
-        return new Patrol();
+        return new Roam();
     }
     public IActorBehavior CreateAutofire(RateLimiter rate, Consts.Layer layer)
     {
         return new AutofireBehavior(rate, layer);
+    }
+    public IActorBehavior CreateTurret(RateLimiter rate, Consts.Layer layer)
+    {
+        return new CompositeBehavior(
+            CreateAutofire(rate, layer),
+            facePlayer
+        );
     }
     public IActorBehavior OnFire(IActorBehavior onPrimary, IActorBehavior onSecondary)
     {
@@ -311,9 +318,9 @@ sealed class ThrustBehavior : IActorBehavior
     }
 }
 
-sealed class Patrol : IActorBehavior
+sealed class Roam : IActorBehavior
 {
-    public Patrol()
+    public Roam()
     {
         //var bounds = Main.Instance.game.WorldBounds;
         //nextTarget = new Vector2(Util.CoinFlip() ? bounds.left : bounds.right, Random.Range(bounds.bottom, bounds.top));

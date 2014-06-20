@@ -58,17 +58,19 @@ public sealed class GameController
     void SpawnPlayer()
     {
         var main = Main.Instance;
-        if (main.defaultIsPlane)
+        Debug.Log("Spawning player " + main.defaultVehicle);
+
+        var tank = loader.GetTank(main.defaultVehicle);
+        if (tank == null)
         {
-            Debug.Log("spawning " + main.defaultPlane);
-            var playerVehicle = loader.GetVehicle(main.defaultPlane);
+            var playerVehicle = loader.GetVehicle(main.defaultVehicle);
             var player = playerVehicle.Spawn();
             InitPlayer(player, playerVehicle);
             AddPlayerPlaneBehaviors(player, playerVehicle);
         }
         else
         {
-            var tankHelper = new TankSpawnHelper(this, main.defaultTank, main.defaultTurret);
+            var tankHelper = new TankSpawnHelper(this, tank.hullName, tank.turretName);
             InitPlayer(tankHelper.hullGO, tankHelper.hull);
             AddPlayerTankBehaviors(tankHelper);
         }

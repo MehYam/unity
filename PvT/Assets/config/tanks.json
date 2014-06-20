@@ -1,0 +1,27 @@
+{
+	"TANK1":
+	{
+		"hull": "tankhull0",
+		"turret": "tankturret0"
+	},
+	"TANK2":
+	{
+		"hull": "tankhull1",
+		"turret": "tankturret1"
+	},
+	"TANK3":
+	{
+		"hull": "tankhull2",
+		"turret": "tankturret2"
+	},
+	"TANK4":
+	{
+		"hull": "tankhull3",
+		"turret": "tankturret3"
+	},
+	"TANK5":
+	{
+		"hull": "tankhull4",
+		"turret": "tankturret4"
+	}	
+}

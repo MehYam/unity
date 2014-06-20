@@ -135,6 +135,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Bounce: {fileID: 6200000, guid: c4e015d2c312dd944b4a529c783e8795, type: 2}
   Vehicles: {fileID: 4900000, guid: 6f0130c3e04f4334aa58240080c71032, type: 3}
+  Tanks: {fileID: 4900000, guid: 65b8fd4495cb3214583906b37503d222, type: 3}
   TankHulls: {fileID: 4900000, guid: 642b1cee0fc5ae24d8f8823d544a1af8, type: 3}
   TankTurrets: {fileID: 4900000, guid: a7265d908f2e32d4aa5e18d2c247c427, type: 3}
   Ammo: {fileID: 4900000, guid: a4b492bf4e95fc14184e1d6c79489364, type: 3}
@@ -146,10 +147,7 @@ MonoBehaviour:
   UI: {fileID: 1850988100}
   sounds: {fileID: 3432513}
   wavesActive: 1
-  defaultPlane: hero
-  defaultTank: tankhull0
-  defaultTurret: tankturret0
-  defaultIsPlane: 1
+  defaultVehicle: hero
 --- !u!1 &68234700
 GameObject:
   m_ObjectHideFlags: 0

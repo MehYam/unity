@@ -12,13 +12,14 @@ public class Loader
     // need ReadOnlyDictionary's here
     readonly Dictionary<string, WorldObjectType> _miscLookup;
     readonly Dictionary<string, VehicleType> _vehicleLookup = new Dictionary<string, VehicleType>(StringComparer.OrdinalIgnoreCase);
+    readonly Dictionary<string, Tank> _tankLookup = new Dictionary<string, Tank>(StringComparer.OrdinalIgnoreCase);
     readonly Dictionary<string, TankHullType> _tankHullLookup = new Dictionary<string, TankHullType>(StringComparer.OrdinalIgnoreCase);
     readonly Dictionary<string, TankPartType> _tankTurretLookup = new Dictionary<string, TankPartType>(StringComparer.OrdinalIgnoreCase);
     readonly Dictionary<string, AI> _ai;
 
     public readonly ReadOnlyCollection<Level> levels;
 
-    public Loader(string strVehicles, string strAmmo, string strHulls, string strTurrets, string strLevels, string strAI, string strMisc)
+    public Loader(string strVehicles, string strTanks, string strHulls, string strTurrets, string strAmmo, string strLevels, string strAI, string strMisc)
     {
         _miscLookup = LoadMisc(strMisc, "other/");
         LoadVehicles(strVehicles, "planes/", _vehicleLookup);
@@ -27,6 +28,7 @@ public class Loader
 
         LoadVehicles(strAmmo, "ammo/", _vehicleLookup);
 
+        LoadTanks(strTanks, _tankLookup);
         LoadTankHulls(strHulls, "tanks/", _tankHullLookup);
         LoadTankTurrets(strTurrets, "tanks/", _tankTurretLookup);
 
@@ -55,6 +57,12 @@ public class Loader
     {
         VehicleType retval = null;
         _vehicleLookup.TryGetValue(type, out retval);
+        return retval;
+    }
+    public Tank GetTank(string tankName)
+    {
+        Tank retval = null;
+        _tankLookup.TryGetValue(tankName, out retval);
         return retval;
     }
     public TankHullType GetTankHull(string type)
@@ -149,6 +157,16 @@ public class Loader
             var node = (Hashtable)entry.Value;
             var worldObject = LoadWorldObject((string)entry.Key, node, assetPath);
             results[worldObject.name] = LoadVehicleType(worldObject, node);
+        }
+    }
+    static void LoadTanks(string strJSON, Dictionary<string, Tank> tanks)
+    {
+        var json = MJSON.hashtableFromJson(strJSON);
+        foreach (DictionaryEntry entry in json)
+        {
+            var node = (Hashtable)entry.Value;
+            var name = (string)entry.Key;
+            tanks[name] = new Tank(name, MJSON.SafeGetValue(node, "hull"), MJSON.SafeGetValue(node, "turret"));
         }
     }
     static void LoadTankHulls(string strJSON, string assetPath, Dictionary<string, TankHullType> results)
@@ -265,4 +283,13 @@ public sealed class AI
         this.behavior = behavior;
         this.reward = reward;
     }
+}
+
+public sealed class Tank
+{
+    public readonly string name;
+    public readonly string hullName;
+    public readonly string turretName;
+
+    public Tank(string name, string hull, string turret) { this.name = name; hullName = hull; turretName = turret; }
 }
