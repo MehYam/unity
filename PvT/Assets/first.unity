@@ -102,11 +102,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8277602c3fcddc4ba198f7c97f2a1db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HerolingBump: {fileID: 0}
+  HerolingCapture: {fileID: 8300000, guid: e1a5b766df9549941ba46a6f6cdd482b, type: 3}
   Laser: {fileID: 8300000, guid: 250fc6cb2e97af64c92ec55473f882a1, type: 3}
   Bullet: {fileID: 8300000, guid: ef1d6da4ce99ac146940895cc0c638e5, type: 3}
   SmallCollision: {fileID: 8300000, guid: 3cad01b4cdd23a24c935a9e355adabc5, type: 3}
   BigCollision: {fileID: 8300000, guid: fd04cca0b8ed6454391e5b23271f175d, type: 3}
   Explosion1: {fileID: 8300000, guid: 2f747f00e6dcb2f4eb316425d69c9383, type: 3}
+  music: {fileID: 0}
 --- !u!4 &3432514
 Transform:
   m_ObjectHideFlags: 0

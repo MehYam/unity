@@ -24,6 +24,7 @@ public static class Consts
     static public readonly float HEROLING_ROAM_BOREDOM = 2;
     static public readonly float HEROLING_ATTACH_BOREDOM = 5;
     static public readonly int HEROLING_LIMIT = 3;
+    static public readonly float HERO_REGEN = 1;
 
     static public readonly int POSSESSION_THRESHHOLD = 2;
 
@@ -31,4 +32,5 @@ public static class Consts
 
     static public readonly float SHIELD_HEALTH_MULTIPLIER = 1;
     static public readonly float SHIELD_BOOST = 0.5f;
+    static public readonly float COLLISION_DAMAGE_MULTIPLIER = 0.5f;
 }

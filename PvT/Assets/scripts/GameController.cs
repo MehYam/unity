@@ -203,6 +203,8 @@ public sealed class GameController
                 new BypassedBehavior(host, ActorBehaviorFactory.Instance.CreatePossessedBehavior());
 
                 currentlyPossessed = host.gameObject;
+
+                AudioSource.PlayClipAtPoint(Main.Instance.sounds.HerolingCapture, host.transform.position);
             }
         }
     }
@@ -291,7 +293,7 @@ public sealed class GameController
     {
         var bf = ActorBehaviorFactory.Instance;
         var behaviors = new CompositeBehavior();
-        behaviors.Add(new PlayerInput(vehicle, bf.faceForward));
+        behaviors.Add(new PlayerInput(bf.faceForward));
 
         if (vehicle.weapons[0].type == "SHIELD") //KAI: cheeze
         {
@@ -315,6 +317,7 @@ public sealed class GameController
                 ),
                 autoFire
             ));
+            behaviors.Add(bf.heroRegen);
         }
 
         go.GetComponent<Actor>().behavior = behaviors;
@@ -325,7 +328,7 @@ public sealed class GameController
 
         // hull
         var behaviors = new CompositeBehavior();
-        behaviors.Add(new PlayerInput(tankHelper.hull));
+        behaviors.Add(new PlayerInput());
         behaviors.Add(bf.faceForward);
 
         var hullFire = bf.CreateAutofire(new RateLimiter(0.5f), Consts.Layer.FRIENDLY_AMMO);

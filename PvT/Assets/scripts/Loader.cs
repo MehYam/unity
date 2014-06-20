@@ -138,7 +138,7 @@ public class Loader
                 worldObject,
                 MJSON.SafeGetFloat(node, "acceleration"),
                 MJSON.SafeGetFloat(node, "inertia"),
-                MJSON.SafeGetFloat(node, "collision")
+                MJSON.SafeGetFloat(node, "collision") * Consts.COLLISION_DAMAGE_MULTIPLIER
         );
     }
     static void LoadVehicles(string strJSON, string assetPath, Dictionary<string, VehicleType> results)
@@ -213,8 +213,15 @@ public class Loader
             var squadStrings = strWave.Split(';');
             foreach (var strSquad in squadStrings)
             {
-                var squad = LoadSquad(strSquad);
-                squads.Add(squad);
+                if (strSquad.Length > 2)
+                {
+                    var squad = LoadSquad(strSquad);
+                    squads.Add(squad);
+                }
+                else
+                {
+                    Debug.LogError("Bad wave string: " + strWave);
+                }
             }
         }
         return new Level.Wave(squads);

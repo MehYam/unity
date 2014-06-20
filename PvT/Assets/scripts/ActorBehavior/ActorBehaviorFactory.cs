@@ -212,6 +212,15 @@ public sealed class ActorBehaviorFactory
             return _drift;
         }
     }
+    IActorBehavior _heroRegen;
+    public IActorBehavior heroRegen
+    {
+        get
+        {
+            if (_heroRegen == null) { _heroRegen = new HealthRegen(Consts.HERO_REGEN); }
+            return _heroRegen;
+        }
+    }
     //IActorBehavior _whirl;
     //public IActorBehavior whirl
     //{
@@ -589,4 +598,19 @@ sealed class PossessedBehavior : IActorBehavior
     }
 }
 
-
+sealed class HealthRegen : IActorBehavior
+{
+    readonly float healthPerSecond;
+    public HealthRegen(float healthPerSecond)
+    {
+        this.healthPerSecond = healthPerSecond;
+    }
+    public void FixedUpdate(Actor actor)
+    {
+        if (actor.health < actor.worldObject.health)
+        {
+            actor.health += healthPerSecond * Time.fixedDeltaTime;
+            actor.health = Mathf.Min(actor.worldObject.health, actor.health);
+        }
+    }
+}

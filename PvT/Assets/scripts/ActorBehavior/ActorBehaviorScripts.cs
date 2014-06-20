@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System;
 using System.Collections.Generic;
 
@@ -52,6 +52,10 @@ public sealed class ActorBehaviorScripts
             );
             retval.Add(ActorBehaviorFactory.Instance.CreatePatrol(new RateLimiter(2)), new RateLimiter(3,5));
             return retval;
+        };
+        _behaviorFactory["OSPREY"] = () =>
+        {
+            return null;
         };
 
         // moth:

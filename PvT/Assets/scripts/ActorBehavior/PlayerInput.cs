@@ -3,13 +3,11 @@ using System.Collections;
 
 public class PlayerInput : IActorBehavior
 {
-    readonly VehicleType vehicle;
     bool isMoving = true;
 
     readonly IActorBehavior duringInput;
-    public PlayerInput(VehicleType vehicle, IActorBehavior duringInputBehavior = null)
+    public PlayerInput(IActorBehavior duringInputBehavior = null)
     {
-        this.vehicle = vehicle;
         duringInput = duringInputBehavior;
     }
     public void FixedUpdate(Actor actor)
