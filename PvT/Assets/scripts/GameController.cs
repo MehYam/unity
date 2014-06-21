@@ -90,29 +90,34 @@ public sealed class GameController
             var wave = loader.levels[0].NextWave();
             foreach (var squad in wave.squads)
             {
-                VehicleType v = loader.GetVehicle(squad.enemyID);
-                if (v != null)
+                for (int i = 0; i < squad.count; ++i)
                 {
-                    for (int i = 0; i < squad.count; ++i)
-                    {
-                        SpawnMob(v);
-                        ++_liveEnemies;
-                    }
-                }
-                else
-                {
-                    Debug.LogError("VehicleType not found for enemy " + squad.enemyID);
+                    SpawnMob(squad.enemyID);
+                    ++_liveEnemies;
                 }
             }
         }
     }
 
-    void SpawnMob(VehicleType vehicle)
+    void SpawnMob(string vehicleKey)
     {
-        var go = vehicle.Spawn();
-        go.name += " enemy";
-
-        var ai = loader.GetAI(vehicle.name);
+        var ai = loader.GetAI(vehicleKey);
+        var tank = loader.GetTank(vehicleKey);
+        if (tank != null)
+        {
+            var tankHelper = new TankSpawnHelper(this, tank.hullName, tank.turretName);
+            SpawnMobHelper(ai, tankHelper.hullGO);
+        }
+        else
+        {
+            var vehicle = loader.GetVehicle(vehicleKey);
+            var go = vehicle.Spawn();
+            SpawnMobHelper(ai, go);
+        }
+    }
+    void SpawnMobHelper(AI ai, GameObject go)
+    {
+        go.name += " mob";
         if (ai != null)
         {
             go.GetComponent<Actor>().behavior = ActorBehaviorScripts.Instance.Get(ai.behavior);
@@ -417,7 +422,7 @@ public sealed class Level
 
     public Wave NextWave()
     {
-        return nextWave <= waves.Count ? waves[nextWave++] : null;
+        return nextWave < waves.Count ? waves[nextWave++] : null;
     }
     public int numWaves { get { return waves.Count; } }
 }
