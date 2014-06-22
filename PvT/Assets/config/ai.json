@@ -1,26 +1,22 @@
 {
 	"BEE":
 	{
-		"vehicle": "BEE",
-		"behavior": "BEE_BEHAVIOR",
+		"behavior": "BEE",
 		"reward": "5"
 	},
 	"GREENK":
 	{
-		"vehicle": "GREENK",
-		"behavior": "GREENK_BEHAVIOR",
+		"behavior": "GREENK",
 		"reward": "5"
 	},
 	"MOTH":
 	{
-		"vehicle": "MOTH",
-		"behavior": "MOTH_BEHAVIOR",
+		"behavior": "MOTH",
 		"reward": "10"
 	},
 	"OSPREY":
 	{
-		"vehicle": "OSPREY",
-		"behavior": "",
+		"behavior": "OSPREY",
 		"reward": "15"
 	},
 	"BAT":
@@ -142,5 +138,25 @@
 	{
 		"vehicle": "ship2_3_1",
 		"reward": "800",
+	},
+	"TANK1":
+	{
+		"reward": "800",
+	},
+	"TANK2":
+	{
+		"reward": "1600",
+	},
+	"TANK3":
+	{
+		"reward": "2400",
+	},
+	"TANK4":
+	{
+		"reward": "3200",
+	},
+	"TANK5":
+	{
+		"reward": "4000",
 	}	
 }

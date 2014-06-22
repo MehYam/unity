@@ -101,27 +101,43 @@ public sealed class GameController
 
     void SpawnMob(string vehicleKey)
     {
-        var ai = loader.GetAI(vehicleKey);
         var tank = loader.GetTank(vehicleKey);
         if (tank != null)
         {
+            var bf = ActorBehaviorFactory.Instance;
             var tankHelper = new TankSpawnHelper(this, tank.hullName, tank.turretName);
-            SpawnMobHelper(ai, tankHelper.hullGO);
+
+            var hullBehavior = new CompositeBehavior(
+                bf.CreateTankTreadAnimator(tankHelper.treadLeft, tankHelper.treadRight),
+                bf.CreateRoam(Consts.MAX_MOB_HULL_ROTATION_DEG_PER_SEC, true),
+                bf.CreateAutofire(new RateLimiter(0, 4), Consts.Layer.MOB_AMMO)
+            );
+
+            var turretFireBehavior = new SequencedBehavior();
+            turretFireBehavior.Add(bf.CreateAutofire(new RateLimiter(1), Consts.Layer.MOB_AMMO), new RateLimiter(3, 3));
+            turretFireBehavior.Add(null, new RateLimiter(3, 3));
+            
+            var turretBehavior = new CompositeBehavior();
+            turretBehavior.Add(bf.CreateRotateToPlayer(Consts.MAX_MOB_TURRET_ROTATION_DEG_PER_SEC));
+            turretBehavior.Add(turretFireBehavior);
+
+            SpawnMobHelper(tankHelper.hullGO);
+
+            tankHelper.hullGO.GetComponent<Actor>().behavior = hullBehavior;
+            tankHelper.turretGO.GetComponent<Actor>().behavior = turretBehavior;
         }
         else
         {
             var vehicle = loader.GetVehicle(vehicleKey);
             var go = vehicle.Spawn();
-            SpawnMobHelper(ai, go);
+            go.GetComponent<Actor>().behavior = ActorBehaviorScripts.Instance.Get(vehicleKey);
+
+            SpawnMobHelper(go);
         }
     }
-    void SpawnMobHelper(AI ai, GameObject go)
+    void SpawnMobHelper(GameObject go)
     {
         go.name += " mob";
-        if (ai != null)
-        {
-            go.GetComponent<Actor>().behavior = ActorBehaviorScripts.Instance.Get(ai.behavior);
-        }
 
         // put the actor at the edge
         Vector3 spawnLocation;

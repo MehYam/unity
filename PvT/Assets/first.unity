@@ -147,7 +147,7 @@ MonoBehaviour:
   UI: {fileID: 1850988100}
   sounds: {fileID: 3432513}
   wavesActive: 1
-  defaultVehicle: hero
+  defaultVehicle: bee
 --- !u!1 &68234700
 GameObject:
   m_ObjectHideFlags: 0

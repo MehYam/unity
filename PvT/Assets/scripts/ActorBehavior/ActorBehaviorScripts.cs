@@ -37,7 +37,7 @@ public sealed class ActorBehaviorScripts
                                   bf.facePlayer),
             new RateLimiter(attackTime, attackTime)
         );
-        retval.Add(bf.CreateRoam(new RateLimiter(roamTime / 2)), new RateLimiter(roamTime, roamTime));
+        retval.Add(bf.CreateRoam(Consts.MAX_MOB_ROTATION_DEG_PER_SEC, false), new RateLimiter(roamTime, roamTime));
         return retval;
     }
     readonly Dictionary<string, Func<IActorBehavior>> _behaviorFactory = new Dictionary<string, Func<IActorBehavior>>();
@@ -46,11 +46,11 @@ public sealed class ActorBehaviorScripts
         //var game = Main.Instance.game;
         var bf = ActorBehaviorFactory.Instance;
 
-        _behaviorFactory["GREENK_BEHAVIOR"] = () =>
+        _behaviorFactory["GREENK"] = () =>
         {
             return bf.followPlayer;
         };
-        _behaviorFactory["MOTH_BEHAVIOR"] = () =>
+        _behaviorFactory["MOTH"] = () =>
         {
             return AttackAndFlee(3, 2, 2);
         };
@@ -67,7 +67,7 @@ public sealed class ActorBehaviorScripts
         };
         _behaviorFactory["TANK"] = () =>
         {
-            return null;
+            return null;// TankPatrol(5, 5);
         };
 
         // moth:
@@ -78,9 +78,17 @@ public sealed class ActorBehaviorScripts
     }
 }
 
-sealed class TankPatrolBehavior : IActorBehavior
+/// <summary>
+/// Given a tank Actor, this wraps a behavior, and applies it to the turret instead of the tank
+/// </summary>
+sealed class TurretBehavior : IActorBehavior
 {
+    public TurretBehavior()
+    {
+    }
+
     public void FixedUpdate(Actor actor)
     {
+        throw new NotImplementedException();
     }
 }

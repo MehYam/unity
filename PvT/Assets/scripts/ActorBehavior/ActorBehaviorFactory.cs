@@ -78,7 +78,11 @@ public sealed class SequencedBehavior: IActorBehavior
                 }
                 subBehaviors[currentItem].rate.Start();
             }
-            subBehaviors[currentItem].behavior.FixedUpdate(actor);
+            var b = subBehaviors[currentItem].behavior;
+            if (b != null)
+            {
+                b.FixedUpdate(actor);
+            }
         }
     }
 }
@@ -136,7 +140,7 @@ public sealed class ActorBehaviorFactory
     {
         get
         {
-            if (_facePlayer == null){_facePlayer = new FacePlayerBehavior();}
+            if (_facePlayer == null){_facePlayer = new FacePlayerBehavior(Consts.MAX_MOB_ROTATION_DEG_PER_SEC);}
             return _facePlayer;
         }
     }
@@ -230,9 +234,13 @@ public sealed class ActorBehaviorFactory
     //        return _whirl;
     //    }
     //}
-    public IActorBehavior CreateRoam(RateLimiter rate)
+    public IActorBehavior CreateRotateToPlayer(float degPerSec)
     {
-        return new Roam();
+        return new FacePlayerBehavior(degPerSec);
+    }
+    public IActorBehavior CreateRoam(float maxRotate, bool stopBeforeRotate)
+    {
+        return new RoamBehavior(maxRotate, stopBeforeRotate);
     }
     public IActorBehavior CreateAutofire(RateLimiter rate, Consts.Layer layer)
     {
@@ -273,17 +281,22 @@ public sealed class ActorBehaviorFactory
 
 sealed class FacePlayerBehavior : IActorBehavior
 {
-    float RotationalInertia = 0;  // from 0 to 1, 1 being completely inert
+    public const float ROTATE_IMMEDIATE = -1;
+
+    readonly float degPerSec;
+    public FacePlayerBehavior(float degPerSec = ROTATE_IMMEDIATE)
+    {
+        this.degPerSec = degPerSec;
+    }
+
     public void FixedUpdate(Actor actor)
     {
-        var go = actor.gameObject;
-        var previous = go.transform.localRotation;
-        var newRot = Util.GetLookAtAngle(go.transform, Main.Instance.game.player.transform.localPosition - go.transform.localPosition);
-
-        // implement a crude rotational drag by "softening" the delta.  KAI: look into relying more on the physics engine to handle this
-        var angleDelta = Util.diffAngle(previous.eulerAngles.z, newRot.eulerAngles.z);
-        angleDelta *= (1 - RotationalInertia);
-        go.transform.Rotate(0, 0, angleDelta);
+        float maxRotation = -1;
+        if (degPerSec != ROTATE_IMMEDIATE)
+        {
+            maxRotation = Time.fixedDeltaTime * degPerSec;
+        }
+        Util.LookAt2D(actor.transform, Main.Instance.game.player.transform, maxRotation);
     }
 }
 sealed class PlayerGravitate : IActorBehavior
@@ -291,7 +304,7 @@ sealed class PlayerGravitate : IActorBehavior
     public void FixedUpdate(Actor actor)
     {
         var go = actor.gameObject;
-        var newRot = Util.GetLookAtAngle(go.transform, Main.Instance.game.player.transform.localPosition - go.transform.localPosition);
+        var newRot = Util.GetLookAtAngle(Main.Instance.game.player.transform.localPosition - go.transform.localPosition);
         var thrustVector = Util.GetLookAtVector(newRot.eulerAngles.z, actor.acceleration);
 
         actor.gameObject.rigidbody2D.AddForce(thrustVector);
@@ -302,7 +315,7 @@ sealed class PlayerHome : IActorBehavior
     public void FixedUpdate(Actor actor)
     {
         var go = actor.gameObject;
-        var newRot = Util.GetLookAtAngle(go.transform, Main.Instance.game.player.transform.position - go.transform.position);
+        var newRot = Util.GetLookAtAngle(Main.Instance.game.player.transform.position - go.transform.position);
 
         //actor.gameObject.transform.rotation = newRot;
         actor.gameObject.rigidbody2D.velocity = Util.GetLookAtVector(newRot.eulerAngles.z, actor.maxSpeed / 2);
@@ -318,21 +331,58 @@ sealed class ThrustBehavior : IActorBehavior
     }
 }
 
-sealed class Roam : IActorBehavior
+sealed class RoamBehavior : IActorBehavior
 {
-    public Roam()
+    enum State { ROTATING, FORWARD, BRAKING };
+    State state;
+
+    readonly float maxRotation;
+    readonly bool brake;
+    public RoamBehavior(float maxRotation, bool brake)
     {
-        //var bounds = Main.Instance.game.WorldBounds;
-        //nextTarget = new Vector2(Util.CoinFlip() ? bounds.left : bounds.right, Random.Range(bounds.bottom, bounds.top));
+        this.maxRotation = maxRotation;
+        this.brake = brake;
+
+        state = State.ROTATING;
+        PickTarget();
     }
 
+    Vector2 target;
+    void PickTarget()
+    {
+        var bounds = new XRect(Main.Instance.game.WorldBounds);
+        bounds.Inflate(-1);
+
+        target = new Vector2(Random.Range(bounds.left, bounds.right), Random.Range(bounds.bottom, bounds.top));
+    }
     public void FixedUpdate(Actor actor)
     {
-        var thrustLookAt = new Vector2(0, actor.acceleration);
+        switch (state)
+        {
+            case State.ROTATING: 
+                Util.LookAt2D(actor.transform, target, maxRotation);
+                if (Util.IsLookingAt(actor.transform, target, 0.1f))
+                {
+                    state = State.FORWARD;
+                }
+                break;
+            case State.FORWARD: 
+                Util.LookAt2D(actor.transform, target, maxRotation);
+                ActorBehaviorFactory.Instance.thrust.FixedUpdate(actor);
 
-        // apply the thrust in the direction of the actor
-        thrustLookAt = Util.RotatePoint(thrustLookAt, -Util.ACTOR_NOSE_OFFSET - actor.gameObject.transform.rotation.eulerAngles.z);
-        actor.gameObject.rigidbody2D.AddForce(thrustLookAt);
+                if (Util.Sub(actor.transform.position, target).sqrMagnitude < 1)
+                {
+                    state = State.BRAKING;
+                }
+                break;
+            case State.BRAKING:
+                if (!brake || actor.rigidbody2D.velocity.sqrMagnitude < 0.1f)
+                {
+                    PickTarget();
+                    state = State.ROTATING;
+                }
+                break;
+        }
     }
 }
 
@@ -343,7 +393,7 @@ sealed class FaceForward : IActorBehavior
         var go = actor.gameObject;
         if (go.rigidbody2D.velocity != Vector2.zero)
         {
-            go.transform.rotation = Util.GetLookAtAngle(go.transform, go.rigidbody2D.velocity);
+            go.transform.rotation = Util.GetLookAtAngle(go.rigidbody2D.velocity);
         }
     }
 }
@@ -364,7 +414,7 @@ sealed class FaceMouse : IActorBehavior
             var mouse = Input.mousePosition;
             var screenPoint = Camera.main.WorldToScreenPoint(go.transform.position);
             var lookDirection = new Vector2(mouse.x - screenPoint.x, mouse.y - screenPoint.y);
-            go.transform.rotation = Util.GetLookAtAngle(go.transform, lookDirection);
+            go.transform.rotation = Util.GetLookAtAngle(lookDirection);
         }
     }
 }
