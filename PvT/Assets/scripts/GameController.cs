@@ -252,7 +252,7 @@ public sealed class GameController
 
     IEnumerator RunHostPossessionAnimation(Actor host)
     {
-        var clipLength = Main.Instance.sounds.fanfare1.length;
+        var clipLength = Main.Instance.sounds.fanfare1.length * 1.25f;
         AudioSource.PlayClipAtPoint(Main.Instance.sounds.fanfare1, player.transform.position, 0.25f);
 
         // 1. Stop all activity and pause
@@ -262,16 +262,13 @@ public sealed class GameController
         // 2. Remove physics from the hero, pause for a minute
         Util.DisablePhysics(player);
 
-        yield return host.StartCoroutine(Util.WaitForRealSeconds(clipLength));
-
         // 3. Tween it to the host
-        const float SECONDS = 2;
         var start = player.transform.position;
-        var endTime = Time.realtimeSinceStartup + SECONDS;
+        var endTime = Time.realtimeSinceStartup + clipLength;
         var sprite = player.GetComponent<SpriteRenderer>();
         while (Time.realtimeSinceStartup < endTime)
         {
-            var progress = 1 - (endTime - Time.realtimeSinceStartup) / SECONDS;
+            var progress = 1 - (endTime - Time.realtimeSinceStartup) / clipLength;
             var lerped = Vector3.Lerp(start, host.transform.position, progress);
             player.transform.position = lerped;
 
@@ -469,10 +466,20 @@ public sealed class GameController
         }
 
         var wasPlayer = actor.gameObject == player;
+        var wasHero = actor.worldObject.name == "HERO";
+
         GameObject.Destroy(actor.gameObject);
         if (wasPlayer)
         {
-            SpawnPlayer();
+            if (wasHero)
+            {
+                GlobalGameEvent.Instance.FireCenterPrint("Game Over");
+                GlobalGameEvent.Instance.FireGameOver();
+            }
+            else
+            {
+                SpawnPlayer();
+            }
         }
     }
     void DecrementEnemies()

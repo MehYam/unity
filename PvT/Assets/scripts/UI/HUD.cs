@@ -7,6 +7,7 @@ public sealed class HUD : MonoBehaviour
 {
     public GameObject topLeftPanel;
     public TextMesh label1;
+    public TextMesh centerPrint;
     public ProgressBar health;
 
     void Start()
@@ -20,9 +21,13 @@ public sealed class HUD : MonoBehaviour
         gge.HerolingDetached += OnHerolingDetached;
         gge.HealthChange += OnHealthChange;
 
+        gge.CenterPrint += OnCenterPrint;
+
         // layout
         var rect = Util.GetScreenRectInWorldCoords(Camera.main);
         topLeftPanel.transform.position = new Vector3(rect.left, rect.top);
+
+        centerPrint.gameObject.SetActive(false);
     }
 
     void OnPlayerSpawned(GameObject player)
@@ -50,6 +55,19 @@ public sealed class HUD : MonoBehaviour
             UpdateHealth();
         }
     }
+    void OnCenterPrint(string print)
+    {
+        StartCoroutine(CenterPrintAnim(print));
+    }
+    IEnumerator CenterPrintAnim(string print)
+    {
+        centerPrint.gameObject.SetActive(true);
+        centerPrint.text = print;
+
+        yield return new WaitForSeconds(3);
+        centerPrint.gameObject.SetActive(false);
+    }
+
     void UpdateHealth()
     {
         var player = Main.Instance.game.player.GetComponent<Actor>();

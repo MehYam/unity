@@ -41,6 +41,8 @@ class GlobalGameEvent
     public event Action<Actor, float> HealthChange = delegate { };
     public event Action<Actor> ActorDeath = delegate { };
 
+    public event Action GameOver = delegate { };
+
     public void FireMapReady(TileMap map, XRect bounds) { MapReady(map, bounds); }
     public void FirePlayerSpawned(GameObject player) { PlayerSpawned(player); }
 
@@ -52,4 +54,11 @@ class GlobalGameEvent
     public void FirePossessionContact(Actor host) { PossessionContact(host); }
     public void FireHealthChange(Actor actor, float delta) { HealthChange(actor, delta); }
     public void FireActorDeath(Actor actor) { ActorDeath(actor); }
+
+    public void FireGameOver() { GameOver(); }
+
+    // UI-centric
+    public event Action<string> CenterPrint = delegate { };
+
+    public void FireCenterPrint(string centerPrint) { CenterPrint(centerPrint); }
 }
