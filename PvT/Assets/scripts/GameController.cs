@@ -26,7 +26,7 @@ public sealed class GameController
         GlobalGameEvent.Instance.MapReady += OnMapReady;
         GlobalGameEvent.Instance.HerolingAttached += OnHerolingAttached;
         GlobalGameEvent.Instance.HerolingDetached += OnHerolingDetached;
-        GlobalGameEvent.Instance.PossessionContact += OnPossessionContact;
+        GlobalGameEvent.Instance.PossessionContact += OnHeroTouchedPossessed;
         GlobalGameEvent.Instance.ActorDeath += OnActorDeath;
     }
 
@@ -85,9 +85,9 @@ public sealed class GameController
     int _liveEnemies = 0;
     void StartNextWave()
     {
-        if (Main.Instance.wavesActive)
+        if (Main.Instance.runWaves)
         {
-            var wave = loader.levels[0].NextWave();
+            var wave = loader.levels[Main.Instance.startWave].NextWave();
             foreach (var squad in wave.squads)
             {
                 for (int i = 0; i < squad.count; ++i)
@@ -245,7 +245,7 @@ public sealed class GameController
             }
         }
     }
-    void OnPossessionContact(Actor host)
+    void OnHeroTouchedPossessed(Actor host)
     {
         //KAI: might be cleaner to just destroy the enemy, and respawn it as that type, in the same spot
         var oldHero = player;
@@ -254,7 +254,15 @@ public sealed class GameController
         var vehicle = player.GetComponent<Actor>().worldObject as VehicleType;
         
         InitPlayer(player, vehicle);
-        AddPlayerPlaneBehaviors(player, vehicle);
+        if (vehicle is TankHullType)
+        {
+            var reconstructedHelper = new TankSpawnHelper(player);
+            AddPlayerTankBehaviors(reconstructedHelper);
+        }
+        else
+        {
+            AddPlayerPlaneBehaviors(player, vehicle);
+        }
 
         GameObject.Destroy(oldHero);
     
@@ -272,6 +280,11 @@ public sealed class GameController
 
     sealed class TankSpawnHelper
     {
+        const string HULL_NAME = "hull";
+        const string TURRET_NAME = "turret";
+        const string LEFT_TREAD_NAME = "treadLeft";
+        const string RIGHT_TREAD_NAME = "treadRight";
+
         public readonly TankHullType hull;
         public readonly TankPartType turret;
         public readonly GameObject hullGO;
@@ -287,10 +300,13 @@ public sealed class GameController
             hullGO = hull.Spawn();
             turretGO = turret.Spawn();
 
+            hullGO.name = HULL_NAME;
+            turretGO.name = TURRET_NAME;
+
             treadLeft = tread.ToRawGameObject();
             treadRight = tread.ToRawGameObject();
-            treadLeft.name = "treadLeft";
-            treadRight.name = "treadRight";
+            treadLeft.name = LEFT_TREAD_NAME;
+            treadRight.name = RIGHT_TREAD_NAME;
 
             turretGO.transform.parent = hullGO.transform;
             treadLeft.transform.parent = hullGO.transform;
@@ -309,6 +325,22 @@ public sealed class GameController
             treadRight.gameObject.transform.Rotate(0, 0, 180);
             treadLeft.gameObject.transform.localPosition = new Vector3(hullBounds.min.x, 0);
             treadRight.gameObject.transform.localPosition = new Vector3(hullBounds.max.x, 0);
+        }
+
+        //KAI: cheesy - if we had a proper TankActor type, we wouldn't need this...  all this type-aversion is making for scrambled code
+        /// <summary>
+        /// Re-constructs the spawn helper for an already-spawned tank, useful for the possession case
+        /// </summary>
+        /// <param name="gameObject">The already spawned tank</param>
+        public TankSpawnHelper(GameObject gameObject)
+        {
+            this.hullGO = gameObject;
+            this.turretGO = gameObject.transform.FindChild(TURRET_NAME).gameObject;
+            this.treadLeft = gameObject.transform.FindChild(LEFT_TREAD_NAME).gameObject;
+            this.treadRight = gameObject.transform.FindChild(RIGHT_TREAD_NAME).gameObject;
+
+            this.hull = (TankHullType)hullGO.GetComponent<Actor>().worldObject;
+            this.turret = (TankPartType)turretGO.GetComponent<Actor>().worldObject;
         }
     }
 

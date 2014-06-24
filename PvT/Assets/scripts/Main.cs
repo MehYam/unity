@@ -25,10 +25,9 @@ public class Main : MonoBehaviour
     /// <summary>
     /// ///////////////////////// debug/dev items
     /// </summary>
-    public bool wavesActive = true;
     public string defaultVehicle = "hero";
-    /// 
-
+    public bool runWaves = true;
+    public int startWave = 0;
 
     static Main _instance;
     static public Main Instance

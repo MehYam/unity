@@ -28,8 +28,8 @@ public class MainEditor : Editor
         //var ship = EditorGUILayout.TextField("Ship", "BEE");
         //var hull = EditorGUILayout.TextField("Tank Hull", "tankhull0");
         //var turret = EditorGUILayout.TextField("Tank Turret", "tankturret0");
-
         var main = (Main) target;
+        main.startWave = (int)GUILayout.HorizontalSlider(main.startWave, 0, 17);
         if (GUILayout.Button("Respawn"))
         {
             main.Debug_Respawn();

@@ -65,16 +65,10 @@ public sealed class ActorBehaviorScripts
         {
             return AttackAndFlee(3, 1, 3);
         };
-        _behaviorFactory["TANK"] = () =>
+        _behaviorFactory["BAT"] = () =>
         {
-            return null;// TankPatrol(5, 5);
+            return null;
         };
-
-        // moth:
-        // - chase
-        // - aim and shoot
-        // - roam
-        //_behaviors["MOTH_BEHAVIOR"] = ChaseAttackFlee();
     }
 }
 
