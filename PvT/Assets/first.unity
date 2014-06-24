@@ -110,6 +110,7 @@ MonoBehaviour:
   BigCollision: {fileID: 8300000, guid: fd04cca0b8ed6454391e5b23271f175d, type: 3}
   Explosion1: {fileID: 8300000, guid: 2f747f00e6dcb2f4eb316425d69c9383, type: 3}
   music: {fileID: 0}
+  fanfare1: {fileID: 8300000, guid: 13c193cf99d81eb47a4b2d4eee111281, type: 3}
 --- !u!4 &3432514
 Transform:
   m_ObjectHideFlags: 0
@@ -674,7 +675,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Level: {fileID: 4900000, guid: 5c52b2e0b6a396644913789a7fcb1458, type: 3}
   TileAsset: {fileID: 2800000, guid: 7040b9cfda839e64d81a0cde3bc675d7, type: 3}
-  SpriteSortingOrder: -50
   Border: {fileID: 1070116983}
 --- !u!4 &680386596
 Transform:

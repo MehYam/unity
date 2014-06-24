@@ -8,7 +8,6 @@ public class TileMap : MonoBehaviour
 {
     public TextAsset Level;
     public Texture2D TileAsset;
-    public int SpriteSortingOrder = -10;
     public GameObject Border;
 
     struct Tile
@@ -82,7 +81,7 @@ public class TileMap : MonoBehaviour
 
             var renderer = go.GetComponent<SpriteRenderer>();
             renderer.sprite = sprites[tile.id];
-            renderer.sortingOrder = SpriteSortingOrder;
+            renderer.sortingOrder = Consts.SORT_ORDER_GROUND;
 
             go.transform.localPosition = new Vector2(
                 size.x * tile.x - centerOffset.x,

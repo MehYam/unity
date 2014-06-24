@@ -159,6 +159,25 @@ namespace PvT.Util
             return Mathf.Max(min, Mathf.Min(value, max));
         }
 
+        static public void DisablePhysics(GameObject go)
+        {
+            go.rigidbody2D.velocity = Vector2.zero;
+            go.rigidbody2D.isKinematic = true;
+            go.collider2D.enabled = false;
+        }
+        static public void EnablePhysics(GameObject go)
+        {
+            go.rigidbody2D.isKinematic = false;
+            go.collider2D.enabled = true;
+        }
+        static public IEnumerator WaitForRealSeconds(float time)
+        {
+            float start = Time.realtimeSinceStartup;
+            while (Time.realtimeSinceStartup < start + time)
+            {
+                yield return null;
+            }
+        }
         static public void Log(string fmt, params object[] args)
         {
             Debug.Log(string.Format(fmt, args));

@@ -169,7 +169,7 @@ public sealed class GameController
 #if DEBUG_AMMO
         sprite.sortingOrder = 10;
 #else
-        sprite.sortingOrder = Consts.AMMO_SORT_ORDER;
+        sprite.sortingOrder = Consts.SORT_ORDER_AMMO;
 #endif
         var actor = go.GetComponent<Actor>();
         actor.SetExpiry(2);
@@ -191,7 +191,7 @@ public sealed class GameController
                 actor.SetExpiry(Actor.EXPIRY_INFINITE);
 
                 // make it appear on top of mobs and friendlies
-                sprite.sortingOrder = 1;
+                sprite.sortingOrder = Consts.SORT_ORDER_HEROLING;
 
                 // give it a push
                 body.velocity =
@@ -247,12 +247,46 @@ public sealed class GameController
     }
     void OnHeroTouchedPossessed(Actor host)
     {
-        //KAI: might be cleaner to just destroy the enemy, and respawn it as that type, in the same spot
-        var oldHero = player;
+        host.StartCoroutine(RunHostPossessionAnimation(host));
+    }
 
+    IEnumerator RunHostPossessionAnimation(Actor host)
+    {
+        var clipLength = Main.Instance.sounds.fanfare1.length;
+        AudioSource.PlayClipAtPoint(Main.Instance.sounds.fanfare1, player.transform.position, 0.25f);
+
+        // 1. Stop all activity and pause
+        var timeScale = Time.timeScale;
+        Time.timeScale = 0;
+
+        // 2. Remove physics from the hero, pause for a minute
+        Util.DisablePhysics(player);
+
+        yield return host.StartCoroutine(Util.WaitForRealSeconds(clipLength));
+
+        // 3. Tween it to the host
+        const float SECONDS = 2;
+        var start = player.transform.position;
+        var endTime = Time.realtimeSinceStartup + SECONDS;
+        var sprite = player.GetComponent<SpriteRenderer>();
+        while (Time.realtimeSinceStartup < endTime)
+        {
+            var progress = 1 - (endTime - Time.realtimeSinceStartup) / SECONDS;
+            var lerped = Vector3.Lerp(start, host.transform.position, progress);
+            player.transform.position = lerped;
+
+            var color = sprite.color;
+            color.a = 1 - progress;
+            sprite.color = color;
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        // 4. Host becomes the new player
+        var oldHero = player;
         player = host.gameObject;
         var vehicle = player.GetComponent<Actor>().worldObject as VehicleType;
-        
+
         InitPlayer(player, vehicle);
         if (vehicle is TankHullType)
         {
@@ -264,11 +298,15 @@ public sealed class GameController
             AddPlayerPlaneBehaviors(player, vehicle);
         }
 
+        // 5. Destroy the old hero and return the herolings
         GameObject.Destroy(oldHero);
-    
         DecrementEnemies();
+        HerolingActor.RemoveAll();
 
-        HerolingActor.ReturnAll();
+        // 6. Re-enable physics for all
+        Time.timeScale = timeScale;
+
+        yield return null;
     }
 
     void SpawnMuzzleFlash(Actor launcher)
@@ -313,7 +351,7 @@ public sealed class GameController
             treadRight.transform.parent = hullGO.transform;
 
             var hullSprite = hullGO.GetComponent<SpriteRenderer>();
-            hullSprite.sortingOrder = -2;
+            hullSprite.sortingOrder = Consts.SORT_ORDER_TANK_HULL;
 
             var hullBounds = hullSprite.sprite.bounds;
             var pivotY = hullBounds.min.y + hull.turretPivotY / Consts.PixelsToUnits;

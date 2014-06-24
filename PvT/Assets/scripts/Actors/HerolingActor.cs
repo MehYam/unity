@@ -6,12 +6,12 @@ using PvT.Util;
 public class HerolingActor : Actor
 {
     static public int ActiveHerolings { get; private set; }
-    static public void ReturnAll()
+    static public void RemoveAll()
     {
         var instances = GameObject.FindObjectsOfType<HerolingActor>();
         foreach (var instance in instances)
         {
-            instance.Return();
+            GameObject.Destroy(instance.gameObject);
         }
     }
 
@@ -61,9 +61,7 @@ public class HerolingActor : Actor
         transform.localPosition = gimmeAKiss;
 
         // disable physics
-        rigidbody2D.velocity = Vector2.zero;
-        rigidbody2D.isKinematic = true;
-        collider2D.enabled = false;
+        Util.DisablePhysics(gameObject);
 
         behavior = ATTACHED;
         _roamBoredom = null;
@@ -73,6 +71,7 @@ public class HerolingActor : Actor
     }
     void Return()
     {
+        gameObject.layer = (int)Consts.Layer.HEROLINGS_RETURNING;
         if (transform.parent != null)  //KAI: dorked, because all ammo's parented initially
         {
             var parentActor = transform.parent.GetComponent<Actor>();
@@ -82,8 +81,7 @@ public class HerolingActor : Actor
                 GlobalGameEvent.Instance.FireHerolingDetached(parentActor);
 
                 // re-enable physics
-                rigidbody2D.isKinematic = false;
-                collider2D.enabled = true;
+                Util.DisablePhysics(gameObject);
             }
         }
         // go back home

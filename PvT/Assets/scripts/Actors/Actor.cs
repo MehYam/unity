@@ -89,6 +89,7 @@ public class Actor : MonoBehaviour
     {
         if (dmg > 0)
         {
+            Debug.Log("TakeDamage " + name + " " + dmg);
             this.health -= dmg;
 
             if (showsHealthBar && this.health > 0)
