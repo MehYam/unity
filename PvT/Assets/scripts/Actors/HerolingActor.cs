@@ -81,7 +81,7 @@ public class HerolingActor : Actor
                 GlobalGameEvent.Instance.FireHerolingDetached(parentActor);
 
                 // re-enable physics
-                Util.DisablePhysics(gameObject);
+                Util.EnablePhysics(gameObject);
             }
         }
         // go back home

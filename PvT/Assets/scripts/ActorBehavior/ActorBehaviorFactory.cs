@@ -13,6 +13,10 @@ public interface IActorBehavior
 {
     void FixedUpdate(Actor actor);
 }
+public interface IActorVisualBehavior
+{
+    void Update(Actor actor);
+}
 
 /// <summary>
 /// A behavior list that runs its sub-behaviors at once

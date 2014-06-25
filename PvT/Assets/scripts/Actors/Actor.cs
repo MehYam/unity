@@ -10,6 +10,7 @@ public class Actor : MonoBehaviour
         expireTime = EXPIRY_INFINITE;
         explodesOnDeath = true;
         showsHealthBar = true;
+        receivedDamageMultiplier = 1;
     }
 
     void OnDestroy()
@@ -32,6 +33,9 @@ public class Actor : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// armor = 0 to 1, the percentage reduction in damage
+    /// </summary>
     public float expireTime { get; private set; }
 
     static public readonly float EXPIRY_INFINITE = 0;
@@ -74,8 +78,10 @@ public class Actor : MonoBehaviour
             return (_modifier != null) ? v.acceleration + _modifier.acceleration : v.acceleration;
         }
     }
+    public float receivedDamageMultiplier { get; set; }
     public float collisionDamage;
     public IActorBehavior behavior { get; set; }
+    public IActorVisualBehavior visualBehavior { get; set; }
 
     ActorModifier _modifier;
     public void AddModifier(ActorModifier modifier)
@@ -85,11 +91,12 @@ public class Actor : MonoBehaviour
 
     float _lastHealthUpdate = 0;
     ProgressBar _healthBar;
-    public void TakeDamage(float dmg)
+    public void TakeDamage(float damage)
     {
-        if (dmg > 0)
+        var effectiveDamage = receivedDamageMultiplier * damage;
+        if (effectiveDamage > 0)
         {
-            this.health -= dmg;
+            this.health -= effectiveDamage;
 
             if (showsHealthBar && this.health > 0)
             {
@@ -103,6 +110,11 @@ public class Actor : MonoBehaviour
                 _healthBar.gameObject.SetActive(true);
             }
             _lastHealthUpdate = Time.time;
+        }
+
+        if (gameObject == Main.Instance.game.player)
+        {
+            visualBehavior = new PostDamageInvuln(this, 0.1f, Consts.POST_DAMAGE_INVULN);
         }
     }
 
@@ -127,6 +139,11 @@ public class Actor : MonoBehaviour
     }
     void Update()
     {
+        if (visualBehavior != null)
+        {
+            visualBehavior.Update(this);
+        }
+
         if (_healthBar != null && _healthBar.gameObject.activeSelf)
         {
             if ((Time.time - _lastHealthUpdate) > Consts.HEALTH_BAR_TIMEOUT)
@@ -225,6 +242,57 @@ public class Actor : MonoBehaviour
             if (actor != null)
             {
                 TakeDamage(actor.collisionDamage * Random.Range(0.9f, 1.1f));
+            }
+        }
+    }
+}
+
+public sealed class PostDamageInvuln : IActorVisualBehavior
+{
+    readonly RateLimiter rate;
+    readonly RateLimiter duration;
+    readonly SpriteRenderer[] dropShadows;
+
+    public PostDamageInvuln(Actor actor, float rate, float duration)
+    {
+        this.rate = new RateLimiter(rate);
+        this.duration = new RateLimiter(duration);
+
+        var shadows = actor.gameObject.GetComponentsInChildren<SpriteRenderer>();
+        dropShadows = shadows.Length > 0 ? shadows : null;
+
+        actor.receivedDamageMultiplier = 0;
+    }
+    public void Update(Actor actor)
+    {
+        if (rate.reached)
+        {
+            rate.Start();
+
+            var alpha = (rate.numStarts % 2) == 0 ? 0.25f : 1;
+            SetAlpha(actor, alpha);
+        }
+        if (duration.reached)
+        {
+            // remove self
+            DebugUtil.Assert(actor.visualBehavior == this);
+
+            actor.visualBehavior = null;
+            actor.receivedDamageMultiplier = 1;
+
+            SetAlpha(actor, 1);
+        }
+    }
+    void SetAlpha(Actor actor, float alpha)
+    {
+        var sprite = actor.gameObject.GetComponent<SpriteRenderer>();
+        Util.SetAlpha(sprite, alpha);
+
+        if (dropShadows != null)
+        {
+            foreach (var shadow in dropShadows)
+            {
+                Util.SetAlpha(shadow, alpha);
             }
         }
     }

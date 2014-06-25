@@ -178,6 +178,13 @@ namespace PvT.Util
                 yield return null;
             }
         }
+        static public void SetAlpha(SpriteRenderer sprite, float alpha)
+        {
+            var color = sprite.color;
+            color.a = alpha;
+            sprite.color = color;
+        }
+
         static public void Log(string fmt, params object[] args)
         {
             Debug.Log(string.Format(fmt, args));

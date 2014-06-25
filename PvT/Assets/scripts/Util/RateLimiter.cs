@@ -19,10 +19,9 @@ public sealed class RateLimiter
 
         Start();
     }
-    public void Start()
-    {
-        float delta = (_randomness > 0) ? Random.Range(_baseRate, _randomness) : _baseRate;
-        _next = Time.fixedTime + delta;
+    public int numStarts
+    { 
+        get; private set;
     }
     public bool reached
     {
@@ -31,9 +30,29 @@ public sealed class RateLimiter
             return Time.fixedTime > _next;
         }
     }
+    public float timeRemaining
+    {
+        get
+        {
+            return Mathf.Max(0, _next - Time.fixedTime);
+        }
+    }
+    public float baseRate
+    {
+        get
+        {
+            return _baseRate;
+        }
+    }
+    public void Start()
+    {
+        float delta = (_randomness > 0) ? Random.Range(_baseRate, _randomness) : _baseRate;
+        _next = Time.fixedTime + delta;
 
+        ++numStarts;
+    }
     public override string ToString()
     {
-        return string.Format("RateLimiter base {0} random {1}, next in {2}", _baseRate, _randomness, _next - Time.fixedTime);
+        return string.Format("RateLimiter base {0} random {1}, next in {2}, started {3} times", _baseRate, _randomness, _next - Time.fixedTime, numStarts);
     }
 }

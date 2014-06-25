@@ -66,13 +66,13 @@ public sealed class GameController
             var playerVehicle = loader.GetVehicle(main.defaultVehicle);
             var player = playerVehicle.Spawn();
             InitPlayer(player, playerVehicle);
-            AddPlayerPlaneBehaviors(player, playerVehicle);
+            SetPlayerPlaneBehaviors(player, playerVehicle);
         }
         else
         {
             var tankHelper = new TankSpawnHelper(this, tank.hullName, tank.turretName);
             InitPlayer(tankHelper.hullGO, tankHelper.hull);
-            AddPlayerTankBehaviors(tankHelper);
+            SetPlayerTankBehaviors(tankHelper);
         }
 
         this.player.gameObject.transform.localPosition = Vector3.zero;
@@ -288,11 +288,11 @@ public sealed class GameController
         if (vehicle is TankHullType)
         {
             var reconstructedHelper = new TankSpawnHelper(player);
-            AddPlayerTankBehaviors(reconstructedHelper);
+            SetPlayerTankBehaviors(reconstructedHelper);
         }
         else
         {
-            AddPlayerPlaneBehaviors(player, vehicle);
+            SetPlayerPlaneBehaviors(player, vehicle);
         }
 
         // 5. Destroy the old hero and return the herolings
@@ -379,7 +379,7 @@ public sealed class GameController
         }
     }
 
-    void AddPlayerPlaneBehaviors(GameObject go, VehicleType vehicle)
+    void SetPlayerPlaneBehaviors(GameObject go, VehicleType vehicle)
     {
         var bf = ActorBehaviorFactory.Instance;
         var behaviors = new CompositeBehavior();
@@ -410,9 +410,10 @@ public sealed class GameController
             behaviors.Add(bf.heroRegen);
         }
 
-        go.GetComponent<Actor>().behavior = behaviors;
+        var actor = go.GetComponent<Actor>();
+        actor.behavior = behaviors;
     }
-    void AddPlayerTankBehaviors(TankSpawnHelper tankHelper)
+    void SetPlayerTankBehaviors(TankSpawnHelper tankHelper)
     {
         var bf =ActorBehaviorFactory.Instance;
 

@@ -38,6 +38,7 @@ public static class Consts
     static public readonly float SHIELD_HEALTH_MULTIPLIER = 1;
     static public readonly float SHIELD_BOOST = 0.5f;
     static public readonly float COLLISION_DAMAGE_MULTIPLIER = 0.5f;
+    static public readonly float POST_DAMAGE_INVULN = 1;
     
     static public readonly float MAX_MOB_ROTATION_DEG_PER_SEC = 90;
     static public readonly float MAX_MOB_TURRET_ROTATION_DEG_PER_SEC = 45;
