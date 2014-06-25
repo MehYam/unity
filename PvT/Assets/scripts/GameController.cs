@@ -33,12 +33,14 @@ public sealed class GameController
     //KAI: some nice way to mark this as dev only?
     public void Debug_Respawn(Loader loader)
     {
+        Vector3 pos = Vector3.zero;
         if (player != null)
         {
+            pos = player.transform.position;
             GameObject.Destroy(player);
         }
         this.loader = loader;
-        SpawnPlayer();
+        SpawnPlayer(pos);
     }
 
     public XRect WorldBounds { get; private set; }
@@ -52,10 +54,10 @@ public sealed class GameController
 
     void Start()
     {
-        SpawnPlayer();
+        SpawnPlayer(Vector3.zero);
         StartNextLevel();
     }
-    void SpawnPlayer()
+    void SpawnPlayer(Vector3 location)
     {
         var main = Main.Instance;
         Debug.Log("Spawning player " + main.defaultVehicle);
@@ -75,7 +77,7 @@ public sealed class GameController
             SetPlayerTankBehaviors(tankHelper);
         }
 
-        this.player.gameObject.transform.localPosition = Vector3.zero;
+        this.player.gameObject.transform.position = location;
     }
     void StartNextLevel()
     {
@@ -468,6 +470,7 @@ public sealed class GameController
 
         var wasPlayer = actor.gameObject == player;
         var wasHero = actor.worldObject.name == "HERO";
+        var deathPos = actor.gameObject.transform.position;
 
         GameObject.Destroy(actor.gameObject);
         if (wasPlayer)
@@ -479,7 +482,7 @@ public sealed class GameController
             }
             else
             {
-                SpawnPlayer();
+                SpawnPlayer(deathPos);
             }
         }
     }
