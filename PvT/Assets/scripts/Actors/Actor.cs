@@ -110,11 +110,11 @@ public class Actor : MonoBehaviour
                 _healthBar.gameObject.SetActive(true);
             }
             _lastHealthUpdate = Time.time;
-        }
 
-        if (gameObject == Main.Instance.game.player)
-        {
-            visualBehavior = new PostDamageInvuln(this, 0.1f, Consts.POST_DAMAGE_INVULN);
+            if (gameObject == Main.Instance.game.player)
+            {
+                visualBehavior = new PostDamageInvuln(this, 0.1f, Consts.POST_DAMAGE_INVULN);
+            }
         }
     }
 
