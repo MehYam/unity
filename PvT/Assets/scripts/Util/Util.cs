@@ -184,6 +184,12 @@ namespace PvT.Util
             color.a = alpha;
             sprite.color = color;
         }
+        static public void SetAlpha(TextMesh text, float alpha)
+        {
+            var color = text.color;
+            color.a = alpha;
+            text.color = color;
+        }
 
         static public void Log(string fmt, params object[] args)
         {

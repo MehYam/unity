@@ -6,8 +6,8 @@ using PvT.Util;
 public sealed class HUD : MonoBehaviour
 {
     public GameObject topLeftPanel;
-    public TextMesh label1;
-    public TextMesh centerPrint;
+    public AnimatedText label1;
+    public AnimatedText centerPrint;
     public ProgressBar health;
 
     void Start()
@@ -26,8 +26,6 @@ public sealed class HUD : MonoBehaviour
         // layout
         var rect = Util.GetScreenRectInWorldCoords(Camera.main);
         topLeftPanel.transform.position = new Vector3(rect.left, rect.top);
-
-        centerPrint.gameObject.SetActive(false);
     }
 
     void OnPlayerSpawned(GameObject player)
