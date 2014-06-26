@@ -32,6 +32,8 @@ public static class Consts
     static public readonly float HERO_REGEN = 1;
 
     static public readonly int POSSESSION_THRESHHOLD = 2;
+    static public readonly float DEPOSSESSION_DURATION = 2;
+    static public readonly float DEPOSSESSION_ROTATIONS_PER_SEC = 5;
 
     static public readonly float HEALTH_BAR_TIMEOUT = 5;
 

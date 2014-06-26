@@ -9,6 +9,7 @@ public class TutorialScript : MonoBehaviour
 	void Start()
     {
         StartCoroutine(Test());
+        StartCoroutine(Go());
 	}
 
     IEnumerator Test()
@@ -24,5 +25,10 @@ public class TutorialScript : MonoBehaviour
             CenterPrint.Clear();
             yield return new WaitForSeconds(2);
         }
+    }
+
+    IEnumerator Go()
+    {
+        yield return null;
     }
 }

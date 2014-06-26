@@ -302,10 +302,40 @@ public sealed class GameController
         DecrementEnemies();
         HerolingActor.RemoveAll();
 
-        // 6. Re-enable physics for all
+        // 6. Resume all activity
         Time.timeScale = timeScale;
 
         yield return null;
+    }
+    IEnumerator RunHostDepossessionAnimation()
+    {
+        // 1. Stop all activity and pause
+        var timeScale = Time.timeScale;
+        Time.timeScale = 0;
+
+        // 2. Spin hero fast to a stop
+        var start = Time.realtimeSinceStartup;
+        var lastSpin = start;
+        float elapsed = 0;
+        do
+        {
+            var now = Time.realtimeSinceStartup;
+            elapsed = now - start;
+
+            var pctDone = elapsed / Consts.DEPOSSESSION_DURATION;
+            var rotationsPerSec = Consts.DEPOSSESSION_ROTATIONS_PER_SEC * (1 - pctDone);
+
+            Debug.Log(rotationsPerSec);
+
+            player.transform.Rotate(0, 0, (now - lastSpin) * 360 * rotationsPerSec);
+            lastSpin = now;
+
+            yield return new WaitForEndOfFrame();
+        }
+        while (elapsed < Consts.DEPOSSESSION_DURATION);
+
+        // 3. Resume all activity
+        Time.timeScale = timeScale;
     }
 
     void SpawnMuzzleFlash(Actor launcher)
@@ -483,6 +513,7 @@ public sealed class GameController
             else
             {
                 SpawnPlayer(deathPos);
+                player.GetComponent<Actor>().StartCoroutine(RunHostDepossessionAnimation());
             }
         }
     }

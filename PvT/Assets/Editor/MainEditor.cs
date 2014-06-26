@@ -34,6 +34,10 @@ public class MainEditor : Editor
         {
             main.Debug_Respawn();
         }
+        if (GUILayout.Button("Suicide"))
+        {
+            main.game.player.GetComponent<Actor>().TakeDamage(10000);
+        }
 #if THIS_STUFF_IS_SO_STUPID
         if (GUILayout.Button("Reload"))
         {
