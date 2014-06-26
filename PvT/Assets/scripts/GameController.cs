@@ -309,6 +309,8 @@ public sealed class GameController
     }
     IEnumerator RunHostDepossessionAnimation()
     {
+        yield return new WaitForSeconds(0.3f);
+
         // 1. Stop all activity and pause
         var timeScale = Time.timeScale;
         Time.timeScale = 0;
@@ -487,7 +489,7 @@ public sealed class GameController
         {
             var asplode = effects.GetVehicleExplosion().ToRawGameObject();
             asplode.transform.position = actor.transform.position;
-
+            AudioSource.PlayClipAtPoint(Main.Instance.sounds.Explosion1, asplode.transform.position);
             if (enemy)
             {
                 DecrementEnemies();
@@ -513,7 +515,10 @@ public sealed class GameController
             else
             {
                 SpawnPlayer(deathPos);
-                player.GetComponent<Actor>().StartCoroutine(RunHostDepossessionAnimation());
+
+                var playerActor = player.GetComponent<Actor>();
+                playerActor.StartCoroutine(RunHostDepossessionAnimation());
+                playerActor.GrantInvuln(Consts.POST_DEPOSSESSION_INVULN);
             }
         }
     }

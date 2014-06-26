@@ -113,9 +113,13 @@ public class Actor : MonoBehaviour
 
             if (gameObject == Main.Instance.game.player)
             {
-                visualBehavior = new PostDamageInvuln(this, 0.1f, Consts.POST_DAMAGE_INVULN);
+                GrantInvuln(Consts.POST_DAMAGE_INVULN);
             }
         }
+    }
+    public void GrantInvuln(float duration)
+    {
+        visualBehavior = new PostDamageInvuln(this, duration);
     }
 
     protected virtual void FixedUpdate()
@@ -253,9 +257,9 @@ public sealed class PostDamageInvuln : IActorVisualBehavior
     readonly RateLimiter duration;
     readonly SpriteRenderer[] dropShadows;
 
-    public PostDamageInvuln(Actor actor, float rate, float duration)
+    public PostDamageInvuln(Actor actor, float duration)
     {
-        this.rate = new RateLimiter(rate);
+        this.rate = new RateLimiter(0.1f);
         this.duration = new RateLimiter(duration);
 
         var shadows = actor.gameObject.GetComponentsInChildren<SpriteRenderer>();
