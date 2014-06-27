@@ -3,12 +3,16 @@ using System.Collections;
 
 public class TutorialScript : MonoBehaviour
 {
+    public bool Test1;
     public AnimatedText CenterPrint;
 
 	// Use this for initialization
 	void Start()
     {
-        StartCoroutine(Test());
+        if (Test1)
+        {
+            StartCoroutine(Test());
+        }
         StartCoroutine(Go());
 	}
 

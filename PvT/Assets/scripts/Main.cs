@@ -1,3 +1,5 @@
+//#define AUTO_SELECT_EDITOR_GAMESTATE
+
 using UnityEditor;
 using UnityEngine;
 using System.Collections;
@@ -66,6 +68,8 @@ public class Main : MonoBehaviour
 
     void OnMapReady(TileMap map, XRect bounds)
     {
+#if AUTO_SELECT_GAMESTATE_EDITOR
         Selection.objects = new Object[] { GameObject.Find("_gameState") };
+#endif
     }
 }
