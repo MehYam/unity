@@ -41,13 +41,18 @@ public class WorldObjectType
         this.health = rhs.health;
         this.weapons = rhs.weapons;
     }
-    public GameObject ToRawGameObject()
+    public GameObject ToRawGameObject(Consts.SortingLayer sortingLayer)
     {
-        return (GameObject)GameObject.Instantiate(prefab);
+        var retval = (GameObject)GameObject.Instantiate(prefab);
+        if (retval.renderer != null)
+        {
+            retval.renderer.sortingLayerID = (int)sortingLayer;
+        }
+        return retval;
     }
-    public virtual GameObject Spawn()
+    public virtual GameObject Spawn(Consts.SortingLayer sortingLayer)
     {
-        var go = ToRawGameObject();
+        var go = ToRawGameObject(sortingLayer);
         go.name = name;
 
         //KAI: cheese
@@ -128,9 +133,9 @@ public class VehicleType : WorldObjectType
         this.inertia = rhs.inertia;
         this.collDmg = rhs.collDmg;
     }
-    public override GameObject Spawn()
+    public override GameObject Spawn(Consts.SortingLayer sortingLayer)
     {
-        var go = base.Spawn();
+        var go = base.Spawn(sortingLayer);
 
         go.AddComponent<DropShadow>();
 
@@ -163,9 +168,9 @@ public sealed class TankHullType : VehicleType
     {
         this.turretPivotY = turretPivotY;
     }
-    public override GameObject Spawn()
+    public override GameObject Spawn(Consts.SortingLayer sortingLayer)
     {
-        var go = base.Spawn();
+        var go = base.Spawn(sortingLayer);
         go.rigidbody2D.drag = 1;
         go.rigidbody2D.angularDrag = 5;
         return go;

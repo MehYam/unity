@@ -59,14 +59,14 @@ public sealed class GameController : IGame
         if (tank == null)
         {
             var playerVehicle = loader.GetVehicle(main.defaultVehicle);
-            var player = playerVehicle.Spawn();
-            InitPlayer(player, playerVehicle);
+            var player = playerVehicle.Spawn(Consts.SortingLayer.FRIENDLY);
+            InitPlayerVehicle(player, playerVehicle);
             SetPlayerPlaneBehaviors(player, playerVehicle);
         }
         else
         {
             var tankHelper = new TankSpawnHelper(this, tank.hullName, tank.turretName);
-            InitPlayer(tankHelper.hullGO, tankHelper.hull);
+            InitPlayerVehicle(tankHelper.hullGO, tankHelper.hull);
             SetPlayerTankBehaviors(tankHelper);
         }
 
@@ -103,7 +103,7 @@ public sealed class GameController : IGame
         else
         {
             var vehicle = loader.GetVehicle(vehicleKey);
-            var go = vehicle.Spawn();
+            var go = vehicle.Spawn(Consts.SortingLayer.MOB);
             go.GetComponent<Actor>().behavior = ActorBehaviorScripts.Instance.Get(vehicleKey);
 
             SpawnMobHelper(go);
@@ -132,7 +132,11 @@ public sealed class GameController : IGame
 
     public GameObject SpawnAmmo(Actor launcher, VehicleType type, WorldObjectType.Weapon weapon, Consts.Layer layer)
     {
-        var go = type.Spawn();
+#if DEBUG_AMMO
+        var go = type.Spawn(Consts.SortingLayer.UI);
+#else
+        var go = type.Spawn(Consts.SortingLayer.MOB_AMMO);
+#endif
         go.transform.parent = Main.Instance.AmmoParent.transform;
         go.layer = (int)layer;
 
@@ -140,11 +144,6 @@ public sealed class GameController : IGame
         body.drag = 0;
 
         var sprite = go.GetComponent<SpriteRenderer>();
-#if DEBUG_AMMO
-        sprite.sortingOrder = 10;
-#else
-        sprite.sortingOrder = Consts.SORT_ORDER_AMMO;
-#endif
         var actor = go.GetComponent<Actor>();
         actor.SetExpiry(2);
         actor.collisionDamage = weapon.damage;
@@ -165,7 +164,7 @@ public sealed class GameController : IGame
                 actor.SetExpiry(Actor.EXPIRY_INFINITE);
 
                 // make it appear on top of mobs and friendlies
-                sprite.sortingOrder = Consts.SORT_ORDER_HEROLING;
+                sprite.sortingLayerID = (int)Consts.SortingLayer.HEROLINGS;
 
                 // give it a push
                 body.velocity =
@@ -260,7 +259,7 @@ public sealed class GameController : IGame
         player = host.gameObject;
         var vehicle = player.GetComponent<Actor>().worldObject as VehicleType;
 
-        InitPlayer(player, vehicle);
+        InitPlayerVehicle(player, vehicle);
         if (vehicle is TankHullType)
         {
             var reconstructedHelper = new TankSpawnHelper(player);
@@ -315,7 +314,7 @@ public sealed class GameController : IGame
 
     void SpawnMuzzleFlash(Actor launcher)
     {
-        var flash = effects.GetRandomMuzzleFlash().ToRawGameObject();
+        var flash = effects.GetRandomMuzzleFlash().ToRawGameObject(Consts.SortingLayer.EXPLOSIONS);
         flash.transform.position = launcher.transform.position;
         flash.transform.rotation = launcher.transform.rotation;
     }
@@ -339,14 +338,14 @@ public sealed class GameController : IGame
             turret = game.loader.GetTankPart(tankTurret);
             var tread = game.loader.GetTankPart("tanktreadParent");
 
-            hullGO = hull.Spawn();
-            turretGO = turret.Spawn();
+            hullGO = hull.Spawn(Consts.SortingLayer.TANKBODY);
+            turretGO = turret.Spawn(Consts.SortingLayer.TANKTURRET);
 
             hullGO.name = HULL_NAME;
             turretGO.name = TURRET_NAME;
 
-            treadLeft = tread.ToRawGameObject();
-            treadRight = tread.ToRawGameObject();
+            treadLeft = tread.ToRawGameObject(Consts.SortingLayer.TANKTREAD);
+            treadRight = tread.ToRawGameObject(Consts.SortingLayer.TANKTREAD);
             treadLeft.name = LEFT_TREAD_NAME;
             treadRight.name = RIGHT_TREAD_NAME;
 
@@ -355,12 +354,8 @@ public sealed class GameController : IGame
             treadRight.transform.parent = hullGO.transform;
 
             var hullSprite = hullGO.GetComponent<SpriteRenderer>();
-            hullSprite.sortingOrder = Consts.SORT_ORDER_TANK_HULL;
-
             var hullBounds = hullSprite.sprite.bounds;
             var pivotY = hullBounds.min.y + hull.turretPivotY / Consts.PixelsToUnits;
-
-            turretGO.GetComponent<SpriteRenderer>().sortingOrder = -1;
             turretGO.gameObject.transform.localPosition = new Vector3(0, pivotY);
 
             treadLeft.gameObject.transform.Rotate(0, 0, 180);
@@ -442,16 +437,17 @@ public sealed class GameController : IGame
         );
 
     }
-    void InitPlayer(GameObject go, VehicleType vehicle)
+    void InitPlayerVehicle(GameObject go, VehicleType vehicle)
     {
         go.name += " player";
-        go.layer = (int)Consts.Layer.FRIENDLY;
         go.AddComponent<AudioListener>();
-
-        player = go;
+        
+        go.layer = (int)Consts.Layer.FRIENDLY;
+        go.renderer.sortingLayerID = (int)Consts.SortingLayer.FRIENDLY;
 
         Camera.main.GetComponent<CameraFollow>().Target = go;
-
+        
+        player = go;
         GlobalGameEvent.Instance.FirePlayerSpawned(go);
     }
 
@@ -460,8 +456,9 @@ public sealed class GameController : IGame
         var enemy = actor.gameObject.layer == (int)Consts.Layer.MOB;
         if (actor.explodesOnDeath && (enemy || actor.gameObject.layer == (int)Consts.Layer.FRIENDLY))
         {
-            var asplode = effects.GetVehicleExplosion().ToRawGameObject();
+            var asplode = effects.GetVehicleExplosion().ToRawGameObject(Consts.SortingLayer.EXPLOSIONS);
             asplode.transform.position = actor.transform.position;
+
             AudioSource.PlayClipAtPoint(Main.Instance.sounds.Explosion1, asplode.transform.position);
         }
         if (enemy)

@@ -17,15 +17,25 @@ public static class Consts
         HEROLINGS = 13,
         HEROLINGS_RETURNING = 14
     };
-    static public readonly int PixelsToUnits = 100;
 
-    static public readonly int SORT_ORDER_GROUND = -10;
-    static public readonly int SORT_ORDER_CLOUDS = 20;
-    
-    static public readonly int SORT_ORDER_AMMO = -1;
-    static public readonly int SORT_ORDER_HEROLING = 1;
-    static public readonly int SORT_ORDER_TANK_HULL = -2;
-    static public readonly int SORT_ORDER_TANK_TURRET = SORT_ORDER_TANK_HULL + 1;
+    public enum SortingLayer : int
+    {
+        DEFAULT = 0,
+        GROUND = 3,
+        TANKTREAD = 4,
+        TANKBODY = 5,
+        TANKTURRET = 6,
+        MOB_AMMO = 7,
+        FRIENDLY_AMMO = 8,
+        MOB = 9,
+        FRIENDLY = 10,
+        HEROLINGS = 11,
+        EXPLOSIONS = 12,
+        SMOKE = 13,
+        CLOUDS = 14,
+        UI = 17
+    }
+    static public readonly int PixelsToUnits = 100;
 
     static public readonly float HEROLING_UNABSORBABLE = 2;
     static public readonly float HEROLING_ROAM_BOREDOM = 2;

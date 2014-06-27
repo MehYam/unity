@@ -42,3 +42,71 @@ TagManager:
     userID: 0
     uniqueID: 0
     locked: 0
+  - name: '---'
+    userID: 1
+    uniqueID: 1652286171
+    locked: 0
+  - name: '---'
+    userID: 2
+    uniqueID: 590410835
+    locked: 0
+  - name: ground
+    userID: 3
+    uniqueID: 3104192739
+    locked: 0
+  - name: tanktread
+    userID: 4
+    uniqueID: 3844244185
+    locked: 0
+  - name: tankbody
+    userID: 5
+    uniqueID: 1835539417
+    locked: 0
+  - name: tankturret
+    userID: 6
+    uniqueID: 1172581653
+    locked: 0
+  - name: mobAmmo
+    userID: 7
+    uniqueID: 418551787
+    locked: 0
+  - name: friendlyAmmo
+    userID: 8
+    uniqueID: 2785626797
+    locked: 0
+  - name: mobs
+    userID: 9
+    uniqueID: 2004457675
+    locked: 0
+  - name: friendly
+    userID: 10
+    uniqueID: 3116271589
+    locked: 0
+  - name: herolings
+    userID: 11
+    uniqueID: 3839475155
+    locked: 0
+  - name: explosions
+    userID: 12
+    uniqueID: 2268040971
+    locked: 0
+  - name: smoke
+    userID: 13
+    uniqueID: 3332195697
+    locked: 0
+  - name: clouds
+    userID: 14
+    uniqueID: 3549090055
+    locked: 0
+  - name: '---'
+    userID: 15
+    uniqueID: 4277736523
+    locked: 0
+  - name: '---'
+    userID: 16
+    uniqueID: 149676437
+    locked: 0
+  - name: UI
+    userID: 17
+    uniqueID: 1629100023
+    locked: 0

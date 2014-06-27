@@ -14,7 +14,7 @@ public class VehicleExplosion : MonoBehaviour
     {
         var game = Main.Instance.game;
 
-        var explosion = game.effects.GetRandomExplosion().ToRawGameObject();
+        var explosion = game.effects.GetRandomExplosion().ToRawGameObject(Consts.SortingLayer.EXPLOSIONS);
         explosion.transform.parent = transform;
         explosion.transform.localPosition = Util.ScatterRandomly(0.3f);
 
@@ -22,13 +22,13 @@ public class VehicleExplosion : MonoBehaviour
 
         for (var i = 0; i < 4; ++i)
         {
-            var smoke = game.effects.GetRandomSmoke().ToRawGameObject();
+            var smoke = game.effects.GetRandomSmoke().ToRawGameObject(Consts.SortingLayer.SMOKE);
             smoke.transform.parent = transform;
 
             smoke.transform.Rotate(0, 0, Random.Range(0, 360));
             smoke.transform.localPosition = Util.ScatterRandomly(0.25f);
 
-            explosion = game.effects.GetRandomSmallExplosion().ToRawGameObject();
+            explosion = game.effects.GetRandomSmallExplosion().ToRawGameObject(Consts.SortingLayer.EXPLOSIONS);
             explosion.transform.parent = transform;
             explosion.transform.localPosition = Util.ScatterRandomly(0.5f);
 

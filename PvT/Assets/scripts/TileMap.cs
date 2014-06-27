@@ -81,7 +81,7 @@ public class TileMap : MonoBehaviour
 
             var renderer = go.GetComponent<SpriteRenderer>();
             renderer.sprite = sprites[tile.id];
-            renderer.sortingOrder = Consts.SORT_ORDER_GROUND;
+            renderer.sortingLayerID = (int)Consts.SortingLayer.GROUND;
 
             go.transform.localPosition = new Vector2(
                 size.x * tile.x - centerOffset.x,

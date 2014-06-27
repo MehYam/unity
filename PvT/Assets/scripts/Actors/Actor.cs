@@ -257,7 +257,7 @@ public class Actor : MonoBehaviour
         {
             if (collider.gameObject.layer > me.gameObject.layer) // prevent duplicate collision sparks
             {
-                var boom = Main.Instance.game.effects.GetRandomSmallExplosion().ToRawGameObject();
+                var boom = Main.Instance.game.effects.GetRandomSmallExplosion().ToRawGameObject(Consts.SortingLayer.EXPLOSIONS);
                 boom.transform.localPosition = contact.point;
             }
             var actor = collider.GetComponent<Actor>();

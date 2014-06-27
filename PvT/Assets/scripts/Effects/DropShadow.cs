@@ -20,12 +20,13 @@ public class DropShadow : MonoBehaviour
         var shadowRenderer = shadow.AddComponent<SpriteRenderer>();
         shadowRenderer.sprite = sourceRenderer.sprite;
         shadowRenderer.material = Resources.Load<Material>("DropShadowMaterial");
+        shadowRenderer.sortingLayerID = sourceRenderer.sortingLayerID;
         shadowRenderer.sortingOrder = -1;
 
         _shadow = shadow;
 	}
 	
-	void Update()
+	void LateUpdate()
     {
         _shadow.transform.position = transform.position + new Vector3(distance, -distance);
     }
