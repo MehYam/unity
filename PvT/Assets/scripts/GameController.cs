@@ -14,14 +14,12 @@ public sealed class GameController
     public Effects effects { get; private set; }
     public GameObject currentlyPossessed { get; private set; }
 
-    readonly GameObject ammoParent;
     public GameController(Loader loader)
     {
         Debug.Log("GameState constructor " + GetHashCode());
 
         this.loader = loader;
         this.effects = new Effects(loader);
-        this.ammoParent = GameObject.Find("_ammoParent");
 
         GlobalGameEvent.Instance.MapReady += OnMapReady;
         GlobalGameEvent.Instance.HerolingAttached += OnHerolingAttached;
@@ -161,7 +159,7 @@ public sealed class GameController
     public GameObject SpawnAmmo(Actor launcher, VehicleType type, WorldObjectType.Weapon weapon, Consts.Layer layer)
     {
         var go = type.Spawn();
-        go.transform.parent = ammoParent.transform;
+        go.transform.parent = Main.Instance.AmmoParent.transform;
         go.layer = (int)layer;
 
         var body = go.GetComponent<Rigidbody2D>();

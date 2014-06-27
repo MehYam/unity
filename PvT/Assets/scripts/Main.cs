@@ -18,7 +18,8 @@ public class Main : MonoBehaviour
     public GameObject ProgressBar;
     public GameObject Indicator;
 
-    public GameObject UI;
+    public GameObject EffectParent;
+    public GameObject AmmoParent;
 
     public MainSounds sounds;
 

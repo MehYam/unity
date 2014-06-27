@@ -1,3 +1,5 @@
+//#define SHOW_STRANGE_PARENTING_BUG
+
 using UnityEngine;
 using System.Collections;
 
@@ -15,9 +17,13 @@ public class Actor : MonoBehaviour
 
     void OnDestroy()
     {
-        if (_indicator != null)
+        if (_trackingArrow != null)
         {
-            GameObject.Destroy(_indicator);
+            GameObject.Destroy(_trackingArrow);
+        }
+        if (_healthBar != null)
+        {
+            GameObject.Destroy(_healthBar);
         }
     }
 
@@ -58,6 +64,11 @@ public class Actor : MonoBehaviour
         {
             var delta = value - health;
             _health = value;
+
+            if (_healthBar != null && _healthBar.gameObject.activeSelf)
+            {
+                _healthBar.percent = health / worldObject.health;
+            }
 
             GlobalGameEvent.Instance.FireHealthChange(this, delta);
         }
@@ -104,10 +115,20 @@ public class Actor : MonoBehaviour
                 {
                     var bar = (GameObject)GameObject.Instantiate(Main.Instance.ProgressBar);
                     _healthBar = bar.GetComponent<ProgressBar>();
-                    bar.transform.parent = transform;
+                    _healthBar.autoLevel = true;
+
+                    //STRANGE UNITY BUG?
+                    // parenting objects on our Actors seems to skew or stretch them a bit.  You can see this
+                    // in the editor by manually dragging child objects on and off the Actor - putting them on
+                    // the Actor seems to generate a strange skew that I can't account for in the transforms.
+                    // For now, health bars will be parented elsewhere
+#if SHOW_STRANGE_PARENTING_BUG
+                    bar.transform   .parent = transform;
+#else
+                    bar.transform.parent = Main.Instance.EffectParent.transform;
+#endif
                 }
-                _healthBar.percent = health / worldObject.health;
-                _healthBar.gameObject.SetActive(true);
+                //_healthBar.gameObject.SetActive(true);
             }
             _lastHealthUpdate = Time.time;
 
@@ -156,45 +177,42 @@ public class Actor : MonoBehaviour
             }
             else
             {
-                var level = new Quaternion();
-                level.eulerAngles = Vector3.zero;
-
                 _healthBar.transform.position = transform.position + new Vector3(0, 0.5f);
-                _healthBar.transform.rotation = level;
             }
         }
         if (gameObject.layer == (int)Consts.Layer.MOB)
         {
-            UpdateIndicator();
+            UpdateTrackingArrow();
         }
     }
+
     const float INDICATOR_MARGIN = 0.06f;
-    GameObject _indicator;
-    void UpdateIndicator()
+    GameObject _trackingArrow;
+    void UpdateTrackingArrow()
     {
         var rect = Util.GetScreenRectInWorldCoords(Camera.main);
         var pos = transform.position;
 
         if (!rect.Contains(pos))
         {
-            if (_indicator == null)
+            if (_trackingArrow == null)
             {
                 //KAI: stick to one way of creating assets?
-                _indicator = (GameObject)GameObject.Instantiate(Main.Instance.Indicator);
+                _trackingArrow = (GameObject)GameObject.Instantiate(Main.Instance.Indicator);
             }
             Vector2 indPos = new Vector2(0, 0);
             indPos.x = Mathf.Max(rect.left + INDICATOR_MARGIN, Mathf.Min(rect.right - INDICATOR_MARGIN, pos.x));
             indPos.y = Mathf.Max(rect.bottom + INDICATOR_MARGIN, Mathf.Min(rect.top - INDICATOR_MARGIN, pos.y));
 
-            _indicator.transform.position = indPos;
-            Util.LookAt2D(_indicator.transform, transform);
-            _indicator.SetActive(true);
+            _trackingArrow.transform.position = indPos;
+            Util.LookAt2D(_trackingArrow.transform, transform);
+            _trackingArrow.SetActive(true);
         }
         else
         {
-            if (_indicator != null)
+            if (_trackingArrow != null)
             {
-                _indicator.SetActive(false);
+                _trackingArrow.SetActive(false);
             }
         }
     }

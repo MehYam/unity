@@ -29,8 +29,7 @@ public sealed class CameraFollow : MonoBehaviour
         Util.Log("Border: {0},{1}, camera limit: {2} {3},{4}", borderMin, borderMax, limit, limit.xMin, limit.xMax);
     }
 
-	// Update is called once per frame
-	void Update()
+	void LateUpdate()
     {
         if (Target != null)
         {

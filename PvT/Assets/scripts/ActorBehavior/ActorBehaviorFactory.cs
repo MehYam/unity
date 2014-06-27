@@ -541,7 +541,7 @@ sealed class PlayerShieldBehavior : IActorBehavior
             var shieldActor = _shield.GetComponent<Actor>();
             shieldActor.SetExpiry(LAUNCH_LIFE);
 
-            _shield.transform.parent = GameObject.Find("_ammoParent").transform;
+            _shield.transform.parent = Main.Instance.AmmoParent.transform;
             _shield.AddComponent<Rigidbody2D>();
             _shield.rigidbody2D.drag = 1;
             _shield.rigidbody2D.mass = 500;
