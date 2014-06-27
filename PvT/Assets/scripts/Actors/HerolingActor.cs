@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
+using PvT.DOM;
 using PvT.Util;
 
 public class HerolingActor : Actor

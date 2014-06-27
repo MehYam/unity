@@ -1,22 +1,10 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+using PvT.DOM;
 using PvT.Util;
 
 //THINK ABOUT REPLACING THESE WITH LAMBDAS.  THAT'S ALL THEY ARE.
-
-// This solves two problems:
-//
-// 1) it avoids having the Unity engine call scores of Update()'s on tiny little helper objects, and
-// 2) it lets us manage the execution order of those Update()'s manually
-public interface IActorBehavior
-{
-    void FixedUpdate(Actor actor);
-}
-public interface IActorVisualBehavior
-{
-    void Update(Actor actor);
-}
 
 /// <summary>
 /// A behavior list that runs its sub-behaviors at once
@@ -522,39 +510,44 @@ sealed class PlayerShieldBehavior : IActorBehavior
                 shieldActor.behavior = ActorBehaviorFactory.Instance.CreateFadeWithHealthAndExpiry(actor.worldObject.health);
 
                 _shield.transform.parent = actor.transform;
-                _shield.transform.localPosition = new Vector3(shieldWeapon.offset.x, shieldWeapon.offset.y);
 
                 // boost!
                 actor.AddModifier(new ActorModifier(Time.fixedTime + BOOST_SECONDS, actor.worldObject.maxSpeed * 10, ((VehicleType)(actor.worldObject)).acceleration * 2));
                 _lastShieldTime = Time.fixedTime;
             }
         }
-        if (newState == State.NONE && _shield != null)
+        if (_shield != null)
         {
-            // point the actor to the mouse briefly to fire the shield in that direction, if that's how we were firing
-            if (_prevState == State.FIRING_AT_MOUSE)
+            var shieldWeapon = actor.worldObject.weapons[0];
+            _shield.transform.localPosition = new Vector3(shieldWeapon.offset.x, shieldWeapon.offset.y);
+
+            if (newState == State.NONE)
             {
-                ActorBehaviorFactory.Instance.faceMouse.FixedUpdate(actor);
+                // point the actor to the mouse briefly to fire the shield in that direction, if that's how we were firing
+                if (_prevState == State.FIRING_AT_MOUSE)
+                {
+                    ActorBehaviorFactory.Instance.faceMouse.FixedUpdate(actor);
+                }
+
+                // release shield
+                var shieldActor = _shield.GetComponent<Actor>();
+                shieldActor.SetExpiry(LAUNCH_LIFE);
+
+                _shield.transform.parent = Main.Instance.AmmoParent.transform;
+                _shield.AddComponent<Rigidbody2D>();
+                _shield.rigidbody2D.drag = 1;
+                _shield.rigidbody2D.mass = 500;
+
+                // boost the shield away
+                var shieldBoost = new Vector2();
+                shieldBoost = Util.GetLookAtVector(_shield.transform.rotation.eulerAngles.z, Consts.SHIELD_BOOST) + actor.rigidbody2D.velocity;
+                shieldBoost = Vector2.ClampMagnitude(shieldBoost, actor.worldObject.maxSpeed * 4);
+
+                _shield.rigidbody2D.velocity = shieldBoost;
+                _shield = null;
+
+                actor.AddModifier(null);  //KAI: cheese
             }
-
-            // release shield
-            var shieldActor = _shield.GetComponent<Actor>();
-            shieldActor.SetExpiry(LAUNCH_LIFE);
-
-            _shield.transform.parent = Main.Instance.AmmoParent.transform;
-            _shield.AddComponent<Rigidbody2D>();
-            _shield.rigidbody2D.drag = 1;
-            _shield.rigidbody2D.mass = 500;
-
-            // boost the shield away
-            var shieldBoost = new Vector2();
-            shieldBoost = Util.GetLookAtVector(_shield.transform.rotation.eulerAngles.z, Consts.SHIELD_BOOST) + actor.rigidbody2D.velocity;
-            shieldBoost = Vector2.ClampMagnitude(shieldBoost, actor.worldObject.maxSpeed * 4);
-
-            _shield.rigidbody2D.velocity = shieldBoost;
-            _shield = null;
-
-            actor.AddModifier(null);  //KAI: cheese
         }
         _prevState = newState;
     }

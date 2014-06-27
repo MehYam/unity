@@ -36,7 +36,7 @@ public class Main : MonoBehaviour
         get { return _instance; }
     }
 
-    public GameController game { get; private set; }
+    public IGame game { get; private set; }
 
     // Use this for initialization
 	void Start()

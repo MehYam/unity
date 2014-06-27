@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 
 using PvT.Util;
 
-public sealed class GameController
+public sealed class GameController : IGame
 {
     public GameObject player { get; private set; }
     public Loader loader { get; private set; }
@@ -24,7 +24,7 @@ public sealed class GameController
         GlobalGameEvent.Instance.MapReady += OnMapReady;
         GlobalGameEvent.Instance.HerolingAttached += OnHerolingAttached;
         GlobalGameEvent.Instance.HerolingDetached += OnHerolingDetached;
-        GlobalGameEvent.Instance.PossessionContact += OnHeroTouchedPossessed;
+        GlobalGameEvent.Instance.PossessionFirstContact += OnPossessionContact;
         GlobalGameEvent.Instance.ActorDeath += OnActorDeath;
     }
 
@@ -47,15 +47,10 @@ public sealed class GameController
         GlobalGameEvent.Instance.MapReady -= OnMapReady;
         WorldBounds = bounds;
 
-        Start();
+        GlobalGameEvent.Instance.FireGameReady(this);
     }
 
-    void Start()
-    {
-        SpawnPlayer(Vector3.zero);
-        StartNextLevel();
-    }
-    void SpawnPlayer(Vector3 location)
+    public void SpawnPlayer(Vector3 location)
     {
         var main = Main.Instance;
         Debug.Log("Spawning player " + main.defaultVehicle);
@@ -77,29 +72,8 @@ public sealed class GameController
 
         this.player.gameObject.transform.position = location;
     }
-    void StartNextLevel()
-    {
-        StartNextWave();
-    }
 
-    int _liveEnemies = 0;
-    void StartNextWave()
-    {
-        if (Main.Instance.runWaves)
-        {
-            var wave = loader.levels[Main.Instance.startWave].NextWave();
-            foreach (var squad in wave.squads)
-            {
-                for (int i = 0; i < squad.count; ++i)
-                {
-                    SpawnMob(squad.enemyID);
-                    ++_liveEnemies;
-                }
-            }
-        }
-    }
-
-    void SpawnMob(string vehicleKey)
+    public void SpawnMob(string vehicleKey)
     {
         var tank = loader.GetTank(vehicleKey);
         if (tank != null)
@@ -245,12 +219,14 @@ public sealed class GameController
             }
         }
     }
-    void OnHeroTouchedPossessed(Actor host)
+    void OnPossessionContact(Actor host)
     {
-        host.StartCoroutine(RunHostPossessionAnimation(host));
+        host.StartCoroutine(RunPossessionAnimation(host));
+    
+        GlobalGameEvent.Instance.FireEnemyDeath();
     }
 
-    IEnumerator RunHostPossessionAnimation(Actor host)
+    IEnumerator RunPossessionAnimation(Actor host)
     {
         var clipLength = Main.Instance.sounds.fanfare1.length * 1.25f;
         AudioSource.PlayClipAtPoint(Main.Instance.sounds.fanfare1, player.transform.position, 0.25f);
@@ -297,7 +273,6 @@ public sealed class GameController
 
         // 5. Destroy the old hero and return the herolings
         GameObject.Destroy(oldHero);
-        DecrementEnemies();
         HerolingActor.RemoveAll();
 
         // 6. Resume all activity
@@ -305,7 +280,7 @@ public sealed class GameController
 
         yield return null;
     }
-    IEnumerator RunHostDepossessionAnimation()
+    IEnumerator RunDepossessionAnimation()
     {
         yield return new WaitForSeconds(0.3f);
 
@@ -488,14 +463,11 @@ public sealed class GameController
             var asplode = effects.GetVehicleExplosion().ToRawGameObject();
             asplode.transform.position = actor.transform.position;
             AudioSource.PlayClipAtPoint(Main.Instance.sounds.Explosion1, asplode.transform.position);
-            if (enemy)
-            {
-                DecrementEnemies();
-            }
         }
         if (enemy)
         {
             AudioSource.PlayClipAtPoint(Main.Instance.sounds.Explosion1, actor.gameObject.transform.position);
+            GlobalGameEvent.Instance.FireEnemyDeath();
         }
 
         var wasPlayer = actor.gameObject == player;
@@ -515,45 +487,9 @@ public sealed class GameController
                 SpawnPlayer(deathPos);
 
                 var playerActor = player.GetComponent<Actor>();
-                playerActor.StartCoroutine(RunHostDepossessionAnimation());
+                playerActor.StartCoroutine(RunDepossessionAnimation());
                 playerActor.GrantInvuln(Consts.POST_DEPOSSESSION_INVULN);
             }
         }
     }
-    void DecrementEnemies()
-    {
-        --_liveEnemies;
-        if (_liveEnemies == 0)
-        {
-            StartNextWave();
-        }
-    }
-}
-
-public sealed class Level
-{
-    public sealed class Squad
-    {
-        public readonly string enemyID;
-        public readonly int count;
-
-        public Squad(string enemy, int count) { this.enemyID = enemy; this.count = count; }
-
-    }
-    public sealed class Wave
-    {
-        public readonly IList<Squad> squads;
-
-        public Wave(IList<Squad> squads) { this.squads = squads; }
-    }
-
-    readonly IList<Wave> waves;
-    int nextWave = 0;
-    public Level(IList<Wave> waves) { this.waves = waves; }
-
-    public Wave NextWave()
-    {
-        return nextWave < waves.Count ? waves[nextWave++] : null;
-    }
-    public int numWaves { get { return waves.Count; } }
 }

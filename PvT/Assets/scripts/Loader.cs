@@ -293,3 +293,31 @@ public sealed class Tank
 
     public Tank(string name, string hull, string turret) { this.name = name; hullName = hull; turretName = turret; }
 }
+
+public sealed class Level
+{
+    public sealed class Squad
+    {
+        public readonly string enemyID;
+        public readonly int count;
+
+        public Squad(string enemy, int count) { this.enemyID = enemy; this.count = count; }
+
+    }
+    public sealed class Wave
+    {
+        public readonly IList<Squad> squads;
+
+        public Wave(IList<Squad> squads) { this.squads = squads; }
+    }
+
+    readonly IList<Wave> waves;
+    int nextWave = 0;
+    public Level(IList<Wave> waves) { this.waves = waves; }
+
+    public Wave NextWave()
+    {
+        return nextWave < waves.Count ? waves[nextWave++] : null;
+    }
+    public int numWaves { get { return waves.Count; } }
+}

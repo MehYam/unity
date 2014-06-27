@@ -2,6 +2,8 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
+using PvT.DOM;
+
 /// <summary>
 /// This is used to map AI from the vehicles.json config file to actual C# objects.  There's also
 /// AI coded directly here that's too complex to be defined in the configs.

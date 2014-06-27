@@ -3,6 +3,7 @@
 using UnityEngine;
 using System.Collections;
 
+using PvT.DOM;
 using PvT.Util;
 
 public class Actor : MonoBehaviour
@@ -23,7 +24,7 @@ public class Actor : MonoBehaviour
         }
         if (_healthBar != null)
         {
-            GameObject.Destroy(_healthBar);
+            GameObject.Destroy(_healthBar.gameObject);
         }
     }
 
@@ -115,7 +116,6 @@ public class Actor : MonoBehaviour
                 {
                     var bar = (GameObject)GameObject.Instantiate(Main.Instance.ProgressBar);
                     _healthBar = bar.GetComponent<ProgressBar>();
-                    _healthBar.autoLevel = true;
 
                     //STRANGE UNITY BUG?
                     // parenting objects on our Actors seems to skew or stretch them a bit.  You can see this
@@ -251,7 +251,7 @@ public class Actor : MonoBehaviour
         if (game.currentlyPossessed == collider.gameObject &&
             game.player == me.gameObject)
         {
-            GlobalGameEvent.Instance.FirePossessionContact(collider.gameObject.GetComponent<Actor>());
+            GlobalGameEvent.Instance.FirePossessionFirstContact(collider.gameObject.GetComponent<Actor>());
         }
         else
         {
