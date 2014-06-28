@@ -24,6 +24,7 @@ public class Main : MonoBehaviour
     public GameObject AmmoParent;
 
     public MainSounds sounds;
+    public HUD hud;
 
     /// <summary>
     /// ///////////////////////// debug/dev items

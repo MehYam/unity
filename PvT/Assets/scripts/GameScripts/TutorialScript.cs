@@ -13,7 +13,7 @@ public class TutorialScript : MonoBehaviour
         {
             StartCoroutine(Test());
         }
-        StartCoroutine(Go());
+        StartCoroutine(Intro());
 	}
 
     IEnumerator Test()
@@ -31,8 +31,18 @@ public class TutorialScript : MonoBehaviour
         }
     }
 
-    IEnumerator Go()
+    IEnumerator Intro()
     {
-        yield return null;
+        yield return new WaitForEndOfFrame();  //HACK to ensure that the next line doesn't nullref
+
+        Main.Instance.hud.curtain.alpha = 1;
+
+        yield return new WaitForSeconds(2);
+
+        Main.Instance.hud.centerPrint.text = "I am Eukarya.";
+
+        yield return new WaitForSeconds(2);
+
+        Main.Instance.hud.centerPrint.text = "I am Eukarya.  This is my story";
     }
 }

@@ -43,6 +43,9 @@ public class AnimatedText : MonoBehaviour
             DropShadow.renderer.sortingLayerName = SortingLayerName;
             DropShadow.renderer.sortingOrder = renderer.sortingOrder - 1;
         }
+
+        // initialize the drop shadow
+        text = text;
     }
 
     void Update()

@@ -9,6 +9,7 @@ public sealed class HUD : MonoBehaviour
     public AnimatedText label1;
     public AnimatedText centerPrint;
     public ProgressBar health;
+    public SceneCurtain curtain;
 
     void Start()
     {
