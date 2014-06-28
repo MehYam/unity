@@ -36,7 +36,7 @@ public class SceneCurtain : MonoBehaviour
         public FadeState(float startTime, float endTime, float startAlpha, float targetAlpha) { this.startTime = startTime; this.endTime = endTime;  this.startAlpha = startAlpha; this.targetAlpha = targetAlpha; }
     }
     FadeState _fade;
-    void Fade(float target, float seconds)
+    public void Fade(float target, float seconds)
     {
         seconds = Mathf.Max(0.00001f, seconds); // prevent DIVZERO
 
@@ -47,7 +47,8 @@ public class SceneCurtain : MonoBehaviour
     {
         if (_fade != null)
         {
-            var pct = Time.time - _fade.startTime / (_fade.endTime - _fade.startTime);
+            Debug.Log(string.Format(" now {0} start {1} end {2} ", Time.time, _fade.startTime, _fade.endTime));
+            var pct = (Time.time - _fade.startTime) / (_fade.endTime - _fade.startTime);
 
             Debug.Log(pct);
 

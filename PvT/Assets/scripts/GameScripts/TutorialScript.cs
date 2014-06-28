@@ -41,8 +41,20 @@ public class TutorialScript : MonoBehaviour
 
         Main.Instance.hud.centerPrint.text = "I am Eukarya.";
 
+        yield return new WaitForSeconds(4);
+
+        Main.Instance.hud.centerPrint.Clear();
+
         yield return new WaitForSeconds(2);
 
-        Main.Instance.hud.centerPrint.text = "I am Eukarya.  This is my story";
+        Main.Instance.hud.centerPrint.text = "This is my story.";
+
+        yield return new WaitForSeconds(2);
+
+        Main.Instance.hud.curtain.Fade(0, 4);
+
+        yield return new WaitForSeconds(2);
+
+        Main.Instance.hud.centerPrint.Clear();
     }
 }
