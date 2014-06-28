@@ -110,3 +110,11 @@ TagManager:
     userID: 17
     uniqueID: 1629100023
     locked: 0
+  - name: UI Overlay1
+    userID: 18
+    uniqueID: 2674948321
+    locked: 0
+  - name: UI Overlay2
+    userID: 19
+    uniqueID: 658192697
+    locked: 0

@@ -33,7 +33,9 @@ public static class Consts
         EXPLOSIONS = 12,
         SMOKE = 13,
         CLOUDS = 14,
-        UI = 17
+        UI = 17,
+        UI_OVERLAY1 = 18,
+        UI_OVERLAY2 = 19
     }
     static public readonly int PixelsToUnits = 100;
 

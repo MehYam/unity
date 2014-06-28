@@ -8,6 +8,7 @@ public class AnimatedText : MonoBehaviour
     public float FadeRate = 1;
     public TextMesh Text;
     public TextMesh DropShadow;
+    public string SortingLayerName = "UI";
 
     float targetAlpha = 1;
     public string text
@@ -32,6 +33,16 @@ public class AnimatedText : MonoBehaviour
     public void Clear()
     {
         targetAlpha = 0;
+    }
+
+    void Start()
+    {
+        renderer.sortingLayerName = SortingLayerName;
+        if (DropShadow != null)
+        {
+            DropShadow.renderer.sortingLayerName = SortingLayerName;
+            DropShadow.renderer.sortingOrder = renderer.sortingOrder - 1;
+        }
     }
 
     void Update()

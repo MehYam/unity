@@ -193,7 +193,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &67287696
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -212,8 +212,8 @@ SpriteRenderer:
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
-  m_SortingLayerID: 0
-  m_SortingOrder: 20
+  m_SortingLayerID: 2674948321
+  m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: cdad6e1d3d8de094ea082cc11f60dba1, type: 3}
   m_Color: {r: .102941155, g: .0590397827, b: .0590397827, a: 1}
 --- !u!114 &67287697
@@ -460,6 +460,10 @@ Prefab:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 36ddf0ec958902142addf85954036d86, type: 2}
+      propertyPath: SortingLayerName
+      value: UI Overlay1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 36ddf0ec958902142addf85954036d86, type: 2}
   m_RootGameObject: {fileID: 214745532}
@@ -511,6 +515,7 @@ MonoBehaviour:
   FadeRate: 1
   Text: {fileID: 214745535}
   DropShadow: {fileID: 1339504466}
+  SortingLayerName: UI Overlay1
 --- !u!102 &214745535
 TextMesh:
   serializedVersion: 3
@@ -1083,8 +1088,8 @@ SpriteRenderer:
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
-  m_SortingLayerID: 0
-  m_SortingOrder: 10
+  m_SortingLayerID: 1629100023
+  m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: b9bbd524619c0814a83da120885b3a28, type: 3}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
 --- !u!1 &752042179
@@ -1244,6 +1249,7 @@ MonoBehaviour:
   FadeRate: 1
   Text: {fileID: 873252451}
   DropShadow: {fileID: 258842945}
+  SortingLayerName: UI
 --- !u!102 &873252451
 TextMesh:
   serializedVersion: 3
@@ -1507,8 +1513,8 @@ SpriteRenderer:
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
-  m_SortingLayerID: 0
-  m_SortingOrder: 11
+  m_SortingLayerID: 1629100023
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: b9bbd524619c0814a83da120885b3a28, type: 3}
   m_Color: {r: .399999976, g: .600000024, b: 0, a: 1}
 --- !u!1 &1297335529

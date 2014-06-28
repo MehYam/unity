@@ -299,8 +299,6 @@ public sealed class GameController : IGame
             var pctDone = elapsed / Consts.DEPOSSESSION_DURATION;
             var rotationsPerSec = Consts.DEPOSSESSION_ROTATIONS_PER_SEC * (1 - pctDone);
 
-            Debug.Log(rotationsPerSec);
-
             player.transform.Rotate(0, 0, (now - lastSpin) * 360 * rotationsPerSec);
             lastSpin = now;
 
