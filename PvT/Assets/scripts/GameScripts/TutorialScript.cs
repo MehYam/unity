@@ -36,20 +36,27 @@ public class TutorialScript : MonoBehaviour
         yield return new WaitForEndOfFrame();  //HACK to ensure that the next line doesn't nullref
 
         var main = Main.Instance;
-        main.audio.clip = main.music.intro;
-        main.audio.Play();
+        main.PlayMusic(main.music.intro);
         main.hud.curtain.alpha = 1;
 
-        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
+        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_FAST);
 
-        AnimatedText.FadeIn(main.hud.centerPrintTop, "This is my story.", Consts.TEXT_FADE_SECONDS);
-
-        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
-
-        AnimatedText.FadeIn(main.hud.centerPrintMiddle, "I am Eukarya.", Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeIn(main.hud.centerPrintTop, "We are Eukarya.", Consts.TEXT_FADE_SECONDS);
 
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeIn(main.hud.centerPrintMiddle, "This is our story.", Consts.TEXT_FADE_SECONDS);
 
+        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeOut(main.hud.centerPrintTop, Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeOut(main.hud.centerPrintMiddle, Consts.TEXT_FADE_SECONDS);
+
+        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeIn(main.hud.centerPrintTop, "For eons we have travelled the stars,", Consts.TEXT_FADE_SECONDS);
+
+        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_FAST);
+        AnimatedText.FadeIn(main.hud.centerPrintMiddle, "alone and unbothered.", Consts.TEXT_FADE_SECONDS);
+
+        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
         AnimatedText.FadeOut(main.hud.centerPrintTop, Consts.TEXT_FADE_SECONDS);
         AnimatedText.FadeOut(main.hud.centerPrintMiddle, Consts.TEXT_FADE_SECONDS);
 

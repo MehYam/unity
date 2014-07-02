@@ -12,6 +12,8 @@ public class LevelScript : MonoBehaviour
     {
         game.SpawnPlayer(Vector3.zero);
         StartNextLevel();
+
+        Main.Instance.PlayMusic(Main.Instance.music.duskToDawn);
     }
     void StartNextLevel()
     {

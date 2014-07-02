@@ -62,5 +62,6 @@ public static class Consts
     static public readonly float MAX_MOB_HULL_ROTATION_DEG_PER_SEC = 1;
 
     // UI ///////////////////////////////////////
-    static public readonly float TEXT_FADE_SECONDS = 3;
+    static public readonly float TEXT_FADE_SECONDS = 4;
+    static public readonly float TEXT_FADE_SECONDS_FAST = TEXT_FADE_SECONDS / 2;
 }

@@ -31,6 +31,7 @@ public class Main : MonoBehaviour
     /// ///////////////////////// debug/dev items
     /// </summary>
     public string defaultVehicle = "hero";
+    public bool playMusic = true;
     public bool runWaves = true;
     public int startWave = 0;
 
@@ -41,6 +42,16 @@ public class Main : MonoBehaviour
     }
 
     public IGame game { get; private set; }
+
+    public void PlayMusic(AudioClip music)
+    {
+        if (playMusic)
+        {
+            audio.clip = music;
+            audio.loop = true;
+            audio.Play();
+        }
+    }
 
     // Use this for initialization
 	void Start()

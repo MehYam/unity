@@ -132,7 +132,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 3432512}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2fa97bb74cce3964a9587e424b7ab7d2, type: 3}
   m_Name: 
@@ -167,6 +167,7 @@ MonoBehaviour:
   music: {fileID: 3432519}
   hud: {fileID: 359017136}
   defaultVehicle: hero
+  playMusic: 1
   runWaves: 1
   startWave: 0
 --- !u!114 &3432517
@@ -175,7 +176,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 3432512}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 597ae4a43a018e741acec37b97132aa4, type: 3}
   m_Name: 
@@ -659,7 +660,7 @@ Transform:
   m_Children:
   - {fileID: 1339504465}
   m_Father: {fileID: 1676180340}
-  m_RootOrder: 0
+  m_RootOrder: 2
 --- !u!114 &214745534
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1071,7 +1072,7 @@ Transform:
   m_Children:
   - {fileID: 1213733034}
   m_Father: {fileID: 1676180340}
-  m_RootOrder: 1
+  m_RootOrder: 0
 --- !u!114 &537424860
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2045,7 +2046,7 @@ Transform:
   m_Children:
   - {fileID: 796135862}
   m_Father: {fileID: 1676180340}
-  m_RootOrder: 2
+  m_RootOrder: 1
 --- !u!114 &1283937376
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2396,9 +2397,9 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 214745533}
   - {fileID: 537424859}
   - {fileID: 1283937375}
+  - {fileID: 214745533}
   m_Father: {fileID: 359017135}
   m_RootOrder: 1
 --- !u!1 &1694444460
