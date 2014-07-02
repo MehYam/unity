@@ -5,12 +5,10 @@ using PvT.Util;
 
 public class AnimatedText : MonoBehaviour
 {
-    public float FadeRate = 1;
     public TextMesh Text;
     public TextMesh DropShadow;
     public string SortingLayerName = "UI";
 
-    float targetAlpha = 1;
     public string text
     {
         get
@@ -19,22 +17,13 @@ public class AnimatedText : MonoBehaviour
         }
         set
         {
-            Util.SetAlpha(Text, 0);
-            targetAlpha = 1;
-
-            Text.text = value; 
-            Text.gameObject.SetActive(true);
+            Text.text = value;
             if (DropShadow != null)
             {
                 DropShadow.text = text;
             }
         }
     }
-    public void Clear()
-    {
-        targetAlpha = 0;
-    }
-
     void Start()
     {
         renderer.sortingLayerName = SortingLayerName;
@@ -43,29 +32,23 @@ public class AnimatedText : MonoBehaviour
             DropShadow.renderer.sortingLayerName = SortingLayerName;
             DropShadow.renderer.sortingOrder = renderer.sortingOrder - 1;
         }
-
-        // initialize the drop shadow
-        text = text;
+        if (text.Length > 0)
+        {
+            text = text;
+        }
     }
 
-    void Update()
+    static public void FadeIn(AnimatedText textField, string text, float seconds)
     {
-        var alpha = Text.color.a;
-        if (targetAlpha != alpha)
-        {
-            var change = (FadeRate * Time.deltaTime);
-            alpha += (alpha > targetAlpha) ? -change : change;
+        var fader = textField.GetComponent<Fader>();
+        textField.text = text;
 
-            Util.SetAlpha(Text, alpha);
-            if (DropShadow != null)
-            {
-                Util.SetAlpha(DropShadow, alpha);
-            }
+        fader.Fade(1, seconds);
+    }
 
-            if (Text.color.a == 0)
-            {
-                Text.gameObject.SetActive(false);
-            }
-        }
+    static public void FadeOut(AnimatedText textField, float seconds)
+    {
+        var fader = textField.GetComponent<Fader>();
+        fader.Fade(0, seconds);
     }
 }

@@ -11,8 +11,6 @@ public sealed class MainSounds : MonoBehaviour
     public AudioClip SmallCollision;
     public AudioClip BigCollision;
     public AudioClip Explosion1;
-    public AudioClip music;
 
     public AudioClip fanfare1;
-
 }

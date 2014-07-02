@@ -60,4 +60,7 @@ public static class Consts
     static public readonly float MAX_MOB_ROTATION_DEG_PER_SEC = 90;
     static public readonly float MAX_MOB_TURRET_ROTATION_DEG_PER_SEC = 45;
     static public readonly float MAX_MOB_HULL_ROTATION_DEG_PER_SEC = 1;
+
+    // UI ///////////////////////////////////////
+    static public readonly float TEXT_FADE_SECONDS = 3;
 }

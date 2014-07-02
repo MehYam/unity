@@ -24,6 +24,7 @@ public class Main : MonoBehaviour
     public GameObject AmmoParent;
 
     public MainSounds sounds;
+    public MainMusic music;
     public HUD hud;
 
     /// <summary>

@@ -438,8 +438,6 @@ public sealed class GameController : IGame
     void InitPlayerVehicle(GameObject go, VehicleType vehicle)
     {
         go.name += " player";
-        go.AddComponent<AudioListener>();
-        
         go.layer = (int)Consts.Layer.FRIENDLY;
         go.renderer.sortingLayerID = (int)Consts.SortingLayer.FRIENDLY;
 

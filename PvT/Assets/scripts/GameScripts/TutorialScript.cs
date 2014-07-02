@@ -26,7 +26,7 @@ public class TutorialScript : MonoBehaviour
             CenterPrint.text = message;
             yield return new WaitForSeconds(2);
 
-            CenterPrint.Clear();
+            AnimatedText.FadeOut(CenterPrint, Consts.TEXT_FADE_SECONDS);
             yield return new WaitForSeconds(2);
         }
     }
@@ -35,26 +35,26 @@ public class TutorialScript : MonoBehaviour
     {
         yield return new WaitForEndOfFrame();  //HACK to ensure that the next line doesn't nullref
 
-        Main.Instance.hud.curtain.alpha = 1;
+        var main = Main.Instance;
+        main.audio.clip = main.music.intro;
+        main.audio.Play();
+        main.hud.curtain.alpha = 1;
 
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
-        Main.Instance.hud.centerPrint.text = "I am Eukarya.";
+        AnimatedText.FadeIn(main.hud.centerPrintTop, "This is my story.", Consts.TEXT_FADE_SECONDS);
 
-        yield return new WaitForSeconds(4);
+        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
-        Main.Instance.hud.centerPrint.Clear();
+        AnimatedText.FadeIn(main.hud.centerPrintMiddle, "I am Eukarya.", Consts.TEXT_FADE_SECONDS);
 
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
-        Main.Instance.hud.centerPrint.text = "This is my story.";
+        AnimatedText.FadeOut(main.hud.centerPrintTop, Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeOut(main.hud.centerPrintMiddle, Consts.TEXT_FADE_SECONDS);
 
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
-        Main.Instance.hud.curtain.Fade(0, 4);
-
-        yield return new WaitForSeconds(2);
-
-        Main.Instance.hud.centerPrint.Clear();
+        main.hud.curtain.Fade(0, Consts.TEXT_FADE_SECONDS * 2);
     }
 }

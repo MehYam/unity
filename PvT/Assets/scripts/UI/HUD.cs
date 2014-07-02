@@ -7,9 +7,11 @@ public sealed class HUD : MonoBehaviour
 {
     public GameObject topLeftPanel;
     public AnimatedText label1;
-    public AnimatedText centerPrint;
+    public AnimatedText centerPrintTop;
+    public AnimatedText centerPrintMiddle;
+    public AnimatedText centerPrintBottom;
     public ProgressBar health;
-    public SceneCurtain curtain;
+    public Fader curtain;
 
     void Start()
     {
@@ -60,11 +62,11 @@ public sealed class HUD : MonoBehaviour
     }
     IEnumerator CenterPrintAnim(string print)
     {
-        centerPrint.gameObject.SetActive(true);
-        centerPrint.text = print;
+        centerPrintTop.gameObject.SetActive(true);
+        centerPrintTop.text = print;
 
         yield return new WaitForSeconds(3);
-        centerPrint.gameObject.SetActive(false);
+        centerPrintTop.gameObject.SetActive(false);
     }
 
     void UpdateHealth()
