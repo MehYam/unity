@@ -9,6 +9,7 @@ public class AnimatedText : MonoBehaviour
     public TextMesh DropShadow;
     public string SortingLayerName = "UI";
 
+    public bool dropShadow { get; set; }
     public string text
     {
         get
@@ -21,6 +22,21 @@ public class AnimatedText : MonoBehaviour
             if (DropShadow != null)
             {
                 DropShadow.text = text;
+            }
+        }
+    }
+    public float alpha
+    {
+        get
+        {
+            return Text.color.a;
+        }
+        set
+        {
+            Util.SetAlpha(Text, value);
+            if (DropShadow != null)
+            {
+                Util.SetAlpha(DropShadow, value);
             }
         }
     }

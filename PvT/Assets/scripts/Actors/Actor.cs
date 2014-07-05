@@ -180,6 +180,9 @@ public class Actor : MonoBehaviour
                 _healthBar.transform.position = transform.position + new Vector3(0, 0.5f);
             }
         }
+    }
+    void LateUpdate()
+    {
         if (gameObject.layer == (int)Consts.Layer.MOB)
         {
             UpdateTrackingArrow();

@@ -27,6 +27,8 @@ public class Main : MonoBehaviour
     public MainMusic music;
     public HUD hud;
 
+    public GameObject map;
+
     /// <summary>
     /// ///////////////////////// debug/dev items
     /// </summary>

@@ -37,7 +37,7 @@ public class TutorialScript : MonoBehaviour
 
         var main = Main.Instance;
         main.PlayMusic(main.music.intro);
-        main.hud.curtain.alpha = 1;
+        main.hud.curtain.Fade(1, 0);
 
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_FAST);
 
@@ -51,17 +51,16 @@ public class TutorialScript : MonoBehaviour
         AnimatedText.FadeOut(main.hud.centerPrintMiddle, Consts.TEXT_FADE_SECONDS);
 
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
-        AnimatedText.FadeIn(main.hud.centerPrintTop, "For eons we have travelled the stars,", Consts.TEXT_FADE_SECONDS);
+        main.hud.curtain.Fade(0, Consts.TEXT_FADE_SECONDS_SLOW);
+        main.hud.space.Fade(1, 0); 
+        AnimatedText.FadeIn(main.hud.centerPrintTop, "We travelled the stars for lifetimes,", Consts.TEXT_FADE_SECONDS);
 
-        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_FAST);
+        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
         AnimatedText.FadeIn(main.hud.centerPrintMiddle, "alone and unbothered.", Consts.TEXT_FADE_SECONDS);
 
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
         AnimatedText.FadeOut(main.hud.centerPrintTop, Consts.TEXT_FADE_SECONDS);
         AnimatedText.FadeOut(main.hud.centerPrintMiddle, Consts.TEXT_FADE_SECONDS);
 
-        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
-
-        main.hud.curtain.Fade(0, Consts.TEXT_FADE_SECONDS * 2);
     }
 }

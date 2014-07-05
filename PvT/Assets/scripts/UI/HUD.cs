@@ -11,8 +11,14 @@ public sealed class HUD : MonoBehaviour
     public AnimatedText centerPrintMiddle;
     public AnimatedText centerPrintBottom;
     public ProgressBar health;
-    public Fader curtain;
 
+    public Fader curtain;
+    public Fader space;
+
+    public void EnableTopLeft(bool enabled = true)
+    {
+        topLeftPanel.SetActive(enabled);
+    }
     void Start()
     {
         // events
