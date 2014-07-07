@@ -99,6 +99,10 @@ namespace PvT.Util
         {
             return new Vector2(a.x - b.x, a.y - b.y);
         }
+        static public Vector2 Sub(Vector2 a, Vector3 b)
+        {
+            return new Vector2(a.x - b.x, a.y - b.y);
+        }
         static public Vector3 ScatterRandomly(float radius)
         {
             return new Vector3(Random.Range(-radius, radius), Random.Range(-radius, radius));

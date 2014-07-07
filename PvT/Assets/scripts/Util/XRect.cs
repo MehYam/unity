@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 /// <summary>
@@ -26,6 +26,17 @@ public class XRect
         bottom -= amount;
         right += amount;
         top += amount;
+    }
+    public void Move(float x, float y)
+    {
+        left += x;
+        right += x;
+        bottom += y;
+        top += y;
+    }
+    public void Move(Vector2 v)
+    {
+        Move(v.x, v.y);
     }
     public bool Contains(float x, float y) { return left <= x && x <= right && bottom <= y && y <= top; }
     public bool Contains(Vector2 pt) { return Contains(pt.x, pt.y); }

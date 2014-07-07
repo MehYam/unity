@@ -56,11 +56,18 @@ public class TutorialScript : MonoBehaviour
         AnimatedText.FadeIn(main.hud.centerPrintTop, "We travelled the stars for lifetimes,", Consts.TEXT_FADE_SECONDS);
 
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
-        AnimatedText.FadeIn(main.hud.centerPrintMiddle, "alone and unbothered.", Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeIn(main.hud.centerPrintMiddle, "consuming the dust, alone and unbothered.", Consts.TEXT_FADE_SECONDS);
 
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
+
+        var game = main.game;
+        //FadeToMap();
+    }
+
+    void FadeToMap()
+    {
+        var main = Main.Instance;
         AnimatedText.FadeOut(main.hud.centerPrintTop, Consts.TEXT_FADE_SECONDS);
         AnimatedText.FadeOut(main.hud.centerPrintMiddle, Consts.TEXT_FADE_SECONDS);
-
     }
 }

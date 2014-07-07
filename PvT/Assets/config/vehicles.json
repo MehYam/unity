@@ -1,7 +1,7 @@
 {
 	"HERO":
 	{
-		"asset": "ship2_8",
+		"asset": "hero",
 		"health": "25",
 		"mass": "0.2",
 		"maxSpeed": "3",
