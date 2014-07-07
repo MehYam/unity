@@ -1,35 +1,18 @@
 using UnityEngine;
 using System.Collections;
 
+using PvT.Util;
+
 public class TutorialScript : MonoBehaviour
 {
-    public bool Test1;
     public AnimatedText CenterPrint;
+    public GameObject HeroSchool;
 
 	// Use this for initialization
 	void Start()
     {
-        if (Test1)
-        {
-            StartCoroutine(Test());
-        }
         StartCoroutine(Intro());
 	}
-
-    IEnumerator Test()
-    {
-        var messages = new string[] { "Hello", "This is a test", "Seems to work" };
-
-        while (true)
-        foreach (var message in messages)
-        {
-            CenterPrint.text = message;
-            yield return new WaitForSeconds(2);
-
-            AnimatedText.FadeOut(CenterPrint, Consts.TEXT_FADE_SECONDS);
-            yield return new WaitForSeconds(2);
-        }
-    }
 
     IEnumerator Intro()
     {
@@ -39,6 +22,7 @@ public class TutorialScript : MonoBehaviour
         main.PlayMusic(main.music.intro);
         main.hud.curtain.Fade(1, 0);
 
+        // Text
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_FAST);
 
         AnimatedText.FadeIn(main.hud.centerPrintTop, "We are Eukarya.", Consts.TEXT_FADE_SECONDS);
@@ -50,18 +34,23 @@ public class TutorialScript : MonoBehaviour
         AnimatedText.FadeOut(main.hud.centerPrintTop, Consts.TEXT_FADE_SECONDS);
         AnimatedText.FadeOut(main.hud.centerPrintMiddle, Consts.TEXT_FADE_SECONDS);
 
-        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
+        // Lift curtain on space and heros
         main.hud.curtain.Fade(0, Consts.TEXT_FADE_SECONDS_SLOW);
-        main.hud.space.Fade(1, 0); 
-        AnimatedText.FadeIn(main.hud.centerPrintTop, "We travelled the stars for lifetimes,", Consts.TEXT_FADE_SECONDS);
+        main.hud.space.Fade(1, 0);
+        var school = (GameObject)GameObject.Instantiate(HeroSchool);
+        var rect = Util.GetScreenRectInWorldCoords(Camera.main);
+        school.transform.position = new Vector2(0, rect.bottom - 1);
+        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
+
+        var tween = school.AddComponent<TweenPosition>();
+        tween.To(Vector3.zero - Vector3.up, 5);
+
+        AnimatedText.FadeIn(main.hud.centerPrintTop, "For lifetimes we've travelled the stars,", Consts.TEXT_FADE_SECONDS);
 
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
         AnimatedText.FadeIn(main.hud.centerPrintMiddle, "consuming the dust, alone and unbothered.", Consts.TEXT_FADE_SECONDS);
 
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
-
-        var game = main.game;
-        //FadeToMap();
     }
 
     void FadeToMap()

@@ -9,7 +9,7 @@ public sealed class MovementBob : MonoBehaviour
 
     Vector3 offset = Vector3.zero;
     Vector3 offsetTarget = Vector3.zero;
-    Vector2 velocities = Vector2.zero;
+    Vector3 velocities = Vector3.zero;
     float bobTime = 0;
     void PickBobTarget()
     {
@@ -24,7 +24,7 @@ public sealed class MovementBob : MonoBehaviour
         offsetTarget = new Vector3(Random.Range(rangeRect.left, rangeRect.right), Random.Range(rangeRect.bottom, rangeRect.top));
 
         velocities = Vector2.zero;
-        bobTime = Random.Range(0.1f, 0.3f);
+        bobTime = Random.Range(0.25f, 1);
     }
 
     const float EPSILON = 0.001f;
@@ -35,11 +35,10 @@ public sealed class MovementBob : MonoBehaviour
             PickBobTarget();
         }
 
-        Vector2 prevOffset = offset;
-        offset.x = Mathf.SmoothDamp(offset.x, offsetTarget.x, ref velocities.x, 1);
-        offset.y = Mathf.SmoothDamp(offset.y, offsetTarget.y, ref velocities.y, 1);
+        Vector3 prevOffset = offset;
+        offset = Vector3.SmoothDamp(offset, offsetTarget, ref velocities, bobTime);
 
-        var diff = Util.Sub(prevOffset, offset);
+        var diff = prevOffset - offset;
         transform.Translate(diff.x, diff.y, 0);
     }
 }

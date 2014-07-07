@@ -519,7 +519,7 @@ sealed class PlayerShieldBehavior : IActorBehavior
         if (_shield != null)
         {
             var shieldWeapon = actor.worldObject.weapons[0];
-            _shield.transform.localPosition = new Vector3(shieldWeapon.offset.x, shieldWeapon.offset.y);
+            _shield.transform.localPosition = shieldWeapon.offset;
 
             if (newState == State.NONE)
             {

@@ -19,8 +19,8 @@ public sealed class CameraFollow : MonoBehaviour
     {
         var screenInWorld = Util.GetScreenRectInWorldCoords(camera);
 
-        var borderMin = new Vector3(Border.transform.FindChild("left").localPosition.x, Border.transform.FindChild("bottom").localPosition.y);
-        var borderMax = new Vector3(Border.transform.FindChild("right").localPosition.x, Border.transform.FindChild("top").localPosition.y);
+        var borderMin = new Vector2(Border.transform.FindChild("left").localPosition.x, Border.transform.FindChild("bottom").localPosition.y);
+        var borderMax = new Vector2(Border.transform.FindChild("right").localPosition.x, Border.transform.FindChild("top").localPosition.y);
 
         limit.width = (borderMax.x - borderMin.x) - screenInWorld.width;
         limit.height = (borderMax.y - borderMin.y) - screenInWorld.height;
@@ -41,8 +41,6 @@ public sealed class CameraFollow : MonoBehaviour
             var newY = Mathf.Min(limit.yMax, Mathf.Max(Target.transform.localPosition.y, limit.yMin));
 
             camera.transform.localPosition = new Vector3(newX, newY, _preserveCameraZ);
-
-            //camera.transform.localPosition = new Vector3(newX, Target.transform.localPosition.y, _preserveCameraZ);
         }
 	}
 }

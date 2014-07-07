@@ -3,7 +3,7 @@ using System.Collections;
 
 using PvT.Util;
 
-public class Fader : MonoBehaviour
+public class Fader : MonoBehaviour  // this is almost the same class as Tween
 {
     IFadeSetter _setter;
     void Awake()
@@ -66,7 +66,7 @@ public class Fader : MonoBehaviour
         }
     }
 
-    class FadeState
+    sealed class FadeState
     {
         public readonly float startTime;
         public readonly float endTime;
