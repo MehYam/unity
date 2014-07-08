@@ -12,10 +12,10 @@ public class TutorialScript : MonoBehaviour
 	// Use this for initialization
 	void Start()
     {
-        StartCoroutine(IntroScript());
+        StartCoroutine(Intro());
 	}
 
-    IEnumerator IntroScript()
+    IEnumerator Intro()
     {
         yield return new WaitForEndOfFrame();  //HACK to ensure that the next line doesn't nullref
 
@@ -58,7 +58,7 @@ public class TutorialScript : MonoBehaviour
 
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
-        AnimatedText.FadeIn(main.hud.centerPrintTop, "Until the day,", Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeIn(main.hud.centerPrintTop, "Until one day.", Consts.TEXT_FADE_SECONDS);
 
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
@@ -69,15 +69,17 @@ public class TutorialScript : MonoBehaviour
         // Introduce enemies
         AnimatedText.FadeIn(main.hud.centerPrintTop, "We were found.", Consts.TEXT_FADE_SECONDS);
 
-        SetupMobTween("CYGNUS", school.transform.position, screen.min - Vector2.one);
+        var mobParent = new GameObject("mobParent");
+
+        SetupMobTween(mobParent, "CYGNUS", school.transform.position, screen.min - Vector2.one);
         yield return new WaitForSeconds(0.25f);
-        SetupMobTween("ROCINANTE", school.transform.position, new Vector2(screen.right + 1, 0));
+        SetupMobTween(mobParent, "ROCINANTE", school.transform.position, new Vector2(screen.right + 1, 0));
         yield return new WaitForSeconds(0.25f);
-        SetupMobTween("ESOX", school.transform.position, new Vector2(screen.right + 1, screen.bottom - 1));
+        SetupMobTween(mobParent, "ESOX", school.transform.position, new Vector2(screen.right + 1, screen.bottom - 1));
         yield return new WaitForSeconds(0.5f);
-        SetupMobTween("CYGNUS", school.transform.position, screen.max + Vector2.one);
+        SetupMobTween(mobParent, "CYGNUS", school.transform.position, screen.max + Vector2.one);
         yield return new WaitForSeconds(0.25f);
-        SetupMobTween("CYGNUS3", school.transform.position, new Vector2(screen.left - 1, screen.top + 1));
+        SetupMobTween(mobParent, "CYGNUS3", school.transform.position, new Vector2(screen.left - 1, screen.top + 1));
 
         StartCoroutine(CollapseSchool(school));
 
@@ -85,13 +87,24 @@ public class TutorialScript : MonoBehaviour
         AnimatedText.FadeOut(main.hud.centerPrintTop, Consts.TEXT_FADE_SECONDS_SLOW);
 
         main.hud.curtain.Fade(1, Consts.TEXT_FADE_SECONDS);
+
+        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
+
+        main.hud.space.Fade(0, 0);
+
+        // clean up actors
+        GameObject.Destroy(school);
+        GameObject.Destroy(mobParent);
+
+        StartCoroutine(Tutorial());
     }
 
-    void SetupMobTween(string vehicle, Vector2 target, Vector2 start)
+    void SetupMobTween(GameObject parent, string vehicle, Vector2 target, Vector2 start)
     {
         var main = Main.Instance;
         var mob = main.game.SpawnMob(vehicle);
         mob.transform.position = start;
+        mob.transform.parent = parent.transform;
 
         var bf = ActorBehaviorFactory.Instance;
 
@@ -130,10 +143,12 @@ public class TutorialScript : MonoBehaviour
         yield break;
     }
 
-    void FadeToMap()
+    IEnumerator Tutorial()
     {
-        var main = Main.Instance;
-        AnimatedText.FadeOut(main.hud.centerPrintTop, Consts.TEXT_FADE_SECONDS);
-        AnimatedText.FadeOut(main.hud.centerPrintMiddle, Consts.TEXT_FADE_SECONDS);
+        Main.Instance.map.SetActive(true);
+
+        Main.Instance.hud.curtain.Fade(0, Consts.TEXT_FADE_SECONDS);
+
+        yield break;
     }
 }
