@@ -90,6 +90,7 @@ public class Actor : MonoBehaviour
             return (_modifier != null) ? v.acceleration + _modifier.acceleration : v.acceleration;
         }
     }
+    public bool trackingArrow { get; set; }
     public float receivedDamageMultiplier { get; set; }
     public float collisionDamage;
     public IActorBehavior behavior { get; set; }
@@ -183,7 +184,7 @@ public class Actor : MonoBehaviour
     }
     void LateUpdate()
     {
-        if (gameObject.layer == (int)Consts.Layer.MOB)
+        if (trackingArrow)
         {
             UpdateTrackingArrow();
         }

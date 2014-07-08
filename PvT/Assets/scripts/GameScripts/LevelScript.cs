@@ -59,6 +59,8 @@ public class LevelScript : MonoBehaviour
             spawnLocation = new Vector3(Util.CoinFlip() ? bounds.min.x : bounds.max.x, Random.Range(bounds.min.y, bounds.max.y));
         }
         mob.transform.localPosition = spawnLocation;
+
+        mob.GetComponent<Actor>().trackingArrow = true;
     }
     void OnEnemyDestroyed()
     {

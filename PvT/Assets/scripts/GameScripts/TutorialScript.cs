@@ -51,12 +51,12 @@ public class TutorialScript : MonoBehaviour
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
         AnimatedText.FadeIn(main.hud.centerPrintMiddle, "Sifting the dust, unbothered.", Consts.TEXT_FADE_SECONDS);
 
-        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_SLOW);
+        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
     
         AnimatedText.FadeOut(main.hud.centerPrintTop, Consts.TEXT_FADE_SECONDS);
         AnimatedText.FadeOut(main.hud.centerPrintMiddle, Consts.TEXT_FADE_SECONDS);
 
-        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_FAST);
+        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
         AnimatedText.FadeIn(main.hud.centerPrintTop, "Until the day,", Consts.TEXT_FADE_SECONDS);
 
@@ -96,7 +96,7 @@ public class TutorialScript : MonoBehaviour
         var bf = ActorBehaviorFactory.Instance;
 
         mob.GetComponent<Actor>().behavior = new CompositeBehavior(
-            bf.CreatePositionTween(Vector3.Lerp(start, target, 0.75f), 3),
+            bf.CreatePositionTween(Vector3.Lerp(start, target, 0.75f), 4),
             bf.CreateFacePoint(target)
         );
     }
