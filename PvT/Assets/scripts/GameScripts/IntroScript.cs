@@ -4,9 +4,8 @@ using System.Collections.Generic;
 
 using PvT.Util;
 
-public class TutorialScript : MonoBehaviour
+public class IntroScript : MonoBehaviour
 {
-    public AnimatedText CenterPrint;
     public GameObject HeroSchool;
 
 	// Use this for initialization
@@ -62,7 +61,7 @@ public class TutorialScript : MonoBehaviour
 
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
-        AnimatedText.FadeOut(main.hud.centerPrintTop, Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeOut(main.hud.centerPrintTop, Consts.TEXT_FADE_SECONDS_FAST);
 
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_FAST);
 
