@@ -217,15 +217,14 @@ public sealed class ActorBehaviorFactory
             return _heroRegen;
         }
     }
-    //IActorBehavior _whirl;
-    //public IActorBehavior whirl
-    //{
-    //    get
-    //    {
-    //        if (_whirl == null) { _whirl = new Spin(10); }
-    //        return _whirl;
-    //    }
-    //}
+    public IActorBehavior CreateFacePoint(Vector2 point)
+    {
+        return new FacePointBehavior(point);
+    }
+    public IActorBehavior CreatePositionTween(Vector2 position, float seconds)
+    {
+        return new TweenPositionBehavior(position, seconds);
+    }
     public IActorBehavior CreateRotateToPlayer(float degPerSec)
     {
         return new FacePlayerBehavior(degPerSec);
@@ -271,6 +270,18 @@ public sealed class ActorBehaviorFactory
     }
 }
 
+sealed class FacePointBehavior : IActorBehavior
+{
+    readonly Vector2 point;
+    public FacePointBehavior(Vector2 point)
+    {
+        this.point = point;
+    }
+    public void FixedUpdate(Actor actor)
+    {
+        Util.LookAt2D(actor.transform, point, -1);
+    }
+}
 sealed class FacePlayerBehavior : IActorBehavior
 {
     public const float ROTATE_IMMEDIATE = -1;
@@ -666,5 +677,36 @@ sealed class HealthRegen : IActorBehavior
             actor.health += healthPerSecond * Time.fixedDeltaTime;
             actor.health = Mathf.Min(actor.worldObject.health, actor.health);
         }
+    }
+}
+
+sealed class TweenPositionBehavior : IActorBehavior
+{
+    //KAI: copy pasta with TweenPosition
+    sealed class TweenState
+    {
+        public readonly Vector3 destination;
+        public readonly float time;
+        public TweenState(Vector3 destination, float time)
+        {
+            this.destination = destination;
+            this.time = time * Consts.SMOOTH_DAMP_MULTIPLIER;
+        }
+        Vector3 velocities = Vector3.zero;
+        public Vector3 Update(Transform transform)
+        {
+            return Vector3.SmoothDamp(transform.position, destination, ref velocities, time * Consts.SMOOTH_DAMP_MULTIPLIER);
+        }
+    }
+
+    readonly TweenState _state;
+    public TweenPositionBehavior(Vector3 destination, float time)
+    {
+        _state = new TweenState(destination, time);
+    }
+
+    public void FixedUpdate(Actor actor)
+    {
+        actor.transform.position = _state.Update(actor.transform);
     }
 }

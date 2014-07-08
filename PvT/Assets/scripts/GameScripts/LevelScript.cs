@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
+using PvT.Util;
+
 public class LevelScript : MonoBehaviour
 {
     void Start()
@@ -32,13 +34,32 @@ public class LevelScript : MonoBehaviour
             {
                 for (int i = 0; i < squad.count; ++i)
                 {
-                    game.SpawnMob(squad.enemyID);
+                    var mob = game.SpawnMob(squad.enemyID);
+                    PositionMob(mob);
+
                     ++_liveEnemies;
                 }
             }
         }
     }
 
+    void PositionMob(GameObject mob)
+    {
+        // put the actor at the edge
+        Vector3 spawnLocation;
+        var bounds = new XRect(Main.Instance.game.WorldBounds);
+        bounds.Inflate(-1);
+
+        if (Util.CoinFlip())
+        {
+            spawnLocation = new Vector3(Random.Range(bounds.min.x, bounds.max.x), Util.CoinFlip() ? bounds.min.y : bounds.max.y);
+        }
+        else
+        {
+            spawnLocation = new Vector3(Util.CoinFlip() ? bounds.min.x : bounds.max.x, Random.Range(bounds.min.y, bounds.max.y));
+        }
+        mob.transform.localPosition = spawnLocation;
+    }
     void OnEnemyDestroyed()
     {
         --_liveEnemies;

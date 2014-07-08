@@ -11,8 +11,8 @@ public interface IGame
     Loader loader { get; }
     Effects effects { get; }
 
-    void SpawnPlayer(Vector3 location);
-    void SpawnMob(string vehicleKey);
+    GameObject SpawnPlayer(Vector3 location);
+    GameObject SpawnMob(string vehicleKey);
     GameObject SpawnAmmo(Actor launcher, VehicleType type, WorldObjectType.Weapon weapon, Consts.Layer layer);
 
     void Debug_Respawn(Loader loader);

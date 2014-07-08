@@ -1,3 +1,5 @@
+//#define DEBUG_INTRO
+
 using UnityEngine;
 using PvT.Util;
 
@@ -61,8 +63,14 @@ public static class Consts
     static public readonly float MAX_MOB_TURRET_ROTATION_DEG_PER_SEC = 45;
     static public readonly float MAX_MOB_HULL_ROTATION_DEG_PER_SEC = 1;
 
+    static public readonly float SMOOTH_DAMP_MULTIPLIER = 0.5f;
+
     // UI and cinematics ///////////////////////////////////////
+#if DEBUG_INTRO
+    static public readonly float TEXT_FADE_SECONDS = 0.2f;
+#else
     static public readonly float TEXT_FADE_SECONDS = 4;
+#endif
     static public readonly float TEXT_FADE_SECONDS_FAST = TEXT_FADE_SECONDS / 2;
     static public readonly float TEXT_FADE_SECONDS_SLOW = TEXT_FADE_SECONDS * 2;
 }

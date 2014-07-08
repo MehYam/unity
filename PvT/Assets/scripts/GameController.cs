@@ -50,7 +50,7 @@ public sealed class GameController : IGame
         GlobalGameEvent.Instance.FireGameReady(this);
     }
 
-    public void SpawnPlayer(Vector3 location)
+    public GameObject SpawnPlayer(Vector3 location)
     {
         var main = Main.Instance;
         Debug.Log("Spawning player " + main.defaultVehicle);
@@ -71,9 +71,10 @@ public sealed class GameController : IGame
         }
 
         this.player.gameObject.transform.position = location;
+        return this.player.gameObject;
     }
 
-    public void SpawnMob(string vehicleKey)
+    public GameObject SpawnMob(string vehicleKey)
     {
         var tank = loader.GetTank(vehicleKey);
         if (tank != null)
@@ -95,38 +96,22 @@ public sealed class GameController : IGame
             turretBehavior.Add(bf.CreateRotateToPlayer(Consts.MAX_MOB_TURRET_ROTATION_DEG_PER_SEC));
             turretBehavior.Add(turretFireBehavior);
 
-            SpawnMobHelper(tankHelper.hullGO);
-
             tankHelper.hullGO.GetComponent<Actor>().behavior = hullBehavior;
             tankHelper.turretGO.GetComponent<Actor>().behavior = turretBehavior;
-        }
-        else
-        {
-            var vehicle = loader.GetVehicle(vehicleKey);
-            var go = vehicle.Spawn(Consts.SortingLayer.MOB);
-            go.GetComponent<Actor>().behavior = ActorBehaviorScripts.Instance.Get(vehicleKey);
 
-            SpawnMobHelper(go);
+            SpawnMobHelper(tankHelper.hullGO);
+            return tankHelper.hullGO;
         }
+        var vehicle = loader.GetVehicle(vehicleKey);
+        var go = vehicle.Spawn(Consts.SortingLayer.MOB);
+        go.GetComponent<Actor>().behavior = ActorBehaviorScripts.Instance.Get(vehicleKey);
+
+        SpawnMobHelper(go);
+        return go;
     }
     void SpawnMobHelper(GameObject go)
     {
         go.name += " mob";
-
-        // put the actor at the edge
-        Vector3 spawnLocation;
-        var bounds = new XRect(WorldBounds);
-        bounds.Inflate(-1);
-
-        if (Util.CoinFlip())
-        {
-            spawnLocation = new Vector3(Random.Range(bounds.min.x, bounds.max.x), Util.CoinFlip() ? bounds.min.y : bounds.max.y);
-        }
-        else
-        {
-            spawnLocation = new Vector3(Util.CoinFlip() ? bounds.min.x : bounds.max.x, Random.Range(bounds.min.y, bounds.max.y));
-        }
-        go.transform.localPosition = spawnLocation;
         go.layer = (int)Consts.Layer.MOB;
     }
 
