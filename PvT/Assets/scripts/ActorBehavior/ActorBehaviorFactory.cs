@@ -329,8 +329,11 @@ sealed class ThrustBehavior : IActorBehavior
 {
     public void FixedUpdate(Actor actor)
     {
-        var thrustVector = Util.GetLookAtVector(actor.gameObject.transform.rotation.eulerAngles.z, actor.acceleration);
-        actor.gameObject.rigidbody2D.AddForce(thrustVector);
+        if (actor.thrustEnabled)
+        {
+            var thrustVector = Util.GetLookAtVector(actor.gameObject.transform.rotation.eulerAngles.z, actor.acceleration);
+            actor.gameObject.rigidbody2D.AddForce(thrustVector);
+        }
     }
 }
 
@@ -434,7 +437,7 @@ sealed class AutofireBehavior : IActorBehavior
     }
     public void FixedUpdate(Actor actor)
     {
-        if (rate.reached)
+        if (actor.firingEnabled && rate.reached)
         {
             var game = Main.Instance.game;
             foreach (var weapon in actor.worldObject.weapons)

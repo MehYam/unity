@@ -14,26 +14,73 @@ public class LevelScript : MonoBehaviour
         GlobalGameEvent.Instance.GameReady += OnGameReady;
 
         Main.Instance.map.SetActive(true);
-
         Main.Instance.hud.curtain.Fade(0, Consts.TEXT_FADE_SECONDS);
-        Main.Instance.PlayMusic(Main.Instance.music.duskToDawn);
     }
     void OnGameReady(IGame game)
     {
-        game.SpawnPlayer(Vector3.zero);
-
         StartCoroutine(TutorialSequence());
         //StartNextLevel();
     }
     IEnumerator TutorialSequence()
     {
-        AnimatedText.FadeIn(Main.Instance.hud.centerPrintTop, "We were brought somewhere strange.", Consts.TEXT_FADE_SECONDS);
+        // aliases for less typing
+        var main = Main.Instance;
+        var hud = main.hud;
+        var game = main.game;
 
+        main.PlayMusic(main.music.duskToDawn);
+
+        var playerActor = game.SpawnPlayer(Vector3.zero).GetComponent<Actor>();
+        playerActor.firingEnabled = false;
+        playerActor.thrustEnabled = false;
+        playerActor.immortal = true;
+
+        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
+
+        AnimatedText.FadeIn(hud.centerPrintTop, "We were brought somewhere unfamiliar.", Consts.TEXT_FADE_SECONDS);
+
+        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
+
+        AnimatedText.FadeIn(hud.centerPrintBottom, "(Use W, A, S, D or arrow keys to explore)", Consts.TEXT_FADE_SECONDS);
+
+        playerActor.thrustEnabled = true;
+
+        yield return StartCoroutine(Util.YieldUntil(() =>
+            {
+                // Wait until the player's travelled some distance
+                return Vector3.Distance(playerActor.transform.position, Vector3.zero) > game.WorldBounds.width / 3;
+            }
+        ));
+
+        AnimatedText.FadeOut(hud.centerPrintTop, Consts.TEXT_FADE_SECONDS_FAST);
+        AnimatedText.FadeOut(hud.centerPrintBottom, Consts.TEXT_FADE_SECONDS_FAST);
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_FAST);
 
-        AnimatedText.FadeIn(Main.Instance.hud.centerPrintBottom, "(Use W, A, S, D or the arrow keys to explore)", Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeIn(hud.centerPrintTop, "Suddenly, another appeared.", Consts.TEXT_FADE_SECONDS);
 
-        yield break;
+        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
+
+        var mobActor = game.SpawnMob("GREENK").GetComponent<Actor>();
+        mobActor.firingEnabled = false;
+        mobActor.thrustEnabled = false;
+        mobActor.transform.position = -playerActor.transform.position;
+        mobActor.trackingArrowEnabled = true;
+
+        AnimatedText.FadeIn(hud.centerPrintBottom, "(Investigate the newcomer)", Consts.TEXT_FADE_SECONDS);
+
+        yield return StartCoroutine(Util.YieldUntil(() =>
+            {
+                // Wait until the player's close to the mob
+                return Vector3.Distance(playerActor.transform.position, mobActor.transform.position) < 2.5f;
+            }
+        ));
+
+        AnimatedText.FadeOut(hud.centerPrintTop, Consts.TEXT_FADE_SECONDS_FAST);
+        AnimatedText.FadeOut(hud.centerPrintBottom, Consts.TEXT_FADE_SECONDS_FAST);
+        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_FAST);
+
+        mobActor.thrustEnabled = true;
+
     }
 
 
@@ -83,7 +130,7 @@ public class LevelScript : MonoBehaviour
         }
         mob.transform.localPosition = spawnLocation;
 
-        mob.GetComponent<Actor>().trackingArrow = true;
+        mob.GetComponent<Actor>().trackingArrowEnabled = true;
     }
     void OnEnemyDestroyed()
     {

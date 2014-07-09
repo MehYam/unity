@@ -13,7 +13,10 @@ public class Actor : MonoBehaviour
         expireTime = EXPIRY_INFINITE;
         explodesOnDeath = true;
         showsHealthBar = true;
-        receivedDamageMultiplier = 1;
+        takenDamageMultiplier = 1;
+        firingEnabled = true;
+        thrustEnabled = true;
+        immortal = false;
     }
 
     void OnDestroy()
@@ -63,15 +66,15 @@ public class Actor : MonoBehaviour
         }
         set
         {
-            var delta = value - health;
-            _health = value;
+            var prevHealth = health;
+            _health = immortal ? Mathf.Max(1, value) : value;
 
             if (_healthBar != null && _healthBar.gameObject.activeSelf)
             {
                 _healthBar.percent = health / worldObject.health;
             }
 
-            GlobalGameEvent.Instance.FireHealthChange(this, delta);
+            GlobalGameEvent.Instance.FireHealthChange(this, prevHealth - _health);
         }
     }
     public float maxSpeed
@@ -90,8 +93,12 @@ public class Actor : MonoBehaviour
             return (_modifier != null) ? v.acceleration + _modifier.acceleration : v.acceleration;
         }
     }
-    public bool trackingArrow { get; set; }
-    public float receivedDamageMultiplier { get; set; }
+    public bool firingEnabled { get; set; }
+    public bool trackingArrowEnabled { get; set; }
+    public bool thrustEnabled { get; set; }
+    public bool immortal { get; set; }
+
+    public float takenDamageMultiplier { get; set; }
     public float collisionDamage;
     public IActorBehavior behavior { get; set; }
     public IActorVisualBehavior visualBehavior { get; set; }
@@ -102,11 +109,11 @@ public class Actor : MonoBehaviour
         _modifier = modifier;
     }
 
-    float _lastHealthUpdate = 0;
+    float _lastHealthChangeTime = 0;
     ProgressBar _healthBar;
     public void TakeDamage(float damage)
     {
-        var effectiveDamage = receivedDamageMultiplier * damage;
+        var effectiveDamage = takenDamageMultiplier * damage;
         if (effectiveDamage > 0)
         {
             this.health -= effectiveDamage;
@@ -129,9 +136,9 @@ public class Actor : MonoBehaviour
                     bar.transform.parent = Main.Instance.EffectParent.transform;
 #endif
                 }
-                //_healthBar.gameObject.SetActive(true);
+                _healthBar.gameObject.SetActive(true);
             }
-            _lastHealthUpdate = Time.time;
+            _lastHealthChangeTime = Time.time;
 
             if (gameObject == Main.Instance.game.player)
             {
@@ -172,7 +179,7 @@ public class Actor : MonoBehaviour
 
         if (_healthBar != null && _healthBar.gameObject.activeSelf)
         {
-            if ((Time.time - _lastHealthUpdate) > Consts.HEALTH_BAR_TIMEOUT)
+            if ((Time.time - _lastHealthChangeTime) > Consts.HEALTH_BAR_TIMEOUT)
             {
                 _healthBar.gameObject.SetActive(false);
             }
@@ -184,7 +191,7 @@ public class Actor : MonoBehaviour
     }
     void LateUpdate()
     {
-        if (trackingArrow)
+        if (trackingArrowEnabled)
         {
             UpdateTrackingArrow();
         }
@@ -287,7 +294,7 @@ public sealed class PostDamageInvuln : IActorVisualBehavior
         var shadows = actor.gameObject.GetComponentsInChildren<SpriteRenderer>();
         dropShadows = shadows.Length > 0 ? shadows : null;
 
-        actor.receivedDamageMultiplier = 0;
+        actor.takenDamageMultiplier = 0;
     }
     public void Update(Actor actor)
     {
@@ -304,7 +311,7 @@ public sealed class PostDamageInvuln : IActorVisualBehavior
             DebugUtil.Assert(actor.visualBehavior == this);
 
             actor.visualBehavior = null;
-            actor.receivedDamageMultiplier = 1;
+            actor.takenDamageMultiplier = 1;
 
             SetAlpha(actor, 1);
         }

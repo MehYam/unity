@@ -370,14 +370,13 @@ public sealed class GameController : IGame
         var behaviors = new CompositeBehavior();
         behaviors.Add(new PlayerInput(bf.faceForward));
 
-        if (vehicle.weapons[0].type == "SHIELD") //KAI: cheeze
+        if (vehicle.weapons[0].type == "SHIELD") //KAI: cheese
         {
             behaviors.Add(bf.CreateShield());
         }
         else
         {
-            //KAI: cheese
-            var hero = vehicle.name == "HERO";
+            var hero = vehicle.name == "HERO"; //KAI: cheese
             var layer = hero ? Consts.Layer.HEROLINGS : Consts.Layer.FRIENDLY_AMMO;
 
             if (hero)

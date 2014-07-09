@@ -20,9 +20,10 @@ public class PlayerInput : IActorBehavior
         var vert = Input.GetAxis("Vertical");
         if (horz != 0 || vert != 0)
         {
-            //Debug.Log(actor.acceleration);
-            actor.gameObject.rigidbody2D.AddForce(new Vector2(horz * actor.acceleration, vert * actor.acceleration));
-
+            if (actor.thrustEnabled)
+            {
+                actor.gameObject.rigidbody2D.AddForce(new Vector2(horz * actor.acceleration, vert * actor.acceleration));
+            }
             if (duringInput != null)
             {
                 duringInput.FixedUpdate(actor);
