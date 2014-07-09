@@ -1,7 +1,10 @@
 using UnityEngine;
+using System;
 using System.Collections;
 
 using PvT.Util;
+
+using Random = UnityEngine.Random;
 
 public class LevelScript : MonoBehaviour
 {
@@ -58,13 +61,12 @@ public class LevelScript : MonoBehaviour
 
         AnimatedText.FadeIn(hud.centerPrintTop, "Suddenly, another appeared.", Consts.TEXT_FADE_SECONDS);
 
-        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
-
         var mobActor = game.SpawnMob("GREENK").GetComponent<Actor>();
         mobActor.firingEnabled = false;
         mobActor.thrustEnabled = false;
         mobActor.transform.position = -playerActor.transform.position;
         mobActor.trackingArrowEnabled = true;
+        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
         AnimatedText.FadeIn(hud.centerPrintBottom, "(Investigate the newcomer)", Consts.TEXT_FADE_SECONDS);
 
@@ -80,6 +82,38 @@ public class LevelScript : MonoBehaviour
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_FAST);
 
         mobActor.thrustEnabled = true;
+        playerActor.takenDamageMultiplier = 0.25f;
+
+        var startHealth = playerActor.health;
+        yield return StartCoroutine(Util.YieldUntil(() =>
+        {
+            // Wait until the player's been hit
+            return playerActor.health != startHealth;
+        }
+        ));
+
+        AnimatedText.FadeIn(hud.centerPrintTop, "This other was not friendly.", Consts.TEXT_FADE_SECONDS);
+        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_FAST);
+        
+        AnimatedText.FadeIn(hud.centerPrintBottom, "(Flee!)", Consts.TEXT_FADE_SECONDS);
+
+        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
+
+        AnimatedText.FadeIn(hud.centerPrintTop, "But I was not defenseless.", Consts.TEXT_FADE_SECONDS);
+        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_FAST);
+
+        AnimatedText.FadeIn(hud.centerPrintBottom, "(Aim with the mouse, fire the button)", Consts.TEXT_FADE_SECONDS);
+
+        playerActor.firingEnabled = true;
+
+        //KAI: left off here, need to trap the possession event, and detect it
+        bool possession = false;
+        Action possessionStarted = () => { possession = true; };
+        GlobalGameEvent.Instance.PossessionStart += possessionStarted;
+
+        yield return StartCoroutine(Util.YieldUntil(() => possession));
+
+        AnimatedText.FadeIn(hud.centerPrintBottom, "YOU GONE DONE IT NOW", Consts.TEXT_FADE_SECONDS);
 
     }
 
