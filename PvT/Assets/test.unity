@@ -185,7 +185,7 @@ GameObject:
   - 114: {fileID: 90393550}
   - 114: {fileID: 90393555}
   m_Layer: 0
-  m_Name: hero
+  m_Name: test
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -313,6 +313,10 @@ Prefab:
     - target: {fileID: 400000, guid: a299617138d5bbc4a87d51acfe61f984, type: 2}
       propertyPath: m_RootMapOrder
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: a299617138d5bbc4a87d51acfe61f984, type: 2}
+      propertyPath: m_Name
+      value: test
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: a299617138d5bbc4a87d51acfe61f984, type: 2}

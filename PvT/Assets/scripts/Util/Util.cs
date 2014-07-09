@@ -1,7 +1,10 @@
 #define DEBUG
 
 using UnityEngine;
+using System;
 using System.Collections;
+
+using Random = UnityEngine.Random;
 
 namespace PvT.Util
 {
@@ -198,6 +201,26 @@ namespace PvT.Util
         static public void Log(string fmt, params object[] args)
         {
             Debug.Log(string.Format(fmt, args));
+        }
+
+        /// <summary>
+        /// Tests a condition each frame until its true.  Useful for blocking a coroutine until the completion of some task
+        /// e.g.
+        /// var clickTarget = _clicks + 3;
+        /// yield return StartCoroutine(YieldUntil(() =>
+        ///     {
+        ///         return clickTarget <= _clicks;
+        ///     }
+        /// ));
+        /// </summary>
+        /// <param name="condition">The condition (i.e. lambda) to execute each frame</param>
+        /// <returns>A coroutine enumerator</returns>
+        static public IEnumerator YieldUntil(Func<bool> condition)
+        {
+            while (!condition())
+            {
+                yield return new WaitForEndOfFrame();
+            }
         }
     }
 

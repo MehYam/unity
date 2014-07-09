@@ -11,10 +11,10 @@ public class IntroScript : MonoBehaviour
 	// Use this for initialization
 	void Start()
     {
-        StartCoroutine(Intro());
+        StartCoroutine(IntroSequence());
 	}
 
-    IEnumerator Intro()
+    IEnumerator IntroSequence()
     {
         yield return new WaitForEndOfFrame();  //HACK to ensure that the next line doesn't nullref
 

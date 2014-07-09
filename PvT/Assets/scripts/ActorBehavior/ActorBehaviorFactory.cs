@@ -620,7 +620,7 @@ sealed class HeroAnimator : IActorBehavior
     }
     public void FixedUpdate(Actor actor)
     {
-        anim.speed = 0.01f + actor.rigidbody2D.velocity.sqrMagnitude/10;
+        anim.speed = Mathf.Max(actor.rigidbody2D.velocity.sqrMagnitude/10, 0.1f);
     }
 }
 

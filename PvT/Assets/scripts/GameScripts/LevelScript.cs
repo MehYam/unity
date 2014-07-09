@@ -22,21 +22,24 @@ public class LevelScript : MonoBehaviour
     {
         game.SpawnPlayer(Vector3.zero);
 
-        StartCoroutine(Tutorial());
-        StartNextLevel();
+        StartCoroutine(TutorialSequence());
+        //StartNextLevel();
     }
-    IEnumerator Tutorial()
+    IEnumerator TutorialSequence()
     {
-        AnimatedText.FadeIn(Main.Instance.hud.centerPrintTop, "We were dropped somewhere strange.", Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeIn(Main.Instance.hud.centerPrintTop, "We were brought somewhere strange.", Consts.TEXT_FADE_SECONDS);
 
-        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
+        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_FAST);
 
+        AnimatedText.FadeIn(Main.Instance.hud.centerPrintBottom, "(Use W, A, S, D or the arrow keys to explore)", Consts.TEXT_FADE_SECONDS);
 
         yield break;
     }
 
 
-
+    /// <summary>
+    /// //////////////////// level runner, arguably this should be split from the tutorial sequence above
+    /// </summary>
     void StartNextLevel()
     {
         StartNextWave();
