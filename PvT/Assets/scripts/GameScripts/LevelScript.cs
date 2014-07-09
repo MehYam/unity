@@ -7,16 +7,36 @@ public class LevelScript : MonoBehaviour
 {
     void Start()
     {
+        Debug.Log("LevelScript.Start");
+        Main.Instance.hud.curtain.Fade(1, 0);
+
         GlobalGameEvent.Instance.EnemyDestroyed += OnEnemyDestroyed;
         GlobalGameEvent.Instance.GameReady += OnGameReady;
+
+        Main.Instance.map.SetActive(true);
+
+        Main.Instance.hud.curtain.Fade(0, Consts.TEXT_FADE_SECONDS);
+        Main.Instance.PlayMusic(Main.Instance.music.duskToDawn);
     }
     void OnGameReady(IGame game)
     {
         game.SpawnPlayer(Vector3.zero);
-        StartNextLevel();
 
-        Main.Instance.PlayMusic(Main.Instance.music.duskToDawn);
+        StartCoroutine(Tutorial());
+        StartNextLevel();
     }
+    IEnumerator Tutorial()
+    {
+        AnimatedText.FadeIn(Main.Instance.hud.centerPrintTop, "We were dropped somewhere strange.", Consts.TEXT_FADE_SECONDS);
+
+        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
+
+
+        yield break;
+    }
+
+
+
     void StartNextLevel()
     {
         StartNextWave();

@@ -62,6 +62,7 @@ public class Main : MonoBehaviour
 
         game = new GameController(CreateLoader());
         GlobalGameEvent.Instance.MapReady += OnMapReady;
+        GlobalGameEvent.Instance.IntroOver += OnIntroOver;
 
         Physics2D.gravity = Vector2.zero;
 	}
@@ -86,5 +87,12 @@ public class Main : MonoBehaviour
 #if AUTO_SELECT_GAMESTATE_EDITOR
         Selection.objects = new Object[] { GameObject.Find("_gameState") };
 #endif
+    }
+    void OnIntroOver(MonoBehaviour script)
+    {
+        Debug.Log("Main.OnIntroOver");
+        script.enabled = false;
+
+        GetComponent<LevelScript>().enabled = true;
     }
 }

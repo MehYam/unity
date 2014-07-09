@@ -6,9 +6,11 @@ public class ProgressBar : MonoBehaviour
 {
     public GameObject BackgroundSprite;
     public GameObject ForegroundSprite;
+    public GameObject BorderSprite;
 
     public Color HighColor;
     public Color LowColor;
+
     public float percent
     {
         get
@@ -32,19 +34,30 @@ public class ProgressBar : MonoBehaviour
     {
         Layout();
     }
+    void OnEnable()
+    {
+        Layout();
+    }
+    readonly Vector2 BORDER = new Vector2(1.04f, 1.32f);
     void Layout()
     {
         Center(BackgroundSprite);
         Center(ForegroundSprite);
+
+        if (BorderSprite != null)
+        {
+            BorderSprite.transform.localScale = BORDER;
+        }
+        Center(BorderSprite, 0.01f);
     }
-    static void Center(GameObject spriteGO)
+    static void Center(GameObject spriteGO, float offset = 0)
     {
         if (spriteGO != null)
         {
             var sprite = spriteGO.GetComponent<SpriteRenderer>();
             var bounds = sprite.sprite.bounds;
 
-            sprite.transform.localPosition = new Vector3((bounds.min.x - bounds.max.x) / 2, 0);
+            sprite.transform.localPosition = new Vector3((bounds.min.x - bounds.max.x) / 2 - offset/2, 0);
         }
     }
 }

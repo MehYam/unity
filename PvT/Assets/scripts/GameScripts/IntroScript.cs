@@ -95,7 +95,7 @@ public class IntroScript : MonoBehaviour
         GameObject.Destroy(school);
         GameObject.Destroy(mobParent);
 
-        StartCoroutine(Tutorial());
+        GlobalGameEvent.Instance.FireIntroOver(this);
     }
 
     void SetupMobTween(GameObject parent, string vehicle, Vector2 target, Vector2 start)
@@ -121,7 +121,6 @@ public class IntroScript : MonoBehaviour
         for (var i = 0; i < school.transform.childCount; ++i)
         {
             var child = school.transform.GetChild(i).GetComponent<SpriteRenderer>();
-            Debug.Log(child);
             if (child != null && child != mainHero)
             {
                 var tween = child.gameObject.AddComponent<TweenPosition>();
@@ -138,15 +137,6 @@ public class IntroScript : MonoBehaviour
                 }
             );
         }
-
-        yield break;
-    }
-
-    IEnumerator Tutorial()
-    {
-        Main.Instance.map.SetActive(true);
-
-        Main.Instance.hud.curtain.Fade(0, Consts.TEXT_FADE_SECONDS);
 
         yield break;
     }

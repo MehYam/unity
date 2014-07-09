@@ -48,6 +48,7 @@ class GlobalGameEvent
     public event Action<Actor, float> HealthChange = delegate { };
     public event Action<Actor> ActorDeath = delegate { };
 
+    public event Action<MonoBehaviour> IntroOver = delegate { };
     public event Action GameOver = delegate { };
 
     public void FireMapReady(TileMap map, XRect bounds) { MapReady(map, bounds); }
@@ -71,6 +72,8 @@ class GlobalGameEvent
     public void FireActorDeath(Actor actor) { ActorDeath(actor); }
 
     public void FireGameOver() { GameOver(); }
+
+    public void FireIntroOver(MonoBehaviour script) { IntroOver(script); }
 
     // UI-centric
     public event Action<string> CenterPrint = delegate { };
