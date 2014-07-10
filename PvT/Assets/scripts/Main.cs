@@ -93,6 +93,6 @@ public class Main : MonoBehaviour
         Debug.Log("Main.OnIntroOver");
         script.enabled = false;
 
-        GetComponent<LevelScript>().enabled = true;
+        GetComponent<TutorialScript>().enabled = true;
     }
 }

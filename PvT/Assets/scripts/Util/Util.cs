@@ -231,5 +231,11 @@ namespace PvT.Util
         {
             if (!condition) throw new System.Exception();
         }
+
+        [System.Diagnostics.Conditional("DEBUG")]
+        static public void Log(object from, string str)
+        {
+            Debug.Log(string.Format("=={0} frame {1}: {2}", from, Time.frameCount, str));
+        }
     }
 }

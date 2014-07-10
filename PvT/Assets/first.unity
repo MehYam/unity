@@ -87,6 +87,7 @@ GameObject:
   - 114: {fileID: 3432513}
   - 114: {fileID: 3432519}
   - 114: {fileID: 3432515}
+  - 114: {fileID: 3432520}
   - 114: {fileID: 3432517}
   m_Layer: 0
   m_Name: _gameState
@@ -176,7 +177,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 3432512}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 597ae4a43a018e741acec37b97132aa4, type: 3}
   m_Name: 
@@ -252,6 +253,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   intro: {fileID: 8300000, guid: 4f9d7c017c6e4ec4281cc232f5ee5812, type: 3}
   duskToDawn: {fileID: 8300000, guid: 017a4272c1fff914da1efb69cc0d80ba, type: 3}
+--- !u!114 &3432520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 3432512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdf5cf8887ffed240b21f01753b821d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &11695400
 GameObject:
   m_ObjectHideFlags: 0

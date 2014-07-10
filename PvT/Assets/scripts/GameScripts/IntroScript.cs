@@ -7,10 +7,10 @@ using PvT.Util;
 public class IntroScript : MonoBehaviour
 {
     public GameObject HeroSchool;
-
-	// Use this for initialization
 	void Start()
     {
+        DebugUtil.Log(this, "Start");
+
         StartCoroutine(IntroSequence());
 	}
 
