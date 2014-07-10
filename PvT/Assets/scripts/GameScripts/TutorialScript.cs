@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System;
 using System.Collections;
 
@@ -12,12 +12,20 @@ public sealed class TutorialScript : MonoBehaviour
     {
         DebugUtil.Log(this, "Start");
 
-        GlobalGameEvent.Instance.MainReady += OnMainReady;
-        GlobalGameEvent.Instance.GameReady += OnGameReady;
+        Debug.LogWarning("KAI: we need to check for script execution order dependencies like this one and figure them out.");
+
+        if (Main.Instance == null)
+        {
+            GlobalGameEvent.Instance.MainReady += OnMainReady;
+        }
+        else
+        {
+            OnMainReady();
+        }
     }
     void OnMainReady()
     {
-        Debug.LogWarning("KAI: we need to check for script execution order dependencies like this one and figure them out.");
+        GlobalGameEvent.Instance.GameReady += OnGameReady;
 
         Main.Instance.hud.curtain.Fade(1, 0);
         Main.Instance.map.SetActive(true);
@@ -41,17 +49,14 @@ public sealed class TutorialScript : MonoBehaviour
         playerActor.firingEnabled = false;
         playerActor.thrustEnabled = false;
         playerActor.immortal = true;
-
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
         AnimatedText.FadeIn(hud.centerPrintTop, "We were brought somewhere unfamiliar.", Consts.TEXT_FADE_SECONDS);
-
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
         AnimatedText.FadeIn(hud.centerPrintBottom, "(Use W, A, S, D or arrow keys to explore)", Consts.TEXT_FADE_SECONDS);
 
         playerActor.thrustEnabled = true;
-
         yield return StartCoroutine(Util.YieldUntil(() =>
         {
             // Wait until the player's travelled some distance
@@ -89,7 +94,7 @@ public sealed class TutorialScript : MonoBehaviour
         mobActor.thrustEnabled = true;
         playerActor.takenDamageMultiplier = 0.25f;
 
-        // Wait until the player's been hit
+        //////////////////// Wait until the player's been hit
         var startHealth = playerActor.health;
         yield return StartCoroutine(Util.YieldUntil(() => playerActor.health != startHealth));
 
@@ -101,14 +106,13 @@ public sealed class TutorialScript : MonoBehaviour
 
         AnimatedText.FadeOut(hud.centerPrintTop, Consts.TEXT_FADE_SECONDS);
         AnimatedText.FadeOut(hud.centerPrintBottom, Consts.TEXT_FADE_SECONDS);
-
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
         //////////////////// Teach possession mechanic
         AnimatedText.FadeIn(hud.centerPrintTop, "It would not stop.", Consts.TEXT_FADE_SECONDS);
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
-        AnimatedText.FadeIn(hud.centerPrintTop, "It left us no choice.", Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeIn(hud.centerPrintTop, "We had to reveal our secret.", Consts.TEXT_FADE_SECONDS);
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
         do
@@ -125,5 +129,26 @@ public sealed class TutorialScript : MonoBehaviour
             yield return StartCoroutine(Util.YieldUntil(() => game.subduedByHerolings == null || game.playerPossessesEnemy));
         }
         while (!game.playerPossessesEnemy);
+
+        AnimatedText.FadeOut(hud.centerPrintTop, Consts.TEXT_FADE_SECONDS_FAST);
+        AnimatedText.FadeOut(hud.centerPrintBottom, Consts.TEXT_FADE_SECONDS_FAST);
+        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_FAST);
+
+        AnimatedText.FadeIn(hud.centerPrintTop, "We were saved for the moment.", Consts.TEXT_FADE_SECONDS);
+        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
+
+        AnimatedText.FadeIn(hud.centerPrintBottom, "But more approached.", Consts.TEXT_FADE_SECONDS);
+        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
+
+        AnimatedText.FadeOut(hud.centerPrintTop, Consts.TEXT_FADE_SECONDS_FAST);
+        AnimatedText.FadeOut(hud.centerPrintBottom, Consts.TEXT_FADE_SECONDS_FAST);
+        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_FAST);
+
+        AnimatedText.FadeIn(hud.centerPrintTop, "LEFT OFF HERE", Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeIn(hud.centerPrintBottom, "Need to describe heroling resources, maybe", Consts.TEXT_FADE_SECONDS);
+
+        //////////////////// Fight another mob
+
+
     }
 }
