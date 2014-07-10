@@ -4,6 +4,8 @@ using UnityEditor;
 using UnityEngine;
 using System.Collections;
 
+using PvT.Util;
+
 public class Main : MonoBehaviour
 {
     public PhysicsMaterial2D Bounce;
@@ -58,6 +60,8 @@ public class Main : MonoBehaviour
     // Use this for initialization
 	void Start()
     {
+        DebugUtil.Log(this, "Start");
+
         _instance = this;
 
         game = new GameController(CreateLoader());
@@ -65,6 +69,8 @@ public class Main : MonoBehaviour
         GlobalGameEvent.Instance.IntroOver += OnIntroOver;
 
         Physics2D.gravity = Vector2.zero;
+
+        GlobalGameEvent.Instance.FireMainReady();
 	}
     Loader CreateLoader()
     {

@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System;
 using System.Collections;
 
@@ -11,12 +11,17 @@ public sealed class TutorialScript : MonoBehaviour
     void Start()
     {
         DebugUtil.Log(this, "Start");
-        Main.Instance.hud.curtain.Fade(1, 0);
 
+        GlobalGameEvent.Instance.MainReady += OnMainReady;
+        GlobalGameEvent.Instance.GameReady += OnGameReady;
+    }
+    void OnMainReady()
+    {
+        Debug.LogWarning("KAI: we need to check for script execution order dependencies like this one and figure them out.");
+
+        Main.Instance.hud.curtain.Fade(1, 0);
         Main.Instance.map.SetActive(true);
         Main.Instance.hud.curtain.Fade(0, Consts.TEXT_FADE_SECONDS);
-
-        GlobalGameEvent.Instance.GameReady += OnGameReady;
     }
     void OnGameReady(IGame game)
     {
@@ -29,6 +34,7 @@ public sealed class TutorialScript : MonoBehaviour
         var hud = main.hud;
         var game = main.game;
 
+        /////////////////// Teach movement
         main.PlayMusic(main.music.duskToDawn);
 
         var playerActor = game.SpawnPlayer(Vector3.zero).GetComponent<Actor>();
@@ -57,6 +63,7 @@ public sealed class TutorialScript : MonoBehaviour
         AnimatedText.FadeOut(hud.centerPrintBottom, Consts.TEXT_FADE_SECONDS_FAST);
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_FAST);
 
+        /////////////////// Introduce mob
         AnimatedText.FadeIn(hud.centerPrintTop, "Suddenly, another appeared.", Consts.TEXT_FADE_SECONDS);
 
         var mobActor = game.SpawnMob("GREENK").GetComponent<Actor>();
@@ -82,13 +89,9 @@ public sealed class TutorialScript : MonoBehaviour
         mobActor.thrustEnabled = true;
         playerActor.takenDamageMultiplier = 0.25f;
 
+        // Wait until the player's been hit
         var startHealth = playerActor.health;
-        yield return StartCoroutine(Util.YieldUntil(() =>
-        {
-            // Wait until the player's been hit
-            return playerActor.health != startHealth;
-        }
-        ));
+        yield return StartCoroutine(Util.YieldUntil(() => playerActor.health != startHealth));
 
         AnimatedText.FadeIn(hud.centerPrintTop, "This other was not friendly.", Consts.TEXT_FADE_SECONDS);
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_FAST);
@@ -101,24 +104,18 @@ public sealed class TutorialScript : MonoBehaviour
 
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
+        //////////////////// Teach possession mechanic
         AnimatedText.FadeIn(hud.centerPrintTop, "It would not stop.", Consts.TEXT_FADE_SECONDS);
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
         AnimatedText.FadeIn(hud.centerPrintTop, "It left us no choice.", Consts.TEXT_FADE_SECONDS);
-        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_SLOW);
+        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
-        AnimatedText.FadeIn(hud.centerPrintBottom, "(Aim with the mouse, left button to fire)", Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeIn(hud.centerPrintBottom, "(Aim with the mouse, left button to act)", Consts.TEXT_FADE_SECONDS);
 
         playerActor.firingEnabled = true;
 
-        //KAI: left off here, need to trap the possession event, and detect it
-        bool possession = false;
-        Action possessionStarted = () => { DebugUtil.Log(this, "HERE"); possession = true; };
-        GlobalGameEvent.Instance.PossessionStart += possessionStarted;
-
-        yield return StartCoroutine(Util.YieldUntil(() => possession));
-
-        GlobalGameEvent.Instance.PossessionStart -= possessionStarted;
+        yield return StartCoroutine(Util.YieldUntil(() => game.currentlyPossessed != null));
 
         AnimatedText.FadeIn(hud.centerPrintBottom, "YOU GONE DONE IT NOW", Consts.TEXT_FADE_SECONDS);
     }

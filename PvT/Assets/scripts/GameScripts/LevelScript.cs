@@ -9,12 +9,15 @@ public class LevelScript : MonoBehaviour
     {
         DebugUtil.Log(this, "Start");
         Main.Instance.hud.curtain.Fade(1, 0);
+        Main.Instance.map.SetActive(true);
+        Main.Instance.hud.curtain.Fade(0, Consts.TEXT_FADE_SECONDS_FAST);
 
         GlobalGameEvent.Instance.EnemyDestroyed += OnEnemyDestroyed;
         GlobalGameEvent.Instance.GameReady += OnGameReady;
     }
     void OnGameReady(IGame game)
     {
+        Main.Instance.game.SpawnPlayer(Vector3.zero);
         StartNextLevel();
     }
 
