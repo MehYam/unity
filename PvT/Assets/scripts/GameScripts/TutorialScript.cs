@@ -96,7 +96,7 @@ public sealed class TutorialScript : MonoBehaviour
         AnimatedText.FadeIn(hud.centerPrintTop, "This other was not friendly.", Consts.TEXT_FADE_SECONDS);
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_FAST);
 
-        AnimatedText.FadeIn(hud.centerPrintBottom, "(Run!)", Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeIn(hud.centerPrintBottom, "(RUN!)", Consts.TEXT_FADE_SECONDS);
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_FAST);
 
         AnimatedText.FadeOut(hud.centerPrintTop, Consts.TEXT_FADE_SECONDS);
@@ -111,12 +111,19 @@ public sealed class TutorialScript : MonoBehaviour
         AnimatedText.FadeIn(hud.centerPrintTop, "It left us no choice.", Consts.TEXT_FADE_SECONDS);
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
-        AnimatedText.FadeIn(hud.centerPrintBottom, "(Aim with the mouse, left button to act)", Consts.TEXT_FADE_SECONDS);
+        do
+        {
+            AnimatedText.FadeIn(hud.centerPrintBottom, "(Aim with the mouse, left button to act)", Consts.TEXT_FADE_SECONDS);
+            playerActor.firingEnabled = true;
 
-        playerActor.firingEnabled = true;
+            // wait until the other ship is subdued
+            yield return StartCoroutine(Util.YieldUntil(() => game.subduedByHerolings != null));
 
-        yield return StartCoroutine(Util.YieldUntil(() => game.currentlyPossessed != null));
+            AnimatedText.FadeIn(hud.centerPrintBottom, "(QUICKLY! Collide with the other!)", Consts.TEXT_FADE_SECONDS);
 
-        AnimatedText.FadeIn(hud.centerPrintBottom, "YOU GONE DONE IT NOW", Consts.TEXT_FADE_SECONDS);
+            // wait until the player has either passed or failed the task of possessing the ship
+            yield return StartCoroutine(Util.YieldUntil(() => game.subduedByHerolings == null || game.playerPossessesEnemy));
+        }
+        while (!game.playerPossessesEnemy);
     }
 }

@@ -10,9 +10,16 @@ using PvT.Util;
 public sealed class GameController : IGame
 {
     public GameObject player { get; private set; }
+    public GameObject subduedByHerolings { get; private set; }
+    public bool playerPossessesEnemy
+    {
+        get
+        {
+            return player.GetComponent<Actor>().worldObject.name != "HERO";  //KAI: type cheese
+        }
+    }
     public Loader loader { get; private set; }
     public Effects effects { get; private set; }
-    public GameObject currentlyPossessed { get; private set; }
 
     public GameController(Loader loader)
     {
@@ -175,15 +182,15 @@ public sealed class GameController : IGame
     void OnHerolingAttached(Actor host)
     {
         var herolings = host.GetComponentsInChildren<HerolingActor>();
-        if (herolings.Length >= Consts.POSSESSION_THRESHHOLD)
+        if (herolings.Length >= Consts.HEROLINGS_REQUIRED_FOR_POSSESSION)
         {
             if (!(host.behavior is BypassedBehavior)) //KAI: wrong, there may be bypassed behaviors not having to do with possession
             {
                 // act possessed
                 DebugUtil.Assert(!(host.behavior is BypassedBehavior));
-                new BypassedBehavior(host, ActorBehaviorFactory.Instance.CreatePossessedBehavior());
+                new BypassedBehavior(host, ActorBehaviorFactory.Instance.CreateSubduedByHerolingsBehavior());
 
-                currentlyPossessed = host.gameObject;
+                subduedByHerolings = host.gameObject;
 
                 AudioSource.PlayClipAtPoint(Main.Instance.sounds.HerolingCapture, host.transform.position);
             }
@@ -199,7 +206,7 @@ public sealed class GameController : IGame
             {
                 bypass.Restore();
 
-                currentlyPossessed = null;
+                subduedByHerolings = null;
             }
         }
     }

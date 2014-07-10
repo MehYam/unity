@@ -264,9 +264,9 @@ public sealed class ActorBehaviorFactory
     {
         return new HeroAnimator(hero);
     }
-    public IActorBehavior CreatePossessedBehavior()
+    public IActorBehavior CreateSubduedByHerolingsBehavior()
     {
-        return new PossessedBehavior();
+        return new SubduedByHerolingsBehavior();
     }
 }
 
@@ -637,12 +637,12 @@ sealed class Drift : IActorBehavior
     }
 }
 
-sealed class PossessedBehavior : IActorBehavior
+sealed class SubduedByHerolingsBehavior : IActorBehavior
 {
     RateLimiter spinRate = new RateLimiter(1, 0.5f);
     float spinSpeed = 0;
 
-    public PossessedBehavior()
+    public SubduedByHerolingsBehavior()
     {
         NewSpin();
     }

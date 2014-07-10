@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public interface IGame
@@ -6,7 +6,8 @@ public interface IGame
     XRect WorldBounds { get; }
 
     GameObject player { get; }
-    GameObject currentlyPossessed { get; }
+    GameObject subduedByHerolings { get; }
+    bool playerPossessesEnemy { get; }
 
     Loader loader { get; }
     Effects effects { get; }

@@ -47,7 +47,7 @@ public static class Consts
     static public readonly int HEROLING_LIMIT = 3;
     static public readonly float HERO_REGEN = 1;
 
-    static public readonly int POSSESSION_THRESHHOLD = 2;
+    static public readonly int   HEROLINGS_REQUIRED_FOR_POSSESSION = 2;
     static public readonly float DEPOSSESSION_DURATION = 2;
     static public readonly float DEPOSSESSION_ROTATIONS_PER_SEC = 5;
 
