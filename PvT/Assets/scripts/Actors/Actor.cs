@@ -37,15 +37,11 @@ public class Actor : MonoBehaviour
         get { return _worldObject; }
         set
         {
-            health = (float.IsNaN(value.health) || value.health == 0) ? 1 : value.health;
-   
             _worldObject = value;
+            health = (float.IsNaN(value.health) || value.health == 0) ? 1 : value.health;
         }
     }
 
-    /// <summary>
-    /// armor = 0 to 1, the percentage reduction in damage
-    /// </summary>
     public float expireTime { get; private set; }
 
     static public readonly float EXPIRY_INFINITE = 0;
@@ -68,11 +64,6 @@ public class Actor : MonoBehaviour
         {
             var prevHealth = health;
             _health = immortal ? Mathf.Max(1, value) : value;
-
-            if (_healthBar != null && _healthBar.gameObject.activeSelf)
-            {
-                _healthBar.percent = health / worldObject.health;
-            }
 
             GlobalGameEvent.Instance.FireHealthChange(this, prevHealth - _health);
         }
@@ -109,36 +100,15 @@ public class Actor : MonoBehaviour
         _modifier = modifier;
     }
 
-    float _lastHealthChangeTime = 0;
     ProgressBar _healthBar;
     public void TakeDamage(float damage)
     {
         var effectiveDamage = takenDamageMultiplier * damage;
+        //Debug.Log(string.Format("{0} takes damage {1} effective {2}", name, damage, effectiveDamage));
+        
         if (effectiveDamage > 0)
         {
             this.health -= effectiveDamage;
-
-            if (showsHealthBar && this.health > 0)
-            {
-                if (_healthBar == null)
-                {
-                    var bar = (GameObject)GameObject.Instantiate(Main.Instance.ProgressBar);
-                    _healthBar = bar.GetComponent<ProgressBar>();
-
-                    //STRANGE UNITY BUG?
-                    // parenting objects on our Actors seems to skew or stretch them a bit.  You can see this
-                    // in the editor by manually dragging child objects on and off the Actor - putting them on
-                    // the Actor seems to generate a strange skew that I can't account for in the transforms.
-                    // For now, health bars will be parented elsewhere
-#if SHOW_STRANGE_PARENTING_BUG
-                    bar.transform   .parent = transform;
-#else
-                    bar.transform.parent = Main.Instance.EffectParent.transform;
-#endif
-                }
-                _healthBar.gameObject.SetActive(true);
-            }
-            _lastHealthChangeTime = Time.time;
 
             if (gameObject == Main.Instance.game.player)
             {
@@ -146,6 +116,7 @@ public class Actor : MonoBehaviour
             }
         }
     }
+
     public void GrantInvuln(float duration)
     {
         visualBehavior = new PostDamageInvuln(this, duration);
@@ -177,16 +148,32 @@ public class Actor : MonoBehaviour
             visualBehavior.Update(this);
         }
 
-        if (_healthBar != null && _healthBar.gameObject.activeSelf)
+        var showHealth = showsHealthBar && _health > 0 && _health < worldObject.health;
+        if (showHealth)
         {
-            if ((Time.time - _lastHealthChangeTime) > Consts.HEALTH_BAR_TIMEOUT)
+            if (_healthBar == null)
             {
-                _healthBar.gameObject.SetActive(false);
+                var bar = (GameObject)GameObject.Instantiate(Main.Instance.ProgressBar);
+                _healthBar = bar.GetComponent<ProgressBar>();
+
+                //STRANGE UNITY BUG?
+                // parenting objects on our Actors seems to skew or stretch them a bit.  You can see this
+                // in the editor by manually dragging child objects on and off the Actor - putting them on
+                // the Actor seems to generate a strange skew that I can't account for in the transforms.
+                // For now, health bars will be parented elsewhere
+#if SHOW_STRANGE_PARENTING_BUG
+                    bar.transform   .parent = transform;
+#else
+                bar.transform.parent = Main.Instance.EffectParent.transform;
+#endif
             }
-            else
-            {
-                _healthBar.transform.position = transform.position + new Vector3(0, 0.5f);
-            }
+            _healthBar.gameObject.SetActive(true);
+            _healthBar.percent = health / worldObject.health;
+            _healthBar.transform.position = transform.position + new Vector3(0, 0.5f);
+        }
+        else if (_healthBar != null)
+        {
+            _healthBar.gameObject.SetActive(false);
         }
     }
     void LateUpdate()

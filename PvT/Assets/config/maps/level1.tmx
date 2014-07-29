@@ -5,13 +5,30 @@
  </properties>
  <tileset firstgid="1" name="tiled" tilewidth="40" tileheight="40">
   <image source="../../images/tiles/tiled.png" width="160" height="160"/>
+  <terraintypes>
+   <terrain name="default" tile="0"/>
+   <terrain name="New Terrain" tile="-1"/>
+  </terraintypes>
+  <tile id="0" terrain=",,,0"/>
+  <tile id="1" terrain=",,0,0"/>
+  <tile id="2" terrain=",,0,"/>
+  <tile id="4" terrain=",0,,0"/>
+  <tile id="5" terrain="0,0,0,0"/>
+  <tile id="6" terrain="0,,0,"/>
+  <tile id="7" terrain=",0,0,0"/>
+  <tile id="8" terrain="0,,0,0"/>
+  <tile id="9" terrain=",0,,"/>
+  <tile id="10" terrain="0,0,,"/>
+  <tile id="11" terrain="0,,,"/>
+  <tile id="12" terrain="0,0,,0"/>
+  <tile id="13" terrain="0,0,0,"/>
  </tileset>
  <layer name="ground" width="100" height="100">
   <properties>
    <property name="unity:sortingLayerName" value="ground"/>
   </properties>
   <data encoding="base64" compression="zlib">
-   eJzt2tluwjAQQFF3p+v/fy5BoWpQyeJ4DJZ8jjQvIFrhK5yQ8JNS+mx4vlNf3oZ5bnhe6r31Jk17PAzzlO639npc9vgY5iutr1FJt7nXzj3ec4+ts7VbzmvnHtdj/9TY7/TYv8Ylnxs9Rms9aqyxHvNqnu9G7F+991hbw1vvX733WFvDW+9fvfdobfSoO0v73bXn9Kg7S/vdtef0aOs6lh75x+ya/fTIX/+a51x65B8D9IgTfT3x8TxR+5ce+48Hp7V7PU9UZz327z8lPdyPGkXuVyU93I8aRfY4renv70Kiju965O8pEfuSHqOcHhHntbl/Q4+2Ro96M/1+svV7ih5l6710Lf2Q/s6/tp6H6bF/lo4N03NhPebl3j8vaTX9jbQe1+XeP49us/a/eu8RdbyIGj1ijhdRzfSI35ty979pQz3uP9OGerQ1Pfdo6XclesSd60Z27blH1ER+h9Gjremtx3v6f821pTnUe+sAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABeO404dQg==
+   eJzt2tluwjAQBVCXbrSl/f/PLShCDSGbkzG15HOkeSAIEL7K2Inzk1L6qri+U1vez/VScb2W++tV6ufxdK7nwevD4Jg8yurn8XmuU7odi7d0fw4Nc8upqc9OHW85j2Fd8rn08NPI8eGxtTX12anj8thee84b/aqzlEfOGO85b+TRWcqjxBjLY1rJ9W5E/2o9j6UxfHT/aj2PpTF8dP9qPY/aSh5la67fjb0nj7I11+/G3pNHmes6/WqdsTxy5+yS+ckjf/xLrrnkkT8HyCNO9P3EQ4rdM5HH9vngul8ytmcij3Ui5vOIPOxHdSL71Z487Ed1IvO47ieO7SnqV+vk5BFxnZH7HfLI7ykRfUkeHfd36/LIPPrXJ2uvU+Sxb7zn7qUf09/6a+06TB7ba25u6K+F5TEt8tnDpaz6z0jLY1zu/nl0Nku/1XoeUfNFVMkjZr6Iykwe8b0pt//1M5TH/1c/Q3nUVS3nUdNzJfKIW+tG5tpyHlEVeQ0jj7qqtTw+0v0915rqWO6vAwAAAAAAAAAAAAAAAAAAAAAAAAAAAADc+AUl+R1X
   </data>
  </layer>
 </map>
