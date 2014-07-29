@@ -8,6 +8,7 @@ using PvT.Util;
 
 public sealed class TutorialScript : MonoBehaviour
 {
+    public GameObject map;
     void Start()
     {
         DebugUtil.Log(this, "Start");
@@ -26,13 +27,13 @@ public sealed class TutorialScript : MonoBehaviour
     void OnMainReady()
     {
         GlobalGameEvent.Instance.GameReady += OnGameReady;
-
-        Main.Instance.hud.curtain.Fade(1, 0);
-        Main.Instance.map.SetActive(true);
-        Main.Instance.hud.curtain.Fade(0, Consts.TEXT_FADE_SECONDS);
+        Main.Instance.game.SetMap(map);
     }
     void OnGameReady(IGame game)
     {
+        Main.Instance.hud.curtain.Fade(1, 0);
+        Main.Instance.hud.curtain.Fade(0, Consts.TEXT_FADE_SECONDS);
+
         StartCoroutine(TutorialSequence());
     }
     IEnumerator TutorialSequence()

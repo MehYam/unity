@@ -5,6 +5,8 @@ public interface IGame
 {
     XRect WorldBounds { get; }
 
+    void SetMap(GameObject mapPrefab);
+
     GameObject player { get; }
     GameObject subduedByHerolings { get; }
     bool playerPossessesEnemy { get; }

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="40" tileheight="40">
+ <properties>
+  <property name="unity:scale" value="0.02"/>
+ </properties>
+ <tileset firstgid="1" name="tiled" tilewidth="40" tileheight="40">
+  <image source="../../images/tiles/tiled.png" width="160" height="160"/>
+ </tileset>
+ <layer name="ground" width="100" height="100">
+  <properties>
+   <property name="unity:sortingLayerName" value="ground"/>
+  </properties>
+  <data encoding="base64" compression="zlib">
+   eJzt2tluwjAQQFF3p+v/fy5BoWpQyeJ4DJZ8jjQvIFrhK5yQ8JNS+mx4vlNf3oZ5bnhe6r31Jk17PAzzlO639npc9vgY5iutr1FJt7nXzj3ec4+ts7VbzmvnHtdj/9TY7/TYv8Ylnxs9Rms9aqyxHvNqnu9G7F+991hbw1vvX733WFvDW+9fvfdobfSoO0v73bXn9Kg7S/vdtef0aOs6lh75x+ya/fTIX/+a51x65B8D9IgTfT3x8TxR+5ce+48Hp7V7PU9UZz327z8lPdyPGkXuVyU93I8aRfY4renv70Kiju965O8pEfuSHqOcHhHntbl/Q4+2Ro96M/1+svV7ih5l6710Lf2Q/s6/tp6H6bF/lo4N03NhPebl3j8vaTX9jbQe1+XeP49us/a/eu8RdbyIGj1ijhdRzfSI35ty979pQz3uP9OGerQ1Pfdo6XclesSd60Z27blH1ER+h9Gjremtx3v6f821pTnUe+sAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABeO404dQg==
+  </data>
+ </layer>
+</map>

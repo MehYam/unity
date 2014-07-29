@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using PvT.Util;
 
-// [ExecuteInEditMode] there are some issues with this, see comment in Start()
+[System.Obsolete("We're using Tiled and Tiled2Unity for more better happy", true)]
 public class TileMap : MonoBehaviour
 {
     public TextAsset Level;
@@ -104,6 +104,6 @@ public class TileMap : MonoBehaviour
         Border.transform.FindChild("left").localPosition = new Vector2(bounds.left, 0);
         Border.transform.FindChild("right").localPosition = new Vector2(bounds.right, 0);
 
-        GlobalGameEvent.Instance.FireMapReady(this, bounds);
+        GlobalGameEvent.Instance.FireMapReady(bounds);
     }
 }

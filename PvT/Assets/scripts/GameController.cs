@@ -28,11 +28,26 @@ public sealed class GameController : IGame
         this.loader = loader;
         this.effects = new Effects(loader);
 
-        GlobalGameEvent.Instance.MapReady += OnMapReady;
-        GlobalGameEvent.Instance.HerolingAttached += OnHerolingAttached;
-        GlobalGameEvent.Instance.HerolingDetached += OnHerolingDetached;
-        GlobalGameEvent.Instance.PossessionFirstContact += OnPossessionContact;
-        GlobalGameEvent.Instance.ActorDeath += OnActorDeath;
+        var gge = GlobalGameEvent.Instance;
+        gge.HerolingAttached += OnHerolingAttached;
+        gge.HerolingDetached += OnHerolingDetached;
+        gge.PossessionFirstContact += OnPossessionContact;
+        gge.ActorDeath += OnActorDeath;
+        gge.MapReady += OnMapReady;
+    }
+
+    void OnMapReady(XRect bounds)
+    {
+        WorldBounds = bounds;
+
+        var border = GameObject.Find("/border");
+
+        border.transform.FindChild("bottom").localPosition = new Vector2(0, bounds.bottom);
+        border.transform.FindChild("top").localPosition = new Vector2(0, bounds.top);
+        border.transform.FindChild("left").localPosition = new Vector2(bounds.left, 0);
+        border.transform.FindChild("right").localPosition = new Vector2(bounds.right, 0);
+
+        GlobalGameEvent.Instance.FireGameReady(this);
     }
 
     //KAI: some nice way to mark this as dev only?
@@ -48,13 +63,21 @@ public sealed class GameController : IGame
         SpawnPlayer(pos);
     }
 
-    public XRect WorldBounds { get; private set; }
-    void OnMapReady(TileMap map, XRect bounds)
+    GameObject _map;
+    public void SetMap(GameObject mapPrefab)
     {
-        GlobalGameEvent.Instance.MapReady -= OnMapReady;
-        WorldBounds = bounds;
+        if (_map != null)
+        {
+            GameObject.Destroy(_map);
+        }
+        _map = (GameObject)GameObject.Instantiate(mapPrefab);
+        _map.AddComponent<Map>();
+    }
 
-        GlobalGameEvent.Instance.FireGameReady(this);
+    public XRect WorldBounds 
+    { 
+        get; 
+        private set; 
     }
 
     public GameObject SpawnPlayer(Vector3 location)

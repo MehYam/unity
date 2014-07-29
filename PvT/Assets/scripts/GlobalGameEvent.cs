@@ -31,7 +31,7 @@ class GlobalGameEvent
     }
 
     public event Action MainReady = delegate { };
-    public event Action<TileMap, XRect> MapReady = delegate { };
+    public event Action<XRect> MapReady = delegate { };
     public event Action<IGame> GameReady = delegate { };
     public event Action<GameObject> PlayerSpawned = delegate { };
     public event Action HerolingLaunched = delegate { };
@@ -53,7 +53,7 @@ class GlobalGameEvent
     public event Action GameOver = delegate { };
 
     public void FireMainReady() { MainReady(); }
-    public void FireMapReady(TileMap map, XRect bounds) { MapReady(map, bounds); }
+    public void FireMapReady(XRect bounds) { MapReady(bounds); }
     public void FireGameReady(IGame game) { GameReady(game); }
 
     public void FirePlayerSpawned(GameObject player) { PlayerSpawned(player); }

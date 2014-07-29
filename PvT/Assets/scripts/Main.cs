@@ -1,6 +1,5 @@
 //#define AUTO_SELECT_EDITOR_GAMESTATE
 
-using UnityEditor;
 using UnityEngine;
 using System.Collections;
 
@@ -28,8 +27,6 @@ public class Main : MonoBehaviour
     public MainSounds sounds;
     public MainMusic music;
     public HUD hud;
-
-    public GameObject map;
 
     /// <summary>
     /// ///////////////////////// debug/dev items
@@ -88,7 +85,7 @@ public class Main : MonoBehaviour
         GlobalGameEvent.ReleaseAll();
     }
 
-    void OnMapReady(TileMap map, XRect bounds)
+    void OnMapReady(XRect bounds)
     {
 #if AUTO_SELECT_GAMESTATE_EDITOR
         Selection.objects = new Object[] { GameObject.Find("_gameState") };

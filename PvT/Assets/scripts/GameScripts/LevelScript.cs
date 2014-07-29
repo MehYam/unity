@@ -5,18 +5,21 @@ using PvT.Util;
 
 public class LevelScript : MonoBehaviour
 {
+    public GameObject map;
     void Start()
     {
         DebugUtil.Log(this, "Start");
         Main.Instance.hud.curtain.Fade(1, 0);
-        Main.Instance.map.SetActive(true);
         Main.Instance.hud.curtain.Fade(0, Consts.TEXT_FADE_SECONDS_FAST);
 
         GlobalGameEvent.Instance.EnemyDestroyed += OnEnemyDestroyed;
         GlobalGameEvent.Instance.GameReady += OnGameReady;
+
+        Main.Instance.game.SetMap(map);
     }
     void OnGameReady(IGame game)
     {
+        Debug.Log("LevelScript.OnGameReady");
         Main.Instance.game.SpawnPlayer(Vector3.zero);
         StartNextLevel();
     }
