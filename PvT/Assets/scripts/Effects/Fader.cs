@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 using PvT.Util;
@@ -8,10 +9,10 @@ public class Fader : MonoBehaviour  // this is almost the same class as Tween
     IFadeSetter _setter;
     void Awake()
     {
-        var animatedText = GetComponent<AnimatedText>();
-        if (animatedText != null)
+        var unityText = GetComponent<Text>();
+        if (unityText != null)
         {
-            _setter = new AnimatedTextFadeSetter(animatedText);
+            _setter = new UnityTextFadeSetter(unityText);
         }
         else
         {
@@ -55,14 +56,14 @@ public class Fader : MonoBehaviour  // this is almost the same class as Tween
             set { Util.SetAlpha(target, value); }
         }
     }
-    sealed class AnimatedTextFadeSetter : IFadeSetter
+    sealed class UnityTextFadeSetter : IFadeSetter
     {
-        readonly AnimatedText text;
-        public AnimatedTextFadeSetter(AnimatedText target) { this.text = target; }
+        readonly Text text;
+        public UnityTextFadeSetter(Text target) { this.text = target; }
         public float alpha
         {
-            get { return text.alpha; }
-            set { text.alpha = value; }
+            get { return text.color.a; }
+            set { Util.SetAlpha(text, value); }
         }
     }
 

@@ -1,70 +1,22 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 using PvT.Util;
 
-public class AnimatedText : MonoBehaviour
+public static class AnimatedText
 {
-    public TextMesh Text;
-    public TextMesh DropShadow;
-    public string SortingLayerName = "UI";
-
-    public bool dropShadow { get; set; }
-    public string text
+    static public void FadeIn(Text textField, string text, float seconds)
     {
-        get
-        {
-            return Text.text;
-        }
-        set
-        {
-            Text.text = value;
-            if (DropShadow != null)
-            {
-                DropShadow.text = text;
-            }
-        }
-    }
-    public float alpha
-    {
-        get
-        {
-            return Text.color.a;
-        }
-        set
-        {
-            Util.SetAlpha(Text, value);
-            if (DropShadow != null)
-            {
-                Util.SetAlpha(DropShadow, value);
-            }
-        }
-    }
-    void Start()
-    {
-        renderer.sortingLayerName = SortingLayerName;
-        if (DropShadow != null)
-        {
-            DropShadow.renderer.sortingLayerName = SortingLayerName;
-            DropShadow.renderer.sortingOrder = renderer.sortingOrder - 1;
-        }
-        if (text.Length > 0)
-        {
-            text = text;
-        }
-    }
-
-    static public void FadeIn(AnimatedText textField, string text, float seconds)
-    {
-        var fader = textField.GetComponent<Fader>();
+        var fader = textField.gameObject.AddComponent<Fader>();
         textField.text = text;
 
         fader.Fade(1, seconds);
     }
 
-    static public void FadeOut(AnimatedText textField, float seconds)
+    static public void FadeOut(Text textField, float seconds)
     {
-        var fader = textField.GetComponent<Fader>();
+        var fader = textField.gameObject.AddComponent<Fader>();
         fader.Fade(0, seconds);
     }
 }

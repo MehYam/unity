@@ -1,6 +1,7 @@
 #define DEBUG
 
 using UnityEngine;
+using UnityEngine.UI;
 using System;
 using System.Collections;
 
@@ -192,6 +193,12 @@ namespace PvT.Util
             sprite.color = color;
         }
         static public void SetAlpha(TextMesh text, float alpha)
+        {
+            var color = text.color;
+            color.a = alpha;
+            text.color = color;
+        }
+        static public void SetAlpha(Text text, float alpha)
         {
             var color = text.color;
             color.a = alpha;

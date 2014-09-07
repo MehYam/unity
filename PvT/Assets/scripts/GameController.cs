@@ -400,6 +400,7 @@ public sealed class GameController : IGame
         var behaviors = new CompositeBehavior();
         behaviors.Add(new PlayerInput(bf.faceForward));
 
+        Debug.Log(vehicle);
         if (vehicle.weapons[0].type == "SHIELD") //KAI: cheese
         {
             behaviors.Add(bf.CreateShield());

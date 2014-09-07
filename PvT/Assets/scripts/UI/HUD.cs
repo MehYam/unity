@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 using PvT.Util;
@@ -6,14 +7,14 @@ using PvT.Util;
 public sealed class HUD : MonoBehaviour
 {
     public GameObject topLeftPanel;
-    public AnimatedText label1;
-    public AnimatedText centerPrintTop;
-    public AnimatedText centerPrintMiddle;
-    public AnimatedText centerPrintBottom;
     public ProgressBar health;
 
     public Fader curtain;
     public Fader space;
+
+    public Text centerPrintTop;
+    public Text centerPrintMiddle;
+    public Text centerPrintBottom;
 
     public void EnableTopLeft(bool enabled = true)
     {
@@ -39,8 +40,6 @@ public sealed class HUD : MonoBehaviour
 
     void OnPlayerSpawned(GameObject player)
     {
-        label1.text = "Launch " + player.name;
-
         UpdateHealth();
     }
     void OnHerolingChange()
@@ -82,6 +81,6 @@ public sealed class HUD : MonoBehaviour
     }
     void UpdateHerolings()
     {
-        label1.text = "Herolings " + HerolingActor.ActiveHerolings;
+        //label1.text = "Herolings " + HerolingActor.ActiveHerolings;
     }
 }
