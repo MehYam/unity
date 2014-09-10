@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="40" tileheight="40">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="40" tileheight="40">
  <properties>
   <property name="unity:scale" value="0.02"/>
  </properties>
@@ -23,12 +23,12 @@
   <tile id="12" terrain="0,0,,0"/>
   <tile id="13" terrain="0,0,0,"/>
  </tileset>
- <layer name="ground" width="100" height="100">
+ <layer name="ground" width="50" height="50">
   <properties>
    <property name="unity:sortingLayerName" value="ground"/>
   </properties>
   <data encoding="base64" compression="zlib">
-   eJzt2tluwjAQBVCXbrSl/f/PLShCDSGbkzG15HOkeSAIEL7K2Inzk1L6qri+U1vez/VScb2W++tV6ufxdK7nwevD4Jg8yurn8XmuU7odi7d0fw4Nc8upqc9OHW85j2Fd8rn08NPI8eGxtTX12anj8thee84b/aqzlEfOGO85b+TRWcqjxBjLY1rJ9W5E/2o9j6UxfHT/aj2PpTF8dP9qPY/aSh5la67fjb0nj7I11+/G3pNHmes6/WqdsTxy5+yS+ckjf/xLrrnkkT8HyCNO9P3EQ4rdM5HH9vngul8ytmcij3Ui5vOIPOxHdSL71Z487Ed1IvO47ieO7SnqV+vk5BFxnZH7HfLI7ykRfUkeHfd36/LIPPrXJ2uvU+Sxb7zn7qUf09/6a+06TB7ba25u6K+F5TEt8tnDpaz6z0jLY1zu/nl0Nku/1XoeUfNFVMkjZr6Iykwe8b0pt//1M5TH/1c/Q3nUVS3nUdNzJfKIW+tG5tpyHlEVeQ0jj7qqtTw+0v0915rqWO6vAwAAAAAAAAAAAAAAAAAAAAAAAAAAAADc+AUl+R1X
+   eJztw8EJAAAMA6F7ZP+ZO0dBwVVTVVVVVVVVVVXV5w+SZScR
   </data>
  </layer>
 </map>

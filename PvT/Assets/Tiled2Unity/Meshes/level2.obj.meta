@@ -1,0 +1,145 @@
+fileFormatVersion: 2
+guid: 687d09d1b712a1a4890e2cf29d152fd2
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: floor_00+floor
+    100002: //RootNode
+    100004: walls_01+diag1
+    100006: walls_01+diag2
+    100008: walls_01+diag3
+    100010: walls_01+diag4
+    100012: walls_01+edge1
+    100014: walls_01+edge2
+    100016: walls_01+edge3
+    100018: walls_01+edge4
+    100020: walls_01+solid
+    100022: walls_01+round2
+    100024: walls_01+round3
+    100026: walls_01+round1
+    100028: walls_01+round4
+    400000: floor_00+floor
+    400002: //RootNode
+    400004: walls_01+diag1
+    400006: walls_01+diag2
+    400008: walls_01+diag3
+    400010: walls_01+diag4
+    400012: walls_01+edge1
+    400014: walls_01+edge2
+    400016: walls_01+edge3
+    400018: walls_01+edge4
+    400020: walls_01+solid
+    400022: walls_01+round2
+    400024: walls_01+round3
+    400026: walls_01+round1
+    400028: walls_01+round4
+    2300000: floor_00+floor
+    2300002: walls_01+diag1
+    2300004: walls_01+diag2
+    2300006: walls_01+diag3
+    2300008: walls_01+diag4
+    2300010: walls_01+edge1
+    2300012: walls_01+edge2
+    2300014: walls_01+edge3
+    2300016: walls_01+edge4
+    2300018: walls_01+solid
+    2300020: walls_01+round2
+    2300022: walls_01+round3
+    2300024: walls_01+round1
+    2300026: walls_01+round4
+    3300000: floor_00+floor
+    3300002: walls_01+diag1
+    3300004: walls_01+diag2
+    3300006: walls_01+diag3
+    3300008: walls_01+diag4
+    3300010: walls_01+edge1
+    3300012: walls_01+edge2
+    3300014: walls_01+edge3
+    3300016: walls_01+edge4
+    3300018: walls_01+solid
+    3300020: walls_01+round2
+    3300022: walls_01+round3
+    3300024: walls_01+round1
+    3300026: walls_01+round4
+    4300000: floor_00+floor
+    4300002: walls_01+diag1
+    4300004: walls_01+diag2
+    4300006: walls_01+diag3
+    4300008: walls_01+diag4
+    4300010: walls_01+edge1
+    4300012: walls_01+edge2
+    4300014: walls_01+edge3
+    4300016: walls_01+edge4
+    4300018: walls_01+solid
+    4300020: walls_01+round2
+    4300022: walls_01+round3
+    4300024: walls_01+round1
+    4300026: walls_01+round4
+    11400000: floor_00+floor
+    11400002: walls_01+diag1
+    11400004: walls_01+diag2
+    11400006: walls_01+diag3
+    11400008: walls_01+diag4
+    11400010: walls_01+edge1
+    11400012: walls_01+edge2
+    11400014: walls_01+edge3
+    11400016: walls_01+edge4
+    11400018: walls_01+solid
+    11400020: walls_01+round2
+    11400022: walls_01+round3
+    11400024: walls_01+round1
+    11400026: walls_01+round4
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 0
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 2
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  additionalBone: 0
+  userData: 
