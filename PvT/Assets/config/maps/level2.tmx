@@ -32,25 +32,33 @@
   <tile id="4">
    <image width="32" height="32" source="../../images/terrain/diag1.png"/>
    <objectgroup draworder="index">
-    <object x="0" y="0" width="32" height="32"/>
+    <object x="0.375" y="31.375">
+     <polyline points="0,0 31.25,-31.375"/>
+    </object>
    </objectgroup>
   </tile>
   <tile id="5">
    <image width="32" height="32" source="../../images/terrain/diag2.png"/>
    <objectgroup draworder="index">
-    <object x="0" y="0" width="32" height="32"/>
+    <object x="0.75" y="0.625">
+     <polyline points="0,0 30.125,30.625"/>
+    </object>
    </objectgroup>
   </tile>
   <tile id="6">
    <image width="32" height="32" source="../../images/terrain/diag3.png"/>
    <objectgroup draworder="index">
-    <object x="0" y="0" width="32" height="32"/>
+    <object x="0.375" y="31.75">
+     <polyline points="0,0 31.125,-31.875"/>
+    </object>
    </objectgroup>
   </tile>
   <tile id="7">
    <image width="32" height="32" source="../../images/terrain/diag4.png"/>
    <objectgroup draworder="index">
-    <object x="0" y="0" width="32" height="32"/>
+    <object x="-0.125" y="0.625">
+     <polyline points="0,0 31.25,30.625"/>
+    </object>
    </objectgroup>
   </tile>
   <tile id="8">
@@ -80,32 +88,38 @@
   <tile id="12">
    <image width="32" height="32" source="../../images/terrain/round1.png"/>
    <objectgroup draworder="index">
-    <object x="0" y="0" width="32" height="32"/>
+    <object x="0.375" y="31.25">
+     <polyline points="0,0 6.25,-21.875 30.75,-31.125"/>
+    </object>
    </objectgroup>
   </tile>
   <tile id="13">
    <image width="32" height="32" source="../../images/terrain/round2.png"/>
    <objectgroup draworder="index">
-    <object x="0" y="0" width="32" height="32"/>
+    <object x="0.125" y="0.5">
+     <polyline points="0,0 23,8 31.375,31.25"/>
+    </object>
    </objectgroup>
   </tile>
   <tile id="14">
    <image width="32" height="32" source="../../images/terrain/round3.png"/>
    <objectgroup draworder="index">
-    <object x="0" y="0" width="32" height="32"/>
+    <object x="-0.125" y="31.625">
+     <polyline points="0,0 24.75,-9 31.75,-31.25"/>
+    </object>
    </objectgroup>
   </tile>
   <tile id="15">
    <image width="32" height="32" source="../../images/terrain/round4.png"/>
    <objectgroup draworder="index">
-    <object x="0" y="0" width="32" height="32"/>
+    <object x="0.5" y="0.625">
+     <polyline points="0,0 8.125,20.5 31,30.75"/>
+    </object>
    </objectgroup>
   </tile>
   <tile id="16">
    <image width="32" height="32" source="../../images/terrain/solid.png"/>
-   <objectgroup draworder="index">
-    <object x="0" y="0" width="32" height="32"/>
-   </objectgroup>
+   <objectgroup draworder="index"/>
   </tile>
  </tileset>
  <tileset firstgid="18" name="floor" tilewidth="32" tileheight="32">
@@ -127,7 +141,7 @@
    <property name="unity:sortingLayerName" value="mobs"/>
   </properties>
   <data encoding="base64" compression="zlib">
-   eJzt28EKgzAQANG9tLW1tc3//6yREmgvAWFRGefBXiUDIaDEEhGlzhM+5WduwTfEt3XceyEbuoe9ZPay2ctmL1t276vOlPi8bNm9nzrvxOdlcz+z2cu29C7vhI/OHPm8Xav19r4LHPm8XeuM+9leLnvZ7GWzl81eNnvZ7GWzl81eNnvZ7GWzl81eNnvZ7GWzl81eNnvZ7GVr96+uey9kA5f4/8esd8eOMK1zBkHPCxQ=
+   eJzt28kKg0AQANG+ZDWb//+zmUYET4LSSbRSD/oqFgyC49hHRN/mBp9+MqfgO8fQ2v36Rr7oEvaS2ctmL5u9bNW99zaPwutVq+59tXkWXq+a65nNXrbszXfC68xs+Xm71Ng7ty+w5eftUv+4nu3lspfNXjZ72exls5fNXjZ72exls5dtTe8hhj3a/DZ2LL+jz1rTm+eYco82v43t7dyW65nNXjZ72exls5fNXjZ72exlG89f7W2fYo3cl5n+YzZ3xo4wY+cbLFELaA==
   </data>
  </layer>
 </map>
