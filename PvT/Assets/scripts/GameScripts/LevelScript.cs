@@ -5,6 +5,7 @@ using PvT.Util;
 
 public class LevelScript : MonoBehaviour
 {
+    public GameObject[] rooms;
     public GameObject map;
     void Start()
     {

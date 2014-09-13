@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="60" height="60" tilewidth="32" tileheight="32">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="20" tilewidth="32" tileheight="32">
  <properties>
   <property name="unity:layer" value="environment"/>
   <property name="unity:scale" value="0.01"/>
  </properties>
  <tileset firstgid="1" source="walls.tsx"/>
  <tileset firstgid="19" source="floor.tsx"/>
- <layer name="floor" width="60" height="60">
+ <layer name="floor" width="20" height="20">
   <properties>
    <property name="unity:sortingLayerName" value="ground"/>
   </properties>
   <data encoding="base64" compression="zlib">
-   eJztwwEJAAAMBKHr8P27rsdQcNVUVVVVVVVVVVVVVVVV1VcPrSILQA==
+   eJwTZmBgEB7Fo3gUj+JRPIpJxAANEx2x
   </data>
  </layer>
- <layer name="walls" width="60" height="60">
+ <layer name="walls" width="20" height="20">
   <properties>
    <property name="unity:layer" value="environment"/>
    <property name="unity:sortingLayerName" value="smoke"/>
   </properties>
   <data encoding="base64" compression="zlib">
-   eJztm8sKhTAMRLO572f7/x9rB5Hr4lJQUw3TOTDbkgOlxTQmM0slT/KkWS7Gz9VG18fRhezIzeTLjHy5kS838uXG2/dV8nZczxtv32/Jx3E9b7SfuZEvN/DFN+G9ksjn7VIm31pfIPJ5u5Qe97N8eenRNx9dxI5kky8z8uWmR9/e7iP58iJfbuTLjXy5kS83a3xPNvZo8TZ2dq/oB9b37guv8cUcE3q0eBtrObeV/2QrkfezfLcj3zjgfPB+14ns2wL5ciNfbuTLjXy5kS83Pfpi/qplnyIK6MvM/zGrzdgxZPIcANygDaw=
+   eJwTZGBgEARiHgqxIBJmZ6AccEDN4qaCWTDAOWreqHmj5o2aN4TMA5WBbFQwi5UBtYzmohDDzAEAfxEDhw==
   </data>
  </layer>
  <objectgroup name="test Object Layer">

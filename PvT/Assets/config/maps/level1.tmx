@@ -31,4 +31,12 @@
    eJztw8EJAAAMA6F7ZP+ZO0dBwVVTVVVVVVVVVVXV5w+SZScR
   </data>
  </layer>
+ <objectgroup name="collision (border)">
+  <properties>
+   <property name="unity:layer" value="environment"/>
+  </properties>
+  <object x="0" y="0">
+   <polyline points="0,0 1990.91,0 2006.06,1990.91 -3.0303,2000 -6.06061,3.0303"/>
+  </object>
+ </objectgroup>
 </map>
