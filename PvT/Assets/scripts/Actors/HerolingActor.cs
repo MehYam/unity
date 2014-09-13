@@ -23,7 +23,7 @@ public class HerolingActor : Actor
         _reabsorbTimeout = new RateLimiter(Consts.HEROLING_UNABSORBABLE);
         _roamBoredom = new RateLimiter(Consts.HEROLING_ROAM_BOREDOM);
 
-        behavior = ROAM;
+        SetBehavior(ROAM);
 
         ++ActiveHerolings;
 
@@ -49,6 +49,12 @@ public class HerolingActor : Actor
                 break;
         }
     }
+    void SetBehavior(IActorBehavior b, ActorModifier m = null)
+    {
+        behavior = b;
+        modifier = m;
+    }
+
     RateLimiter _attachBoredom;
     void AttachToMob(Transform mob)
     {
@@ -64,7 +70,7 @@ public class HerolingActor : Actor
         // disable physics
         Util.DisablePhysics(gameObject);
 
-        behavior = ATTACHED;
+        SetBehavior(ATTACHED);
         _roamBoredom = null;
         _attachBoredom = new RateLimiter(Consts.HEROLING_ATTACH_BOREDOM);
 
@@ -86,7 +92,7 @@ public class HerolingActor : Actor
             }
         }
         // go back home
-        behavior = RETURN;
+        SetBehavior(RETURN, new ActorModifier(float.MaxValue, worldObject.maxSpeed * 1.5f, 0));
     }
 
     protected override void FixedUpdate()

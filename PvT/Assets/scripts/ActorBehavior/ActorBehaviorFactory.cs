@@ -478,7 +478,7 @@ sealed class PlayerfireBehavior : IActorBehavior
 
 sealed class PlayerShieldBehavior : IActorBehavior
 {
-    const float LAUNCH_LIFE = 3;
+    const float LAUNCH_LIFE = 1.5f;
     const float SHIELD_RECHARGE = 1;
     const float BOOST_SECONDS = 0.3f;
     GameObject _shield;
@@ -526,7 +526,7 @@ sealed class PlayerShieldBehavior : IActorBehavior
                 _shield.transform.parent = actor.transform;
 
                 // boost!
-                actor.AddModifier(new ActorModifier(Time.fixedTime + BOOST_SECONDS, actor.worldObject.maxSpeed * 10, ((VehicleType)(actor.worldObject)).acceleration * 2));
+                actor.modifier = new ActorModifier(Time.fixedTime + BOOST_SECONDS, actor.worldObject.maxSpeed * 2, ((VehicleType)(actor.worldObject)).acceleration * 2);
                 _lastShieldTime = Time.fixedTime;
             }
         }
@@ -553,14 +553,14 @@ sealed class PlayerShieldBehavior : IActorBehavior
                 _shield.rigidbody2D.mass = 500;
 
                 // boost the shield away
-                var shieldBoost = new Vector2();
-                shieldBoost = Util.GetLookAtVector(_shield.transform.rotation.eulerAngles.z, Consts.SHIELD_BOOST) + actor.rigidbody2D.velocity;
-                shieldBoost = Vector2.ClampMagnitude(shieldBoost, actor.worldObject.maxSpeed * 4);
+                //var shieldBoost = new Vector2();
+                //shieldBoost = Util.GetLookAtVector(_shield.transform.rotation.eulerAngles.z, Consts.SHIELD_BOOST) + actor.rigidbody2D.velocity;
+                //shieldBoost = Vector2.ClampMagnitude(shieldBoost, actor.worldObject.maxSpeed * 4);
 
-                _shield.rigidbody2D.velocity = shieldBoost;
+                _shield.rigidbody2D.velocity = actor.rigidbody2D.velocity;
                 _shield = null;
 
-                actor.AddModifier(null);  //KAI: cheese
+                actor.modifier = null;
             }
         }
         _prevState = newState;

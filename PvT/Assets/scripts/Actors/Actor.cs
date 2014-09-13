@@ -72,7 +72,7 @@ public class Actor : MonoBehaviour
     {
         get
         {
-            return (_modifier != null) ? worldObject.maxSpeed + _modifier.maxSpeed : worldObject.maxSpeed;
+            return (modifier != null) ? worldObject.maxSpeed + modifier.maxSpeed : worldObject.maxSpeed;
         }
     }
     public float acceleration
@@ -81,7 +81,7 @@ public class Actor : MonoBehaviour
         {
             //KAI: cheese - sort this out
             var v = (VehicleType) worldObject;
-            return (_modifier != null) ? v.acceleration + _modifier.acceleration : v.acceleration;
+            return (modifier != null) ? v.acceleration + modifier.acceleration : v.acceleration;
         }
     }
     public bool firingEnabled { get; set; }
@@ -94,11 +94,7 @@ public class Actor : MonoBehaviour
     public IActorBehavior behavior { get; set; }
     public IActorVisualBehavior visualBehavior { get; set; }
 
-    ActorModifier _modifier;
-    public void AddModifier(ActorModifier modifier)
-    {
-        _modifier = modifier;
-    }
+    public ActorModifier modifier { set; private get; }
 
     ProgressBar _healthBar;
     public void TakeDamage(float damage)
@@ -136,9 +132,9 @@ public class Actor : MonoBehaviour
         {
             GlobalGameEvent.Instance.FireActorDeath(this);
         }
-        if (_modifier != null && Time.fixedTime > _modifier.expiry)
+        if (modifier != null && Time.fixedTime > modifier.expiry)
         {
-            _modifier = null;
+            modifier = null;
         }
     }
     void Update()
