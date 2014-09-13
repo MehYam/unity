@@ -192,7 +192,7 @@ public class Actor : MonoBehaviour
             if (_trackingArrow == null)
             {
                 //KAI: stick to one way of creating assets?
-                _trackingArrow = (GameObject)GameObject.Instantiate(Main.Instance.Indicator);
+                _trackingArrow = (GameObject)GameObject.Instantiate(Main.Instance.TrackingArrow);
             }
             Vector2 indPos = new Vector2(0, 0);
             indPos.x = Mathf.Max(rect.left + INDICATOR_MARGIN, Mathf.Min(rect.right - INDICATOR_MARGIN, pos.x));

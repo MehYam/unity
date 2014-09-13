@@ -471,6 +471,7 @@ sealed class PlayerfireBehavior : IActorBehavior
         }
         if (onSecondary != null && Input.GetButton("Jump"))
         {
+            Debug.Log(Input.GetButton("Fire2"));
             onSecondary.FixedUpdate(actor);
         }
     }

@@ -65,6 +65,8 @@ public static class Consts
 
     static public readonly float SMOOTH_DAMP_MULTIPLIER = 0.5f;
 
+    static public readonly string BLINKER_TAG = "blinker";
+
     // UI and cinematics ///////////////////////////////////////
 #if DEBUG_INTRO
     static public readonly float TEXT_FADE_SECONDS = 0.2f;

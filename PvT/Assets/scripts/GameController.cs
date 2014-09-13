@@ -83,7 +83,7 @@ public sealed class GameController : IGame
     public GameObject SpawnPlayer(Vector3 location)
     {
         var main = Main.Instance;
-        Debug.Log("Spawning player " + main.defaultVehicle);
+        Debug.Log("Spawning player --- " + main.defaultVehicle);
 
         var tank = loader.GetTank(main.defaultVehicle);
         if (tank == null)
@@ -215,6 +215,11 @@ public sealed class GameController : IGame
 
                 subduedByHerolings = host.gameObject;
 
+                var blinker = (GameObject)GameObject.Instantiate(Main.Instance.PossessionIndicator);
+                blinker.transform.parent = host.transform;
+                blinker.transform.localPosition = Vector3.zero;
+                blinker.name = Consts.BLINKER_TAG;
+
                 AudioSource.PlayClipAtPoint(Main.Instance.sounds.HerolingCapture, host.transform.position);
             }
         }
@@ -229,12 +234,28 @@ public sealed class GameController : IGame
             {
                 bypass.Restore();
 
+                RemoveBlinker(host.transform);
+                var blinker = host.transform.FindChild(Consts.BLINKER_TAG);
+                if (blinker != null)
+                {
+                    GameObject.Destroy(blinker.gameObject);
+                }
                 subduedByHerolings = null;
             }
         }
     }
+    static void RemoveBlinker(Transform host)
+    {
+        var blinker = host.FindChild(Consts.BLINKER_TAG);
+        if (blinker != null)
+        {
+            GameObject.Destroy(blinker.gameObject);
+        }
+    }
+
     void OnPossessionContact(Actor host)
     {
+        RemoveBlinker(host.transform);
         host.StartCoroutine(RunPossessionAnimation(host));
     
         GlobalGameEvent.Instance.FireEnemyDeath();

@@ -19,7 +19,8 @@ public class Main : MonoBehaviour
     public TextAsset Misc;
 
     public GameObject ProgressBar;
-    public GameObject Indicator;
+    public GameObject TrackingArrow;
+    public GameObject PossessionIndicator;
 
     public GameObject EffectParent;
     public GameObject AmmoParent;

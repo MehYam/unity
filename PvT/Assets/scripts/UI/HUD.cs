@@ -6,7 +6,6 @@ using PvT.Util;
 
 public sealed class HUD : MonoBehaviour
 {
-    public GameObject topLeftPanel;
     public ProgressBar health;
 
     public Fader curtain;
@@ -16,10 +15,6 @@ public sealed class HUD : MonoBehaviour
     public Text centerPrintMiddle;
     public Text centerPrintBottom;
 
-    public void EnableTopLeft(bool enabled = true)
-    {
-        topLeftPanel.SetActive(enabled);
-    }
     void Start()
     {
         // events
@@ -35,7 +30,6 @@ public sealed class HUD : MonoBehaviour
 
         // layout
         var rect = Util.GetScreenRectInWorldCoords(Camera.main);
-        topLeftPanel.transform.position = new Vector3(rect.left, rect.top);
     }
 
     void OnPlayerSpawned(GameObject player)
@@ -77,7 +71,7 @@ public sealed class HUD : MonoBehaviour
     void UpdateHealth()
     {
         var player = Main.Instance.game.player.GetComponent<Actor>();
-        health.percent = player.health / player.worldObject.health;
+        //health.percent = player.health / player.worldObject.health;
     }
     void UpdateHerolings()
     {
