@@ -8,8 +8,8 @@ public interface IGame
     void SetMap(GameObject mapPrefab);
 
     GameObject player { get; }
-    GameObject subduedByHerolings { get; }
-    bool enemyIsPossessed { get; }
+    GameObject overwhelmedByHerolings { get; }
+    bool enemyInPossession { get; }
 
     Loader loader { get; }
     Effects effects { get; }

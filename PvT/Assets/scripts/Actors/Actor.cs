@@ -243,11 +243,11 @@ public class Actor : MonoBehaviour
 
         var game = Main.Instance.game;
         
-        // if a possessed ship is being hit by the hero, run the possession
-        if (game.subduedByHerolings == collider.gameObject &&
+        // if an overwhelmed ship is being hit by the hero, run the possession
+        if (game.overwhelmedByHerolings == collider.gameObject &&
             game.player == me.gameObject)
         {
-            GlobalGameEvent.Instance.FirePossessionFirstContact(collider.gameObject.GetComponent<Actor>());
+            GlobalGameEvent.Instance.FireCollisionWithOverwhelmed(collider.gameObject.GetComponent<Actor>());
         }
         else
         {

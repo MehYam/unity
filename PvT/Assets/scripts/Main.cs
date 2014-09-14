@@ -20,7 +20,7 @@ public class Main : MonoBehaviour
 
     public GameObject ProgressBar;
     public GameObject TrackingArrow;
-    public GameObject PossessionIndicator;
+    public GameObject OverwhelmedIndicator;
 
     public GameObject EffectParent;
     public GameObject AmmoParent;

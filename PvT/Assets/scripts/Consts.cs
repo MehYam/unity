@@ -45,11 +45,11 @@ public static class Consts
     static public readonly float HEROLING_ROAM_BOREDOM = 2;
     static public readonly float HEROLING_ATTACH_BOREDOM = 5;
     static public readonly int HEROLING_LIMIT = 3;
+    static public readonly float HEROLING_HEALTH_OVERWHELM = 25;
     static public readonly float HERO_REGEN = 1;
 
-    static public readonly int   HEROLINGS_REQUIRED_FOR_POSSESSION = 2;
-    static public readonly float DEPOSSESSION_DURATION = 2;
-    static public readonly float DEPOSSESSION_ROTATIONS_PER_SEC = 5;
+    static public readonly float HEROLING_OVERWHELM_DURATION = 2;
+    static public readonly float HEROLING_OVERWHELM_ROTATIONS_PER_SEC = 5;
 
     static public readonly float HEALTH_BAR_TIMEOUT = 5;
 

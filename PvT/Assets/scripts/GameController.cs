@@ -10,8 +10,8 @@ using PvT.Util;
 public sealed class GameController : IGame
 {
     public GameObject player { get; private set; }
-    public GameObject subduedByHerolings { get; private set; }
-    public bool enemyIsPossessed    { get { return !player.GetComponent<Actor>().isHero; } }
+    public GameObject overwhelmedByHerolings { get; private set; }
+    public bool enemyInPossession    { get { return !player.GetComponent<Actor>().isHero; } }
     public Loader loader { get; private set; }
     public Effects effects { get; private set; }
 
@@ -25,7 +25,7 @@ public sealed class GameController : IGame
         var gge = GlobalGameEvent.Instance;
         gge.HerolingAttached += OnHerolingAttached;
         gge.HerolingDetached += OnHerolingDetached;
-        gge.PossessionFirstContact += OnPossessionContact;
+        gge.CollisionWithOverwhelmed += OnCollisionWithOverwhelmed;
         gge.ActorDeath += OnActorDeath;
         gge.MapReady += OnMapReady;
     }
@@ -199,17 +199,18 @@ public sealed class GameController : IGame
     void OnHerolingAttached(Actor host)
     {
         var herolings = host.GetComponentsInChildren<HerolingActor>();
-        if (herolings.Length >= Consts.HEROLINGS_REQUIRED_FOR_POSSESSION)
+        var overwhelm = herolings.Length * Consts.HEROLING_HEALTH_OVERWHELM;
+        if (overwhelm >= host.health)
         {
-            if (!(host.behavior is BypassedBehavior)) //KAI: wrong, there may be bypassed behaviors not having to do with possession
+            if (!(host.behavior is BypassedBehavior)) //KAI: hack, there may be bypassed behaviors not having to do with possession
             {
-                // act possessed
+                // act overwhelmed
                 DebugUtil.Assert(!(host.behavior is BypassedBehavior));
                 new BypassedBehavior(host, ActorBehaviorFactory.Instance.CreateSubduedByHerolingsBehavior());
 
-                subduedByHerolings = host.gameObject;
+                overwhelmedByHerolings = host.gameObject;
 
-                var blinker = (GameObject)GameObject.Instantiate(Main.Instance.PossessionIndicator);
+                var blinker = (GameObject)GameObject.Instantiate(Main.Instance.OverwhelmedIndicator);
                 blinker.transform.parent = host.transform;
                 blinker.transform.localPosition = Vector3.zero;
                 blinker.name = Consts.BLINKER_TAG;
@@ -234,7 +235,7 @@ public sealed class GameController : IGame
                 {
                     GameObject.Destroy(blinker.gameObject);
                 }
-                subduedByHerolings = null;
+                overwhelmedByHerolings = null;
             }
         }
     }
@@ -247,7 +248,7 @@ public sealed class GameController : IGame
         }
     }
 
-    void OnPossessionContact(Actor host)
+    void OnCollisionWithOverwhelmed(Actor host)
     {
         var playerActor = player.GetComponent<Actor>();
         if (playerActor.isHero)
@@ -335,15 +336,15 @@ public sealed class GameController : IGame
             var now = Time.realtimeSinceStartup;
             elapsed = now - start;
 
-            var pctDone = elapsed / Consts.DEPOSSESSION_DURATION;
-            var rotationsPerSec = Consts.DEPOSSESSION_ROTATIONS_PER_SEC * (1 - pctDone);
+            var pctDone = elapsed / Consts.HEROLING_OVERWHELM_DURATION;
+            var rotationsPerSec = Consts.HEROLING_OVERWHELM_ROTATIONS_PER_SEC * (1 - pctDone);
 
             player.transform.Rotate(0, 0, (now - lastSpin) * 360 * rotationsPerSec);
             lastSpin = now;
 
             yield return new WaitForEndOfFrame();
         }
-        while (elapsed < Consts.DEPOSSESSION_DURATION);
+        while (elapsed < Consts.HEROLING_OVERWHELM_DURATION);
 
         // 3. Resume all activity
         Time.timeScale = timeScale;
