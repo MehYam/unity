@@ -29,14 +29,15 @@ public sealed class ActorBehaviorScripts
         return retval != null ? retval() : null;
     }
 
-    IActorBehavior AttackAndFlee(float followTime, float attackTime, float roamTime)
+    static IActorBehavior AttackAndFlee(float followTime, float attackTime, float roamTime)
     {
         var bf = ActorBehaviorFactory.Instance;
         var retval = new SequencedBehavior();
         retval.Add(bf.followPlayer, new RateLimiter(followTime, followTime / 2));
         retval.Add(
-            new CompositeBehavior(bf.CreateAutofire(new RateLimiter(1), Consts.Layer.MOB_AMMO),
-                                  bf.facePlayer),
+            new CompositeBehavior(
+                bf.CreateAutofire(new RateLimiter(1), Consts.Layer.MOB_AMMO),
+                bf.facePlayer),
             new RateLimiter(attackTime, attackTime)
         );
         retval.Add(bf.CreateRoam(Consts.MAX_MOB_ROTATION_DEG_PER_SEC, false), new RateLimiter(roamTime, roamTime));

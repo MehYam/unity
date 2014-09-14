@@ -127,9 +127,9 @@ public sealed class TutorialScript : MonoBehaviour
             AnimatedText.FadeIn(hud.centerPrintBottom, "(QUICKLY! Collide with it!)", Consts.TEXT_FADE_SECONDS);
 
             // wait until the player has either passed or failed the task of possessing the ship
-            yield return StartCoroutine(Util.YieldUntil(() => game.subduedByHerolings == null || game.playerPossessesEnemy));
+            yield return StartCoroutine(Util.YieldUntil(() => game.subduedByHerolings == null || game.enemyIsPossessed));
         }
-        while (!game.playerPossessesEnemy);
+        while (!game.enemyIsPossessed);
 
         AnimatedText.FadeOut(hud.centerPrintTop, Consts.TEXT_FADE_SECONDS_FAST);
         AnimatedText.FadeOut(hud.centerPrintBottom, Consts.TEXT_FADE_SECONDS_FAST);

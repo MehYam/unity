@@ -29,7 +29,7 @@ public sealed class HUD : MonoBehaviour
         gge.CenterPrint += OnCenterPrint;
 
         // layout
-        var rect = Util.GetScreenRectInWorldCoords(Camera.main);
+        //var rect = Util.GetScreenRectInWorldCoords(Camera.main);
     }
 
     void OnPlayerSpawned(GameObject player)
@@ -70,7 +70,7 @@ public sealed class HUD : MonoBehaviour
 
     void UpdateHealth()
     {
-        var player = Main.Instance.game.player.GetComponent<Actor>();
+        //var player = Main.Instance.game.player.GetComponent<Actor>();
         //health.percent = player.health / player.worldObject.health;
     }
     void UpdateHerolings()

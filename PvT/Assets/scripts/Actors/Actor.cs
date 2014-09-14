@@ -19,6 +19,7 @@ public class Actor : MonoBehaviour
         immortal = false;
     }
 
+    public bool isHero { get { return worldObject.name == "HERO"; } }
     void OnDestroy()
     {
         if (_trackingArrow != null)
@@ -44,6 +45,7 @@ public class Actor : MonoBehaviour
 
     public float expireTime { get; private set; }
 
+    static public readonly float EXPIRY_IMMEDIATE = -1;
     static public readonly float EXPIRY_INFINITE = 0;
     public void SetExpiry(float secondsFromNow)
     {

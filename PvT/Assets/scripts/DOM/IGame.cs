@@ -9,7 +9,7 @@ public interface IGame
 
     GameObject player { get; }
     GameObject subduedByHerolings { get; }
-    bool playerPossessesEnemy { get; }
+    bool enemyIsPossessed { get; }
 
     Loader loader { get; }
     Effects effects { get; }

@@ -11,13 +11,7 @@ public sealed class GameController : IGame
 {
     public GameObject player { get; private set; }
     public GameObject subduedByHerolings { get; private set; }
-    public bool playerPossessesEnemy
-    {
-        get
-        {
-            return player.GetComponent<Actor>().worldObject.name != "HERO";  //KAI: type cheese
-        }
-    }
+    public bool enemyIsPossessed    { get { return !player.GetComponent<Actor>().isHero; } }
     public Loader loader { get; private set; }
     public Effects effects { get; private set; }
 
@@ -255,10 +249,19 @@ public sealed class GameController : IGame
 
     void OnPossessionContact(Actor host)
     {
-        RemoveBlinker(host.transform);
-        host.StartCoroutine(RunPossessionAnimation(host));
-    
-        GlobalGameEvent.Instance.FireEnemyDeath();
+        var playerActor = player.GetComponent<Actor>();
+        if (playerActor.isHero)
+        {
+            RemoveBlinker(host.transform);
+            host.StartCoroutine(RunPossessionAnimation(host));
+
+            GlobalGameEvent.Instance.FireEnemyDeath();
+        }
+        else
+        {
+            // kill the old possessee first
+            playerActor.SetExpiry(Actor.EXPIRY_IMMEDIATE);
+        }
     }
 
     IEnumerator RunPossessionAnimation(Actor host)
@@ -422,31 +425,34 @@ public sealed class GameController : IGame
         behaviors.Add(new PlayerInput(bf.faceForward));
 
         Debug.Log(vehicle);
+        var actor = go.GetComponent<Actor>();
+        var heroType = Main.Instance.game.loader.GetVehicle("HERO");
+        var isHero = vehicle == heroType;
+
         if (vehicle.weapons[0].type == "SHIELD") //KAI: cheese
         {
             behaviors.Add(bf.CreateShield());
         }
         else
         {
-            var hero = vehicle.name == "HERO"; //KAI: cheese
-            var layer = hero ? Consts.Layer.HEROLINGS : Consts.Layer.FRIENDLY_AMMO;
+            var layer = isHero ? Consts.Layer.HEROLINGS : Consts.Layer.FRIENDLY_AMMO;
 
-            if (hero)
+            var primaryFire = bf.CreateAutofire(new RateLimiter(0.5f), layer);
+            behaviors.Add(bf.OnPlayerInput("Jump", primaryFire));
+            behaviors.Add(bf.OnPlayerInput("Fire1", new CompositeBehavior(bf.faceMouse, primaryFire)));
+            if (isHero)
             {
                 behaviors.Add(bf.CreateHeroAnimator(go));
             }
-            var autoFire = bf.CreateAutofire(new RateLimiter(0.5f), layer);
-            behaviors.Add(bf.OnFire(
-                new CompositeBehavior(
-                    bf.faceMouse,
-                    autoFire
-                ),
-                autoFire
-            ));
             behaviors.Add(bf.heroRegen);
         }
 
-        var actor = go.GetComponent<Actor>();
+        if (!isHero)
+        {
+            // captured ship, add herolings to secondary fire
+            var secondaryFire = bf.CreateAutofire(new RateLimiter(0.5f), Consts.Layer.HEROLINGS, heroType.weapons);
+            behaviors.Add(bf.OnPlayerInput("Fire2", new CompositeBehavior(bf.faceMouse, secondaryFire)));
+        }
         actor.behavior = behaviors;
     }
     void SetPlayerTankBehaviors(TankSpawnHelper tankHelper)
@@ -500,7 +506,7 @@ public sealed class GameController : IGame
         }
 
         var wasPlayer = actor.gameObject == player;
-        var wasHero = actor.worldObject.name == "HERO";
+        var wasHero = actor.isHero;
         var deathPos = actor.gameObject.transform.position;
 
         GameObject.Destroy(actor.gameObject);

@@ -233,9 +233,9 @@ public sealed class ActorBehaviorFactory
     {
         return new RoamBehavior(maxRotate, stopBeforeRotate);
     }
-    public IActorBehavior CreateAutofire(RateLimiter rate, Consts.Layer layer)
+    public IActorBehavior CreateAutofire(RateLimiter rate, Consts.Layer layer, WorldObjectType.Weapon[] weapons = null)
     {
-        return new AutofireBehavior(rate, layer);
+        return new AutofireBehavior(rate, layer, weapons);
     }
     public IActorBehavior CreateTurret(RateLimiter rate, Consts.Layer layer)
     {
@@ -247,6 +247,10 @@ public sealed class ActorBehaviorFactory
     public IActorBehavior OnFire(IActorBehavior onPrimary, IActorBehavior onSecondary)
     {
         return new PlayerfireBehavior(onPrimary, onSecondary);
+    }
+    public IActorBehavior OnPlayerInput(string button, IActorBehavior onFire)
+    {
+        return new PlayerFire(button, onFire);
     }
     public IActorBehavior CreateShield()
     {
@@ -427,20 +431,27 @@ sealed class FaceMouse : IActorBehavior
 
 sealed class AutofireBehavior : IActorBehavior
 {
-    readonly RateLimiter rate = null;
+    readonly RateLimiter rate;
     readonly Consts.Layer layer;
+    readonly WorldObjectType.Weapon[] weapons;
 
-    public AutofireBehavior(RateLimiter rate, Consts.Layer layer)
+    public AutofireBehavior(RateLimiter rate, Consts.Layer layer, WorldObjectType.Weapon[] weapons)
     {
         this.rate = rate;
         this.layer = layer;
+        this.weapons = weapons;
     }
     public void FixedUpdate(Actor actor)
     {
         if (actor.firingEnabled && rate.reached)
         {
             var game = Main.Instance.game;
-            foreach (var weapon in actor.worldObject.weapons)
+            WorldObjectType.Weapon[] w = weapons;
+            if (w == null)
+            {
+                w = actor.worldObject.weapons;
+            }
+            foreach (var weapon in w)
             {
                 //KAI: MAJOR CHEESE
                 if (weapon.type != "HEROLING" || HerolingActor.ActiveHerolings < Consts.HEROLING_LIMIT)
@@ -450,6 +461,24 @@ sealed class AutofireBehavior : IActorBehavior
                 }
             }
             rate.Start();
+        }
+    }
+}
+
+sealed class PlayerFire : IActorBehavior
+{
+    readonly string button;
+    readonly IActorBehavior behavior;
+    public PlayerFire(string button, IActorBehavior behavior)
+    {
+        this.button = button;
+        this.behavior = behavior;
+    }
+    public void FixedUpdate(Actor actor)
+    {
+        if (Input.GetButton(button))
+        {
+            behavior.FixedUpdate(actor);
         }
     }
 }
