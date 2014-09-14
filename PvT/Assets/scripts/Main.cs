@@ -18,7 +18,8 @@ public class Main : MonoBehaviour
     public TextAsset AI;
     public TextAsset Misc;
 
-    public GameObject ProgressBar;
+    public GameObject HealthProgressBar;
+    public GameObject OverwhelmProgressBar;
     public GameObject TrackingArrow;
     public GameObject OverwhelmedIndicator;
 

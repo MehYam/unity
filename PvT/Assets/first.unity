@@ -159,7 +159,8 @@ MonoBehaviour:
   Levels: {fileID: 4900000, guid: 77022b18d2b218d4eae167bb0696d069, type: 3}
   AI: {fileID: 4900000, guid: f099c617aea0bc3489690336e990cb2b, type: 3}
   Misc: {fileID: 4900000, guid: fe79f9de671e9fb41a1b62a9e434d791, type: 3}
-  ProgressBar: {fileID: 100002, guid: 9f7fac8877bdd354c851e5f09a14d302, type: 2}
+  HealthProgressBar: {fileID: 100002, guid: 9f7fac8877bdd354c851e5f09a14d302, type: 2}
+  OverwhelmProgressBar: {fileID: 100006, guid: 0ef1bf41dd0bd76439ae8ba7994b0aea, type: 2}
   TrackingArrow: {fileID: 100000, guid: 34b98b45d023102448965a76fc4c0428, type: 2}
   OverwhelmedIndicator: {fileID: 100006, guid: d488e2e5f3e7f504ebaeb5b284fa086a, type: 2}
   EffectParent: {fileID: 653143524}

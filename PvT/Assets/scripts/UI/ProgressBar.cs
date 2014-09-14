@@ -19,6 +19,7 @@ public class ProgressBar : MonoBehaviour
         }
         set
         {
+            value = Mathf.Clamp(value, 0, 1);
             if (ForegroundSprite != null)
             {
                 ForegroundSprite.transform.localScale = new Vector3(value, 1, 1);

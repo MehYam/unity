@@ -103,6 +103,7 @@ public class Actor : MonoBehaviour
     public int attachedHerolings { get; set; }
     public bool overwhelmedByHerolings { get; private set; }
 
+    ProgressBar _overwhelmBar;
     ProgressBar _healthBar;
     public void TakeDamage(float damage)
     {
@@ -145,6 +146,8 @@ public class Actor : MonoBehaviour
             modifier = null;
         }
     }
+    static readonly Vector3 HEALTH_BAR_POSITION = new Vector3(0, 0.5f);
+    static readonly Vector3 OVERWHELM_BAR_POSITION = new Vector3(-0.5f, 0);
     void Update()
     {
         if (visualBehavior != null)
@@ -157,7 +160,7 @@ public class Actor : MonoBehaviour
         {
             if (_healthBar == null)
             {
-                var bar = (GameObject)GameObject.Instantiate(Main.Instance.ProgressBar);
+                var bar = (GameObject)GameObject.Instantiate(Main.Instance.HealthProgressBar);
                 _healthBar = bar.GetComponent<ProgressBar>();
 
                 //STRANGE UNITY BUG?
@@ -173,11 +176,31 @@ public class Actor : MonoBehaviour
             }
             _healthBar.gameObject.SetActive(true);
             _healthBar.percent = health / worldObject.health;
-            _healthBar.transform.position = transform.position + new Vector3(0, 0.5f);
+            _healthBar.transform.position = transform.position + HEALTH_BAR_POSITION;
         }
         else if (_healthBar != null)
         {
             _healthBar.gameObject.SetActive(false);
+        }
+
+        //KAI: copy pasta +1 w/ health bar, might be worth generalizing
+        if (attachedHerolings > 0 && !overwhelmedByHerolings)
+        {
+            if (_overwhelmBar == null)
+            {
+                var bar = (GameObject)GameObject.Instantiate(Main.Instance.OverwhelmProgressBar);
+                _overwhelmBar = bar.GetComponent<ProgressBar>();
+                _overwhelmBar.transform.Rotate(0, 0, 90);
+
+                bar.transform.parent = Main.Instance.EffectParent.transform;
+            }
+            _overwhelmBar.gameObject.SetActive(true);
+            _overwhelmBar.percent = (attachedHerolings * Consts.HEROLING_HEALTH_OVERWHELM) / worldObject.health;
+            _overwhelmBar.transform.position = transform.position + OVERWHELM_BAR_POSITION;
+        }
+        else if (_overwhelmBar != null)
+        {
+            _overwhelmBar.gameObject.SetActive(false);
         }
     }
     void LateUpdate()
