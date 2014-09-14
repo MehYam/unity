@@ -119,8 +119,6 @@ public class HerolingActor : Actor
         //KAI: need something tighter than this - squishy Unity behavior might make this
         // number inaccurate
         --ActiveHerolings;
-
-        GlobalGameEvent.Instance.FireHerolingDestroyed();
     }
 
     //KAI: cheese?

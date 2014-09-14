@@ -6,6 +6,8 @@ using System.Collections;
 using PvT.DOM;
 using PvT.Util;
 
+//KAI: this class is starting to get bloated into a MobActor.  Should probably
+// delineate into subclasses, or find a composition strategy
 public class Actor : MonoBehaviour
 {
     public Actor()
@@ -98,6 +100,9 @@ public class Actor : MonoBehaviour
 
     public ActorModifier modifier { set; private get; }
 
+    public int attachedHerolings { get; set; }
+    public bool overwhelmedByHerolings { get; private set; }
+
     ProgressBar _healthBar;
     public void TakeDamage(float damage)
     {
@@ -122,6 +127,7 @@ public class Actor : MonoBehaviour
 
     protected virtual void FixedUpdate()
     {
+        DetectChangeInOverwhelm();
         if (behavior != null)
         {
             behavior.FixedUpdate(this);
@@ -181,6 +187,54 @@ public class Actor : MonoBehaviour
             UpdateTrackingArrow();
         }
     }
+
+    void DetectChangeInOverwhelm()
+    {
+        var shouldOverwhelm = attachedHerolings * Consts.HEROLING_HEALTH_OVERWHELM >= health;
+        if (overwhelmedByHerolings && !shouldOverwhelm)
+        {
+            // un-overwhelm
+            var bypass = behavior as BypassedBehavior;
+            if (bypass != null)  // will be null in the case where possession occurs
+            {
+                bypass.Restore();
+            }
+
+            RemoveBlinker(transform);
+            var blinker = transform.FindChild(Consts.BLINKER_TAG);
+            if (blinker != null)
+            {
+                GameObject.Destroy(blinker.gameObject);
+            }
+            overwhelmedByHerolings = false;
+        }
+        else if (!overwhelmedByHerolings && shouldOverwhelm)
+        {
+            DebugUtil.Assert(!(behavior is BypassedBehavior));
+
+            // act overwhelmed
+            new BypassedBehavior(this, ActorBehaviorFactory.Instance.CreateSubduedByHerolingsBehavior());
+
+            var blinker = (GameObject)GameObject.Instantiate(Main.Instance.OverwhelmedIndicator);
+            blinker.transform.parent = transform;
+            blinker.transform.localPosition = Vector3.zero;
+            blinker.name = Consts.BLINKER_TAG;
+
+            AudioSource.PlayClipAtPoint(Main.Instance.sounds.HerolingCapture, transform.position);
+
+            overwhelmedByHerolings = true;
+        }
+    }
+
+    static void RemoveBlinker(Transform host)
+    {
+        var blinker = host.FindChild(Consts.BLINKER_TAG);
+        if (blinker != null)
+        {
+            GameObject.Destroy(blinker.gameObject);
+        }
+    }
+
 
     const float INDICATOR_MARGIN = 0.06f;
     GameObject _trackingArrow;
@@ -244,8 +298,8 @@ public class Actor : MonoBehaviour
         var game = Main.Instance.game;
         
         // if an overwhelmed ship is being hit by the hero, run the possession
-        if (game.overwhelmedByHerolings == collider.gameObject &&
-            game.player == me.gameObject)
+        var colliderActor = collider.GetComponent<Actor>();
+        if (colliderActor != null && colliderActor.overwhelmedByHerolings && game.player == me.gameObject)
         {
             GlobalGameEvent.Instance.FireCollisionWithOverwhelmed(collider.gameObject.GetComponent<Actor>());
         }
@@ -256,10 +310,9 @@ public class Actor : MonoBehaviour
                 var boom = Main.Instance.game.effects.GetRandomSmallExplosion().ToRawGameObject(Consts.SortingLayer.EXPLOSIONS);
                 boom.transform.localPosition = contact.point;
             }
-            var actor = collider.GetComponent<Actor>();
-            if (actor != null)
+            if (colliderActor != null)
             {
-                TakeDamage(actor.collisionDamage * Random.Range(0.9f, 1.1f));
+                TakeDamage(colliderActor.collisionDamage * Random.Range(0.9f, 1.1f));
             }
         }
     }

@@ -10,7 +10,6 @@ using PvT.Util;
 public sealed class GameController : IGame
 {
     public GameObject player { get; private set; }
-    public GameObject overwhelmedByHerolings { get; private set; }
     public bool enemyInPossession    { get { return !player.GetComponent<Actor>().isHero; } }
     public Loader loader { get; private set; }
     public Effects effects { get; private set; }
@@ -198,54 +197,11 @@ public sealed class GameController : IGame
 
     void OnHerolingAttached(Actor host)
     {
-        var herolings = host.GetComponentsInChildren<HerolingActor>();
-        var overwhelm = herolings.Length * Consts.HEROLING_HEALTH_OVERWHELM;
-        if (overwhelm >= host.health)
-        {
-            if (!(host.behavior is BypassedBehavior)) //KAI: hack, there may be bypassed behaviors not having to do with possession
-            {
-                // act overwhelmed
-                DebugUtil.Assert(!(host.behavior is BypassedBehavior));
-                new BypassedBehavior(host, ActorBehaviorFactory.Instance.CreateSubduedByHerolingsBehavior());
-
-                overwhelmedByHerolings = host.gameObject;
-
-                var blinker = (GameObject)GameObject.Instantiate(Main.Instance.OverwhelmedIndicator);
-                blinker.transform.parent = host.transform;
-                blinker.transform.localPosition = Vector3.zero;
-                blinker.name = Consts.BLINKER_TAG;
-
-                AudioSource.PlayClipAtPoint(Main.Instance.sounds.HerolingCapture, host.transform.position);
-            }
-        }
+        ++host.attachedHerolings;
     }
     void OnHerolingDetached(Actor host)
     {
-        var herolings = host.GetComponentsInChildren<HerolingActor>();
-        if (herolings.Length == 0)
-        {
-            var bypass = host.behavior as BypassedBehavior;
-            if (bypass != null)
-            {
-                bypass.Restore();
-
-                RemoveBlinker(host.transform);
-                var blinker = host.transform.FindChild(Consts.BLINKER_TAG);
-                if (blinker != null)
-                {
-                    GameObject.Destroy(blinker.gameObject);
-                }
-                overwhelmedByHerolings = null;
-            }
-        }
-    }
-    static void RemoveBlinker(Transform host)
-    {
-        var blinker = host.FindChild(Consts.BLINKER_TAG);
-        if (blinker != null)
-        {
-            GameObject.Destroy(blinker.gameObject);
-        }
+        --host.attachedHerolings;
     }
 
     void OnCollisionWithOverwhelmed(Actor host)
@@ -253,7 +209,7 @@ public sealed class GameController : IGame
         var playerActor = player.GetComponent<Actor>();
         if (playerActor.isHero)
         {
-            RemoveBlinker(host.transform);
+            host.attachedHerolings = 0;
             host.StartCoroutine(RunPossessionAnimation(host));
 
             GlobalGameEvent.Instance.FireEnemyDeath();

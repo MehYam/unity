@@ -21,7 +21,7 @@ public sealed class HUD : MonoBehaviour
         var gge = GlobalGameEvent.Instance; 
         gge.PlayerSpawned += OnPlayerSpawned;
         gge.HerolingLaunched += OnHerolingChange;
-        gge.HerolingDestroyed += OnHerolingChange;
+        //gge.HerolingDestroyed += OnHerolingChange;
         gge.HerolingAttached += OnHerolingAttached;
         gge.HerolingDetached += OnHerolingDetached;
         gge.HealthChange += OnHealthChange;

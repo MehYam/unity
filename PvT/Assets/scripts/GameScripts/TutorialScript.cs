@@ -122,12 +122,12 @@ public sealed class TutorialScript : MonoBehaviour
             playerActor.firingEnabled = true;
 
             // wait until the other ship is subdued
-            yield return StartCoroutine(Util.YieldUntil(() => game.overwhelmedByHerolings != null));
+            yield return StartCoroutine(Util.YieldUntil(() => mobActor.overwhelmedByHerolings));
 
             AnimatedText.FadeIn(hud.centerPrintBottom, "(QUICKLY! Collide with it!)", Consts.TEXT_FADE_SECONDS);
 
             // wait until the player has either passed or failed the task of possessing the ship
-            yield return StartCoroutine(Util.YieldUntil(() => game.overwhelmedByHerolings == null || game.enemyInPossession));
+            yield return StartCoroutine(Util.YieldUntil(() => !mobActor.overwhelmedByHerolings || game.enemyInPossession));
         }
         while (!game.enemyInPossession);
 
