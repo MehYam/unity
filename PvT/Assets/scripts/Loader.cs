@@ -202,7 +202,7 @@ public class Loader
         foreach (var strLevel in levelStrings)
         {
             var level = LoadLevel(strLevel);
-            if (level.numWaves > 0)
+            if (level.waves.Count > 0)
             {
                 retval.Add(level);
             }
@@ -311,13 +311,6 @@ public sealed class Level
         public Wave(IList<Squad> squads) { this.squads = squads; }
     }
 
-    readonly IList<Wave> waves;
-    int nextWave = 0;
+    public readonly IList<Wave> waves;
     public Level(IList<Wave> waves) { this.waves = waves; }
-
-    public Wave NextWave()
-    {
-        return nextWave < waves.Count ? waves[nextWave++] : null;
-    }
-    public int numWaves { get { return waves.Count; } }
 }

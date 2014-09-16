@@ -35,8 +35,6 @@ public class Main : MonoBehaviour
     /// </summary>
     public string defaultVehicle = "hero";
     public bool playMusic = true;
-    public bool runWaves = true;
-    public int startWave = 0;
 
     static Main _instance;
     static public Main Instance

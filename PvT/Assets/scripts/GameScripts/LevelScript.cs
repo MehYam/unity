@@ -1,12 +1,14 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 using PvT.Util;
 
 public class LevelScript : MonoBehaviour
 {
-    public GameObject[] rooms;
+    public int nextLevel = 0;
     public GameObject map;
+    public GameObject[] rooms;
     void Start()
     {
         DebugUtil.Log(this, "Start");
@@ -22,39 +24,54 @@ public class LevelScript : MonoBehaviour
     {
         Debug.Log("LevelScript.OnGameReady");
         Main.Instance.game.SpawnPlayer(Vector3.zero);
-        StartNextLevel();
+
+        StartCoroutine(RunLevel());
     }
 
-    /// <summary>
-    /// //////////////////// level runner, arguably this should be split from the tutorial sequence above
-    /// </summary>
-    void StartNextLevel()
-    {
-        StartNextWave();
-    }
-
-    int _liveEnemies = 0;
-    void StartNextWave()
+    int _liveEnemies;
+    IEnumerator RunLevel()
     {
         var game = Main.Instance.game;
-        var loader = Main.Instance.game.loader;
-        if (Main.Instance.runWaves)
+
+        foreach (var wave in game.loader.levels[nextLevel].waves)
         {
-            var wave = loader.levels[Main.Instance.startWave].NextWave();
+            _liveEnemies = 0;
             foreach (var squad in wave.squads)
             {
                 for (int i = 0; i < squad.count; ++i)
                 {
-                    var mob = game.SpawnMob(squad.enemyID);
-                    PositionMob(mob);
-
-                    ++_liveEnemies;
+                    SpawnMob(game, squad.enemyID);
                 }
             }
-        }
+
+            // wait until all the enemies are dead - but spawn randomly too
+            var spawnLimiter = new RateLimiter(Consts.GREENK_SPAWN_RATE, Consts.GREENK_SPAWN_RATE / 2);
+            while (_liveEnemies > 0)
+            {
+                spawnLimiter.Start();
+                yield return StartCoroutine(Util.YieldUntil(() =>
+                    _liveEnemies == 0 || spawnLimiter.reached
+                ));
+
+                if (_liveEnemies == 1 && spawnLimiter.reached)
+                {
+                    // always keep a mob handy in case the player needs to recapture one
+                    SpawnMob(game, "GREENK");
+                }
+            }
+        }        
+        yield return null;
     }
 
-    void PositionMob(GameObject mob)
+    void SpawnMob(IGame game, string id)
+    {
+        var mob = game.SpawnMob(id);
+        PositionMob(mob);
+
+        ++_liveEnemies;
+    }
+
+    static void PositionMob(GameObject mob)
     {
         // put the actor at the edge
         Vector3 spawnLocation;
@@ -76,9 +93,5 @@ public class LevelScript : MonoBehaviour
     void OnEnemyDestroyed()
     {
         --_liveEnemies;
-        if (_liveEnemies == 0)
-        {
-            StartNextWave();
-        }
     }
 }

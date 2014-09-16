@@ -147,7 +147,7 @@ public class Actor : MonoBehaviour
         }
     }
     static readonly Vector3 HEALTH_BAR_POSITION = new Vector3(0, 0.5f);
-    static readonly Vector3 OVERWHELM_BAR_POSITION = new Vector3(-0.5f, 0);
+    static readonly Vector3 OVERWHELM_BAR_POSITION = new Vector3(0, -0.5f);
     void Update()
     {
         if (visualBehavior != null)
@@ -190,12 +190,12 @@ public class Actor : MonoBehaviour
             {
                 var bar = (GameObject)GameObject.Instantiate(Main.Instance.OverwhelmProgressBar);
                 _overwhelmBar = bar.GetComponent<ProgressBar>();
-                _overwhelmBar.transform.Rotate(0, 0, 90);
+                //_overwhelmBar.transform.Rotate(0, 0, 90);
 
                 bar.transform.parent = Main.Instance.EffectParent.transform;
             }
             _overwhelmBar.gameObject.SetActive(true);
-            _overwhelmBar.percent = (attachedHerolings * Consts.HEROLING_HEALTH_OVERWHELM) / worldObject.health;
+            _overwhelmBar.percent = 1 - (attachedHerolings * Consts.HEROLING_HEALTH_OVERWHELM) / worldObject.health;
             _overwhelmBar.transform.position = transform.position + OVERWHELM_BAR_POSITION;
         }
         else if (_overwhelmBar != null)
@@ -213,7 +213,7 @@ public class Actor : MonoBehaviour
 
     void DetectChangeInOverwhelm()
     {
-        var shouldOverwhelm = attachedHerolings * Consts.HEROLING_HEALTH_OVERWHELM >= health;
+        var shouldOverwhelm = health > 0 && (attachedHerolings * Consts.HEROLING_HEALTH_OVERWHELM >= health);
         if (overwhelmedByHerolings && !shouldOverwhelm)
         {
             // un-overwhelm

@@ -45,7 +45,7 @@ public static class Consts
     static public readonly float HEROLING_ROAM_BOREDOM = 2;
     static public readonly float HEROLING_ATTACH_BOREDOM = 5;
     static public readonly int HEROLING_LIMIT = 3;
-    static public readonly float HEROLING_HEALTH_OVERWHELM = 8;
+    static public readonly float HEROLING_HEALTH_OVERWHELM = 20;
     static public readonly float HERO_REGEN = 1;
 
     static public readonly float HEROLING_OVERWHELM_DURATION = 2;
@@ -63,6 +63,8 @@ public static class Consts
     static public readonly float MAX_MOB_TURRET_ROTATION_DEG_PER_SEC = 45;
     static public readonly float MAX_MOB_HULL_ROTATION_DEG_PER_SEC = 1;
 
+    static public readonly float GREENK_SPAWN_RATE = 15;
+
     static public readonly float SMOOTH_DAMP_MULTIPLIER = 0.5f;
 
     static public readonly string BLINKER_TAG = "blinker";
@@ -71,7 +73,7 @@ public static class Consts
 #if DEBUG_INTRO
     static public readonly float TEXT_FADE_SECONDS = 0.2f;
 #else
-    static public readonly float TEXT_FADE_SECONDS = 4;
+    static public readonly float TEXT_FADE_SECONDS = 3f;
 #endif
     static public readonly float TEXT_FADE_SECONDS_FAST = TEXT_FADE_SECONDS / 2;
     static public readonly float TEXT_FADE_SECONDS_SLOW = TEXT_FADE_SECONDS * 2;

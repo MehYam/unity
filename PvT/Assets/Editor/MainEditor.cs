@@ -29,7 +29,7 @@ public class MainEditor : Editor
         //var hull = EditorGUILayout.TextField("Tank Hull", "tankhull0");
         //var turret = EditorGUILayout.TextField("Tank Turret", "tankturret0");
         var main = (Main) target;
-        main.startWave = (int)GUILayout.HorizontalSlider(main.startWave, 0, 17);
+        //main.startWave = (int)GUILayout.HorizontalSlider(main.startWave, 0, 17);
         if (GUILayout.Button("Respawn"))
         {
             main.Debug_Respawn();
