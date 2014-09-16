@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Text;
 
 using PvT.Util;
 
@@ -34,6 +35,16 @@ public class Loader
 
         levels = new ReadOnlyCollection<Level>(LoadLevels(strLevels));
 
+        var s = new StringBuilder();
+        foreach (var v in _vehicleLookup)
+        {
+            foreach (var w in v.Value.weapons)
+            {
+                s.Append(v.Value.name + ", ");
+                s.AppendLine(w.ToCSV());
+            }
+        }
+        Debug.Log("Weapons: \n" + s.ToString());
         _ai = LoadAI(strAI);
     }
 

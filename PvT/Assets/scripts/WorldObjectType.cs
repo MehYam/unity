@@ -103,6 +103,10 @@ public class WorldObjectType
         {
             return string.Format("Weapon {0} dmg {1} level {2}", type, damage, level);
         }
+        public string ToCSV()
+        {
+            return string.Format("{0},{1},{2},{3},{4},{5}", type, damage, offset.x, offset.y, angle, level);
+        }
     }
 }
 
@@ -175,6 +179,10 @@ public sealed class TankHullType : VehicleType
         go.rigidbody2D.angularDrag = 5;
         return go;
     }
+    public override string ToCSV()
+    {
+        return base.ToCSV() + turretPivotY;
+    }
 }
 
 public sealed class TankPartType : WorldObjectType
@@ -189,6 +197,10 @@ public sealed class TankPartType : WorldObjectType
         base(baseClass)
     {
         this.hullPivotY = hullPivotY;
+    }
+    public override string ToCSV()
+    {
+        return base.ToCSV() + hullPivotY;
     }
 }
 
