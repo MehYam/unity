@@ -18,14 +18,25 @@ public class HerolingActor : Actor
 
     RateLimiter _reabsorbTimeout;
     RateLimiter _roamBoredom;
-    void Awake()
+    void Start()
     {
         _reabsorbTimeout = new RateLimiter(Consts.HEROLING_UNABSORBABLE);
         _roamBoredom = new RateLimiter(Consts.HEROLING_ROAM_BOREDOM);
 
+        Debug.Log("HerolingActor.SetBehavior");
         SetBehavior(ROAM);
 
         ++ActiveHerolings;
+
+        SetExpiry(Actor.EXPIRY_INFINITE);
+
+        // make it appear on top of mobs and friendlies
+        GetComponent<SpriteRenderer>().sortingLayerID = (int)Consts.SortingLayer.HEROLINGS;
+
+        // give it a push
+        //body.velocity =
+        //    launcher.rigidbody2D.velocity + 
+        //    Util.GetLookAtVector(actor.transform.rotation.eulerAngles.z, type.maxSpeed);
 
         GlobalGameEvent.Instance.FireHerolingLaunched();
     }
@@ -123,8 +134,8 @@ public class HerolingActor : Actor
 
     //KAI: cheese?
     static readonly IActorBehavior ROAM = new CompositeBehavior(
-        ActorBehaviorFactory.Instance.faceForward,
-        ActorBehaviorFactory.Instance.playerGravitate
+        ActorBehaviorFactory.Instance.faceMouse,
+        ActorBehaviorFactory.Instance.thrust
     );
 
     static readonly IActorBehavior ATTACHED = null;

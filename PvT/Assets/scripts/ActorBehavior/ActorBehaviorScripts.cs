@@ -70,7 +70,7 @@ public sealed class ActorBehaviorScripts
         };
         _behaviorFactory["BAT"] = () =>
         {
-            return null;
+            return AttackAndFlee(3, 1, 3);
         };
     }
 }

@@ -82,18 +82,25 @@ public sealed class GameController : IGame
         if (tank == null)
         {
             var playerVehicle = loader.GetVehicle(main.defaultVehicle);
-            var player = playerVehicle.Spawn(Consts.SortingLayer.FRIENDLY);
-            InitPlayerVehicle(player, playerVehicle);
-            SetPlayerPlaneBehaviors(player, playerVehicle);
+            var go = playerVehicle.Spawn(Consts.SortingLayer.FRIENDLY);
+            InitPlayerVehicle(go, playerVehicle);
+            SetPlayerPlaneBehaviors(go, playerVehicle);
+
+            this.player = go;
         }
         else
         {
             var tankHelper = new TankSpawnHelper(this, tank.hullName, tank.turretName);
             InitPlayerVehicle(tankHelper.hullGO, tankHelper.hull);
             SetPlayerTankBehaviors(tankHelper);
+
+            this.player = tankHelper.hullGO;
         }
+        SetSecondaryHerolingBehavior((CompositeBehavior)this.player.GetComponent<Actor>().behavior);
 
         this.player.gameObject.transform.position = location;
+
+        GlobalGameEvent.Instance.FirePlayerSpawned(this.player);
         return this.player.gameObject;
     }
 
@@ -166,23 +173,8 @@ public sealed class GameController : IGame
         {
             // treat the ammo like a vehicle (i.e. rocket)
             body.mass = type.mass;
-            //KAI: MAJOR CHEESE
-            if (weapon.type == "HEROLING")
-            {
-                actor.SetExpiry(Actor.EXPIRY_INFINITE);
-
-                // make it appear on top of mobs and friendlies
-                sprite.sortingLayerID = (int)Consts.SortingLayer.HEROLINGS;
-
-                // give it a push
-                body.velocity =
-                    launcher.rigidbody2D.velocity + 
-                    Util.GetLookAtVector(actor.transform.rotation.eulerAngles.z, type.maxSpeed);
-            }
-            else
-            {
-                actor.behavior = ActorBehaviorFactory.Instance.thrust;
-            }
+            Debug.Log("SpawnAmmo set behavior");
+            actor.behavior = ActorBehaviorFactory.Instance.thrust;
         }
 
         if (launcher.worldObject is TankPartType)
@@ -265,6 +257,7 @@ public sealed class GameController : IGame
         {
             SetPlayerPlaneBehaviors(player, vehicle);
         }
+        SetSecondaryHerolingBehavior((CompositeBehavior)player.GetComponent<Actor>().behavior);
 
         // 5. Destroy the old hero and return the herolings
         GameObject.Destroy(oldHero);
@@ -273,6 +266,7 @@ public sealed class GameController : IGame
         // 6. Resume all activity
         Time.timeScale = timeScale;
 
+        GlobalGameEvent.Instance.FirePlayerSpawned(this.player);
         yield return null;
     }
     IEnumerator RunDepossessionAnimation()
@@ -404,12 +398,6 @@ public sealed class GameController : IGame
             behaviors.Add(bf.heroRegen);
         }
 
-        if (!isHero)
-        {
-            // captured ship, add herolings to secondary fire
-            var secondaryFire = bf.CreateAutofire(new RateLimiter(0.5f), Consts.Layer.HEROLINGS, heroType.weapons);
-            behaviors.Add(bf.OnPlayerInput("Fire2", new CompositeBehavior(bf.faceMouse, secondaryFire)));
-        }
         actor.behavior = behaviors;
     }
     void SetPlayerTankBehaviors(TankSpawnHelper tankHelper)
@@ -432,18 +420,24 @@ public sealed class GameController : IGame
             bf.faceMouse,
             bf.OnFire(turretFire, turretFire)
         );
-
     }
-    void InitPlayerVehicle(GameObject go, VehicleType vehicle)
+    void SetSecondaryHerolingBehavior(CompositeBehavior behaviors)
     {
-        go.name += " player";
-        go.layer = (int)Consts.Layer.FRIENDLY;
-        go.renderer.sortingLayerID = (int)Consts.SortingLayer.FRIENDLY;
+        var bf = ActorBehaviorFactory.Instance;
 
-        Camera.main.GetComponent<CameraFollow>().Target = go;
-        
-        player = go;
-        GlobalGameEvent.Instance.FirePlayerSpawned(go);
+        var herolingFire = Main.Instance.game.loader.GetVehicle("HERO").weapons;
+
+        // captured ship, add herolings to secondary fire
+        var secondaryFire = bf.CreateAutofire(new RateLimiter(0.5f), Consts.Layer.HEROLINGS, herolingFire);
+        behaviors.Add(bf.OnPlayerInput("Fire2", new CompositeBehavior(bf.faceMouse, secondaryFire)));
+    }
+    static void InitPlayerVehicle(GameObject player, VehicleType vehicle)
+    {
+        player.name += " player";
+        player.layer = (int)Consts.Layer.FRIENDLY;
+        player.renderer.sortingLayerID = (int)Consts.SortingLayer.FRIENDLY;
+
+        Camera.main.GetComponent<CameraFollow>().Target = player;
     }
 
     void OnActorDeath(Actor actor)

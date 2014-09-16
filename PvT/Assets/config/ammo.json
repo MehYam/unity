@@ -60,6 +60,6 @@
 		"asset": "heroling",
 		"mass": "1",
 		"maxSpeed": "8",
-		"acceleration": "5"
+		"acceleration": "20"
 	}
 }

@@ -195,7 +195,7 @@ public class Actor : MonoBehaviour
                 bar.transform.parent = Main.Instance.EffectParent.transform;
             }
             _overwhelmBar.gameObject.SetActive(true);
-            _overwhelmBar.percent = 1 - (attachedHerolings * Consts.HEROLING_HEALTH_OVERWHELM) / worldObject.health;
+            _overwhelmBar.percent = (attachedHerolings * Consts.HEROLING_HEALTH_OVERWHELM) / worldObject.health;
             _overwhelmBar.transform.position = transform.position + OVERWHELM_BAR_POSITION;
         }
         else if (_overwhelmBar != null)

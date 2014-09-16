@@ -76,11 +76,11 @@ public class Fader : MonoBehaviour  // this is almost the same class as Tween
         public FadeState(float startTime, float endTime, float startAlpha, float targetAlpha) { this.startTime = startTime; this.endTime = endTime; this.startAlpha = startAlpha; this.targetAlpha = targetAlpha; }
     }
     FadeState _fade;
-    public void Fade(float target, float seconds)
+    public void Fade(float targetAlpha, float seconds)
     {
         seconds = Mathf.Max(0.00001f, seconds); // prevent DIVZERO
 
-        _fade = new FadeState(Time.time, Time.time + seconds, 1 - target, target);
+        _fade = new FadeState(Time.time, Time.time + seconds, 1 - targetAlpha, targetAlpha);
         gameObject.SetActive(true);
 
         DebugUtil.Assert(_setter != null);
