@@ -6,7 +6,6 @@ using PvT.Util;
 
 public class LevelScript : MonoBehaviour
 {
-    public int nextLevel = 0;
     public GameObject map;
     public GameObject[] rooms;
     void Start()
@@ -25,15 +24,36 @@ public class LevelScript : MonoBehaviour
         Debug.Log("LevelScript.OnGameReady");
         Main.Instance.game.SpawnPlayer(Vector3.zero);
 
-        StartCoroutine(RunLevel());
+        StartCoroutine(RunLevels());
+    }
+
+    IEnumerator RunLevels()
+    {
+        int iLevel = 0;
+
+        var main = Main.Instance;
+        foreach (var level in main.game.loader.levels)
+        {
+            AnimatedText.FadeIn(main.hud.centerPrintTop, "Chapter " + ++iLevel, Consts.TEXT_FADE_SECONDS);
+            yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
+
+            AnimatedText.FadeOut(main.hud.centerPrintTop, Consts.TEXT_FADE_SECONDS);
+
+            yield return StartCoroutine(RunLevel(level));
+
+            Main.Instance.hud.curtain.Fade(1, Consts.TEXT_FADE_SECONDS);
+            yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
+
+            Main.Instance.hud.curtain.Fade(0, Consts.TEXT_FADE_SECONDS_FAST);
+        }
     }
 
     int _liveEnemies;
-    IEnumerator RunLevel()
+    IEnumerator RunLevel(Level level)
     {
         var game = Main.Instance.game;
 
-        foreach (var wave in game.loader.levels[nextLevel].waves)
+        foreach (var wave in level.waves)
         {
             _liveEnemies = 0;
             foreach (var squad in wave.squads)
@@ -53,7 +73,7 @@ public class LevelScript : MonoBehaviour
                     _liveEnemies == 0 || spawnLimiter.reached
                 ));
 
-                if (_liveEnemies == 1 && spawnLimiter.reached)
+                if (_liveEnemies > 0 && spawnLimiter.reached)
                 {
                     // always keep a mob handy in case the player needs to recapture one
                     SpawnMob(game, "GREENK");
