@@ -38,6 +38,50 @@ public class Loader
 
         levels = new ReadOnlyCollection<Level>(LoadLevels(strLevels));
         _ai = LoadAI(strAI);
+
+        FixupWeaponLevels();
+    }
+
+    void FixupWeaponLevels()
+    {
+        // scan through all the weapon severities to find the min/max damage per weapon type.
+        // we'll use this info later to give the more menacing weapons an appropriate effect
+        var damageRanges = new Dictionary<string, Pair<float, float>>();
+        foreach (var vehicle in _vehicleLookup)
+        {
+            // 1. find all the weapon damage ranges
+            foreach (var weapon in vehicle.Value.weapons)
+            {
+                Pair<float, float> damageRange = null;
+                damageRanges.TryGetValue(weapon.type, out damageRange);
+                if (damageRange == null)
+                {
+                    damageRange = new Pair<float, float>(float.MaxValue, float.MinValue);
+                    damageRanges[weapon.type] = damageRange;
+                }
+
+                if (weapon.damage < damageRange.first)
+                {
+                    damageRange.first = weapon.damage;
+                }
+                if (weapon.damage > damageRange.second)
+                {
+                    damageRange.second = weapon.damage;
+                }
+            }
+        }
+        // 2. do the fix up
+        foreach (var vehicle in _vehicleLookup)
+        {
+            foreach (var weapon in vehicle.Value.weapons)
+            {
+                var damageRange = damageRanges[weapon.type];
+                var magnitude = damageRange.second - damageRange.first;
+                weapon.severity = magnitude == 0 ? 1 : (weapon.damage - damageRange.first) / magnitude;
+
+                Debug.Log("severity " + weapon.severity);
+            }
+        }
     }
 
     void ExportCSV(string path, Dictionary<string, VehicleType> items)

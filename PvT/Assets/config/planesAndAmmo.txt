@@ -1,5 +1,7 @@
 name,asset,mass,speed,health,accel,inertia,collision
 BULLET,bullet,0.0,8.0,0,0.0,0.0,0.0
+BULLET1,bullet1,0.0,10.0,0,0.0,0.0,0.0
+BULLET2,bullet2,0.0,11.0,0,0.0,0.0,0.0
 CANNONROUND0,cannonround0,0.0,16.0,0,0.0,0.0,0.0
 CANNONROUND1,cannonround1,0.0,16.0,0,0.0,0.0,0.0
 FUSION,fusionBlast,0.0,5.0,0,0.0,0.0,0.0

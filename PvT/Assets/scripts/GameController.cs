@@ -154,6 +154,7 @@ public sealed class GameController : IGame
 #endif
         go.transform.parent = Main.Instance.AmmoParent.transform;
         go.layer = (int)layer;
+        go.transform.localScale.Scale(new Vector3(weapon.severity + 0.5f, weapon.severity + 0.5f, 1));
 
         var body = go.GetComponent<Rigidbody2D>();
         body.drag = 0;

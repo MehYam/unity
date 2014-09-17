@@ -137,8 +137,10 @@ public class Actor : MonoBehaviour
 
     protected virtual void FixedUpdate()
     {
+        var main = Main.Instance;
+
         DetectChangeInOverwhelm();
-        if (behavior != null)
+        if (behavior != null && main.game.player != null)
         {
             behavior.FixedUpdate(this);
         }

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 using PvT.Util;
 
@@ -77,15 +78,16 @@ public class WorldObjectType
         public readonly int damage;
         public readonly Vector2 offset;
         public readonly float angle;
-        public readonly int level; // KAI: nuke this.... turn it instead into a new type
 
-        public Weapon(string type, int dmg, Vector2 offset, float angle, int level)
+        public float severity { get; set; } // calculated later, once we know all the weapons
+
+        public Weapon(string type, int dmg, Vector2 offset, float angle)
         {
             this.type = type;
             this.damage = dmg;
             this.offset = offset;
             this.angle = angle;
-            this.level = level;
+            this.severity = 0;
         }
 
         static public Weapon FromString(string str, float offsetY = 0)
@@ -100,16 +102,16 @@ public class WorldObjectType
             var angle = parts.GetFloat();
             var level = parts.GetInt();
 
-            return new Weapon(type, dmg, new Vector2(x, y), angle, level);
+            return new Weapon(type, dmg, new Vector2(x, y), angle);
         }
 
         public override string ToString()
         {
-            return string.Format("Weapon {0} dmg {1} level {2}", type, damage, level);
+            return string.Format("Weapon {0} dmg {1} severity {2}", type, damage, severity);
         }
         public string ToCSV()
         {
-            return string.Format("{0},{1},{2},{3},{4},{5}", type, damage, offset.x, offset.y, angle, level);
+            return string.Format("{0},{1},{2},{3},{4},{5}", type, damage, offset.x, offset.y, angle, severity);
         }
     }
 }
