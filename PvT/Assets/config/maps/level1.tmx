@@ -28,7 +28,7 @@
    <property name="unity:sortingLayerName" value="ground"/>
   </properties>
   <data encoding="base64" compression="zlib">
-   eJzt1rsOgDAIhWGstlovff/HlUaadBYSGM7wr+QL02lEdAXo4XZuC1CGBRZYYIEFlgBZWBYuSaujpTsOrkhV4dFashgaffujKO5ZWer0Hy/LOf1j/Od2sgzP2Il/HVYWq2CBBRZYYIHF2xHR0ndQClDfYi/KRhTY
+   eJzNWNEOwiAMZCrTqfP/P1eWrMmFtFDWwvZwL5OV2x29EucQwgz4JXwqWIW10nPp/RK2Gt+ERwXvvWa+Nu51nsr3JU5aHkc4ltZzfGrf0gukJXpr1cSiJWmzJNw77TMl3BT1UZte/rSc5TX4nNnSHlr/o8BZq623hhwXrbYjuLTmhIQWfSUuVhCHV9D3ai8u2KPaXu3BZdr12PoTZ2XNbw8u5AedCzz3Hj3dqsF8cH9PLqQB+WGZJ15cFtDnaL1o+JbcH+sdyJKved9a51o01MjvidZ+JI+knK5lOGaJdV6gzhwn9BB55RnvkZfkkaQ1ZgXywl72up9iT9cyCn/3muMSl7NxFS7UA1fgcsY9ktPDux8tvmB2l7JuhC8cRnLiNOHQ07P8fNTQUx9utmv+FyJOnuDOKj77A/o7F1U=
   </data>
  </layer>
  <objectgroup name="collision (border)">

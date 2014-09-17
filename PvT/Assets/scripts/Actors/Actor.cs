@@ -331,7 +331,7 @@ public class Actor : MonoBehaviour
         
         var otherActor = other.GetComponent<Actor>();
         var thisIsHeroCapturingOverwhelmedMob = otherActor != null && otherActor.overwhelmedByHerolings && game.player == self.gameObject;
-        var thisIsOverwhelmedMobBeingCaptured = overwhelmedByHerolings && game.player == otherActor.gameObject;
+        var thisIsOverwhelmedMobBeingCaptured = otherActor != null && overwhelmedByHerolings && game.player == otherActor.gameObject;
 
         if (thisIsHeroCapturingOverwhelmedMob)
         {
