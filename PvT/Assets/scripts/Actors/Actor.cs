@@ -304,10 +304,10 @@ public class Actor : MonoBehaviour
     }
     void OnCollisionEnter2D(Collision2D collision)
     {
-        //Debug.Log("collide " + worldObject.name);
-        //Debug.Log(collision.relativeVelocity.magnitude);
         foreach (ContactPoint2D contact in collision.contacts)
         {
+            //Debug.Log(string.Format("{0} sees ContactPoint2D.collider {1} <=> ContactPoint2D.otherCollider {2}", name, contact.collider.name, contact.otherCollider.name));
+
             if (contact.otherCollider.gameObject == gameObject &&
                 contact.collider.gameObject.layer != contact.otherCollider.gameObject.layer)
             {
@@ -321,30 +321,34 @@ public class Actor : MonoBehaviour
 
     protected virtual void HandleCollision(ContactPoint2D contact)
     {
-        var collider = contact.collider;
-        var me = contact.otherCollider;
+        var other = contact.collider;
+        var self = contact.otherCollider;
         //Debug.Log(string.Format("Collision {0} to {1}, me {2}", collider.name, other.name, name));
 
-        DebugUtil.Assert(me.gameObject == gameObject);
+        DebugUtil.Assert(self.gameObject == gameObject);
 
         var game = Main.Instance.game;
         
-        // if an overwhelmed ship is being hit by the hero, run the possession
-        var colliderActor = collider.GetComponent<Actor>();
-        if (colliderActor != null && colliderActor.overwhelmedByHerolings && game.player == me.gameObject)
+        var otherActor = other.GetComponent<Actor>();
+        var thisIsHeroCapturingOverwhelmedMob = otherActor != null && otherActor.overwhelmedByHerolings && game.player == self.gameObject;
+        var thisIsOverwhelmedMobBeingCaptured = overwhelmedByHerolings && game.player == otherActor.gameObject;
+
+        if (thisIsHeroCapturingOverwhelmedMob)
         {
-            GlobalGameEvent.Instance.FireCollisionWithOverwhelmed(collider.gameObject.GetComponent<Actor>());
+            // fire an event signalling that capture should take place
+            GlobalGameEvent.Instance.FireCollisionWithOverwhelmed(other.gameObject.GetComponent<Actor>());
         }
-        else
+        else if (!thisIsOverwhelmedMobBeingCaptured)
         {
-            if (collider.gameObject.layer > me.gameObject.layer) // prevent duplicate collision sparks
+            // give collision damage
+            if (other.gameObject.layer > self.gameObject.layer) // prevent duplicate collision sparks
             {
                 var boom = Main.Instance.game.effects.GetRandomSmallExplosion().ToRawGameObject(Consts.SortingLayer.EXPLOSIONS);
                 boom.transform.localPosition = contact.point;
             }
-            if (colliderActor != null)
+            if (otherActor != null)
             {
-                TakeDamage(colliderActor.collisionDamage * Random.Range(0.9f, 1.1f));
+                TakeDamage(otherActor.collisionDamage * Random.Range(0.9f, 1.1f));
             }
         }
     }

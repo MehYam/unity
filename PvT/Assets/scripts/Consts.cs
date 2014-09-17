@@ -55,7 +55,7 @@ public static class Consts
 
     static public readonly float SHIELD_HEALTH_MULTIPLIER = 1;
     static public readonly float SHIELD_BOOST = 0.5f;
-    static public readonly float COLLISION_DAMAGE_MULTIPLIER = 0.5f;
+    static public readonly float COLLISION_DAMAGE_MULTIPLIER = 1f;
     static public readonly float POST_DAMAGE_INVULN = 1;
     static public readonly float POST_DEPOSSESSION_INVULN = 4;
     

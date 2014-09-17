@@ -25,7 +25,11 @@ public sealed class ActorBehaviorScripts
     public IActorBehavior Get(string key)
     {
         Func<IActorBehavior> retval = null;
-        _behaviorFactory.TryGetValue(key, out retval);
+        if (!_behaviorFactory.TryGetValue(key, out retval))
+        {
+            Debug.LogWarning(string.Format("no AI found for {0}, substituting a default one", key));
+            retval = _behaviorFactory["MOTH"];
+        }
         return retval != null ? retval() : null;
     }
 

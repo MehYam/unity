@@ -192,8 +192,6 @@ public class Loader
         var inertia = csvHelper.GetFloat();
         var collDmg = csvHelper.GetFloat() * Consts.COLLISION_DAMAGE_MULTIPLIER;
 
-        // OVERRIDE - we'll make collision damage = 1/2 the health of the ship
-        collDmg = worldObject.health / 2;
         return new VehicleType(
                 worldObject,
                 accel,
