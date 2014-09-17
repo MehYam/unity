@@ -23,7 +23,6 @@ public class HerolingActor : Actor
         _reabsorbTimeout = new RateLimiter(Consts.HEROLING_UNABSORBABLE);
         _roamBoredom = new RateLimiter(Consts.HEROLING_ROAM_BOREDOM);
 
-        Debug.Log("HerolingActor.SetBehavior");
         SetBehavior(ROAM);
 
         ++ActiveHerolings;

@@ -151,11 +151,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Bounce: {fileID: 6200000, guid: c4e015d2c312dd944b4a529c783e8795, type: 2}
-  Vehicles: {fileID: 4900000, guid: 6f0130c3e04f4334aa58240080c71032, type: 3}
+  Vehicles: {fileID: 4900000, guid: 9bf6f7f6ff13af54aa86e6377228fc6a, type: 3}
   Tanks: {fileID: 4900000, guid: 65b8fd4495cb3214583906b37503d222, type: 3}
-  TankHulls: {fileID: 4900000, guid: 642b1cee0fc5ae24d8f8823d544a1af8, type: 3}
-  TankTurrets: {fileID: 4900000, guid: a7265d908f2e32d4aa5e18d2c247c427, type: 3}
-  Ammo: {fileID: 4900000, guid: a4b492bf4e95fc14184e1d6c79489364, type: 3}
+  TankHulls: {fileID: 4900000, guid: 45f928cee5d548946969be75e8989a7c, type: 3}
+  TankTurrets: {fileID: 4900000, guid: 40ddc28d15d6e49419d1dca9b59ff237, type: 3}
+  Weapons: {fileID: 4900000, guid: 75040aa7cf0692d42999717761335d33, type: 3}
   Levels: {fileID: 4900000, guid: 77022b18d2b218d4eae167bb0696d069, type: 3}
   AI: {fileID: 4900000, guid: f099c617aea0bc3489690336e990cb2b, type: 3}
   Misc: {fileID: 4900000, guid: fe79f9de671e9fb41a1b62a9e434d791, type: 3}

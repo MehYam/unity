@@ -1,0 +1,6 @@
+name,asset,mass,speed,health,accel,inertia,collision,turretPivotY
+tankhull1,tankhull1,30,30,1300,15,0,16.5,55
+tankhull2,tankhull2,30,30,2000,15,0,16.5,71
+tankhull3,tankhull3,30,30,3000,15,0,16.5,50
+tankhull4,tankhull4,30,30,4000,15,0,16.5,32
+tankhull0,tankhull0,30,30,800,60,0,16.5,52

@@ -13,7 +13,7 @@ public class Main : MonoBehaviour
     public TextAsset Tanks;
     public TextAsset TankHulls;
     public TextAsset TankTurrets;
-    public TextAsset Ammo;
+    public TextAsset Weapons;
     public TextAsset Levels;
     public TextAsset AI;
     public TextAsset Misc;
@@ -71,7 +71,7 @@ public class Main : MonoBehaviour
 	}
     Loader CreateLoader()
     {
-        return new Loader(Vehicles.text, Tanks.text, TankHulls.text, TankTurrets.text, Ammo.text, Levels.text, AI.text, Misc.text);
+        return new Loader(Vehicles.text, Tanks.text, TankHulls.text, TankTurrets.text, Weapons.text, Levels.text, AI.text, Misc.text);
     }
     public void Debug_Respawn()
     {

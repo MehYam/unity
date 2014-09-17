@@ -1,0 +1,6 @@
+name,asset,mass,speed,unused,unused,unused,unused,pivotY,,,
+tankturret2,tankturret2,0,0,0,0,0,0,50,,,
+tankturret3,tankturret3,0,0,0,0,0,0,30,,,
+tankturret4,tankturret4,0,0,0,0,0,0,33,,,
+tankturret0,tankturret0,0,0,0,0,0,0,50,,,
+tankturret1,tankturret1,0,0,0,0,0,0,36,,,

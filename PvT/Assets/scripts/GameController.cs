@@ -158,7 +158,6 @@ public sealed class GameController : IGame
         var body = go.GetComponent<Rigidbody2D>();
         body.drag = 0;
 
-        var sprite = go.GetComponent<SpriteRenderer>();
         var actor = go.GetComponent<Actor>();
         actor.SetExpiry(2);
         actor.collisionDamage = weapon.damage;
@@ -173,7 +172,6 @@ public sealed class GameController : IGame
         {
             // treat the ammo like a vehicle (i.e. rocket)
             body.mass = type.mass;
-            Debug.Log("SpawnAmmo set behavior");
             actor.behavior = ActorBehaviorFactory.Instance.thrust;
         }
 
@@ -324,7 +322,7 @@ public sealed class GameController : IGame
         {
             hull = game.loader.GetTankHull(tankHull);
             turret = game.loader.GetTankPart(tankTurret);
-            var tread = game.loader.GetTankPart("tanktreadParent");
+            var tread = game.loader.GetMisc("tanktreadParent");
 
             hullGO = hull.Spawn(Consts.SortingLayer.TANKBODY);
             turretGO = turret.Spawn(Consts.SortingLayer.TANKTURRET);
@@ -375,7 +373,6 @@ public sealed class GameController : IGame
         var behaviors = new CompositeBehavior();
         behaviors.Add(new PlayerInput(bf.faceForward));
 
-        Debug.Log(vehicle);
         var actor = go.GetComponent<Actor>();
         var heroType = Main.Instance.game.loader.GetVehicle("HERO");
         var isHero = vehicle == heroType;

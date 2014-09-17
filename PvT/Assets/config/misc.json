@@ -50,5 +50,9 @@
 	"vehicleExplosion":
 	{
 		"asset": "vehicleExplosion"
+	},
+	"tanktreadParent":
+	{
+		"asset": "tanktreadParent"
 	}
 }

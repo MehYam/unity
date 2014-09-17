@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
+using PvT.Util;
+
 public class WorldObjectType
 {
     readonly GameObject prefab;
@@ -88,13 +90,15 @@ public class WorldObjectType
 
         static public Weapon FromString(string str, float offsetY = 0)
         {
-            var parts = str.Split(',');
-            string type = parts[0];
-            int dmg = int.Parse(parts[1]);
-            float x = float.Parse(parts[2]) / Consts.PixelsToUnits;
-            float y = offsetY + float.Parse(parts[3])/Consts.PixelsToUnits;
-            float angle = parts.Length > 4 ? float.Parse(parts[4]) : 0;
-            int level = parts.Length > 5 ? int.Parse(parts[5]) : 0;
+            var parts = new Util.CSVParseHelper(str);
+            parts.SetIndex(1);
+
+            var type = parts.GetString();
+            var dmg = parts.GetInt();
+            var x = parts.GetFloat() / Consts.PixelsToUnits;
+            var y = offsetY + parts.GetFloat()/Consts.PixelsToUnits;
+            var angle = parts.GetFloat();
+            var level = parts.GetInt();
 
             return new Weapon(type, dmg, new Vector2(x, y), angle, level);
         }
@@ -181,7 +185,7 @@ public sealed class TankHullType : VehicleType
     }
     public override string ToCSV()
     {
-        return base.ToCSV() + turretPivotY;
+        return base.ToCSV() + ", " + turretPivotY;
     }
 }
 
@@ -200,7 +204,7 @@ public sealed class TankPartType : WorldObjectType
     }
     public override string ToCSV()
     {
-        return base.ToCSV() + hullPivotY;
+        return base.ToCSV() + ", " + hullPivotY;
     }
 }
 

@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using System.Linq;
 
 using Random = UnityEngine.Random;
 
@@ -228,6 +231,48 @@ namespace PvT.Util
             {
                 yield return new WaitForEndOfFrame();
             }
+        }
+
+        public static string[] SplitLines(string lines, bool skipHeader = false)
+        {
+            var retval = lines.Split("\n\r".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            if (skipHeader)
+            {
+                var hack = new string[retval.Length - 1];
+                Array.Copy(retval, 1, hack, 0, hack.Length);
+
+                retval = hack;
+            }
+       
+            return retval;
+        }
+        public static IEnumerable<string[]> ReadCSV(string CSV, bool skipHeader = false)
+        {
+            var lines = SplitLines(CSV, skipHeader);
+            foreach (var line in lines)
+            {
+                yield return SplitCSVLine(line);
+            }
+        }
+        static public string[] SplitCSVLine(string line)
+        {
+            return (from System.Text.RegularExpressions.Match m in System.Text.RegularExpressions.Regex.Matches(line,
+            @"(((?<x>(?=[,\r\n]+))|""(?<x>([^""]|"""")+)""|(?<x>[^,\r\n]+)),?)",
+            System.Text.RegularExpressions.RegexOptions.ExplicitCapture)
+                    select m.Groups[1].Value).ToArray();
+        }
+        public sealed class CSVParseHelper
+        {
+            public string GetString() { return items[iItem++]; }
+            public float GetFloat() { return float.Parse(items[iItem++]); }
+            public int GetInt() { return int.Parse(items[iItem++]); }
+
+            public int Count { get { return items.Length; } }
+            public void SetIndex(int i) { iItem = i; }
+
+            readonly string[] items;
+            int iItem = 0;
+            public CSVParseHelper(string csvLine) { items = Util.SplitCSVLine(csvLine); }
         }
     }
 
