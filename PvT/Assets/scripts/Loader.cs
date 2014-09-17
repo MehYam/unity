@@ -188,11 +188,17 @@ public class Loader
     }
     static VehicleType LoadVehicleType(WorldObjectType worldObject, Util.CSVParseHelper csvHelper)
     {
+        var accel = csvHelper.GetFloat();
+        var inertia = csvHelper.GetFloat();
+        var collDmg = csvHelper.GetFloat() * Consts.COLLISION_DAMAGE_MULTIPLIER;
+
+        // OVERRIDE - we'll make collision damage = 1/2 the health of the ship
+        collDmg = worldObject.health / 2;
         return new VehicleType(
                 worldObject,
-                csvHelper.GetFloat(),
-                csvHelper.GetFloat(),
-                csvHelper.GetFloat() * Consts.COLLISION_DAMAGE_MULTIPLIER
+                accel,
+                inertia,
+                collDmg
         );
     }
     static Dictionary<string, VehicleType> LoadVehicles(string csv, string assetPath, Dictionary<string, IList<string>> weaponStrings)

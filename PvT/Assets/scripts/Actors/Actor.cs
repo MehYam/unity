@@ -32,6 +32,10 @@ public class Actor : MonoBehaviour
         {
             GameObject.Destroy(_healthBar.gameObject);
         }
+        if (_overwhelmBar != null)
+        {
+            GameObject.Destroy(_overwhelmBar.gameObject);
+        }
     }
 
     WorldObjectType _worldObject;
@@ -85,7 +89,12 @@ public class Actor : MonoBehaviour
         {
             //KAI: cheese - sort this out
             var v = (VehicleType) worldObject;
-            return (modifier != null) ? v.acceleration + modifier.acceleration : v.acceleration;
+
+            var modifiedAcceleration = (modifier != null) ? v.acceleration + modifier.acceleration : v.acceleration;
+
+            // We want acceleration to be a direct value affecting velocity, without being slowed by mass.  Therefore,
+            // multiple it by mass to make the force.  If we start using drag more, we'll have to compensate for that as well.
+            return modifiedAcceleration * worldObject.mass;
         }
     }
     public bool firingEnabled { get; set; }

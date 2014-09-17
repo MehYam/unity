@@ -377,7 +377,7 @@ public sealed class GameController : IGame
         var heroType = Main.Instance.game.loader.GetVehicle("HERO");
         var isHero = vehicle == heroType;
 
-        if (vehicle.weapons[0].type == "SHIELD") //KAI: cheese
+        if (vehicle.weapons.Length > 0 && vehicle.weapons[0].type == "SHIELD") //KAI: cheese
         {
             behaviors.Add(bf.CreateShield());
         }
@@ -387,7 +387,9 @@ public sealed class GameController : IGame
 
             var primaryFire = bf.CreateAutofire(new RateLimiter(0.5f), layer);
             behaviors.Add(bf.OnPlayerInput("Jump", primaryFire));
-            behaviors.Add(bf.OnPlayerInput("Fire1", new CompositeBehavior(bf.faceMouse, primaryFire)));
+
+            var fire1 = isHero ? primaryFire : new CompositeBehavior(bf.faceMouse, primaryFire);
+            behaviors.Add(bf.OnPlayerInput("Fire1", fire1));
             if (isHero)
             {
                 behaviors.Add(bf.CreateHeroAnimator(go));
@@ -426,13 +428,12 @@ public sealed class GameController : IGame
 
         // captured ship, add herolings to secondary fire
         var secondaryFire = bf.CreateAutofire(new RateLimiter(0.5f), Consts.Layer.HEROLINGS, herolingFire);
-        behaviors.Add(bf.OnPlayerInput("Fire2", new CompositeBehavior(bf.faceMouse, secondaryFire)));
+        behaviors.Add(bf.OnPlayerInput("Fire2", secondaryFire));
     }
     static void InitPlayerVehicle(GameObject player, VehicleType vehicle)
     {
         player.name += " player";
         player.layer = (int)Consts.Layer.FRIENDLY;
-        player.renderer.sortingLayerID = (int)Consts.SortingLayer.FRIENDLY;
 
         Camera.main.GetComponent<CameraFollow>().Target = player;
     }
