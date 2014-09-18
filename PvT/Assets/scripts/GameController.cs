@@ -389,7 +389,7 @@ public sealed class GameController : IGame
         {
             var layer = isHero ? Consts.Layer.HEROLINGS : Consts.Layer.FRIENDLY_AMMO;
 
-            var primaryFire = bf.CreateAutofire(layer, heroType.weapons);
+            var primaryFire = bf.CreateAutofire(layer, vehicle.weapons);
             behaviors.Add(bf.OnPlayerInput("Jump", primaryFire));
 
             var fire1 = isHero ? primaryFire : new CompositeBehavior(bf.faceMouse, primaryFire);
