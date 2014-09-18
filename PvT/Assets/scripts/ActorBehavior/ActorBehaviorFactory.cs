@@ -233,14 +233,14 @@ public sealed class ActorBehaviorFactory
     {
         return new RoamBehavior(maxRotate, stopBeforeRotate);
     }
-    public IActorBehavior CreateAutofire(RateLimiter rate, Consts.Layer layer, WorldObjectType.Weapon[] weapons = null)
+    public IActorBehavior CreateAutofire(Consts.Layer layer, WorldObjectType.Weapon[] weapons)
     {
-        return new AutofireBehavior(rate, layer, weapons);
+        return new AutofireBehavior(layer, weapons);
     }
-    public IActorBehavior CreateTurret(RateLimiter rate, Consts.Layer layer)
+    public IActorBehavior CreateTurret(Consts.Layer layer, WorldObjectType.Weapon[] weapons)
     {
         return new CompositeBehavior(
-            CreateAutofire(rate, layer),
+            CreateAutofire(layer, weapons),
             facePlayer
         );
     }
@@ -431,15 +431,16 @@ sealed class FaceMouse : IActorBehavior
 
 sealed class AutofireBehavior : IActorBehavior
 {
-    readonly RateLimiter rate;
     readonly Consts.Layer layer;
     readonly WorldObjectType.Weapon[] weapons;
+    readonly RateLimiter rate;
 
-    public AutofireBehavior(RateLimiter rate, Consts.Layer layer, WorldObjectType.Weapon[] weapons)
+    public AutofireBehavior(Consts.Layer layer, WorldObjectType.Weapon[] weapons)
     {
-        this.rate = rate;
+        //TODO: need a rate limiter per each weapon
         this.layer = layer;
         this.weapons = weapons;
+        this.rate = new RateLimiter(weapons != null ? weapons[0].rate : 10);
     }
     public void FixedUpdate(Actor actor)
     {

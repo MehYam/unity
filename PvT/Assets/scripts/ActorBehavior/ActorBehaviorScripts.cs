@@ -22,59 +22,57 @@ public sealed class ActorBehaviorScripts
             return _instance;
         }
     }
-    public IActorBehavior Get(string key)
+    public IActorBehavior Get(VehicleType vehicle)
     {
-        Func<IActorBehavior> retval = null;
-        if (!_behaviorFactory.TryGetValue(key, out retval))
+        Func<VehicleType, IActorBehavior> retval = null;
+        if (!_behaviorFactory.TryGetValue(vehicle.name, out retval))
         {
-            Debug.LogWarning(string.Format("no AI found for {0}, substituting a default one", key));
-            retval = _behaviorFactory["MOTH"];
+            Debug.LogWarning(string.Format("no AI found for {0}, substituting a default one", vehicle.name));
+            return Get(Main.Instance.game.loader.GetVehicle("MOTH"));
         }
-        return retval != null ? retval() : null;
+        return retval != null ? retval(vehicle) : null;
     }
-
-    static IActorBehavior AttackAndFlee(float followTime, float attackTime, float roamTime)
+    static IActorBehavior AttackAndFlee(float followTime, float attackTime, float roamTime, WorldObjectType.Weapon[] weapons)
     {
         var bf = ActorBehaviorFactory.Instance;
         var retval = new SequencedBehavior();
         retval.Add(bf.followPlayer, new RateLimiter(followTime, followTime / 2));
         retval.Add(
             new CompositeBehavior(
-                bf.CreateAutofire(new RateLimiter(1), Consts.Layer.MOB_AMMO),
+                bf.CreateAutofire(Consts.Layer.MOB_AMMO, weapons),
                 bf.facePlayer),
             new RateLimiter(attackTime, attackTime)
         );
         retval.Add(bf.CreateRoam(Consts.MAX_MOB_ROTATION_DEG_PER_SEC, false), new RateLimiter(roamTime, roamTime));
         return retval;
     }
-    readonly Dictionary<string, Func<IActorBehavior>> _behaviorFactory = new Dictionary<string, Func<IActorBehavior>>();
+    readonly Dictionary<string, Func<VehicleType, IActorBehavior>> _behaviorFactory = new Dictionary<string, Func<VehicleType, IActorBehavior>>();
     ActorBehaviorScripts()
     {
-        //var game = Main.Instance.game;
         var bf = ActorBehaviorFactory.Instance;
 
-        _behaviorFactory["GREENK"] = () =>
+        _behaviorFactory["GREENK"] = (vehicle) =>
         {
             return bf.followPlayer;
         };
-        _behaviorFactory["MOTH"] = () =>
+        _behaviorFactory["MOTH"] = (vehicle) =>
         {
-            return AttackAndFlee(3, 2, 2);
+            return AttackAndFlee(3, 2, 2, vehicle.weapons);
         };
-        _behaviorFactory["OSPREY"] = () =>
+        _behaviorFactory["OSPREY"] = (vehicle) =>
         {
             var retval = new SequencedBehavior();
             retval.Add(bf.followPlayer, new RateLimiter(2, 2));
-            retval.Add(bf.CreateTurret(new RateLimiter(1), Consts.Layer.MOB_AMMO), new RateLimiter(2, 1));
+            retval.Add(bf.CreateTurret(Consts.Layer.MOB_AMMO, vehicle.weapons), new RateLimiter(2, 1));
             return retval;
         };
-        _behaviorFactory["BEE"] = () =>
+        _behaviorFactory["BEE"] = (vehicle) =>
         {
-            return AttackAndFlee(3, 1, 3);
+            return AttackAndFlee(3, 1, 3, vehicle.weapons);
         };
-        _behaviorFactory["BAT"] = () =>
+        _behaviorFactory["BAT"] = (vehicle) =>
         {
-            return AttackAndFlee(3, 1, 3);
+            return AttackAndFlee(3, 1, 3, vehicle.weapons);
         };
     }
 }

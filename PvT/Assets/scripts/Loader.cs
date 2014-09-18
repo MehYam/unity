@@ -78,8 +78,6 @@ public class Loader
                 var damageRange = damageRanges[weapon.type];
                 var magnitude = damageRange.second - damageRange.first;
                 weapon.severity = magnitude == 0 ? 1 : (weapon.damage - damageRange.first) / magnitude;
-
-                Debug.Log("severity " + weapon.severity);
             }
         }
     }

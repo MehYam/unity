@@ -109,17 +109,18 @@ public sealed class GameController : IGame
         var tank = loader.GetTank(vehicleKey);
         if (tank != null)
         {
+            // KAI: this should move to ActorBehaviorScripts, and be smarter
             var bf = ActorBehaviorFactory.Instance;
             var tankHelper = new TankSpawnHelper(this, tank.hullName, tank.turretName);
 
             var hullBehavior = new CompositeBehavior(
                 bf.CreateTankTreadAnimator(tankHelper.treadLeft, tankHelper.treadRight),
                 bf.CreateRoam(Consts.MAX_MOB_HULL_ROTATION_DEG_PER_SEC, true),
-                bf.CreateAutofire(new RateLimiter(0, 4), Consts.Layer.MOB_AMMO)
+                bf.CreateAutofire(Consts.Layer.MOB_AMMO, tankHelper.hull.weapons)
             );
 
             var turretFireBehavior = new SequencedBehavior();
-            turretFireBehavior.Add(bf.CreateAutofire(new RateLimiter(1), Consts.Layer.MOB_AMMO), new RateLimiter(3, 3));
+            turretFireBehavior.Add(bf.CreateAutofire(Consts.Layer.MOB_AMMO, tankHelper.turret.weapons), new RateLimiter(3, 3));
             turretFireBehavior.Add(null, new RateLimiter(3, 3));
             
             var turretBehavior = new CompositeBehavior();
@@ -134,7 +135,7 @@ public sealed class GameController : IGame
         }
         var vehicle = loader.GetVehicle(vehicleKey);
         var go = vehicle.Spawn(Consts.SortingLayer.MOB);
-        go.GetComponent<Actor>().behavior = ActorBehaviorScripts.Instance.Get(vehicleKey);
+        go.GetComponent<Actor>().behavior = ActorBehaviorScripts.Instance.Get(vehicle);
 
         SpawnMobHelper(go);
         return go;
@@ -154,7 +155,9 @@ public sealed class GameController : IGame
 #endif
         go.transform.parent = Main.Instance.AmmoParent.transform;
         go.layer = (int)layer;
-        go.transform.localScale.Scale(new Vector3(weapon.severity + 0.5f, weapon.severity + 0.5f, 1));
+        
+        // doesn't work yet, some of the ammo has animation on the transform that undoes this
+        //go.transform.localScale.Scale(new Vector3(weapon.severity + 0.5f, weapon.severity + 0.5f, 1));
 
         var body = go.GetComponent<Rigidbody2D>();
         body.drag = 0;
@@ -386,7 +389,7 @@ public sealed class GameController : IGame
         {
             var layer = isHero ? Consts.Layer.HEROLINGS : Consts.Layer.FRIENDLY_AMMO;
 
-            var primaryFire = bf.CreateAutofire(new RateLimiter(0.5f), layer);
+            var primaryFire = bf.CreateAutofire(layer, heroType.weapons);
             behaviors.Add(bf.OnPlayerInput("Jump", primaryFire));
 
             var fire1 = isHero ? primaryFire : new CompositeBehavior(bf.faceMouse, primaryFire);
@@ -409,13 +412,13 @@ public sealed class GameController : IGame
         behaviors.Add(new PlayerInput());
         behaviors.Add(bf.faceForward);
 
-        var hullFire = bf.CreateAutofire(new RateLimiter(0.5f), Consts.Layer.FRIENDLY_AMMO);
+        var hullFire = bf.CreateAutofire(Consts.Layer.FRIENDLY_AMMO, tankHelper.hull.weapons);
         behaviors.Add(bf.OnFire(hullFire, hullFire));
         behaviors.Add(bf.CreateTankTreadAnimator(tankHelper.treadLeft, tankHelper.treadRight));
         tankHelper.hullGO.GetComponent<Actor>().behavior = behaviors;
 
         // turret
-        var turretFire = bf.CreateAutofire(new RateLimiter(0.5f), Consts.Layer.FRIENDLY_AMMO);
+        var turretFire = bf.CreateAutofire(Consts.Layer.FRIENDLY_AMMO, tankHelper.turret.weapons);
         tankHelper.turretGO.GetComponent<Actor>().behavior = new CompositeBehavior(
             bf.faceMouse,
             bf.OnFire(turretFire, turretFire)
@@ -428,7 +431,7 @@ public sealed class GameController : IGame
         var herolingFire = Main.Instance.game.loader.GetVehicle("HERO").weapons;
 
         // captured ship, add herolings to secondary fire
-        var secondaryFire = bf.CreateAutofire(new RateLimiter(0.5f), Consts.Layer.HEROLINGS, herolingFire);
+        var secondaryFire = bf.CreateAutofire(Consts.Layer.HEROLINGS, herolingFire);
         behaviors.Add(bf.OnPlayerInput("Fire2", secondaryFire));
     }
     static void InitPlayerVehicle(GameObject player, VehicleType vehicle)

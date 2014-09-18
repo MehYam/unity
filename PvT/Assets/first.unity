@@ -168,7 +168,7 @@ MonoBehaviour:
   sounds: {fileID: 3432513}
   music: {fileID: 3432519}
   hud: {fileID: 359017136}
-  defaultVehicle: bee
+  defaultVehicle: hero
   playMusic: 0
 --- !u!114 &3432517
 MonoBehaviour:
