@@ -82,6 +82,7 @@ public class Loader
         }
     }
 
+#if !UNITY_WEBPLAYER
     void ExportCSV(string path, Dictionary<string, VehicleType> items)
     {
         var file = File.CreateText(path);
@@ -91,6 +92,7 @@ public class Loader
         }
         file.Close();
     }
+#endif
 
     public WorldObjectType GetMisc(string type)
     {

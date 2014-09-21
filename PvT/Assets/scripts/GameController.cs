@@ -9,7 +9,24 @@ using PvT.Util;
 
 public sealed class GameController : IGame
 {
-    public GameObject player { get; private set; }
+    GameObject _player;
+    public GameObject player
+    {
+        //KAI:
+        get
+        {
+            if (_player == null)
+            {
+                _player = GameObject.Find("dummyPlayer");
+                if (_player == null)
+                {
+                    _player = new GameObject("dummyPlayer");
+                }
+            }
+            return _player;
+        }
+        private set { _player = value; }
+    }
     public bool enemyInPossession    { get { return !player.GetComponent<Actor>().isHero; } }
     public Loader loader { get; private set; }
     public Effects effects { get; private set; }
@@ -104,7 +121,7 @@ public sealed class GameController : IGame
         return this.player.gameObject;
     }
 
-    public GameObject SpawnMob(string vehicleKey)
+    public GameObject SpawnMob(string vehicleKey, bool defaultAI = true)
     {
         var tank = loader.GetTank(vehicleKey);
         if (tank != null)
@@ -135,7 +152,11 @@ public sealed class GameController : IGame
         }
         var vehicle = loader.GetVehicle(vehicleKey);
         var go = vehicle.Spawn(Consts.SortingLayer.MOB);
-        go.GetComponent<Actor>().behavior = ActorBehaviorScripts.Instance.Get(vehicle);
+
+        if (defaultAI)
+        {
+            go.GetComponent<Actor>().behavior = ActorBehaviorScripts.Instance.Get(vehicle);
+        }
 
         SpawnMobHelper(go);
         return go;
@@ -390,10 +411,10 @@ public sealed class GameController : IGame
             var layer = isHero ? Consts.Layer.HEROLINGS : Consts.Layer.FRIENDLY_AMMO;
 
             var primaryFire = bf.CreateAutofire(layer, vehicle.weapons);
-            behaviors.Add(bf.OnPlayerInput("Jump", primaryFire));
+            behaviors.Add(bf.CreatePlayerInput("Jump", primaryFire));
 
             var fire1 = isHero ? primaryFire : new CompositeBehavior(bf.faceMouse, primaryFire);
-            behaviors.Add(bf.OnPlayerInput("Fire1", fire1));
+            behaviors.Add(bf.CreatePlayerInput("Fire1", fire1));
             if (isHero)
             {
                 behaviors.Add(bf.CreateHeroAnimator(go));
@@ -413,7 +434,8 @@ public sealed class GameController : IGame
         behaviors.Add(bf.faceForward);
 
         var hullFire = bf.CreateAutofire(Consts.Layer.FRIENDLY_AMMO, tankHelper.hull.weapons);
-        behaviors.Add(bf.OnFire(hullFire, hullFire));
+        behaviors.Add(bf.CreatePlayerInput("Fire1", hullFire));
+        behaviors.Add(bf.CreatePlayerInput("Jump", hullFire));
         behaviors.Add(bf.CreateTankTreadAnimator(tankHelper.treadLeft, tankHelper.treadRight));
         tankHelper.hullGO.GetComponent<Actor>().behavior = behaviors;
 
@@ -421,7 +443,8 @@ public sealed class GameController : IGame
         var turretFire = bf.CreateAutofire(Consts.Layer.FRIENDLY_AMMO, tankHelper.turret.weapons);
         tankHelper.turretGO.GetComponent<Actor>().behavior = new CompositeBehavior(
             bf.faceMouse,
-            bf.OnFire(turretFire, turretFire)
+            bf.CreatePlayerInput("Fire1", turretFire),
+            bf.CreatePlayerInput("Jump", turretFire)
         );
     }
     void SetSecondaryHerolingBehavior(CompositeBehavior behaviors)
@@ -432,7 +455,7 @@ public sealed class GameController : IGame
 
         // captured ship, add herolings to secondary fire
         var secondaryFire = bf.CreateAutofire(Consts.Layer.HEROLINGS, herolingFire);
-        behaviors.Add(bf.OnPlayerInput("Fire2", secondaryFire));
+        behaviors.Add(bf.CreatePlayerInput("Fire2", secondaryFire));
     }
     static void InitPlayerVehicle(GameObject player, VehicleType vehicle)
     {

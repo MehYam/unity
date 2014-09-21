@@ -1,6 +1,8 @@
 fileFormatVersion: 2
 guid: 0d412a5a5e378354eb3c511c1a0ada74
 TextureImporter:
+  fileIDToRecycleName:
+    21300000: tankturret2
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0

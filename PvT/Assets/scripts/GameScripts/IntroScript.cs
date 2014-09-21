@@ -70,15 +70,15 @@ public class IntroScript : MonoBehaviour
 
         var mobParent = new GameObject("mobParent");
 
-        SetupMobTween(mobParent, "CYGNUS", school.transform.position, screen.min - Vector2.one);
+        SetupMobTween(mobParent, "ESOX", school.transform.position, screen.min - Vector2.one);
         yield return new WaitForSeconds(0.25f);
-        SetupMobTween(mobParent, "ROCINANTE", school.transform.position, new Vector2(screen.right + 1, 0));
+        SetupMobTween(mobParent, "PIKE", school.transform.position, new Vector2(screen.right + 1, 0));
         yield return new WaitForSeconds(0.25f);
-        SetupMobTween(mobParent, "ESOX", school.transform.position, new Vector2(screen.right + 1, screen.bottom - 1));
+        SetupMobTween(mobParent, "PIKE0", school.transform.position, new Vector2(screen.right + 1, screen.bottom - 1));
         yield return new WaitForSeconds(0.5f);
-        SetupMobTween(mobParent, "CYGNUS", school.transform.position, screen.max + Vector2.one);
+        SetupMobTween(mobParent, "ESOX", school.transform.position, screen.max + Vector2.one);
         yield return new WaitForSeconds(0.25f);
-        SetupMobTween(mobParent, "CYGNUS3", school.transform.position, new Vector2(screen.left - 1, screen.top + 1));
+        SetupMobTween(mobParent, "ESOX", school.transform.position, new Vector2(screen.left - 1, screen.top + 1));
 
         StartCoroutine(CollapseSchool(school));
 
@@ -101,14 +101,14 @@ public class IntroScript : MonoBehaviour
     void SetupMobTween(GameObject parent, string vehicle, Vector2 target, Vector2 start)
     {
         var main = Main.Instance;
-        var mob = main.game.SpawnMob(vehicle);
+        var mob = main.game.SpawnMob(vehicle, false);
         mob.transform.position = start;
         mob.transform.parent = parent.transform;
 
         var bf = ActorBehaviorFactory.Instance;
 
         mob.GetComponent<Actor>().behavior = new CompositeBehavior(
-            bf.CreatePositionTween(Vector3.Lerp(start, target, 0.75f), 4),
+            bf.CreatePositionTween(Vector3.Lerp(start, target, Random.Range(0.5f, 0.7f)), Random.Range(3, 6)),
             bf.CreateFacePoint(target)
         );
     }

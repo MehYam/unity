@@ -49,7 +49,7 @@ public class Main : MonoBehaviour
         if (playMusic)
         {
             audio.clip = music;
-            audio.loop = true;
+            //audio.loop = true;
             audio.Play();
         }
     }
@@ -64,6 +64,7 @@ public class Main : MonoBehaviour
         game = new GameController(CreateLoader());
         GlobalGameEvent.Instance.MapReady += OnMapReady;
         GlobalGameEvent.Instance.IntroOver += OnIntroOver;
+        GlobalGameEvent.Instance.TutorialOver += OnTutorialOver;
 
         Physics2D.gravity = Vector2.zero;
 
@@ -97,5 +98,12 @@ public class Main : MonoBehaviour
         script.enabled = false;
 
         GetComponent<TutorialScript>().enabled = true;
+    }
+    void OnTutorialOver(MonoBehaviour script)
+    {
+        Debug.Log("Main.OnTutorialOver");
+        script.enabled = false;
+
+        GetComponent<LevelScript>().enabled = true;
     }
 }

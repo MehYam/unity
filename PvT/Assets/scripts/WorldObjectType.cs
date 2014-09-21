@@ -79,18 +79,18 @@ public class WorldObjectType
         public readonly Vector2 offset;
         public readonly float angle;
         public readonly float rate;
-        public readonly float rateOffset;
+        public readonly int sequence;
 
         public float severity { get; set; } // calculated later, once we know all the weapons
 
-        public Weapon(string type, int dmg, Vector2 offset, float angle, float rate, float rateOffset)
+        public Weapon(string type, int dmg, Vector2 offset, float angle, float rate, int sequence)
         {
             this.type = type;
             this.damage = dmg;
             this.offset = offset;
             this.angle = angle;
             this.rate = rate;
-            this.rateOffset = rateOffset;
+            this.sequence = sequence;
 
             this.severity = 0;
         }
@@ -108,9 +108,9 @@ public class WorldObjectType
             
             parts.GetInt(); // level, not currently used
             var rate = parts.GetFloat();
-            var rateOffset = parts.GetFloat();
+            var sequence = parts.GetInt();
 
-            return new Weapon(type, dmg, new Vector2(x, y), angle, rate, rateOffset);
+            return new Weapon(type, dmg, new Vector2(x, y), angle, rate, sequence);
         }
 
         public override string ToString()

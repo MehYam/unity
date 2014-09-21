@@ -1,6 +1,23 @@
 fileFormatVersion: 2
 guid: 04abf9e84457f77419aa747febfe216b
 TextureImporter:
+  fileIDToRecycleName:
+    21300000: tiled_sepia_inv_0
+    21300002: tiled_sepia_inv_1
+    21300004: tiled_sepia_inv_2
+    21300006: tiled_sepia_inv_3
+    21300008: tiled_sepia_inv_4
+    21300010: tiled_sepia_inv_5
+    21300012: tiled_sepia_inv_6
+    21300014: tiled_sepia_inv_7
+    21300016: tiled_sepia_inv_8
+    21300018: tiled_sepia_inv_9
+    21300020: tiled_sepia_inv_10
+    21300022: tiled_sepia_inv_11
+    21300024: tiled_sepia_inv_12
+    21300026: tiled_sepia_inv_13
+    21300028: tiled_sepia_inv_14
+    21300030: tiled_sepia_inv_15
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0

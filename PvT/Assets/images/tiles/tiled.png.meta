@@ -1,6 +1,23 @@
 fileFormatVersion: 2
 guid: 2009b102dfe1c374783405120bf34909
 TextureImporter:
+  fileIDToRecycleName:
+    21300000: tiled_0
+    21300002: tiled_1
+    21300004: tiled_2
+    21300006: tiled_3
+    21300008: tiled_4
+    21300010: tiled_5
+    21300012: tiled_6
+    21300014: tiled_7
+    21300016: tiled_8
+    21300018: tiled_9
+    21300020: tiled_10
+    21300022: tiled_11
+    21300024: tiled_12
+    21300026: tiled_13
+    21300028: tiled_14
+    21300030: tiled_15
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0

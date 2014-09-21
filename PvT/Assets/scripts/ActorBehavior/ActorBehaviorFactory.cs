@@ -27,7 +27,32 @@ public sealed class CompositeBehavior : IActorBehavior
     {
         foreach (var behavior in subBehaviors)
         {
+            if (behavior != null)
+            {
+                behavior.FixedUpdate(actor);
+            }
+        }
+    }
+}
+
+/// <summary>
+///  Wraps a behavior in a timer, so that it occurs only so often
+/// </summary>
+public sealed class PeriodicBehavior : IActorBehavior
+{
+    readonly IActorBehavior behavior;
+    readonly RateLimiter rate;
+    public PeriodicBehavior(IActorBehavior behavior, RateLimiter rate)
+    {
+        this.behavior = behavior;
+        this.rate = rate;
+    }
+    public void FixedUpdate(Actor actor)
+    {
+        if (behavior != null && rate.reached)
+        {
             behavior.FixedUpdate(actor);
+            rate.Start();
         }
     }
 }
@@ -37,16 +62,16 @@ public sealed class CompositeBehavior : IActorBehavior
 /// </summary>
 public sealed class SequencedBehavior: IActorBehavior
 {
-    struct Item
+    struct Phase
     {
         public readonly IActorBehavior behavior;
-        public readonly RateLimiter rate;
+        public readonly RateLimiter duration;
 
-        public Item(IActorBehavior behavior, RateLimiter rate) { this.behavior = behavior; this.rate = rate; }
+        public Phase(IActorBehavior behavior, RateLimiter duration) { this.behavior = behavior; this.duration = duration; }
     }
 
-    readonly IList<Item> subBehaviors = new List<Item>();
-    int currentItem;
+    readonly IList<Phase> phases = new List<Phase>();
+    int _current;
 
     /// <summary>
     /// Add a behavior to the list of behaviors in the sequence
@@ -55,25 +80,38 @@ public sealed class SequencedBehavior: IActorBehavior
     /// <param name="duration">The duration over which to run the behavior</param>
     public void Add(IActorBehavior b, RateLimiter rate)
     {
-        subBehaviors.Add(new Item(b, rate));
+        phases.Add(new Phase(b, rate));
     }
     public void FixedUpdate(Actor actor)
     {
-        if (subBehaviors.Count > 0)
+        if (phases.Count == 0) return;
+
+        // loop through the behaviors until we reach the end or have to wait
+        int phaseCount = 0;
+        while (true)
         {
-            if (subBehaviors[currentItem].rate.reached)
+            var phase = phases[_current];
+            if (phase.duration.reached)
             {
-                ++currentItem;
-                if (currentItem >= subBehaviors.Count)
+                // advance to the next phase and start it
+                ++_current;
+                if (_current >= phases.Count)
                 {
-                    currentItem = 0;
+                    _current = 0;
                 }
-                subBehaviors[currentItem].rate.Start();
+                phase = phases[_current];
+                phase.duration.Start();
             }
-            var b = subBehaviors[currentItem].behavior;
-            if (b != null)
+            if (phase.behavior != null)
             {
-                b.FixedUpdate(actor);
+                phase.behavior.FixedUpdate(actor);
+                ++phaseCount;
+            }
+
+            if (!phase.duration.reached || phaseCount == phases.Count)
+            {
+                // have to wait out the current phase, or we've wrapped past the end, bail
+                break;
             }
         }
     }
@@ -82,7 +120,7 @@ public sealed class SequencedBehavior: IActorBehavior
 /// <summary>
 /// Allows blocking of a behavior with another one (or none at all)
 /// </summary>
-public sealed class BypassedBehavior : IActorBehavior
+public class BypassedBehavior : IActorBehavior
 {
     readonly Actor actor;
     readonly IActorBehavior currentBehavior;
@@ -233,9 +271,33 @@ public sealed class ActorBehaviorFactory
     {
         return new RoamBehavior(maxRotate, stopBeforeRotate);
     }
+    IActorBehavior CreateOneAutofire(Consts.Layer layer, WorldObjectType.Weapon weapon)
+    {
+        return new PeriodicBehavior(new DischargeWeapon(layer, weapon), new RateLimiter(weapon.rate));
+    }
     public IActorBehavior CreateAutofire(Consts.Layer layer, WorldObjectType.Weapon[] weapons)
     {
-        return new AutofireBehavior(layer, weapons);
+        if (weapons != null && weapons.Length > 0)
+        {
+            if (weapons.Length == 1)
+            {
+                return CreateOneAutofire(layer, weapons[0]);
+            }
+
+            //KAI: the logic ahead isn't quite right - this is a good place to use LINQ -
+            // sort by sequence, then iterate through them
+            int iLastSequence = 0;
+            var retval = new SequencedBehavior();
+            foreach (var w in weapons)
+            {
+                float rate = w.sequence != iLastSequence ? w.rate : 0;
+                retval.Add(CreateOneAutofire(layer, w), new RateLimiter(rate));
+
+                iLastSequence = w.sequence;
+            }
+            return retval;
+        }
+        return null;
     }
     public IActorBehavior CreateTurret(Consts.Layer layer, WorldObjectType.Weapon[] weapons)
     {
@@ -244,11 +306,7 @@ public sealed class ActorBehaviorFactory
             facePlayer
         );
     }
-    public IActorBehavior OnFire(IActorBehavior onPrimary, IActorBehavior onSecondary)
-    {
-        return new PlayerfireBehavior(onPrimary, onSecondary);
-    }
-    public IActorBehavior OnPlayerInput(string button, IActorBehavior onFire)
+    public IActorBehavior CreatePlayerInput(string button, IActorBehavior onFire)
     {
         return new PlayerFire(button, onFire);
     }
@@ -268,9 +326,9 @@ public sealed class ActorBehaviorFactory
     {
         return new HeroAnimator(hero);
     }
-    public IActorBehavior CreateSubduedByHerolingsBehavior()
+    public IActorBehavior CreateHerolingOverwhelmBehavior()
     {
-        return new SubduedByHerolingsBehavior();
+        return new GoHomeYouAreDrunkBehavior();
     }
 }
 
@@ -429,39 +487,28 @@ sealed class FaceMouse : IActorBehavior
     }
 }
 
-sealed class AutofireBehavior : IActorBehavior
+sealed class DischargeWeapon : IActorBehavior
 {
     readonly Consts.Layer layer;
-    readonly WorldObjectType.Weapon[] weapons;
-    readonly RateLimiter rate;
+    readonly WorldObjectType.Weapon weapon;
 
-    public AutofireBehavior(Consts.Layer layer, WorldObjectType.Weapon[] weapons)
+    public DischargeWeapon(Consts.Layer layer, WorldObjectType.Weapon weapon)
     {
-        //TODO: need a rate limiter per each weapon
         this.layer = layer;
-        this.weapons = weapons;
-        this.rate = new RateLimiter(weapons != null ? weapons[0].rate : 10);
+        this.weapon = weapon;
     }
     public void FixedUpdate(Actor actor)
     {
-        if (actor.firingEnabled && rate.reached)
+        if (actor.firingEnabled)
         {
             var game = Main.Instance.game;
-            WorldObjectType.Weapon[] w = weapons;
-            if (w == null)
+
+            //KAI: MAJOR CHEESE, maybe reimplement as an ammo limit
+            if (weapon.type != "HEROLING" || HerolingActor.ActiveHerolings < Consts.HEROLING_LIMIT)
             {
-                w = actor.worldObject.weapons;
+                var ammo = game.loader.GetVehicle(weapon.type);
+                game.SpawnAmmo(actor, ammo, weapon, layer);
             }
-            foreach (var weapon in w)
-            {
-                //KAI: MAJOR CHEESE
-                if (weapon.type != "HEROLING" || HerolingActor.ActiveHerolings < Consts.HEROLING_LIMIT)
-                {
-                    var ammo = game.loader.GetVehicle(weapon.type);
-                    game.SpawnAmmo(actor, ammo, weapon, layer);
-                }
-            }
-            rate.Start();
         }
     }
 }
@@ -668,12 +715,12 @@ sealed class Drift : IActorBehavior
     }
 }
 
-sealed class SubduedByHerolingsBehavior : IActorBehavior
+sealed class GoHomeYouAreDrunkBehavior : IActorBehavior
 {
     RateLimiter spinRate = new RateLimiter(1, 0.5f);
     float spinSpeed = 0;
 
-    public SubduedByHerolingsBehavior()
+    public GoHomeYouAreDrunkBehavior()
     {
         NewSpin();
     }

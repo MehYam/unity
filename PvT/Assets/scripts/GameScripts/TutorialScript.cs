@@ -26,11 +26,13 @@ public sealed class TutorialScript : MonoBehaviour
     }
     void OnMainReady()
     {
+        GlobalGameEvent.Instance.MainReady -= OnMainReady;
         GlobalGameEvent.Instance.GameReady += OnGameReady;
         Main.Instance.game.SetMap(map);
     }
     void OnGameReady(IGame game)
     {
+        GlobalGameEvent.Instance.GameReady -= OnGameReady;
         Main.Instance.hud.curtain.Fade(1, 0);
         Main.Instance.hud.curtain.Fade(0, Consts.TEXT_FADE_SECONDS);
 
@@ -43,7 +45,7 @@ public sealed class TutorialScript : MonoBehaviour
         var hud = main.hud;
         var game = main.game;
 
-        /////////////////// Teach movement
+        ///////////////// Teach movement
         main.PlayMusic(main.music.duskToDawn);
 
         var playerActor = game.SpawnPlayer(Vector3.zero).GetComponent<Actor>();
@@ -99,11 +101,24 @@ public sealed class TutorialScript : MonoBehaviour
         var startHealth = playerActor.health;
         yield return StartCoroutine(Util.YieldUntil(() => playerActor.health != startHealth));
 
+        main.PlayMusic(main.music.duskToDawn);
+
         AnimatedText.FadeIn(hud.centerPrintTop, "This other was NOT friendly.", Consts.TEXT_FADE_SECONDS);
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_FAST);
 
         AnimatedText.FadeIn(hud.centerPrintBottom, "(FLEE!)", Consts.TEXT_FADE_SECONDS);
-        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_FAST);
+
+        float distance = 0;
+        Vector3 lastPosition = playerActor.transform.position;
+        yield return StartCoroutine(Util.YieldUntil(() =>
+        {
+            // Wait until the player's travelled a while
+            distance += Vector3.Distance(playerActor.transform.position, lastPosition);
+            lastPosition = playerActor.transform.position;
+
+            return distance > 30;
+        }
+        ));
 
         AnimatedText.FadeOut(hud.centerPrintTop, Consts.TEXT_FADE_SECONDS);
         AnimatedText.FadeOut(hud.centerPrintBottom, Consts.TEXT_FADE_SECONDS);
@@ -122,12 +137,12 @@ public sealed class TutorialScript : MonoBehaviour
             playerActor.firingEnabled = true;
 
             // wait until the other ship is subdued
-            yield return StartCoroutine(Util.YieldUntil(() => mobActor.overwhelmedByHerolings));
+            yield return StartCoroutine(Util.YieldUntil(() => mobActor.overwhelmPct == 1.0f));
 
             AnimatedText.FadeIn(hud.centerPrintBottom, "(QUICKLY! Collide with it!)", Consts.TEXT_FADE_SECONDS);
 
             // wait until the player has either passed or failed the task of possessing the ship
-            yield return StartCoroutine(Util.YieldUntil(() => !mobActor.overwhelmedByHerolings || game.enemyInPossession));
+            yield return StartCoroutine(Util.YieldUntil(() => (mobActor.overwhelmPct < 1) || game.enemyInPossession));
         }
         while (!game.enemyInPossession);
 
@@ -145,11 +160,14 @@ public sealed class TutorialScript : MonoBehaviour
         AnimatedText.FadeOut(hud.centerPrintBottom, Consts.TEXT_FADE_SECONDS_FAST);
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_FAST);
 
-        AnimatedText.FadeIn(hud.centerPrintTop, "LEFT OFF HERE", Consts.TEXT_FADE_SECONDS);
-        AnimatedText.FadeIn(hud.centerPrintBottom, "Need to describe heroling resources, maybe", Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeIn(hud.centerPrintTop, "dev: LEFT OFF HERE", Consts.TEXT_FADE_SECONDS);
+        //AnimatedText.FadeIn(hud.centerPrintBottom, "Need to describe heroling resources, maybe", Consts.TEXT_FADE_SECONDS);
 
-        //////////////////// Fight another mob
+        main.hud.curtain.Fade(1, Consts.TEXT_FADE_SECONDS);
+        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_SLOW);
 
-
+//HACK:
+        GameObject.Destroy(main.game.player);
+        GlobalGameEvent.Instance.FireTutorialOver(this);
     }
 }

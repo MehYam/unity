@@ -49,6 +49,7 @@ class GlobalGameEvent
     public event Action<Actor> ActorDeath = delegate { };
 
     public event Action<MonoBehaviour> IntroOver = delegate { };
+    public event Action<MonoBehaviour> TutorialOver = delegate { };
     public event Action GameOver = delegate { };
 
     public void FireMainReady() { MainReady(); }
@@ -74,6 +75,7 @@ class GlobalGameEvent
     public void FireGameOver() { GameOver(); }
 
     public void FireIntroOver(MonoBehaviour script) { IntroOver(script); }
+    public void FireTutorialOver(MonoBehaviour script) { TutorialOver(script); }
 
     // UI-centric
     public event Action<string> CenterPrint = delegate { };

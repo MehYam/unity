@@ -110,7 +110,10 @@ public class Actor : MonoBehaviour
     public ActorModifier modifier { set; private get; }
 
     public int attachedHerolings { get; set; }
-    public bool overwhelmedByHerolings { get; private set; }
+    public float overwhelmPct
+    {
+        get { return health == 0 ? 0 : Mathf.Min(attachedHerolings * Consts.HEROLING_HEALTH_OVERWHELM / health, 1); }
+    }
 
     ProgressBar _overwhelmBar;
     ProgressBar _healthBar;
@@ -135,15 +138,21 @@ public class Actor : MonoBehaviour
         visualBehavior = new PostDamageInvuln(this, duration);
     }
 
+    IActorBehavior _overwhelmBehavior;  // currently used for overwhelming
     protected virtual void FixedUpdate()
     {
         var main = Main.Instance;
 
         DetectChangeInOverwhelm();
-        if (behavior != null && main.game.player != null)
+        if (_overwhelmBehavior != null)
+        {
+            _overwhelmBehavior.FixedUpdate(this);
+        }
+        else if (behavior != null)
         {
             behavior.FixedUpdate(this);
         }
+
         if (rigidbody2D != null && worldObject.maxSpeed > 0 && rigidbody2D.velocity.sqrMagnitude > worldObject.sqrMaxSpeed)
         {
             rigidbody2D.velocity = Vector2.ClampMagnitude(rigidbody2D.velocity, maxSpeed);
@@ -195,7 +204,7 @@ public class Actor : MonoBehaviour
         }
 
         //KAI: copy pasta +1 w/ health bar, might be worth generalizing
-        if (attachedHerolings > 0 && !overwhelmedByHerolings)
+        if (attachedHerolings > 0)
         {
             if (_overwhelmBar == null)
             {
@@ -206,7 +215,7 @@ public class Actor : MonoBehaviour
                 bar.transform.parent = Main.Instance.EffectParent.transform;
             }
             _overwhelmBar.gameObject.SetActive(true);
-            _overwhelmBar.percent = (attachedHerolings * Consts.HEROLING_HEALTH_OVERWHELM) / worldObject.health;
+            _overwhelmBar.percent = overwhelmPct;
             _overwhelmBar.transform.position = transform.position + OVERWHELM_BAR_POSITION;
         }
         else if (_overwhelmBar != null)
@@ -224,15 +233,11 @@ public class Actor : MonoBehaviour
 
     void DetectChangeInOverwhelm()
     {
-        var shouldOverwhelm = health > 0 && (attachedHerolings * Consts.HEROLING_HEALTH_OVERWHELM >= health);
-        if (overwhelmedByHerolings && !shouldOverwhelm)
+        var wasOverwhelmed = _overwhelmBehavior != null;
+        if (wasOverwhelmed && overwhelmPct < 1)
         {
             // un-overwhelm
-            var bypass = behavior as BypassedBehavior;
-            if (bypass != null)  // will be null in the case where possession occurs
-            {
-                bypass.Restore();
-            }
+            _overwhelmBehavior = null;
 
             RemoveBlinker(transform);
             var blinker = transform.FindChild(Consts.BLINKER_TAG);
@@ -240,14 +245,11 @@ public class Actor : MonoBehaviour
             {
                 GameObject.Destroy(blinker.gameObject);
             }
-            overwhelmedByHerolings = false;
         }
-        else if (!overwhelmedByHerolings && shouldOverwhelm)
+        else if (!wasOverwhelmed && overwhelmPct == 1f)
         {
-            DebugUtil.Assert(!(behavior is BypassedBehavior));
-
             // act overwhelmed
-            new BypassedBehavior(this, ActorBehaviorFactory.Instance.CreateSubduedByHerolingsBehavior());
+            _overwhelmBehavior = ActorBehaviorFactory.Instance.CreateHerolingOverwhelmBehavior();
 
             var blinker = (GameObject)GameObject.Instantiate(Main.Instance.OverwhelmedIndicator);
             blinker.transform.parent = transform;
@@ -255,8 +257,6 @@ public class Actor : MonoBehaviour
             blinker.name = Consts.BLINKER_TAG;
 
             AudioSource.PlayClipAtPoint(Main.Instance.sounds.HerolingCapture, transform.position);
-
-            overwhelmedByHerolings = true;
         }
     }
 
@@ -287,6 +287,10 @@ public class Actor : MonoBehaviour
             Vector2 indPos = new Vector2(0, 0);
             indPos.x = Mathf.Max(rect.left + INDICATOR_MARGIN, Mathf.Min(rect.right - INDICATOR_MARGIN, pos.x));
             indPos.y = Mathf.Max(rect.bottom + INDICATOR_MARGIN, Mathf.Min(rect.top - INDICATOR_MARGIN, pos.y));
+
+            _trackingArrow.GetComponent<SpriteRenderer>().color = overwhelmPct > 0 ?
+                Consts.TRACKING_ARROW_COLOR_OVERWHELMED :
+                Consts.TRACKING_ARROW_COLOR_NORMAL;
 
             _trackingArrow.transform.position = indPos;
             Util.LookAt2D(_trackingArrow.transform, transform);
@@ -332,8 +336,8 @@ public class Actor : MonoBehaviour
         var game = Main.Instance.game;
         
         var otherActor = other.GetComponent<Actor>();
-        var thisIsHeroCapturingOverwhelmedMob = otherActor != null && otherActor.overwhelmedByHerolings && game.player == self.gameObject;
-        var thisIsOverwhelmedMobBeingCaptured = otherActor != null && overwhelmedByHerolings && game.player == otherActor.gameObject;
+        var thisIsHeroCapturingOverwhelmedMob = otherActor != null && otherActor.overwhelmPct == 1 && game.player == self.gameObject;
+        var thisIsOverwhelmedMobBeingCaptured = otherActor != null && overwhelmPct            == 1 && game.player == otherActor.gameObject;
 
         if (thisIsHeroCapturingOverwhelmedMob)
         {

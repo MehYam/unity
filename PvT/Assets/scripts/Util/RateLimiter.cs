@@ -3,9 +3,7 @@ using System.Collections;
 
 public sealed class RateLimiter
 {
-    readonly float _baseRate;
     readonly float _randomExtra;
-    float _next;
 
     /// <summary>
     /// Constructs a limiter that tells you when baseRate seconds have elapsed
@@ -14,7 +12,7 @@ public sealed class RateLimiter
     /// <param name="randomExtra">Pad the rate with random seconds on each interval</param>
     public RateLimiter(float baseRate, float randomExtra = 0)
     {
-        _baseRate = baseRate;
+        this.baseRate = baseRate;
         _randomExtra = randomExtra;
 
         Start();
@@ -27,32 +25,33 @@ public sealed class RateLimiter
     {
         get
         {
-            return Time.fixedTime > _next;
+            return Time.fixedTime >= _nextTime;
         }
     }
     public float timeRemaining
     {
         get
         {
-            return Mathf.Max(0, _next - Time.fixedTime);
+            return Mathf.Max(0, _nextTime - Time.fixedTime);
         }
     }
-    public float baseRate
-    {
-        get
-        {
-            return _baseRate;
-        }
-    }
+    public float baseRate { get; private set; }
     public void Start()
     {
-        float delta = (_randomExtra > 0) ? Random.Range(_baseRate, _randomExtra) : _baseRate;
-        _next = Time.fixedTime + delta;
+        Start(baseRate);
+    }
+    float _nextTime;
+    public void Start(float newBaseRate)
+    {
+        baseRate = newBaseRate;
+
+        float delta = (_randomExtra > 0) ? Random.Range(baseRate, _randomExtra) : baseRate;
+        _nextTime = Time.fixedTime + delta;
 
         ++numStarts;
     }
     public override string ToString()
     {
-        return string.Format("RateLimiter base {0} random {1}, next in {2}, started {3} times", _baseRate, _randomExtra, _next - Time.fixedTime, numStarts);
+        return string.Format("RateLimiter base {0} random {1}, next in {2}, started {3} times", baseRate, _randomExtra, _nextTime - Time.fixedTime, numStarts);
     }
 }

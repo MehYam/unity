@@ -168,8 +168,8 @@ MonoBehaviour:
   sounds: {fileID: 3432513}
   music: {fileID: 3432519}
   hud: {fileID: 359017136}
-  defaultVehicle: hero
-  playMusic: 0
+  defaultVehicle: bat
+  playMusic: 1
 --- !u!114 &3432517
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -181,6 +181,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 597ae4a43a018e741acec37b97132aa4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  run: 0
   map: {fileID: 100004, guid: a79bb10566c417243a18065740b954fe, type: 2}
   rooms: []
 --- !u!82 &3432518
@@ -444,10 +445,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1873991295}
   m_RootOrder: 2
-  m_AnchorMin: {x: 0, y: .5}
-  m_AnchorMax: {x: 1, y: .5}
-  m_AnchoredPosition: {x: 0, y: -75}
-  m_SizeDelta: {x: 0, y: 30}
+  m_AnchorMin: {x: .5, y: .5}
+  m_AnchorMax: {x: .5, y: .5}
+  m_AnchoredPosition: {x: -.5, y: -75}
+  m_SizeDelta: {x: 965, y: 30}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &108059133
 MonoBehaviour:
@@ -998,10 +999,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1873991295}
   m_RootOrder: 0
-  m_AnchorMin: {x: 0, y: .5}
-  m_AnchorMax: {x: 1, y: .5}
-  m_AnchoredPosition: {x: 0, y: 75}
-  m_SizeDelta: {x: 0, y: 30}
+  m_AnchorMin: {x: .5, y: .5}
+  m_AnchorMax: {x: .5, y: .5}
+  m_AnchoredPosition: {x: -.5, y: 75}
+  m_SizeDelta: {x: 965, y: 30}
   m_Pivot: {x: .5, y: .5}
 --- !u!114 &1496170337
 MonoBehaviour:

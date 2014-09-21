@@ -1,6 +1,23 @@
 fileFormatVersion: 2
 guid: 31621f6fd99ca0b43ad9f665bccc3ee6
 TextureImporter:
+  fileIDToRecycleName:
+    21300000: tiled_snow_0
+    21300002: tiled_snow_1
+    21300004: tiled_snow_2
+    21300006: tiled_snow_3
+    21300008: tiled_snow_4
+    21300010: tiled_snow_5
+    21300012: tiled_snow_6
+    21300014: tiled_snow_7
+    21300016: tiled_snow_8
+    21300018: tiled_snow_9
+    21300020: tiled_snow_10
+    21300022: tiled_snow_11
+    21300024: tiled_snow_12
+    21300026: tiled_snow_13
+    21300028: tiled_snow_14
+    21300030: tiled_snow_15
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0

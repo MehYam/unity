@@ -1,6 +1,8 @@
 fileFormatVersion: 2
 guid: 551cb2893a006f146ba8e7b4195f1200
 TextureImporter:
+  fileIDToRecycleName:
+    21300000: muzzleflash1
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0

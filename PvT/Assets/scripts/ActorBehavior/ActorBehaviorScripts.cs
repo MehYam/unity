@@ -28,7 +28,7 @@ public sealed class ActorBehaviorScripts
         if (!_behaviorFactory.TryGetValue(vehicle.name, out retval))
         {
             Debug.LogWarning(string.Format("no AI found for {0}, substituting a default one", vehicle.name));
-            return Get(Main.Instance.game.loader.GetVehicle("MOTH"));
+            return AttackAndFlee(3, 2, 2, vehicle.weapons);
         }
         return retval != null ? retval(vehicle) : null;
     }

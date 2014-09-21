@@ -6,6 +6,7 @@ using PvT.Util;
 
 public class LevelScript : MonoBehaviour
 {
+    public bool run = true;
     public GameObject map;
     public GameObject[] rooms;
     void Start()
@@ -24,7 +25,10 @@ public class LevelScript : MonoBehaviour
         Debug.Log("LevelScript.OnGameReady");
         Main.Instance.game.SpawnPlayer(Vector3.zero);
 
-        StartCoroutine(RunLevels());
+        if (run)
+        {
+            StartCoroutine(RunLevels());
+        }
     }
 
     IEnumerator RunLevels()
@@ -61,6 +65,8 @@ public class LevelScript : MonoBehaviour
                 for (int i = 0; i < squad.count; ++i)
                 {
                     SpawnMob(game, squad.enemyID);
+
+                    yield return new WaitForSeconds(Consts.MOB_SPAWN_DELAY);
                 }
             }
 

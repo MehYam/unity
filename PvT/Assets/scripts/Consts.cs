@@ -41,9 +41,11 @@ public static class Consts
     }
     static public readonly int PixelsToUnits = 100;
 
+    static public readonly Color TRACKING_ARROW_COLOR_NORMAL = new Color32(0xff, 0x50, 0x00, 0x96);
+    static public readonly Color TRACKING_ARROW_COLOR_OVERWHELMED = new Color32(0x00, 0x99, 0xff, 0x96);
     static public readonly float HEROLING_UNABSORBABLE = 2;
     static public readonly float HEROLING_ROAM_BOREDOM = 2;
-    static public readonly float HEROLING_ATTACH_BOREDOM = 5;
+    static public readonly float HEROLING_ATTACH_BOREDOM = 6;
     static public readonly int HEROLING_LIMIT = 3;
     static public readonly float HEROLING_HEALTH_OVERWHELM = 20;
     static public readonly float HERO_REGEN = 1;
@@ -62,6 +64,7 @@ public static class Consts
     static public readonly float MAX_MOB_ROTATION_DEG_PER_SEC = 90;
     static public readonly float MAX_MOB_TURRET_ROTATION_DEG_PER_SEC = 45;
     static public readonly float MAX_MOB_HULL_ROTATION_DEG_PER_SEC = 1;
+    static public readonly float MOB_SPAWN_DELAY = 0.25f;
 
     static public readonly float GREENK_SPAWN_RATE = 15;
 
