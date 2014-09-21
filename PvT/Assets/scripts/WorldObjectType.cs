@@ -58,7 +58,7 @@ public class WorldObjectType
         var go = ToRawGameObject(sortingLayer);
         go.name = name;
 
-        //KAI: cheese
+        //KAI: MAJOR CHEESE
         var actor = this.name == "HEROLING" ? go.AddComponent<HerolingActor>() : go.AddComponent<Actor>();
         actor.worldObject = this;
         return go;
@@ -153,7 +153,7 @@ public class VehicleType : WorldObjectType
     }
     public override GameObject Spawn(Consts.SortingLayer sortingLayer)
     {
-        var go = base.Spawn(sortingLayer);
+        var go = SpawnNoRigidbody(sortingLayer);
 
         go.AddComponent<DropShadow>();
 
@@ -164,6 +164,14 @@ public class VehicleType : WorldObjectType
 
         go.GetComponent<Collider2D>().sharedMaterial = Main.Instance.Bounce;
         go.GetComponent<Actor>().collisionDamage = collDmg;
+        return go;
+    }
+    public GameObject SpawnNoRigidbody(Consts.SortingLayer sortingLayer)
+    {
+        // KAI: this is weak, and only here to support the fusion hack.  Something more thought-out and/or generalized will be simpler
+        var go = base.Spawn(sortingLayer);
+
+        go.AddComponent<DropShadow>();
         return go;
     }
     public override string ToCSV()

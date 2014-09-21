@@ -131,9 +131,11 @@ public class IntroScript : MonoBehaviour
         foreach (var tween in children)
         {
             yield return new WaitForSeconds(Random.Range(0.05f, 0.2f));
-            tween.To(mainHero.transform.position, Random.Range(0.1f, 0.5f), (go) =>
+            var scatterOnMainHero = mainHero.transform.position + Util.ScatterRandomly(0.3f);
+            tween.To(scatterOnMainHero, Random.Range(0.3f, 1f), 
+                (go) =>
                 {
-                    GameObject.Destroy(go);
+                    go.transform.localScale.Scale(new Vector3(0.5f, 0.5f));
                 }
             );
         }

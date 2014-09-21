@@ -141,8 +141,6 @@ public class Actor : MonoBehaviour
     IActorBehavior _overwhelmBehavior;  // currently used for overwhelming
     protected virtual void FixedUpdate()
     {
-        var main = Main.Instance;
-
         DetectChangeInOverwhelm();
         if (_overwhelmBehavior != null)
         {

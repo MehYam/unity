@@ -119,7 +119,7 @@ namespace PvT.Util
         /// </summary>
         /// <param name="launcher">The guy with a nose</param>
         /// <param name="launchee">The projectile</param>
-        static public void Sneeze(Transform launcher, Transform launchee, Vector2 offset, float angle = 0)
+        static public void PrepareLaunch(Transform launcher, Transform launchee, Vector2 offset, float angle = 0)
         {
             var scale = launcher.localScale;
             var scaledOffset = new Vector2(offset.x, offset.y);
@@ -266,6 +266,11 @@ namespace PvT.Util
             public string GetString() { return items[iItem++]; }
             public float GetFloat() { return float.Parse(items[iItem++]); }
             public int GetInt() { return int.Parse(items[iItem++]); }
+            public bool GetBool()
+            {
+                var item = GetString().ToLowerInvariant();
+                return item == "yes" || item == "1" || item == "true" || item == "sure" || item == "why not";
+            }
 
             public int Count { get { return items.Length; } }
             public void SetIndex(int i) { iItem = i; }

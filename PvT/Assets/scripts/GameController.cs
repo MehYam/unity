@@ -1,5 +1,3 @@
-//#define DEBUG_AMMO
-
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -169,18 +167,19 @@ public sealed class GameController : IGame
 
     public GameObject SpawnAmmo(Actor launcher, VehicleType type, WorldObjectType.Weapon weapon, Consts.CollisionLayer layer)
     {
-#if DEBUG_AMMO
-        var go = type.Spawn(Consts.SortingLayer.UI);
-#else
+        //KAI: HOLY CHEESE
+        // seriously, fusion (like the shield) is such a different thing in many ways, it requires a much more generalized
+        // system than what we have here - will have to ponder this.  Subclassing might be the thing.
+        if (weapon.vehicleName == "FUSION")
+        {
+            return SpawnFusion(launcher, type, weapon, layer);
+        }
+
+        // now onto to regularly scheduled program(ming)
         var go = type.Spawn(Consts.SortingLayer.AMMO);
-#endif
+
         go.transform.parent = Main.Instance.AmmoParent.transform;
         go.layer = (int)layer;
-
-//HACK
-if (weapon.vehicleName == "FUSION") go.GetComponent<SpriteRenderer>().sortingLayerID = (int)Consts.SortingLayer.AMMO_TOP;
-        // doesn't work yet, some of the ammo has animation on the transform that undoes this
-        //go.transform.localScale.Scale(new Vector3(weapon.severity + 0.5f, weapon.severity + 0.5f, 1));
 
         go.rigidbody2D.drag = 0;
 
@@ -189,7 +188,7 @@ if (weapon.vehicleName == "FUSION") go.GetComponent<SpriteRenderer>().sortingLay
         actor.collisionDamage = weapon.damage;
         actor.showsHealthBar = false;
 
-        Util.Sneeze(launcher.transform, actor.transform, weapon.offset, weapon.angle);
+        Util.PrepareLaunch(launcher.transform, actor.transform, weapon.offset, weapon.angle);
         if (type.acceleration == 0)
         {
             // give the ammo instant acceleration
@@ -210,6 +209,29 @@ if (weapon.vehicleName == "FUSION") go.GetComponent<SpriteRenderer>().sortingLay
         }
 
         AudioSource.PlayClipAtPoint(Main.Instance.sounds.Bullet, launcher.transform.position);
+        return go;
+    }
+
+    GameObject SpawnFusion(Actor launcher, VehicleType type, WorldObjectType.Weapon weapon, Consts.CollisionLayer layer)
+    {
+        ///THIS IS COPY PASTA FROM SpawnAmmo
+        var go = type.SpawnNoRigidbody(Consts.SortingLayer.AMMO_TOP);
+
+        go.transform.parent = Main.Instance.AmmoParent.transform;
+        go.layer = (int)layer;
+
+        var actor = go.GetComponent<Actor>();
+        actor.collisionDamage = weapon.damage;
+        actor.showsHealthBar = false;
+
+        Util.PrepareLaunch(launcher.transform, actor.transform, weapon.offset, weapon.angle);
+
+        AudioSource.PlayClipAtPoint(Main.Instance.sounds.Bullet, launcher.transform.position);
+
+        ///THIS IS FUSION-SPECIFIC
+        var hotspot = go.GetComponent<DamagingHotspot>();
+        hotspot.weapon = weapon;
+
         return go;
     }
 
