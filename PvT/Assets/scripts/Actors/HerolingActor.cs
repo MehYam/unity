@@ -30,7 +30,7 @@ public class HerolingActor : Actor
         SetExpiry(Actor.EXPIRY_INFINITE);
 
         // make it appear on top of mobs and friendlies
-        GetComponent<SpriteRenderer>().sortingLayerID = (int)Consts.SortingLayer.HEROLINGS;
+        GetComponent<SpriteRenderer>().sortingLayerID = (int)Consts.SortingLayer.HIGH_AMMO;
 
         // give it a push
         //body.velocity =

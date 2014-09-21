@@ -176,7 +176,9 @@ public sealed class GameController : IGame
 #endif
         go.transform.parent = Main.Instance.AmmoParent.transform;
         go.layer = (int)layer;
-        
+
+//HACK
+if (weapon.type == "FUSION") go.GetComponent<SpriteRenderer>().sortingLayerName = "ammoHigh";
         // doesn't work yet, some of the ammo has animation on the transform that undoes this
         //go.transform.localScale.Scale(new Vector3(weapon.severity + 0.5f, weapon.severity + 0.5f, 1));
 
@@ -186,6 +188,8 @@ public sealed class GameController : IGame
         var actor = go.GetComponent<Actor>();
         actor.SetExpiry(2);
         actor.collisionDamage = weapon.damage;
+        actor.showsHealthBar = false;
+
         Util.Sneeze(launcher.transform, actor.transform, weapon.offset, weapon.angle);
         if (type.acceleration == 0)
         {
