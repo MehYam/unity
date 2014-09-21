@@ -30,7 +30,7 @@ public class HerolingActor : Actor
         SetExpiry(Actor.EXPIRY_INFINITE);
 
         // make it appear on top of mobs and friendlies
-        GetComponent<SpriteRenderer>().sortingLayerID = (int)Consts.SortingLayer.HIGH_AMMO;
+        GetComponent<SpriteRenderer>().sortingLayerID = (int)Consts.SortingLayer.AMMO_TOP;
 
         // give it a push
         //body.velocity =
@@ -43,15 +43,15 @@ public class HerolingActor : Actor
     protected override void HandleCollision(ContactPoint2D contact)
     {
         var coll = contact.collider.gameObject;
-        switch ((Consts.Layer)coll.layer)
+        switch ((Consts.CollisionLayer)coll.layer)
         {
-            case Consts.Layer.MOB:
+            case Consts.CollisionLayer.MOB:
                 if (behavior == ROAM)
                 {
                     AttachToMob(coll.transform);
                 }
                 break;
-            case Consts.Layer.FRIENDLY:
+            case Consts.CollisionLayer.FRIENDLY:
                 if (_reabsorbTimeout.reached)
                 {
                     Reabsorb();
@@ -88,7 +88,7 @@ public class HerolingActor : Actor
     }
     void Return()
     {
-        gameObject.layer = (int)Consts.Layer.HEROLINGS_RETURNING;
+        gameObject.layer = (int)Consts.CollisionLayer.HEROLINGS_RETURNING;
         if (transform.parent != null)  //KAI: dorked, because all ammo's parented initially
         {
             var parentActor = transform.parent.GetComponent<Actor>();

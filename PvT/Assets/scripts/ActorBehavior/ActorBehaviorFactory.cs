@@ -271,11 +271,11 @@ public sealed class ActorBehaviorFactory
     {
         return new RoamBehavior(maxRotate, stopBeforeRotate);
     }
-    IActorBehavior CreateOneAutofire(Consts.Layer layer, WorldObjectType.Weapon weapon)
+    IActorBehavior CreateOneAutofire(Consts.CollisionLayer layer, WorldObjectType.Weapon weapon)
     {
         return new PeriodicBehavior(new DischargeWeapon(layer, weapon), new RateLimiter(weapon.rate));
     }
-    public IActorBehavior CreateAutofire(Consts.Layer layer, WorldObjectType.Weapon[] weapons)
+    public IActorBehavior CreateAutofire(Consts.CollisionLayer layer, WorldObjectType.Weapon[] weapons)
     {
         if (weapons != null && weapons.Length > 0)
         {
@@ -299,7 +299,7 @@ public sealed class ActorBehaviorFactory
         }
         return null;
     }
-    public IActorBehavior CreateTurret(Consts.Layer layer, WorldObjectType.Weapon[] weapons)
+    public IActorBehavior CreateTurret(Consts.CollisionLayer layer, WorldObjectType.Weapon[] weapons)
     {
         return new CompositeBehavior(
             CreateAutofire(layer, weapons),
@@ -489,10 +489,10 @@ sealed class FaceMouse : IActorBehavior
 
 sealed class DischargeWeapon : IActorBehavior
 {
-    readonly Consts.Layer layer;
+    readonly Consts.CollisionLayer layer;
     readonly WorldObjectType.Weapon weapon;
 
-    public DischargeWeapon(Consts.Layer layer, WorldObjectType.Weapon weapon)
+    public DischargeWeapon(Consts.CollisionLayer layer, WorldObjectType.Weapon weapon)
     {
         this.layer = layer;
         this.weapon = weapon;
@@ -588,7 +588,7 @@ sealed class PlayerShieldBehavior : IActorBehavior
                 // create the GameObject
                 var shieldWeapon = actor.worldObject.weapons[0];
                 var type = game.loader.GetVehicle(shieldWeapon.type);
-                _shield = Main.Instance.game.SpawnAmmo(actor, type, shieldWeapon, Consts.Layer.FRIENDLY);
+                _shield = Main.Instance.game.SpawnAmmo(actor, type, shieldWeapon, Consts.CollisionLayer.FRIENDLY);
 
                 _shield.rigidbody2D.velocity = Vector2.zero;
                 GameObject.Destroy(_shield.rigidbody2D);  //KAI: cheese

@@ -39,7 +39,7 @@ public sealed class ActorBehaviorScripts
         retval.Add(bf.followPlayer, new RateLimiter(followTime, followTime / 2));
         retval.Add(
             new CompositeBehavior(
-                bf.CreateAutofire(Consts.Layer.MOB_AMMO, weapons),
+                bf.CreateAutofire(Consts.CollisionLayer.MOB_AMMO, weapons),
                 bf.facePlayer),
             new RateLimiter(attackTime, attackTime)
         );
@@ -63,7 +63,7 @@ public sealed class ActorBehaviorScripts
         {
             var retval = new SequencedBehavior();
             retval.Add(bf.followPlayer, new RateLimiter(2, 2));
-            retval.Add(bf.CreateTurret(Consts.Layer.MOB_AMMO, vehicle.weapons), new RateLimiter(2, 1));
+            retval.Add(bf.CreateTurret(Consts.CollisionLayer.MOB_AMMO, vehicle.weapons), new RateLimiter(2, 1));
             return retval;
         };
         _behaviorFactory["BEE"] = (vehicle) =>

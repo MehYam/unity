@@ -8,8 +8,7 @@ using PvT.Util;
 /// </summary>
 public static class Consts
 {
-    // Scene layers
-    public enum Layer : int
+    public enum CollisionLayer : int
     {
         MOB = 8, 
         MOB_AMMO = 9,
@@ -27,11 +26,11 @@ public static class Consts
         TANKTREAD = 4,
         TANKBODY = 5,
         TANKTURRET = 6,
-        MOB_AMMO = 7,
-        MOB = 8,
-        FRIENDLY_AMMO = 9,
+        AMMO = 7,
+        AMMO_UNUSED = 8,
+        MOB = 9,
         FRIENDLY = 10,
-        HIGH_AMMO = 11,
+        AMMO_TOP = 11,
         EXPLOSIONS = 12,
         SMOKE = 13,
         CLOUDS = 14,

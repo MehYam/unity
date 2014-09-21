@@ -66,11 +66,11 @@ TagManager:
     userID: 6
     uniqueID: 1172581653
     locked: 0
-  - name: mobAmmo
+  - name: ammo
     userID: 7
     uniqueID: 418551787
     locked: 0
-  - name: friendlyAmmo
+  - name: ammo_unused
     userID: 8
     uniqueID: 2785626797
     locked: 0

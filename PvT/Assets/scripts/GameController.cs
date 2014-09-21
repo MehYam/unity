@@ -133,11 +133,11 @@ public sealed class GameController : IGame
             var hullBehavior = new CompositeBehavior(
                 bf.CreateTankTreadAnimator(tankHelper.treadLeft, tankHelper.treadRight),
                 bf.CreateRoam(Consts.MAX_MOB_HULL_ROTATION_DEG_PER_SEC, true),
-                bf.CreateAutofire(Consts.Layer.MOB_AMMO, tankHelper.hull.weapons)
+                bf.CreateAutofire(Consts.CollisionLayer.MOB_AMMO, tankHelper.hull.weapons)
             );
 
             var turretFireBehavior = new SequencedBehavior();
-            turretFireBehavior.Add(bf.CreateAutofire(Consts.Layer.MOB_AMMO, tankHelper.turret.weapons), new RateLimiter(3, 3));
+            turretFireBehavior.Add(bf.CreateAutofire(Consts.CollisionLayer.MOB_AMMO, tankHelper.turret.weapons), new RateLimiter(3, 3));
             turretFireBehavior.Add(null, new RateLimiter(3, 3));
             
             var turretBehavior = new CompositeBehavior();
@@ -164,26 +164,25 @@ public sealed class GameController : IGame
     void SpawnMobHelper(GameObject go)
     {
         go.name += " mob";
-        go.layer = (int)Consts.Layer.MOB;
+        go.layer = (int)Consts.CollisionLayer.MOB;
     }
 
-    public GameObject SpawnAmmo(Actor launcher, VehicleType type, WorldObjectType.Weapon weapon, Consts.Layer layer)
+    public GameObject SpawnAmmo(Actor launcher, VehicleType type, WorldObjectType.Weapon weapon, Consts.CollisionLayer layer)
     {
 #if DEBUG_AMMO
         var go = type.Spawn(Consts.SortingLayer.UI);
 #else
-        var go = type.Spawn(Consts.SortingLayer.MOB_AMMO);
+        var go = type.Spawn(Consts.SortingLayer.AMMO);
 #endif
         go.transform.parent = Main.Instance.AmmoParent.transform;
         go.layer = (int)layer;
 
 //HACK
-if (weapon.type == "FUSION") go.GetComponent<SpriteRenderer>().sortingLayerName = "ammoHigh";
+if (weapon.type == "FUSION") go.GetComponent<SpriteRenderer>().sortingLayerID = (int)Consts.SortingLayer.AMMO_TOP;
         // doesn't work yet, some of the ammo has animation on the transform that undoes this
         //go.transform.localScale.Scale(new Vector3(weapon.severity + 0.5f, weapon.severity + 0.5f, 1));
 
-        var body = go.GetComponent<Rigidbody2D>();
-        body.drag = 0;
+        go.rigidbody2D.drag = 0;
 
         var actor = go.GetComponent<Actor>();
         actor.SetExpiry(2);
@@ -194,13 +193,13 @@ if (weapon.type == "FUSION") go.GetComponent<SpriteRenderer>().sortingLayerName 
         if (type.acceleration == 0)
         {
             // give the ammo instant acceleration
-            body.mass = 0;
-            body.velocity = Util.GetLookAtVector(actor.transform.rotation.eulerAngles.z, type.maxSpeed);
+            go.rigidbody2D.mass = 0;
+            go.rigidbody2D.velocity = Util.GetLookAtVector(actor.transform.rotation.eulerAngles.z, type.maxSpeed);
         }
         else
         {
             // treat the ammo like a vehicle (i.e. rocket)
-            body.mass = type.mass;
+            go.rigidbody2D.mass = type.mass;
             actor.behavior = ActorBehaviorFactory.Instance.thrust;
         }
 
@@ -412,7 +411,7 @@ if (weapon.type == "FUSION") go.GetComponent<SpriteRenderer>().sortingLayerName 
         }
         else
         {
-            var layer = isHero ? Consts.Layer.HEROLINGS : Consts.Layer.FRIENDLY_AMMO;
+            var layer = isHero ? Consts.CollisionLayer.HEROLINGS : Consts.CollisionLayer.FRIENDLY_AMMO;
 
             var primaryFire = bf.CreateAutofire(layer, vehicle.weapons);
             behaviors.Add(bf.CreatePlayerInput("Jump", primaryFire));
@@ -437,14 +436,14 @@ if (weapon.type == "FUSION") go.GetComponent<SpriteRenderer>().sortingLayerName 
         behaviors.Add(new PlayerInput());
         behaviors.Add(bf.faceForward);
 
-        var hullFire = bf.CreateAutofire(Consts.Layer.FRIENDLY_AMMO, tankHelper.hull.weapons);
+        var hullFire = bf.CreateAutofire(Consts.CollisionLayer.FRIENDLY_AMMO, tankHelper.hull.weapons);
         behaviors.Add(bf.CreatePlayerInput("Fire1", hullFire));
         behaviors.Add(bf.CreatePlayerInput("Jump", hullFire));
         behaviors.Add(bf.CreateTankTreadAnimator(tankHelper.treadLeft, tankHelper.treadRight));
         tankHelper.hullGO.GetComponent<Actor>().behavior = behaviors;
 
         // turret
-        var turretFire = bf.CreateAutofire(Consts.Layer.FRIENDLY_AMMO, tankHelper.turret.weapons);
+        var turretFire = bf.CreateAutofire(Consts.CollisionLayer.FRIENDLY_AMMO, tankHelper.turret.weapons);
         tankHelper.turretGO.GetComponent<Actor>().behavior = new CompositeBehavior(
             bf.faceMouse,
             bf.CreatePlayerInput("Fire1", turretFire),
@@ -458,21 +457,21 @@ if (weapon.type == "FUSION") go.GetComponent<SpriteRenderer>().sortingLayerName 
         var herolingFire = Main.Instance.game.loader.GetVehicle("HERO").weapons;
 
         // captured ship, add herolings to secondary fire
-        var secondaryFire = bf.CreateAutofire(Consts.Layer.HEROLINGS, herolingFire);
+        var secondaryFire = bf.CreateAutofire(Consts.CollisionLayer.HEROLINGS, herolingFire);
         behaviors.Add(bf.CreatePlayerInput("Fire2", secondaryFire));
     }
     static void InitPlayerVehicle(GameObject player, VehicleType vehicle)
     {
         player.name += " player";
-        player.layer = (int)Consts.Layer.FRIENDLY;
+        player.layer = (int)Consts.CollisionLayer.FRIENDLY;
 
         Camera.main.GetComponent<CameraFollow>().Target = player;
     }
 
     void OnActorDeath(Actor actor)
     {
-        var enemy = actor.gameObject.layer == (int)Consts.Layer.MOB;
-        if (actor.explodesOnDeath && (enemy || actor.gameObject.layer == (int)Consts.Layer.FRIENDLY))
+        var enemy = actor.gameObject.layer == (int)Consts.CollisionLayer.MOB;
+        if (actor.explodesOnDeath && (enemy || actor.gameObject.layer == (int)Consts.CollisionLayer.FRIENDLY))
         {
             var asplode = effects.GetVehicleExplosion().ToRawGameObject(Consts.SortingLayer.EXPLOSIONS);
             asplode.transform.position = actor.transform.position;
