@@ -178,7 +178,7 @@ public sealed class GameController : IGame
         go.layer = (int)layer;
 
 //HACK
-if (weapon.type == "FUSION") go.GetComponent<SpriteRenderer>().sortingLayerID = (int)Consts.SortingLayer.AMMO_TOP;
+if (weapon.vehicleName == "FUSION") go.GetComponent<SpriteRenderer>().sortingLayerID = (int)Consts.SortingLayer.AMMO_TOP;
         // doesn't work yet, some of the ammo has animation on the transform that undoes this
         //go.transform.localScale.Scale(new Vector3(weapon.severity + 0.5f, weapon.severity + 0.5f, 1));
 
@@ -405,7 +405,7 @@ if (weapon.type == "FUSION") go.GetComponent<SpriteRenderer>().sortingLayerID = 
         var heroType = Main.Instance.game.loader.GetVehicle("HERO");
         var isHero = vehicle == heroType;
 
-        if (vehicle.weapons.Length > 0 && vehicle.weapons[0].type == "SHIELD") //KAI: cheese
+        if (vehicle.weapons.Length > 0 && vehicle.weapons[0].vehicleName == "SHIELD") //KAI: cheese
         {
             behaviors.Add(bf.CreateShield());
         }

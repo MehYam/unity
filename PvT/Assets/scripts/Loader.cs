@@ -53,11 +53,11 @@ public class Loader
             foreach (var weapon in vehicle.Value.weapons)
             {
                 Pair<float, float> damageRange = null;
-                damageRanges.TryGetValue(weapon.type, out damageRange);
+                damageRanges.TryGetValue(weapon.vehicleName, out damageRange);
                 if (damageRange == null)
                 {
                     damageRange = new Pair<float, float>(float.MaxValue, float.MinValue);
-                    damageRanges[weapon.type] = damageRange;
+                    damageRanges[weapon.vehicleName] = damageRange;
                 }
 
                 if (weapon.damage < damageRange.first)
@@ -75,7 +75,7 @@ public class Loader
         {
             foreach (var weapon in vehicle.Value.weapons)
             {
-                var damageRange = damageRanges[weapon.type];
+                var damageRange = damageRanges[weapon.vehicleName];
                 var magnitude = damageRange.second - damageRange.first;
                 weapon.severity = magnitude == 0 ? 1 : (weapon.damage - damageRange.first) / magnitude;
             }

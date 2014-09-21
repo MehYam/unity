@@ -504,9 +504,9 @@ sealed class DischargeWeapon : IActorBehavior
             var game = Main.Instance.game;
 
             //KAI: MAJOR CHEESE, maybe reimplement as an ammo limit
-            if (weapon.type != "HEROLING" || HerolingActor.ActiveHerolings < Consts.HEROLING_LIMIT)
+            if (weapon.vehicleName != "HEROLING" || HerolingActor.ActiveHerolings < Consts.HEROLING_LIMIT)
             {
-                var ammo = game.loader.GetVehicle(weapon.type);
+                var ammo = game.loader.GetVehicle(weapon.vehicleName);
                 game.SpawnAmmo(actor, ammo, weapon, layer);
             }
         }
@@ -587,7 +587,7 @@ sealed class PlayerShieldBehavior : IActorBehavior
 
                 // create the GameObject
                 var shieldWeapon = actor.worldObject.weapons[0];
-                var type = game.loader.GetVehicle(shieldWeapon.type);
+                var type = game.loader.GetVehicle(shieldWeapon.vehicleName);
                 _shield = Main.Instance.game.SpawnAmmo(actor, type, shieldWeapon, Consts.CollisionLayer.FRIENDLY);
 
                 _shield.rigidbody2D.velocity = Vector2.zero;

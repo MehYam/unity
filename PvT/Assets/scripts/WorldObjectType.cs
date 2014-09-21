@@ -74,7 +74,7 @@ public class WorldObjectType
     }
     public sealed class Weapon
     {
-        public readonly string type; // KAI: convert to enum
+        public readonly string vehicleName;
         public readonly int damage;
         public readonly Vector2 offset;
         public readonly float angle;
@@ -85,7 +85,7 @@ public class WorldObjectType
 
         public Weapon(string type, int dmg, Vector2 offset, float angle, float rate, int sequence)
         {
-            this.type = type;
+            this.vehicleName = type;
             this.damage = dmg;
             this.offset = offset;
             this.angle = angle;
@@ -100,7 +100,7 @@ public class WorldObjectType
             var parts = new Util.CSVParseHelper(str);
             parts.SetIndex(1);
 
-            var type = parts.GetString();
+            var vehicle = parts.GetString();
             var dmg = parts.GetInt();
             var x = parts.GetFloat() / Consts.PixelsToUnits;
             var y = offsetY + parts.GetFloat()/Consts.PixelsToUnits;
@@ -110,16 +110,16 @@ public class WorldObjectType
             var rate = parts.GetFloat();
             var sequence = parts.GetInt();
 
-            return new Weapon(type, dmg, new Vector2(x, y), angle, rate, sequence);
+            return new Weapon(vehicle, dmg, new Vector2(x, y), angle, rate, sequence);
         }
 
         public override string ToString()
         {
-            return string.Format("Weapon {0} dmg {1} severity {2}", type, damage, severity);
+            return string.Format("Weapon {0} dmg {1} severity {2}", vehicleName, damage, severity);
         }
         public string ToCSV()
         {
-            return string.Format("{0},{1},{2},{3},{4},{5}", type, damage, offset.x, offset.y, angle, severity);
+            return string.Format("{0},{1},{2},{3},{4},{5}", vehicleName, damage, offset.x, offset.y, angle, severity);
         }
     }
 }
