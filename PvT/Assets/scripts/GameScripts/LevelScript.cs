@@ -6,7 +6,7 @@ using PvT.Util;
 
 public class LevelScript : MonoBehaviour
 {
-    public bool run = true;
+    public bool mobs = true;
     public GameObject map;
     public GameObject[] rooms;
     void Start()
@@ -25,7 +25,7 @@ public class LevelScript : MonoBehaviour
         Debug.Log("LevelScript.OnGameReady");
         Main.Instance.game.SpawnPlayer(Vector3.zero);
 
-        if (run)
+        if (mobs)
         {
             StartCoroutine(RunLevels());
         }
@@ -79,7 +79,7 @@ public class LevelScript : MonoBehaviour
                     _liveEnemies == 0 || spawnLimiter.reached
                 ));
 
-                if (_liveEnemies > 0 && spawnLimiter.reached)
+                if (_liveEnemies > 0 && _liveEnemies < 6 && spawnLimiter.reached)
                 {
                     // always keep a mob handy in case the player needs to recapture one
                     SpawnMob(game, "GREENK");

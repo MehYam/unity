@@ -162,7 +162,7 @@ MonoBehaviour:
   HealthProgressBar: {fileID: 100002, guid: 9f7fac8877bdd354c851e5f09a14d302, type: 2}
   OverwhelmProgressBar: {fileID: 100006, guid: 0ef1bf41dd0bd76439ae8ba7994b0aea, type: 2}
   TrackingArrow: {fileID: 100000, guid: 34b98b45d023102448965a76fc4c0428, type: 2}
-  OverwhelmedIndicator: {fileID: 100006, guid: d488e2e5f3e7f504ebaeb5b284fa086a, type: 2}
+  OverwhelmedIndicator: {fileID: 100000, guid: 380976d23fd379c479f5b149520909e6, type: 2}
   EffectParent: {fileID: 653143524}
   AmmoParent: {fileID: 291939734}
   sounds: {fileID: 3432513}

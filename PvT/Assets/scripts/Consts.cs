@@ -64,7 +64,7 @@ public static class Consts
     static public readonly float MAX_MOB_ROTATION_DEG_PER_SEC = 90;
     static public readonly float MAX_MOB_TURRET_ROTATION_DEG_PER_SEC = 45;
     static public readonly float MAX_MOB_HULL_ROTATION_DEG_PER_SEC = 1;
-    static public readonly float MOB_SPAWN_DELAY = 0.25f;
+    static public readonly float MOB_SPAWN_DELAY = 0.5f;
 
     static public readonly float GREENK_SPAWN_RATE = 15;
 

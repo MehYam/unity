@@ -1,5 +1,6 @@
 #0 sample level with all mobs
-greenk,1;bee,1;bee2,1
+greenk,1
+greenk,2;bee,1
 MOTH,2
 BEE,2
 GHOST,2

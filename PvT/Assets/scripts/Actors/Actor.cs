@@ -304,10 +304,6 @@ public class Actor : MonoBehaviour
             }
         }
     }
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        Debug.Log(other);
-    }
     void OnCollisionEnter2D(Collision2D collision)
     {
         foreach (ContactPoint2D contact in collision.contacts)
