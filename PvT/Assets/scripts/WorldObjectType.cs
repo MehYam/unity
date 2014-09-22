@@ -80,10 +80,11 @@ public class WorldObjectType
         public readonly float angle;
         public readonly float rate;
         public readonly int sequence;
+        public readonly float chargeSeconds;
 
         public float severity { get; set; } // calculated later, once we know all the weapons
 
-        public Weapon(string type, int dmg, Vector2 offset, float angle, float rate, int sequence)
+        public Weapon(string type, int dmg, Vector2 offset, float angle, float rate, int sequence, float chargeSeconds)
         {
             this.vehicleName = type;
             this.damage = dmg;
@@ -91,6 +92,7 @@ public class WorldObjectType
             this.angle = angle;
             this.rate = rate;
             this.sequence = sequence;
+            this.chargeSeconds = chargeSeconds;
 
             this.severity = 0;
         }
@@ -109,8 +111,9 @@ public class WorldObjectType
             parts.GetInt(); // level, not currently used
             var rate = parts.GetFloat();
             var sequence = parts.GetInt();
+            var charge = parts.GetFloat();
 
-            return new Weapon(vehicle, dmg, new Vector2(x, y), angle, rate, sequence);
+            return new Weapon(vehicle, dmg, new Vector2(x, y), angle, rate, sequence, charge);
         }
 
         public override string ToString()
@@ -119,7 +122,7 @@ public class WorldObjectType
         }
         public string ToCSV()
         {
-            return string.Format("{0},{1},{2},{3},{4},{5}", vehicleName, damage, offset.x, offset.y, angle, severity);
+            return string.Format("{0},{1},{2},{3},{4},{5},{6},{7}", vehicleName, damage, offset.x, offset.y, angle, severity, sequence, chargeSeconds);
         }
     }
 }

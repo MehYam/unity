@@ -8,10 +8,10 @@ public sealed class DamagingHotspot : MonoBehaviour
     {
         if (weapon != null)
         {
-            var actor = other.GetComponent<Actor>();
-            if (actor != null)
+            var otherActor = other.GetComponent<Actor>();
+            if (otherActor != null)
             {
-                actor.TakeDamage(weapon.damage);
+                otherActor.TakeDamage(weapon.damage);
             }
         }
     }

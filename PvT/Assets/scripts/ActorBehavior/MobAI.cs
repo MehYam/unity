@@ -8,16 +8,16 @@ using PvT.DOM;
 /// This is used to map AI from the vehicles.json config file to actual C# objects.  There's also
 /// AI coded directly here that's too complex to be defined in the configs.
 /// </summary>
-public sealed class ActorBehaviorScripts
+public sealed class MobAI
 {
-    static ActorBehaviorScripts _instance;
-    static public ActorBehaviorScripts Instance
+    static MobAI _instance;
+    static public MobAI Instance
     {
         get
         {
             if (_instance == null)
             {
-                _instance = new ActorBehaviorScripts();
+                _instance = new MobAI();
             }
             return _instance;
         }
@@ -47,7 +47,7 @@ public sealed class ActorBehaviorScripts
         return retval;
     }
     readonly Dictionary<string, Func<VehicleType, IActorBehavior>> _behaviorFactory = new Dictionary<string, Func<VehicleType, IActorBehavior>>();
-    ActorBehaviorScripts()
+    MobAI()
     {
         var bf = ActorBehaviorFactory.Instance;
 

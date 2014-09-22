@@ -59,6 +59,7 @@ public static class Consts
     static public readonly float COLLISION_DAMAGE_MULTIPLIER = 1f;
     static public readonly float POST_DAMAGE_INVULN = 1;
     static public readonly float POST_DEPOSSESSION_INVULN = 4;
+    static public readonly float WEAPON_CHARGE_OVERLOAD_PCT_DMG = 0.05f;  // damages 5% remaining health per sec
     
     static public readonly float MAX_MOB_ROTATION_DEG_PER_SEC = 90;
     static public readonly float MAX_MOB_TURRET_ROTATION_DEG_PER_SEC = 45;
