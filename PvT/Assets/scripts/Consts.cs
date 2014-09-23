@@ -45,7 +45,7 @@ public static class Consts
     static public readonly float HEROLING_UNABSORBABLE = 2;
     static public readonly float HEROLING_ROAM_BOREDOM = 2;
     static public readonly float HEROLING_ATTACH_BOREDOM = 6;
-    static public readonly int HEROLING_LIMIT = 3;
+    static public readonly int HEROLING_LIMIT = 4;
     static public readonly float HEROLING_HEALTH_OVERWHELM = 20;
     static public readonly float HERO_REGEN = 1;
 
@@ -56,6 +56,7 @@ public static class Consts
 
     static public readonly float SHIELD_HEALTH_MULTIPLIER = 1;
     static public readonly float SHIELD_BOOST = 0.5f;
+    static public readonly float FUSION_KNOCKBACK_MULTIPLIER = 0.5f;
     static public readonly float COLLISION_DAMAGE_MULTIPLIER = 1f;
     static public readonly float POST_DAMAGE_INVULN = 1;
     static public readonly float POST_DEPOSSESSION_INVULN = 4;

@@ -6,8 +6,6 @@ using PvT.Util;
 
 public sealed class HUD : MonoBehaviour
 {
-    public ProgressBar health;
-
     public Fader curtain;
     public Fader space;
 
@@ -15,6 +13,7 @@ public sealed class HUD : MonoBehaviour
     public Text centerPrintMiddle;
     public Text centerPrintBottom;
 
+    public Text score;
     void Start()
     {
         // events

@@ -120,7 +120,7 @@ public class Actor : MonoBehaviour
     public void TakeDamage(float damage)
     {
         var effectiveDamage = takenDamageMultiplier * damage;
-        //Debug.Log(string.Format("{0} takes damage {1} effective {2}", name, damage, effectiveDamage));
+        //Debug.Log(string.Format("{0} takes damage {1} effective {2} health {3}", name, damage, effectiveDamage, health));
         
         if (effectiveDamage > 0)
         {
@@ -128,7 +128,7 @@ public class Actor : MonoBehaviour
 
             if (gameObject == Main.Instance.game.player)
             {
-                GrantInvuln(Consts.POST_DAMAGE_INVULN);
+                //GrantInvuln(Consts.POST_DAMAGE_INVULN);
             }
         }
     }
@@ -345,6 +345,11 @@ public class Actor : MonoBehaviour
             {
                 var boom = Main.Instance.game.effects.GetRandomSmallExplosion().ToRawGameObject(Consts.SortingLayer.EXPLOSIONS);
                 boom.transform.localPosition = contact.point;
+
+                if (otherActor != null && otherActor.worldObject.health > 0 && worldObject.health > 0)
+                {
+                    AudioSource.PlayClipAtPoint(Main.Instance.sounds.SmallCollision, contact.point);
+                }
             }
             if (otherActor != null)
             {
