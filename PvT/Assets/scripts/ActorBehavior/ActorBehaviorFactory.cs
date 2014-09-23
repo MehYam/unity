@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using System.Collections.Generic;
 
 using PvT.DOM;
@@ -273,7 +274,7 @@ public sealed class ActorBehaviorFactory
     }
     IActorBehavior CreateOneAutofire(Consts.CollisionLayer layer, WorldObjectType.Weapon weapon)
     {
-        return new PeriodicBehavior(new DischargeWeapon(layer, weapon), new RateLimiter(weapon.rate));
+        return new PeriodicBehavior(new WeaponDischargeBehavior(layer, weapon), new RateLimiter(weapon.rate));
     }
     public IActorBehavior CreateAutofire(Consts.CollisionLayer layer, WorldObjectType.Weapon[] weapons)
     {
@@ -306,9 +307,13 @@ public sealed class ActorBehaviorFactory
             facePlayer
         );
     }
-    public IActorBehavior CreatePlayerInput(string button, IActorBehavior onFire)
+    public IActorBehavior CreatePlayerButton(string button, IActorBehavior behavior)
     {
-        return new PlayerFire(button, onFire);
+        return new PlayerButton(button, null, behavior, null);
+    }
+    public IActorBehavior CreatePlayerButton(string button, IActorBehavior onDown, IActorBehavior onFrame, IActorBehavior onUp)
+    {
+        return new PlayerButton(button, onDown, onFrame, onUp);
     }
     public IActorBehavior CreateShield()
     {
@@ -421,7 +426,10 @@ sealed class RoamBehavior : IActorBehavior
         var bounds = new XRect(Main.Instance.game.WorldBounds);
         bounds.Inflate(-1);
 
-        target = new Vector2(Random.Range(bounds.left, bounds.right), Random.Range(bounds.bottom, bounds.top));
+        target = new Vector2(
+            UnityEngine.Random.Range(bounds.left, bounds.right), 
+            UnityEngine.Random.Range(bounds.bottom, bounds.top)
+        );
     }
     public void FixedUpdate(Actor actor)
     {
@@ -487,12 +495,12 @@ sealed class FaceMouse : IActorBehavior
     }
 }
 
-sealed class DischargeWeapon : IActorBehavior
+sealed class WeaponDischargeBehavior : IActorBehavior
 {
     readonly Consts.CollisionLayer layer;
     readonly WorldObjectType.Weapon weapon;
 
-    public DischargeWeapon(Consts.CollisionLayer layer, WorldObjectType.Weapon weapon)
+    public WeaponDischargeBehavior(Consts.CollisionLayer layer, WorldObjectType.Weapon weapon)
     {
         this.layer = layer;
         this.weapon = weapon;
@@ -506,50 +514,83 @@ sealed class DischargeWeapon : IActorBehavior
             //KAI: MAJOR CHEESE, maybe reimplement as an ammo limit
             if (weapon.vehicleName != "HEROLING" || HerolingActor.ActiveHerolings < Consts.HEROLING_LIMIT)
             {
-                var ammo = game.loader.GetVehicle(weapon.vehicleName);
-                game.SpawnAmmo(actor, ammo, weapon, layer);
+                game.SpawnAmmo(actor, weapon, layer);
             }
         }
     }
 }
 
-sealed class PlayerFire : IActorBehavior
+sealed class PlayerButton : IActorBehavior
 {
     readonly string button;
-    readonly IActorBehavior behavior;
-    public PlayerFire(string button, IActorBehavior behavior)
+    readonly IActorBehavior behaviorDown;
+    readonly IActorBehavior behaviorFrame;
+    readonly IActorBehavior behaviorUp;
+
+    public PlayerButton(string button, IActorBehavior behaviorDown, IActorBehavior behaviorFrame, IActorBehavior behaviorUp)
     {
         this.button = button;
-        this.behavior = behavior;
+        this.behaviorDown = behaviorDown;
+        this.behaviorFrame = behaviorFrame;
+        this.behaviorUp = behaviorUp;
     }
+    bool down;
     public void FixedUpdate(Actor actor)
     {
         if (Input.GetButton(button))
         {
-            behavior.FixedUpdate(actor);
+            if (!down)
+            {
+                if (behaviorDown != null) behaviorDown.FixedUpdate(actor);
+                down = true;
+            }
+            else
+            {
+                if (behaviorFrame != null) behaviorFrame.FixedUpdate(actor);
+            }
+        }
+        else if (down && behaviorUp != null)
+        {
+            behaviorUp.FixedUpdate(actor);
+            down = false;
         }
     }
 }
 
-sealed class PlayerfireBehavior : IActorBehavior
+// KAI: trying something new here - Actions instead of interfaces, for slightly more flexibility
+sealed class PlayerButton_newhotness : IActorBehavior
 {
-    readonly IActorBehavior onFire;
-    readonly IActorBehavior onSecondary;
-    public PlayerfireBehavior(IActorBehavior onFire, IActorBehavior onSecondary)
+    readonly string button;
+    readonly Action<Actor> onDown;
+    readonly Action<Actor> onFrame;
+    readonly Action<Actor> onUp;
+
+    public PlayerButton_newhotness(string button, Action<Actor> onDown, Action<Actor> onFrame, Action<Actor> onUp)
     {
-        this.onFire = onFire;
-        this.onSecondary = onSecondary;
+        this.button = button;
+        this.onDown = onDown;
+        this.onFrame = onFrame;
+        this.onUp = onUp;
     }
+    bool down;
     public void FixedUpdate(Actor actor)
     {
-        if (onFire != null && Input.GetButton("Fire1"))
+        if (Input.GetButton(button))
         {
-            onFire.FixedUpdate(actor);
+            if (!down)
+            {
+                if (onDown != null) onDown(actor);
+                down = true;
+            }
+            else
+            {
+                if (onFrame != null) onFrame(actor);
+            }
         }
-        if (onSecondary != null && Input.GetButton("Jump"))
+        else if (down && onUp != null)
         {
-            Debug.Log(Input.GetButton("Fire2"));
-            onSecondary.FixedUpdate(actor);
+            onUp(actor);
+            down = false;
         }
     }
 }
@@ -587,8 +628,7 @@ sealed class PlayerShieldBehavior : IActorBehavior
 
                 // create the GameObject
                 var shieldWeapon = actor.worldObject.weapons[0];
-                var type = game.loader.GetVehicle(shieldWeapon.vehicleName);
-                _shield = Main.Instance.game.SpawnAmmo(actor, type, shieldWeapon, Consts.CollisionLayer.FRIENDLY);
+                _shield = Main.Instance.game.SpawnAmmo(actor, shieldWeapon, Consts.CollisionLayer.FRIENDLY);
 
                 _shield.rigidbody2D.velocity = Vector2.zero;
                 GameObject.Destroy(_shield.rigidbody2D);  //KAI: cheese
@@ -734,12 +774,14 @@ sealed class GoHomeYouAreDrunkBehavior : IActorBehavior
         }
 
         actor.gameObject.transform.Rotate(0, 0, spinSpeed);
-        actor.gameObject.transform.Translate(Random.Range(-VIBE, VIBE), Random.Range(-VIBE, VIBE), 0);
+        actor.gameObject.transform.Translate(
+            UnityEngine.Random.Range(-VIBE, VIBE), 
+            UnityEngine.Random.Range(-VIBE, VIBE), 0);
     }
 
     void NewSpin()
     {
-        spinSpeed = Random.Range(-SPIN, SPIN);
+        spinSpeed = UnityEngine.Random.Range(-SPIN, SPIN);
         spinRate.Start();
     }
 }

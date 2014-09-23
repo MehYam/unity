@@ -124,7 +124,7 @@ public sealed class GameController : IGame
         var tank = loader.GetTank(vehicleKey);
         if (tank != null)
         {
-            // KAI: this should move to ActorBehaviorScripts, and be smarter
+            // KAI: this should move to MobAI, and be smarter
             var bf = ActorBehaviorFactory.Instance;
             var tankHelper = new TankSpawnHelper(this, tank.hullName, tank.turretName);
 
@@ -153,7 +153,7 @@ public sealed class GameController : IGame
 
         if (defaultAI)
         {
-            go.GetComponent<Actor>().behavior = ActorBehaviorScripts.Instance.Get(vehicle);
+            go.GetComponent<Actor>().behavior = MobAI.Instance.Get(vehicle);
         }
 
         SpawnMobHelper(go);
@@ -165,17 +165,10 @@ public sealed class GameController : IGame
         go.layer = (int)Consts.CollisionLayer.MOB;
     }
 
-    public GameObject SpawnAmmo(Actor launcher, VehicleType type, WorldObjectType.Weapon weapon, Consts.CollisionLayer layer)
+    public GameObject SpawnAmmo(Actor launcher, WorldObjectType.Weapon weapon, Consts.CollisionLayer layer)
     {
-        //KAI: HOLY CHEESE
-        // seriously, fusion (like the shield) is such a different thing in many ways, it requires a much more generalized
-        // system than what we have here - will have to ponder this.  Subclassing might be the thing.
-        if (weapon.vehicleName == "FUSION")
-        {
-            return SpawnFusion(launcher, type, weapon, layer);
-        }
-
         // now onto to regularly scheduled program(ming)
+        var type = loader.GetVehicle(weapon.vehicleName);
         var go = type.Spawn(Consts.SortingLayer.AMMO);
 
         go.transform.parent = Main.Instance.AmmoParent.transform;
@@ -212,26 +205,22 @@ public sealed class GameController : IGame
         return go;
     }
 
-    GameObject SpawnFusion(Actor launcher, VehicleType type, WorldObjectType.Weapon weapon, Consts.CollisionLayer layer)
+    public GameObject SpawnHotspot(Actor launcher, WorldObjectType.Weapon weapon, float damageMultiplier, Consts.CollisionLayer layer)
     {
         ///THIS IS COPY PASTA FROM SpawnAmmo
+        var type = loader.GetVehicle(weapon.vehicleName);
         var go = type.SpawnNoRigidbody(Consts.SortingLayer.AMMO_TOP);
 
         go.transform.parent = Main.Instance.AmmoParent.transform;
         go.layer = (int)layer;
 
         var actor = go.GetComponent<Actor>();
-        actor.collisionDamage = weapon.damage;
+        actor.collisionDamage = weapon.damage * damageMultiplier;
         actor.showsHealthBar = false;
 
         Util.PrepareLaunch(launcher.transform, actor.transform, weapon.offset, weapon.angle);
 
-        AudioSource.PlayClipAtPoint(Main.Instance.sounds.Bullet, launcher.transform.position);
-
-        ///THIS IS FUSION-SPECIFIC
-        var hotspot = go.GetComponent<DamagingHotspot>();
-        hotspot.weapon = weapon;
-
+        AudioSource.PlayClipAtPoint(Main.Instance.sounds.Laser, launcher.transform.position);
         return go;
     }
 
@@ -433,18 +422,44 @@ public sealed class GameController : IGame
         }
         else
         {
+if (vehicle.weapons[0].chargeSeconds > 0)
+{
+    var charge = new ChargeWeapon(Consts.CollisionLayer.FRIENDLY_AMMO, vehicle.weapons[0]);
+
+    var chargeShipBehavior = new PlayerButton_newhotness(
+        "Fire1",
+        null,
+        new CompositeBehavior(bf.faceMouse, new GoHomeYouAreDrunkBehavior()).FixedUpdate,
+        bf.faceMouse.FixedUpdate
+    );
+    behaviors.Add(chargeShipBehavior);
+
+    var chargeWeaponBehavior = new PlayerButton_newhotness(
+        "Fire1",
+        charge.StartCharge,
+        charge.Charge,
+        charge.Discharge
+    );
+    behaviors.Add(chargeWeaponBehavior);
+}
+else
+{
+            // set up the primary and secondary fire buttons
             var layer = isHero ? Consts.CollisionLayer.HEROLINGS : Consts.CollisionLayer.FRIENDLY_AMMO;
 
             var primaryFire = bf.CreateAutofire(layer, vehicle.weapons);
-            behaviors.Add(bf.CreatePlayerInput("Jump", primaryFire));
+            behaviors.Add(bf.CreatePlayerButton("Jump", primaryFire));
 
+            // hero doesn't point to the mouse when firing
             var fire1 = isHero ? primaryFire : new CompositeBehavior(bf.faceMouse, primaryFire);
-            behaviors.Add(bf.CreatePlayerInput("Fire1", fire1));
+            behaviors.Add(bf.CreatePlayerButton("Fire1", fire1));
+
             if (isHero)
             {
                 behaviors.Add(bf.CreateHeroAnimator(go));
             }
             behaviors.Add(bf.heroRegen);
+}
         }
 
         actor.behavior = behaviors;
@@ -459,8 +474,8 @@ public sealed class GameController : IGame
         behaviors.Add(bf.faceForward);
 
         var hullFire = bf.CreateAutofire(Consts.CollisionLayer.FRIENDLY_AMMO, tankHelper.hull.weapons);
-        behaviors.Add(bf.CreatePlayerInput("Fire1", hullFire));
-        behaviors.Add(bf.CreatePlayerInput("Jump", hullFire));
+        behaviors.Add(bf.CreatePlayerButton("Fire1", hullFire));
+        behaviors.Add(bf.CreatePlayerButton("Jump", hullFire));
         behaviors.Add(bf.CreateTankTreadAnimator(tankHelper.treadLeft, tankHelper.treadRight));
         tankHelper.hullGO.GetComponent<Actor>().behavior = behaviors;
 
@@ -468,8 +483,8 @@ public sealed class GameController : IGame
         var turretFire = bf.CreateAutofire(Consts.CollisionLayer.FRIENDLY_AMMO, tankHelper.turret.weapons);
         tankHelper.turretGO.GetComponent<Actor>().behavior = new CompositeBehavior(
             bf.faceMouse,
-            bf.CreatePlayerInput("Fire1", turretFire),
-            bf.CreatePlayerInput("Jump", turretFire)
+            bf.CreatePlayerButton("Fire1", turretFire),
+            bf.CreatePlayerButton("Jump", turretFire)
         );
     }
     void SetSecondaryHerolingBehavior(CompositeBehavior behaviors)
@@ -480,7 +495,7 @@ public sealed class GameController : IGame
 
         // captured ship, add herolings to secondary fire
         var secondaryFire = bf.CreateAutofire(Consts.CollisionLayer.HEROLINGS, herolingFire);
-        behaviors.Add(bf.CreatePlayerInput("Fire2", secondaryFire));
+        behaviors.Add(bf.CreatePlayerButton("Fire2", secondaryFire));
     }
     static void InitPlayerVehicle(GameObject player, VehicleType vehicle)
     {

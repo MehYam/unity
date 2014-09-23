@@ -15,7 +15,8 @@ public interface IGame
 
     GameObject SpawnPlayer(Vector3 location);
     GameObject SpawnMob(string vehicleKey, bool defaultAI = true);
-    GameObject SpawnAmmo(Actor launcher, VehicleType type, WorldObjectType.Weapon weapon, Consts.CollisionLayer layer);
+    GameObject SpawnAmmo(Actor launcher, WorldObjectType.Weapon weapon, Consts.CollisionLayer layer);
+    GameObject SpawnHotspot(Actor launcher, WorldObjectType.Weapon weapon, float damageMultiplier, Consts.CollisionLayer layer);
 
     void Debug_Respawn(Loader loader);
 }
