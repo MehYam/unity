@@ -46,6 +46,25 @@ public sealed class MobAI
         retval.Add(bf.CreateRoam(Consts.MAX_MOB_ROTATION_DEG_PER_SEC, false), new RateLimiter(roamTime, roamTime));
         return retval;
     }
+    static IActorBehavior ChargeWeaponBehavior(VehicleType vehicle)
+    {
+        var bf = ActorBehaviorFactory.Instance;
+        var retval = new SequencedBehavior();
+        var weapon = vehicle.weapons[0];
+        var charge = new ChargeWeapon(Consts.CollisionLayer.MOB_AMMO, weapon);
+
+        // follow
+        retval.Add(bf.followPlayer, new RateLimiter(4, 2));
+
+        // stop and charge
+        retval.Add(new CompositeBehavior(bf.facePlayer, new GoHomeYouAreDrunkBehavior(), (Action<Actor>)charge.Charge), 
+            new RateLimiter(weapon.chargeSeconds / 4, weapon.chargeSeconds * 1.5f));
+
+        // discarge
+        retval.Add(charge.Discharge, new RateLimiter(1));
+
+        return retval;
+    }
     readonly Dictionary<string, Func<VehicleType, IActorBehavior>> _behaviorFactory = new Dictionary<string, Func<VehicleType, IActorBehavior>>();
     MobAI()
     {
@@ -54,6 +73,10 @@ public sealed class MobAI
         _behaviorFactory["GREENK"] = (vehicle) =>
         {
             return bf.followPlayer;
+        };
+        _behaviorFactory["BLUEK"] = (vehicle) =>
+        {
+            return ChargeWeaponBehavior(vehicle);
         };
         _behaviorFactory["MOTH"] = (vehicle) =>
         {

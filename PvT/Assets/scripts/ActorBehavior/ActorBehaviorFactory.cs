@@ -87,10 +87,10 @@ public sealed class SequencedBehavior: IActorBehavior
 {
     struct Phase
     {
-        public readonly IActorBehavior behavior;
+        public readonly Action<Actor> behavior;
         public readonly RateLimiter duration;
 
-        public Phase(IActorBehavior behavior, RateLimiter duration) { this.behavior = behavior; this.duration = duration; }
+        public Phase(Action<Actor> behavior, RateLimiter duration) { this.behavior = behavior; this.duration = duration; }
     }
 
     readonly IList<Phase> phases = new List<Phase>();
@@ -103,7 +103,11 @@ public sealed class SequencedBehavior: IActorBehavior
     /// <param name="duration">The duration over which to run the behavior</param>
     public void Add(IActorBehavior b, RateLimiter rate)
     {
-        phases.Add(new Phase(b, rate));
+        Add(b.FixedUpdate, rate);
+    }
+    public void Add(Action<Actor> a, RateLimiter rate)
+    {
+        phases.Add(new Phase(a, rate));
     }
     public void FixedUpdate(Actor actor)
     {
@@ -127,7 +131,7 @@ public sealed class SequencedBehavior: IActorBehavior
             }
             if (phase.behavior != null)
             {
-                phase.behavior.FixedUpdate(actor);
+                phase.behavior(actor);
                 ++phaseCount;
             }
 
@@ -184,6 +188,7 @@ public class BypassedBehavior : IActorBehavior
 // from one that spits out singletons to one that holds a bunch of lambda functions
 public sealed class ActorBehaviorFactory
 {
+    static public readonly IActorBehavior NULL = null;
     static public readonly ActorBehaviorFactory Instance = new ActorBehaviorFactory();
 
     ActorBehaviorFactory() { }

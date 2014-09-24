@@ -45,7 +45,7 @@ public sealed class RateLimiter
     {
         baseRate = newBaseRate;
 
-        float delta = (_randomExtra > 0) ? Random.Range(baseRate, _randomExtra) : baseRate;
+        float delta = (_randomExtra > 0) ? Random.Range(baseRate, baseRate + _randomExtra) : baseRate;
         _nextTime = Time.fixedTime + delta;
 
         ++numStarts;

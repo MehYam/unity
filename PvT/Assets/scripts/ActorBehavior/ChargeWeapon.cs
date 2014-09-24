@@ -40,7 +40,11 @@ public sealed class ChargeWeapon
                 actor.TakeDamage(selfHarm);
             }
 
-            Main.Instance.hud.score.text = string.Format("Charge: {0}%", (int)(_currentCharge * 100));
+            if (actor.gameObject == Main.Instance.game.player)
+            {
+                //KAI: HACK
+                Main.Instance.hud.score.text = string.Format("Charge: {0}%", (int)(_currentCharge * 100));
+            }
         }
     }
 
