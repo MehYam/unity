@@ -34,7 +34,7 @@ public sealed class ChargeWeapon
             if (_currentCharge == 1)
             {
                 var selfHarm = Time.fixedDeltaTime * Consts.WEAPON_CHARGE_OVERLOAD_PCT_DMG * actor.health;
-                Debug.Log("ChargeWeapon self harm " + selfHarm + " over " + Time.fixedDeltaTime);
+                //Debug.Log("ChargeWeapon self harm " + selfHarm + " over " + Time.fixedDeltaTime);
             
                 // deliver self damage to the wielder
                 actor.TakeDamage(selfHarm);

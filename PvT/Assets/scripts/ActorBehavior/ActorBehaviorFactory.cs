@@ -12,25 +12,47 @@ using PvT.Util;
 /// </summary>
 public sealed class CompositeBehavior : IActorBehavior
 {
-    readonly IList<IActorBehavior> subBehaviors = new List<IActorBehavior>();
+    readonly IList<Action<Actor>> subBehaviors = new List<Action<Actor>>();
 
-    public CompositeBehavior(params IActorBehavior[] behaviors)
+    public CompositeBehavior(params object[] behaviors)
     {
-        foreach (var b in behaviors) Add(b);
+        foreach (var b in behaviors)
+        {
+            if (b != null)
+            {
+                var action = b as Action<Actor>;
+                var behavior = b as IActorBehavior;
+                if (action != null)
+                {
+                    Add(action);
+                }
+                else if (behavior != null)
+                {
+                    Add(behavior);
+                }
+                else
+                {
+                    throw new InvalidOperationException("Composite behaviors can only be type Action<Actor> or IActorBehavior, found a " + b.GetType().Name);
+                }
+            }
+        }
     }
 
     public void Add(IActorBehavior behavior)
     {
-        subBehaviors.Add(behavior);
+        subBehaviors.Add(behavior.FixedUpdate);
     }
-
+    public void Add(Action<Actor> behaviorAction)
+    {
+        subBehaviors.Add(behaviorAction);
+    }
     public void FixedUpdate(Actor actor)
     {
         foreach (var behavior in subBehaviors)
         {
             if (behavior != null)
             {
-                behavior.FixedUpdate(actor);
+                behavior(actor);
             }
         }
     }
@@ -558,14 +580,14 @@ sealed class PlayerButton : IActorBehavior
 }
 
 // KAI: trying something new here - Actions instead of interfaces, for slightly more flexibility
-sealed class PlayerButton_newhotness : IActorBehavior
+sealed class PlayerButton_Mark2 : IActorBehavior
 {
     readonly string button;
     readonly Action<Actor> onDown;
     readonly Action<Actor> onFrame;
     readonly Action<Actor> onUp;
 
-    public PlayerButton_newhotness(string button, Action<Actor> onDown, Action<Actor> onFrame, Action<Actor> onUp)
+    public PlayerButton_Mark2(string button, Action<Actor> onDown, Action<Actor> onFrame, Action<Actor> onUp)
     {
         this.button = button;
         this.onDown = onDown;

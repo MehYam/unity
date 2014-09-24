@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -406,6 +407,10 @@ public sealed class GameController : IGame
         }
     }
 
+    static bool HasChargeWeapon(WorldObjectType obj)
+    {
+        return obj.weapons[0].chargeSeconds > 0;
+    }
     void SetPlayerPlaneBehaviors(GameObject go, VehicleType vehicle)
     {
         var bf = ActorBehaviorFactory.Instance;
@@ -422,44 +427,43 @@ public sealed class GameController : IGame
         }
         else
         {
-if (vehicle.weapons[0].chargeSeconds > 0)
-{
-    var charge = new ChargeWeapon(Consts.CollisionLayer.FRIENDLY_AMMO, vehicle.weapons[0]);
+            if (HasChargeWeapon(vehicle))
+            {
+                var charge = new ChargeWeapon(Consts.CollisionLayer.FRIENDLY_AMMO, vehicle.weapons[0]);
 
-    var chargeShipBehavior = new PlayerButton_newhotness(
-        "Fire1",
-        null,
-        new CompositeBehavior(bf.faceMouse, new GoHomeYouAreDrunkBehavior()).FixedUpdate,
-        bf.faceMouse.FixedUpdate
-    );
-    behaviors.Add(chargeShipBehavior);
+                var chargeBehavior = new PlayerButton_Mark2(
+                    "Fire1",
+                    charge.StartCharge,
+                    new CompositeBehavior(bf.faceMouse, new GoHomeYouAreDrunkBehavior(), (Action<Actor>)charge.Charge).FixedUpdate,
+                    new CompositeBehavior(bf.faceMouse, (Action<Actor>)charge.Discharge).FixedUpdate
+                );
+                behaviors.Add(chargeBehavior);
+                chargeBehavior = new PlayerButton_Mark2(
+                    "Jump",
+                    charge.StartCharge,
+                    new CompositeBehavior(new GoHomeYouAreDrunkBehavior(), (Action<Actor>)charge.Charge).FixedUpdate,
+                    charge.Discharge
+                );
+                behaviors.Add(chargeBehavior);
+            }
+            else
+            {
+                // set up the primary and secondary fire buttons
+                var layer = isHero ? Consts.CollisionLayer.HEROLINGS : Consts.CollisionLayer.FRIENDLY_AMMO;
 
-    var chargeWeaponBehavior = new PlayerButton_newhotness(
-        "Fire1",
-        charge.StartCharge,
-        charge.Charge,
-        charge.Discharge
-    );
-    behaviors.Add(chargeWeaponBehavior);
-}
-else
-{
-            // set up the primary and secondary fire buttons
-            var layer = isHero ? Consts.CollisionLayer.HEROLINGS : Consts.CollisionLayer.FRIENDLY_AMMO;
+                var fireAhead = bf.CreateAutofire(layer, vehicle.weapons);
+                behaviors.Add(bf.CreatePlayerButton("Jump", fireAhead));
 
-            var primaryFire = bf.CreateAutofire(layer, vehicle.weapons);
-            behaviors.Add(bf.CreatePlayerButton("Jump", primaryFire));
-
-            // hero doesn't point to the mouse when firing
-            var fire1 = isHero ? primaryFire : new CompositeBehavior(bf.faceMouse, primaryFire);
-            behaviors.Add(bf.CreatePlayerButton("Fire1", fire1));
+                // hero doesn't point to the mouse when firing
+                var fireToMouse = isHero ? fireAhead : new CompositeBehavior(bf.faceMouse, fireAhead);
+                behaviors.Add(bf.CreatePlayerButton("Fire1", fireToMouse));
+            }
 
             if (isHero)
             {
                 behaviors.Add(bf.CreateHeroAnimator(go));
+                behaviors.Add(bf.heroRegen);
             }
-            behaviors.Add(bf.heroRegen);
-}
         }
 
         actor.behavior = behaviors;
@@ -467,6 +471,11 @@ else
     void SetPlayerTankBehaviors(TankSpawnHelper tankHelper)
     {
         var bf =ActorBehaviorFactory.Instance;
+
+        if (HasChargeWeapon(tankHelper.hull) || HasChargeWeapon(tankHelper.turret))
+        {
+            Debug.LogWarning("Charge weapons not currently supported on tanks");
+        }
 
         // hull
         var behaviors = new CompositeBehavior();
