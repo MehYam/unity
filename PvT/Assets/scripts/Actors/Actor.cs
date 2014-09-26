@@ -21,6 +21,15 @@ public class Actor : MonoBehaviour
         immortal = false;
     }
 
+    void Start()
+    {
+        var trail = GetComponent<TrailRenderer>();
+        if (trail != null)
+        {
+            trail.sortingLayerID = GetComponent<SpriteRenderer>().sortingLayerID;
+        }
+    }
+
     public bool isHero { get { return worldObject.name == "HERO"; } }
     void OnDestroy()
     {

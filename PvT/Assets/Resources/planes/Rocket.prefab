@@ -58,6 +58,7 @@ GameObject:
   - 4: {fileID: 400002}
   - 212: {fileID: 21200002}
   - 61: {fileID: 6100000}
+  - 96: {fileID: 9600000}
   m_Layer: 0
   m_Name: Rocket
   m_TagString: Untagged
@@ -171,6 +172,47 @@ Animator:
   m_ApplyRootMotion: 1
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!96 &9600000
+TrailRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100006}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000e000000000000000, type: 0}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_Time: 1
+  m_StartWidth: .100000001
+  m_EndWidth: 0
+  m_Colors:
+    m_Color[0]:
+      serializedVersion: 2
+      rgba: 729907585
+    m_Color[1]:
+      serializedVersion: 2
+      rgba: 4286677377
+    m_Color[2]:
+      serializedVersion: 2
+      rgba: 1870429308
+    m_Color[3]:
+      serializedVersion: 2
+      rgba: 1048345724
+    m_Color[4]:
+      serializedVersion: 2
+      rgba: 8618883
+  m_MinVertexDistance: .100000001
+  m_Autodestruct: 0
 --- !u!212 &21200000
 SpriteRenderer:
   m_ObjectHideFlags: 1
