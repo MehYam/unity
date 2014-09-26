@@ -18,8 +18,10 @@ public class HerolingActor : Actor
 
     RateLimiter _reabsorbTimeout;
     RateLimiter _roamBoredom;
-    void Start()
+    protected override void Start()
     {
+        base.Start();
+
         _reabsorbTimeout = new RateLimiter(Consts.HEROLING_UNABSORBABLE);
         _roamBoredom = new RateLimiter(Consts.HEROLING_ROAM_BOREDOM);
 

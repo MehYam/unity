@@ -158,8 +158,6 @@ public class VehicleType : WorldObjectType
     {
         var go = SpawnNoRigidbody(sortingLayer);
 
-        go.AddComponent<DropShadow>();
-
         var body = go.AddComponent<Rigidbody2D>();
         body.mass = float.IsNaN(mass) ? 0 : mass;
         body.drag = 0.5f;

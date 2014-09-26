@@ -21,7 +21,7 @@ public class Actor : MonoBehaviour
         immortal = false;
     }
 
-    void Start()
+    protected virtual void Start()  // KAI: interesting Unity gotcha - must document somewhere
     {
         var trail = GetComponent<TrailRenderer>();
         if (trail != null)
