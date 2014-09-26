@@ -3,18 +3,19 @@ using System.Collections;
 
 public sealed class RateLimiter
 {
-    readonly float _randomExtra;
+    readonly float _min;
+    readonly float _max;
 
     /// <summary>
     /// Constructs a limiter that tells you when baseRate seconds have elapsed
     /// </summary>
     /// <param name="baseRate">The number of seconds after which Now returns true</param>
-    /// <param name="randomExtra">Pad the rate with random seconds on each interval</param>
-    public RateLimiter(float baseRate, float randomExtra = 0)
+    /// <param name="randomnessPct">Gives each quantum some randomness.  Passing in 0.5 makes gives rate a range of baseRate/2 to baseRase*3/2</param>
+    public RateLimiter(float baseRate, float randomnessPct = 0)
     {
-        this.baseRate = baseRate;
-        _randomExtra = randomExtra;
-
+        var randomness = baseRate * randomnessPct;
+        _min = baseRate - randomness;
+        _max = baseRate + randomness;
         Start();
     }
     public int numStarts
@@ -45,13 +46,13 @@ public sealed class RateLimiter
     {
         baseRate = newBaseRate;
 
-        float delta = (_randomExtra > 0) ? Random.Range(baseRate, baseRate + _randomExtra) : baseRate;
+        float delta = (_min != _max) ? Random.Range(_min, _max) : _min;
         _nextTime = Time.fixedTime + delta;
 
         ++numStarts;
     }
     public override string ToString()
     {
-        return string.Format("RateLimiter base {0} random {1}, next in {2}, started {3} times", baseRate, _randomExtra, _nextTime - Time.fixedTime, numStarts);
+        return string.Format("RateLimiter min {0} max {1}, next in {2}, started {3} times", _min, _max, _nextTime - Time.fixedTime, numStarts);
     }
 }

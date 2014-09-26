@@ -36,15 +36,29 @@ public sealed class MobAI
     {
         var bf = ActorBehaviorFactory.Instance;
         var retval = new SequencedBehavior();
-        retval.Add(bf.followPlayer, new RateLimiter(followTime, followTime / 2));
+        retval.Add(bf.followPlayer, new RateLimiter(followTime, 0.5f));
         retval.Add(
             new CompositeBehavior(
                 bf.CreateAutofire(Consts.CollisionLayer.MOB_AMMO, weapons),
                 bf.facePlayer),
-            new RateLimiter(attackTime, attackTime)
+            new RateLimiter(attackTime, 1)
         );
-        retval.Add(bf.CreateRoam(Consts.MAX_MOB_ROTATION_DEG_PER_SEC, false), new RateLimiter(roamTime, roamTime));
+        retval.Add(bf.CreateRoam(Consts.MAX_MOB_ROTATION_DEG_PER_SEC, false), new RateLimiter(roamTime, 1));
         return retval;
+    }
+    static IActorBehavior TheCount(WorldObjectType.Weapon[] weapons)
+    {
+        var bf = ActorBehaviorFactory.Instance;
+        var retval = new SequencedBehavior();
+
+        retval.Add(bf.thrust, new RateLimiter(6, 0.5f));
+        retval.Add(ActorBehaviorFactory.NULL, new RateLimiter(2, 0.5f));
+        retval.Add(
+            new CompositeBehavior(
+                bf.CreateAutofire(Consts.CollisionLayer.MOB_AMMO, weapons),
+                bf.thrustAway),
+            new RateLimiter(3, 0.5f));
+        return new CompositeBehavior(bf.facePlayer, retval);
     }
     static IActorBehavior ChargeWeaponBehavior(VehicleType vehicle)
     {
@@ -54,11 +68,11 @@ public sealed class MobAI
         var charge = new ChargeWeapon(Consts.CollisionLayer.MOB_AMMO, weapon);
 
         // follow
-        retval.Add(bf.followPlayer, new RateLimiter(4, 2));
+        retval.Add(bf.followPlayer, new RateLimiter(4, 0.5f));
 
         // stop and charge
         retval.Add(new CompositeBehavior(bf.facePlayer, new GoHomeYouAreDrunkBehavior(), (Action<Actor>)charge.Charge), 
-            new RateLimiter(weapon.chargeSeconds / 4, weapon.chargeSeconds * 1.5f));
+            new RateLimiter(weapon.chargeSeconds, 0.75f));
 
         // discarge
         retval.Add(charge.Discharge, new RateLimiter(1));
@@ -85,8 +99,8 @@ public sealed class MobAI
         _behaviorFactory["OSPREY"] = (vehicle) =>
         {
             var retval = new SequencedBehavior();
-            retval.Add(bf.followPlayer, new RateLimiter(2, 2));
-            retval.Add(bf.CreateTurret(Consts.CollisionLayer.MOB_AMMO, vehicle.weapons), new RateLimiter(2, 1));
+            retval.Add(bf.followPlayer, new RateLimiter(2, 0.75f));
+            retval.Add(bf.CreateTurret(Consts.CollisionLayer.MOB_AMMO, vehicle.weapons), new RateLimiter(2, 0.5f));
             return retval;
         };
         _behaviorFactory["BEE"] = (vehicle) =>
@@ -96,6 +110,10 @@ public sealed class MobAI
         _behaviorFactory["BAT"] = (vehicle) =>
         {
             return AttackAndFlee(3, 1, 3, vehicle.weapons);
+        };
+        _behaviorFactory["ESOX"] = _behaviorFactory["PIKE"] = _behaviorFactory["PIKE0"] = (vehicle) =>
+        {
+            return TheCount(vehicle.weapons);
         };
     }
 }

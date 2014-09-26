@@ -87,10 +87,10 @@ public sealed class SequencedBehavior: IActorBehavior
 {
     struct Phase
     {
-        public readonly Action<Actor> behavior;
+        public readonly Action<Actor> action;
         public readonly RateLimiter duration;
 
-        public Phase(Action<Actor> behavior, RateLimiter duration) { this.behavior = behavior; this.duration = duration; }
+        public Phase(Action<Actor> action, RateLimiter duration) { this.action = action; this.duration = duration; }
     }
 
     readonly IList<Phase> phases = new List<Phase>();
@@ -103,7 +103,7 @@ public sealed class SequencedBehavior: IActorBehavior
     /// <param name="duration">The duration over which to run the behavior</param>
     public void Add(IActorBehavior b, RateLimiter rate)
     {
-        Add(b.FixedUpdate, rate);
+        Add(b == null ? (Action<Actor>)null : b.FixedUpdate, rate);
     }
     public void Add(Action<Actor> a, RateLimiter rate)
     {
@@ -129,9 +129,9 @@ public sealed class SequencedBehavior: IActorBehavior
                 phase = phases[_current];
                 phase.duration.Start();
             }
-            if (phase.behavior != null)
+            if (phase.action != null)
             {
-                phase.behavior(actor);
+                phase.action(actor);
                 ++phaseCount;
             }
 
@@ -218,6 +218,15 @@ public sealed class ActorBehaviorFactory
         {
             if (_thrust == null){_thrust = new ThrustBehavior();}
             return _thrust;
+        }
+    }
+    IActorBehavior _thrustAway;
+    public IActorBehavior thrustAway
+    {
+        get
+        {
+            if (_thrustAway == null) { _thrustAway = new ThrustBehavior(180); }
+            return _thrustAway;
         }
     }
     IActorBehavior _faceMouse;
@@ -421,11 +430,13 @@ sealed class PlayerHome : IActorBehavior
 
 sealed class ThrustBehavior : IActorBehavior
 {
+    readonly float angle;
+    public ThrustBehavior(float angle = 0) { this.angle = angle; }
     public void FixedUpdate(Actor actor)
     {
         if (actor.thrustEnabled)
         {
-            var thrustVector = Util.GetLookAtVector(actor.gameObject.transform.rotation.eulerAngles.z, actor.acceleration);
+            var thrustVector = Util.GetLookAtVector(actor.gameObject.transform.rotation.eulerAngles.z + angle, actor.acceleration);
             actor.gameObject.rigidbody2D.AddForce(thrustVector);
         }
     }
