@@ -24,19 +24,19 @@ namespace PvT.Util
             return Random.value >= odds;
         }
 
-        static public readonly float ACTOR_NOSE_OFFSET = -90;
+        static public readonly float ACTOR_NOSE_ANGLE = -90;
         static public Quaternion GetLookAtAngle(Vector2 point)
         {
-            return Quaternion.Euler(0, 0, Mathf.Atan2(point.y, point.x) * Mathf.Rad2Deg + ACTOR_NOSE_OFFSET);
+            return Quaternion.Euler(0, 0, Mathf.Atan2(point.y, point.x) * Mathf.Rad2Deg + ACTOR_NOSE_ANGLE);
         }
         static public Vector2 GetLookAtVector(float angle, float magnitude)
         {
             var vector = new Vector2(0, magnitude);
-            return RotatePoint(vector, -ACTOR_NOSE_OFFSET - angle);
+            return RotatePoint(vector, -ACTOR_NOSE_ANGLE - angle);
         }
         static public Vector2 RotatePoint(Vector2 point, float degrees)
         {
-            var radians = (degrees - ACTOR_NOSE_OFFSET) * Mathf.Deg2Rad;
+            var radians = (degrees - ACTOR_NOSE_ANGLE) * Mathf.Deg2Rad;
             var cos = Mathf.Cos(radians);
             var sin = Mathf.Sin(radians);
 
@@ -60,22 +60,30 @@ namespace PvT.Util
             var angle = Mathf.Atan2(lookVector.y, lookVector.x) * Mathf.Rad2Deg;
             if (maxDegrees != -1)
             {
-                var currentAngle = looker.transform.rotation.eulerAngles.z - ACTOR_NOSE_OFFSET;
-                var diff = diffAngle(currentAngle, angle);
+                var currentAngle = looker.transform.rotation.eulerAngles.z - ACTOR_NOSE_ANGLE;
+                var diff = Mathf.DeltaAngle(currentAngle, angle);
 
                 diff = Util.Clamp(diff, -maxDegrees, maxDegrees);
                 angle = currentAngle + diff;
             }
-            looker.rotation = Quaternion.Euler(0, 0, angle + ACTOR_NOSE_OFFSET);
+            looker.rotation = Quaternion.Euler(0, 0, angle + ACTOR_NOSE_ANGLE);
         }
-        static public bool IsLookingAt(Transform looker, Vector2 target, float tolerance)
+        static public bool IsLookingAt(Transform looker, Vector2 target, float toleranceDegrees)
         {
             var lookVector = new Vector3(target.x, target.y) - looker.position;
             var angle = Mathf.Atan2(lookVector.y, lookVector.x) * Mathf.Rad2Deg;
 
-            var diff = diffAngle(looker.transform.rotation.eulerAngles.z - ACTOR_NOSE_OFFSET, angle);
-            return Mathf.Abs(diff) < tolerance;
+            var diff = Mathf.DeltaAngle(looker.transform.rotation.eulerAngles.z - ACTOR_NOSE_ANGLE, angle);
+            return Mathf.Abs(diff) < toleranceDegrees;
         }
+        static public Quaternion GetAngleToMouse(Transform transform)
+        {
+            var mouse = Input.mousePosition;
+            var screen = Camera.main.WorldToScreenPoint(transform.position);
+            var lookDirection = new Vector2(mouse.x - screen.x, mouse.y - screen.y);
+            return Util.GetLookAtAngle(lookDirection);
+        }
+        
         static public float DegreesBetweenPoints(Vector2 a, Vector2 b)
         {
             return DegreesRotation(a - b);
@@ -85,15 +93,11 @@ namespace PvT.Util
             return Mathf.Atan2(point.x, point.y) * Mathf.Rad2Deg;
         }
         // returns a signed difference between two angles useful for evolving one to the other
-        static public float diffRadians(float source, float target)
-        {
-            var raw = target - source;
-            return Mathf.Atan2(Mathf.Sin(raw), Mathf.Cos(raw));
-        }
-        static public float diffAngle(float source, float target)
-        {
-            return diffRadians(source * Mathf.Deg2Rad, target * Mathf.Deg2Rad) * Mathf.Rad2Deg;
-        }
+        //static public float diffRadians(float source, float target)
+        //{
+        //    var raw = target - source;
+        //    return Mathf.Atan2(Mathf.Sin(raw), Mathf.Cos(raw));
+        //}
         static public Vector3 Add(Vector2 a, Vector3 b)
         {
             return new Vector3(a.x + b.x, a.y + b.y, b.z);

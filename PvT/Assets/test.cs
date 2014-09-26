@@ -22,6 +22,9 @@ public class test : MonoBehaviour
         Log("calling CoroutineChain");
         StartCoroutine(CoroutineChain_waits_for_three_clicks());
         Log("done calling CoroutineChain");
+
+        Log(" delta 1 " + Mathf.DeltaAngle(30, 45));
+        Log(" delta 2 " + Mathf.DeltaAngle(45, 30));
 	}
 
     IEnumerator CoroutineChain_waits_for_three_clicks()

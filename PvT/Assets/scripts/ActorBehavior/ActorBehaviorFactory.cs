@@ -524,11 +524,7 @@ sealed class FaceMouse : IActorBehavior
         if (!whileFiring || Input.GetButton("Fire1"))
         {
             // point towards the mouse when firing
-            var go = actor.gameObject;
-            var mouse = Input.mousePosition;
-            var screenPoint = Camera.main.WorldToScreenPoint(go.transform.position);
-            var lookDirection = new Vector2(mouse.x - screenPoint.x, mouse.y - screenPoint.y);
-            go.transform.rotation = Util.GetLookAtAngle(lookDirection);
+            actor.gameObject.transform.rotation = Util.GetAngleToMouse(actor.gameObject.transform);
         }
     }
 }
@@ -681,8 +677,17 @@ sealed class PlayerShieldBehavior : IActorBehavior
 
                 _shield.transform.parent = actor.transform;
 
-                // boost!
-                actor.modifier = new ActorModifier(Time.fixedTime + BOOST_SECONDS, actor.worldObject.maxSpeed * 2, ((VehicleType)(actor.worldObject)).acceleration * 2);
+                // boost, but only if we're keyboard shooting or facing the mouse
+                var boost = newState == State.FIRING_FORWARD || 
+                    Mathf.Abs(Mathf.DeltaAngle(
+                        Util.GetLookAtAngle(PlayerInput.CurrentInputVector).eulerAngles.z, 
+                        Util.GetAngleToMouse(actor.transform).eulerAngles.z)) 
+                        < 90;
+
+                if (boost)
+                {
+                    actor.modifier = new ActorModifier(Time.fixedTime + BOOST_SECONDS, actor.worldObject.maxSpeed * 2, ((VehicleType)(actor.worldObject)).acceleration * 2);
+                }
                 _lastShieldTime = Time.fixedTime;
             }
         }

@@ -12,17 +12,21 @@ public class PlayerInput : IActorBehavior
     {
         duringInput = duringInputBehavior;
     }
+
+    static public Vector2 CurrentInputVector
+    {
+        get { return new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")); }
+    }
     public void FixedUpdate(Actor actor)
     {
         var go = actor.gameObject;
 
-        var horz = Input.GetAxis("Horizontal");
-        var vert = Input.GetAxis("Vertical");
-        if (horz != 0 || vert != 0)
+        var current = CurrentInputVector;
+        if (current != Vector2.zero)
         {
             if (actor.thrustEnabled)
             {
-                actor.gameObject.rigidbody2D.AddForce(new Vector2(horz * actor.acceleration, vert * actor.acceleration));
+                actor.gameObject.rigidbody2D.AddForce(current * actor.acceleration);
             }
             if (duringInput != null)
             {
