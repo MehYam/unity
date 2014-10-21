@@ -45,7 +45,7 @@ public sealed class GameController : IGame
         gge.MapReady += OnMapReady;
     }
 
-    void OnMapReady(XRect bounds)
+    void OnMapReady(GameObject unused, XRect bounds)
     {
         WorldBounds = bounds;
 
@@ -203,6 +203,8 @@ public sealed class GameController : IGame
         }
 
         AudioSource.PlayClipAtPoint(Main.Instance.sounds.Bullet, launcher.transform.position);
+
+        GlobalGameEvent.Instance.FireAmmoSpawned(actor);
         return go;
     }
 
@@ -409,7 +411,7 @@ public sealed class GameController : IGame
 
     static bool HasChargeWeapon(WorldObjectType obj)
     {
-        return obj.weapons[0].chargeSeconds > 0;
+        return obj.weapons != null && obj.weapons.Length > 0 && obj.weapons[0].chargeSeconds > 0;
     }
     void SetPlayerPlaneBehaviors(GameObject go, VehicleType vehicle)
     {

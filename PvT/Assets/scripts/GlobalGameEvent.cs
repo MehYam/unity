@@ -31,9 +31,9 @@ class GlobalGameEvent
     }
 
     public event Action MainReady = delegate { };
-    public event Action<XRect> MapReady = delegate { };
+    public event Action<GameObject, XRect> MapReady = delegate { };
     public event Action<IGame> GameReady = delegate { };
-    public event Action<GameObject> PlayerSpawned = delegate { };
+
     public event Action HerolingLaunched = delegate { };
     public event Action<Actor> HerolingAttached = delegate { };
     public event Action<Actor> HerolingDetached = delegate { };
@@ -42,6 +42,9 @@ class GlobalGameEvent
     public event Action PossessionStart = delegate { };
     public event Action PossessionEnd = delegate { };
 
+    public event Action<Actor> ActorSpawned = delegate { };
+    public event Action<GameObject> PlayerSpawned = delegate { };
+    public event Action<Actor> AmmoSpawned = delegate { };
     public event Action EnemySpawned = delegate { };
     public event Action EnemyDestroyed = delegate { };
 
@@ -53,10 +56,8 @@ class GlobalGameEvent
     public event Action GameOver = delegate { };
 
     public void FireMainReady() { MainReady(); }
-    public void FireMapReady(XRect bounds) { MapReady(bounds); }
+    public void FireMapReady(GameObject map, XRect bounds) { MapReady(map, bounds); }
     public void FireGameReady(IGame game) { GameReady(game); }
-
-    public void FirePlayerSpawned(GameObject player) { PlayerSpawned(player); }
 
     public void FireHerolingLaunched() { HerolingLaunched(); }
     public void FireHerolingAttached(Actor host) { HerolingAttached(host); }
@@ -66,6 +67,9 @@ class GlobalGameEvent
     public void FirePossessionStart() { PossessionStart(); }
     public void FirePossessionEnd() { PossessionEnd(); }
 
+    public void FirePlayerSpawned(GameObject player) { PlayerSpawned(player); }
+    public void FireAmmoSpawned(Actor a) { AmmoSpawned(a); }
+    public void FireActorSpawned(Actor a) { ActorSpawned(a); }
     public void FireEnemySpawned() { EnemySpawned(); }
     public void FireEnemyDeath() { EnemyDestroyed(); }
 

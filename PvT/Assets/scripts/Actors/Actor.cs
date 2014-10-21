@@ -28,6 +28,7 @@ public class Actor : MonoBehaviour
         {
             trail.sortingLayerID = GetComponent<SpriteRenderer>().sortingLayerID;
         }
+        GlobalGameEvent.Instance.FireActorSpawned(this);
     }
 
     public bool isHero { get { return worldObject.name == "HERO"; } }

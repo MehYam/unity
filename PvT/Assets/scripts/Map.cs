@@ -12,6 +12,6 @@ public sealed class Map : MonoBehaviour
         gameObject.transform.position = -bounds.center;
         bounds = mesh.bounds;
 
-        GlobalGameEvent.Instance.FireMapReady(new XRect(bounds.min, bounds.max));
+        GlobalGameEvent.Instance.FireMapReady(gameObject, new XRect(bounds.min, bounds.max));
 	}
 }

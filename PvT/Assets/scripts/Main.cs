@@ -86,7 +86,7 @@ public class Main : MonoBehaviour
         GlobalGameEvent.ReleaseAll();
     }
 
-    void OnMapReady(XRect bounds)
+    void OnMapReady(GameObject unused, XRect bounds)
     {
 #if AUTO_SELECT_GAMESTATE_EDITOR
         Selection.objects = new Object[] { GameObject.Find("_gameState") };
