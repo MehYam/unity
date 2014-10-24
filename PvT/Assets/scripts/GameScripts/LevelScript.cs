@@ -102,7 +102,7 @@ public class LevelScript : MonoBehaviour
         // put the actor at the edge
         Vector3 spawnLocation;
         var bounds = new XRect(Main.Instance.game.WorldBounds);
-        bounds.Inflate(-2);
+        bounds.Inflate(4);
 
         if (Util.CoinFlip())
         {
