@@ -59,6 +59,8 @@ public class Main : MonoBehaviour
     {
         DebugUtil.Log(this, "Start");
 
+        Util.SPRITE_FORWARD_ANGLE = -90; // our sprites are pointed facing up, but in the default 2D coordinate system right == 0;
+
         _instance = this;
 
         game = new GameController(CreateLoader());

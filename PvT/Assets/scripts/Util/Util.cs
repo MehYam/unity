@@ -24,19 +24,19 @@ namespace PvT.Util
             return Random.value >= odds;
         }
 
-        static public readonly float ACTOR_NOSE_ANGLE = -90;
+        static public float SPRITE_FORWARD_ANGLE { get; set; }
         static public Quaternion GetLookAtAngle(Vector2 point)
         {
-            return Quaternion.Euler(0, 0, Mathf.Atan2(point.y, point.x) * Mathf.Rad2Deg + ACTOR_NOSE_ANGLE);
+            return Quaternion.Euler(0, 0, Mathf.Atan2(point.y, point.x) * Mathf.Rad2Deg + SPRITE_FORWARD_ANGLE);
         }
         static public Vector2 GetLookAtVector(float angle, float magnitude)
         {
             var vector = new Vector2(0, magnitude);
-            return RotatePoint(vector, -ACTOR_NOSE_ANGLE - angle);
+            return RotatePoint(vector, -SPRITE_FORWARD_ANGLE - angle);
         }
         static public Vector2 RotatePoint(Vector2 point, float degrees)
         {
-            var radians = (degrees - ACTOR_NOSE_ANGLE) * Mathf.Deg2Rad;
+            var radians = (degrees - SPRITE_FORWARD_ANGLE) * Mathf.Deg2Rad;
             var cos = Mathf.Cos(radians);
             var sin = Mathf.Sin(radians);
 
@@ -60,20 +60,20 @@ namespace PvT.Util
             var angle = Mathf.Atan2(lookVector.y, lookVector.x) * Mathf.Rad2Deg;
             if (maxDegrees != -1)
             {
-                var currentAngle = looker.transform.rotation.eulerAngles.z - ACTOR_NOSE_ANGLE;
+                var currentAngle = looker.transform.rotation.eulerAngles.z - SPRITE_FORWARD_ANGLE;
                 var diff = Mathf.DeltaAngle(currentAngle, angle);
 
                 diff = Util.Clamp(diff, -maxDegrees, maxDegrees);
                 angle = currentAngle + diff;
             }
-            looker.rotation = Quaternion.Euler(0, 0, angle + ACTOR_NOSE_ANGLE);
+            looker.rotation = Quaternion.Euler(0, 0, angle + SPRITE_FORWARD_ANGLE);
         }
         static public bool IsLookingAt(Transform looker, Vector2 target, float toleranceDegrees)
         {
             var lookVector = new Vector3(target.x, target.y) - looker.position;
             var angle = Mathf.Atan2(lookVector.y, lookVector.x) * Mathf.Rad2Deg;
 
-            var diff = Mathf.DeltaAngle(looker.transform.rotation.eulerAngles.z - ACTOR_NOSE_ANGLE, angle);
+            var diff = Mathf.DeltaAngle(looker.transform.rotation.eulerAngles.z - SPRITE_FORWARD_ANGLE, angle);
             return Mathf.Abs(diff) < toleranceDegrees;
         }
         static public Quaternion GetAngleToMouse(Transform transform)
