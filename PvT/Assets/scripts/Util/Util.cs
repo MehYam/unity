@@ -63,7 +63,7 @@ namespace PvT.Util
                 var currentAngle = looker.transform.rotation.eulerAngles.z - SPRITE_FORWARD_ANGLE;
                 var diff = Mathf.DeltaAngle(currentAngle, angle);
 
-                diff = Util.Clamp(diff, -maxDegrees, maxDegrees);
+                diff = Mathf.Clamp(diff, -maxDegrees, maxDegrees);
                 angle = currentAngle + diff;
             }
             looker.rotation = Quaternion.Euler(0, 0, angle + SPRITE_FORWARD_ANGLE);
@@ -167,11 +167,6 @@ namespace PvT.Util
             }
             DebugUtil.Assert(_screenRect != null);
             return _screenRect;
-        }
-
-        static public float Clamp(float value, float min, float max)
-        {
-            return Mathf.Max(min, Mathf.Min(value, max));
         }
 
         static public void DisablePhysics(GameObject go)

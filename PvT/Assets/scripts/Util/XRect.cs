@@ -16,16 +16,21 @@ public class XRect
     public float width { get { return right - left; } }
     public float height { get { return top - bottom; } }
 
-    public Vector2 size { get { return new Vector2(left - right, top - bottom); } }
+    public Vector2 size { get { return new Vector2(width, height); } }
     public Vector2 min { get { return new Vector2(left, bottom); } }
     public Vector2 max { get { return new Vector2(right, top); } }
 
     public void Inflate(float amount)
     {
-        left -= amount;
-        bottom -= amount;
-        right += amount;
-        top += amount;
+        Inflate(amount, amount);
+    }
+    public void Inflate(float x, float y)
+    {
+        left -= x;
+        right += x;
+
+        bottom -= y;
+        top += y;
     }
     public void Move(float x, float y)
     {
@@ -41,6 +46,23 @@ public class XRect
     public bool Contains(float x, float y) { return left <= x && x <= right && bottom <= y && y <= top; }
     public bool Contains(Vector2 pt) { return Contains(pt.x, pt.y); }
 
+    /// <summary>
+    /// Clips a point to within the rect boundaries
+    /// </summary>
+    /// <param name="pt">The point to clip</param>
+    /// <returns>Returns the clipped point</returns>
+    public Vector2 Clamp(Vector2 pt)
+    {
+        return new Vector2(Mathf.Clamp(pt.x, left, right), Mathf.Clamp(pt.y, bottom, top));
+    }
+
+    public XRect() 
+    {
+        this.left = 0;
+        this.bottom = 0;
+        this.right = 0;
+        this.top = 0;
+    }
     public XRect(float left, float bottom, float right, float top)
     {
         this.left = left;
