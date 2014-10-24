@@ -81,7 +81,7 @@ public sealed class TutorialScript : MonoBehaviour
         mobActor.trackingArrowEnabled = true;
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
-        AnimatedText.FadeIn(hud.centerPrintBottom, "(Investigate the newcomer)", Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeIn(hud.centerPrintBottom, "(Follow the arrow to the newcomer)", Consts.TEXT_FADE_SECONDS);
 
         yield return StartCoroutine(Util.YieldUntil(() =>
         {
@@ -124,13 +124,16 @@ public sealed class TutorialScript : MonoBehaviour
         AnimatedText.FadeOut(hud.centerPrintBottom, Consts.TEXT_FADE_SECONDS);
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
-        //////////////////// Teach possession mechanic
         AnimatedText.FadeIn(hud.centerPrintTop, "It would not stop.", Consts.TEXT_FADE_SECONDS);
+        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_SLOW);
+
+        AnimatedText.FadeOut(hud.centerPrintTop, Consts.TEXT_FADE_SECONDS);
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
         AnimatedText.FadeIn(hud.centerPrintTop, "We had to reveal our secret.", Consts.TEXT_FADE_SECONDS);
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
+        //////////////////// Teach possession mechanic
         do
         {
             AnimatedText.FadeIn(hud.centerPrintBottom, "(Aim with the mouse, left button shoots)", Consts.TEXT_FADE_SECONDS);

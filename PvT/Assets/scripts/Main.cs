@@ -33,7 +33,7 @@ public class Main : MonoBehaviour
     /// <summary>
     /// ///////////////////////// debug/dev items
     /// </summary>
-    public string defaultVehicle = "hero";
+    public string defaultVehicle = "";
     public bool playMusic = true;
 
     static Main _instance;

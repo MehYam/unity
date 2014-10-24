@@ -26,7 +26,7 @@ public sealed class GameController : IGame
         }
         private set { _player = value; }
     }
-    public bool enemyInPossession    { get { return !player.GetComponent<Actor>().isHero; } }
+    public bool enemyInPossession { get; private set; }
     public Loader loader { get; private set; }
     public Effects effects { get; private set; }
 
@@ -92,12 +92,13 @@ public sealed class GameController : IGame
     public GameObject SpawnPlayer(Vector3 location)
     {
         var main = Main.Instance;
-        Debug.Log("Spawning player --- " + main.defaultVehicle);
+        var vehicle = String.IsNullOrEmpty(main.defaultVehicle) ? "hero" : main.defaultVehicle;
+        Debug.Log("Spawning player --- " + vehicle);
 
-        var tank = loader.GetTank(main.defaultVehicle);
+        var tank = loader.GetTank(vehicle);
         if (tank == null)
         {
-            var playerVehicle = loader.GetVehicle(main.defaultVehicle);
+            var playerVehicle = loader.GetVehicle(vehicle);
             var go = playerVehicle.Spawn(Consts.SortingLayer.FRIENDLY);
             InitPlayerVehicle(go, playerVehicle);
             SetPlayerPlaneBehaviors(go, playerVehicle);
@@ -115,6 +116,8 @@ public sealed class GameController : IGame
         SetSecondaryHerolingBehavior((CompositeBehavior)this.player.GetComponent<Actor>().behavior);
 
         this.player.gameObject.transform.position = location;
+
+        enemyInPossession = !player.GetComponent<Actor>().isHero;
 
         GlobalGameEvent.Instance.FirePlayerSpawned(this.player);
         return this.player.gameObject;
@@ -242,6 +245,8 @@ public sealed class GameController : IGame
         if (playerActor.isHero)
         {
             host.attachedHerolings = 0;
+
+            enemyInPossession = true;
             host.StartCoroutine(RunPossessionAnimation(host));
 
             GlobalGameEvent.Instance.FireEnemyDeath();
