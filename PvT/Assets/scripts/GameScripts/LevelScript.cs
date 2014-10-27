@@ -7,6 +7,8 @@ using PvT.Util;
 public class LevelScript : MonoBehaviour
 {
     public bool mobs = true;
+    public int startLevel = 1;
+
     public GameObject map;
     public GameObject[] rooms;
     void Start()
@@ -33,12 +35,12 @@ public class LevelScript : MonoBehaviour
 
     IEnumerator RunLevels()
     {
-        int iLevel = 0;
-
         var main = Main.Instance;
-        foreach (var level in main.game.loader.levels)
+        for (int iLevel = startLevel; iLevel < main.game.loader.levels.Count; ++iLevel)
         {
-            AnimatedText.FadeIn(main.hud.centerPrintTop, "Chapter " + ++iLevel, Consts.TEXT_FADE_SECONDS);
+            var level = main.game.loader.levels[iLevel];
+
+            AnimatedText.FadeIn(main.hud.centerPrintTop, "Chapter " + iLevel, Consts.TEXT_FADE_SECONDS);
             yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
             AnimatedText.FadeOut(main.hud.centerPrintTop, Consts.TEXT_FADE_SECONDS);
