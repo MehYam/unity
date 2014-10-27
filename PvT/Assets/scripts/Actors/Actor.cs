@@ -19,6 +19,8 @@ public class Actor : MonoBehaviour
         firingEnabled = true;
         thrustEnabled = true;
         immortal = false;
+
+        speedModifier = ActorModifier.IDENTITY;
     }
 
     protected virtual void Start()  // KAI: interesting Unity gotcha - must document somewhere
@@ -87,11 +89,20 @@ public class Actor : MonoBehaviour
             GlobalGameEvent.Instance.FireHealthChange(this, prevHealth - _health);
         }
     }
+    ActorModifier _speedModifier;
+    public ActorModifier speedModifier
+    { 
+        get { return _speedModifier; }
+        set
+        {
+            _speedModifier = value == null ? ActorModifier.IDENTITY : value;
+        }
+    }
     public float maxSpeed
     {
         get
         {
-            var speed = worldObjectType.maxSpeed;
+            var speed = worldObjectType.maxSpeed * speedModifier.maxSpeed;
             return isPlayer ? speed * Consts.PLAYER_SPEED_MULTIPLIER : speed;
         }
     }
@@ -99,13 +110,12 @@ public class Actor : MonoBehaviour
     {
         get
         {
-            //KAI: cheese
-            var v = (VehicleType) worldObjectType;
+            var v = (VehicleType)worldObjectType; //KAI: cheese
 
             // Our config wants acceleration to be absolute, without being slowed by mass.  Therefore,
             // derive the force required by multiplying it by mass.  If we start using drag more, 
             // that will have to compensate for as well.
-            var accel = v.acceleration * worldObjectType.mass;
+            var accel = v.acceleration * speedModifier.acceleration * worldObjectType.mass;
             return isPlayer ? accel * Consts.PLAYER_ACCEL_MULTIPLIER : accel;
         }
     }
@@ -118,8 +128,6 @@ public class Actor : MonoBehaviour
     public float collisionDamage;
     public IActorBehavior behavior { get; set; }
     public IActorVisualBehavior visualBehavior { get; set; }
-
-    public ActorModifier modifier { set; private get; }
 
     public int attachedHerolings { get; set; }
     public float overwhelmPct
@@ -170,10 +178,6 @@ public class Actor : MonoBehaviour
         if (((expireTime != EXPIRY_INFINITE) && Time.fixedTime >= expireTime) || (health <= 0))
         {
             GlobalGameEvent.Instance.FireActorDeath(this);
-        }
-        if (modifier != null && Time.fixedTime > modifier.expiry)
-        {
-            modifier = null;
         }
     }
     static readonly Vector3 HEALTH_BAR_POSITION = new Vector3(0, 0.5f);

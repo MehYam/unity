@@ -720,8 +720,6 @@ sealed class PlayerShieldBehavior : IActorBehavior
 
                 _shield.rigidbody2D.velocity = actor.rigidbody2D.velocity;
                 _shield = null;
-
-                actor.modifier = null;
             }
         }
         _prevState = newState;

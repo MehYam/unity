@@ -311,7 +311,7 @@ public sealed class GameController : IGame
 
         // 5. Destroy the old hero and return the herolings
         GameObject.Destroy(oldHero);
-        HerolingActor.RemoveAll();
+        HerolingActor.ReturnAll();
 
         // 6. Resume all activity
         Time.timeScale = timeScale;

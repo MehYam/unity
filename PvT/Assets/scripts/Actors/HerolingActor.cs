@@ -7,12 +7,12 @@ using PvT.Util;
 public class HerolingActor : Actor
 {
     static public int ActiveHerolings { get; private set; }
-    static public void RemoveAll()
+    static public void ReturnAll()
     {
         var instances = GameObject.FindObjectsOfType<HerolingActor>();
         foreach (var instance in instances)
         {
-            GameObject.Destroy(instance.gameObject);
+            instance.Return();
         }
     }
 
@@ -64,7 +64,7 @@ public class HerolingActor : Actor
     void SetBehavior(IActorBehavior b, ActorModifier m = null)
     {
         behavior = b;
-        modifier = m;
+        speedModifier = m;
     }
 
     RateLimiter _attachBoredom;
@@ -104,7 +104,7 @@ public class HerolingActor : Actor
             }
         }
         // go back home
-        SetBehavior(RETURN, new ActorModifier(float.MaxValue, maxSpeed * 1.5f, 0));
+        SetBehavior(RETURN, new ActorModifier(1.5f, 1));
     }
 
     protected override void FixedUpdate()
