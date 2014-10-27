@@ -99,7 +99,7 @@ public sealed class GameController : IGame
         if (tank == null)
         {
             var playerVehicle = loader.GetVehicle(vehicle);
-            var go = playerVehicle.Spawn(Consts.SortingLayer.FRIENDLY);
+            var go = playerVehicle.Spawn(Consts.SortingLayer.FRIENDLY, true);
             InitPlayerVehicle(go, playerVehicle);
             SetPlayerPlaneBehaviors(go, playerVehicle);
 
@@ -153,7 +153,7 @@ public sealed class GameController : IGame
             return tankHelper.hullGO;
         }
         var vehicle = loader.GetVehicle(vehicleKey);
-        var go = vehicle.Spawn(Consts.SortingLayer.MOB);
+        var go = vehicle.Spawn(Consts.SortingLayer.MOB, true);
 
         if (defaultAI)
         {
@@ -173,7 +173,7 @@ public sealed class GameController : IGame
     {
         // now onto to regularly scheduled program(ming)
         var type = loader.GetVehicle(weapon.vehicleName);
-        var go = type.Spawn(Consts.SortingLayer.AMMO);
+        var go = type.Spawn(Consts.SortingLayer.AMMO, true);
 
         go.transform.parent = Main.Instance.AmmoParent.transform;
         go.layer = (int)layer;
@@ -215,7 +215,7 @@ public sealed class GameController : IGame
     {
         ///THIS IS COPY PASTA FROM SpawnAmmo
         var type = loader.GetVehicle(weapon.vehicleName);
-        var go = type.SpawnNoRigidbody(Consts.SortingLayer.AMMO_TOP);
+        var go = type.Spawn(Consts.SortingLayer.AMMO_TOP, false);
 
         go.transform.parent = Main.Instance.AmmoParent.transform;
         go.layer = (int)layer;
@@ -371,8 +371,8 @@ public sealed class GameController : IGame
             turret = game.loader.GetTankPart(tankTurret);
             var tread = game.loader.GetMisc("tanktreadParent");
 
-            hullGO = hull.Spawn(Consts.SortingLayer.TANKBODY);
-            turretGO = turret.Spawn(Consts.SortingLayer.TANKTURRET);
+            hullGO = hull.Spawn(Consts.SortingLayer.TANKBODY, true);
+            turretGO = turret.Spawn(Consts.SortingLayer.TANKTURRET, true);
 
             hullGO.name = HULL_NAME;
             turretGO.name = TURRET_NAME;

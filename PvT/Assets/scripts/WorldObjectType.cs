@@ -53,14 +53,24 @@ public class WorldObjectType
         }
         return retval;
     }
-    public virtual GameObject Spawn(Consts.SortingLayer sortingLayer)
+    public virtual GameObject Spawn(Consts.SortingLayer sortingLayer, bool rigidBody)
     {
         var go = ToRawGameObject(sortingLayer);
         go.name = name;
 
+        if (rigidBody)
+        {
+            var body = go.AddComponent<Rigidbody2D>();
+            body.mass = float.IsNaN(mass) ? 0 : mass;
+            body.drag = 0.5f;
+            body.angularDrag = 5;
+
+            go.GetComponent<Collider2D>().sharedMaterial = Main.Instance.Bounce;
+        }
         //KAI: MAJOR CHEESE
         var actor = this.name == "HEROLING" ? go.AddComponent<HerolingActor>() : go.AddComponent<Actor>();
         actor.worldObjectType = this;
+        actor.collisionDamage = health / 4;
         return go;
     }
 
@@ -131,53 +141,34 @@ public class VehicleType : WorldObjectType
 {
     public readonly float acceleration;
     public readonly float inertia;
-    public readonly float collDmg;
 
-    public VehicleType(GameObject prefab, string name, string assetID, float mass, Weapon[] weapons, int health, float maxSpeed, float acceleration, float inertia, float collDmg) :
+    public VehicleType(GameObject prefab, string name, string assetID, float mass, Weapon[] weapons, int health, float maxSpeed, float acceleration, float inertia) :
         base(prefab, name, assetID, mass, maxSpeed, health, weapons)
     {
         this.acceleration = acceleration;
         this.inertia = inertia;
-        this.collDmg = collDmg;
     }
-    public VehicleType(WorldObjectType baseClass, float acceleration, float inertia, float collDmg) :
+    public VehicleType(WorldObjectType baseClass, float acceleration, float inertia) :
         base(baseClass)
     {
         this.acceleration = acceleration;
         this.inertia = inertia;
-        this.collDmg = collDmg;
     }
     public VehicleType(VehicleType rhs) :
         base(rhs)
     {
         this.acceleration = rhs.acceleration;
         this.inertia = rhs.inertia;
-        this.collDmg = rhs.collDmg;
     }
-    public override GameObject Spawn(Consts.SortingLayer sortingLayer)
+    public override GameObject Spawn(Consts.SortingLayer sortingLayer, bool rigidBody)
     {
-        var go = SpawnNoRigidbody(sortingLayer);
-
-        var body = go.AddComponent<Rigidbody2D>();
-        body.mass = float.IsNaN(mass) ? 0 : mass;
-        body.drag = 0.5f;
-        body.angularDrag = 5;
-
-        go.GetComponent<Collider2D>().sharedMaterial = Main.Instance.Bounce;
-        go.GetComponent<Actor>().collisionDamage = collDmg;
-        return go;
-    }
-    public GameObject SpawnNoRigidbody(Consts.SortingLayer sortingLayer)
-    {
-        // KAI: this is weak, and only here to support the fusion hack.  Something more thought-out and/or generalized will be simpler
-        var go = base.Spawn(sortingLayer);
-
+        var go = base.Spawn(sortingLayer, rigidBody);
         go.AddComponent<DropShadow>();
         return go;
     }
     public override string ToCSV()
     {
-        return base.ToCSV() + string.Format(",{0},{1},{2},{3}", health, acceleration, inertia, collDmg);
+        return base.ToCSV() + string.Format(",{0},{1},{2}", health, acceleration, inertia);
     }
 }
 
@@ -186,7 +177,7 @@ public sealed class TankHullType : VehicleType
     public readonly float turretPivotY;
 
     public TankHullType(GameObject prefab, string name, string assetID, float mass, Weapon[] weapons, int health, float maxSpeed, float acceleration, float inertia, float collDmg, float turretPivotY)
-        : base(prefab, name, assetID, mass, weapons, health, maxSpeed, acceleration, inertia, collDmg)
+        : base(prefab, name, assetID, mass, weapons, health, maxSpeed, acceleration, inertia)
     {
         this.turretPivotY = turretPivotY;
     }
@@ -195,9 +186,9 @@ public sealed class TankHullType : VehicleType
     {
         this.turretPivotY = turretPivotY;
     }
-    public override GameObject Spawn(Consts.SortingLayer sortingLayer)
+    public override GameObject Spawn(Consts.SortingLayer sortingLayer, bool rigidBody)
     {
-        var go = base.Spawn(sortingLayer);
+        var go = base.Spawn(sortingLayer, true);
         go.rigidbody2D.drag = 1;
         go.rigidbody2D.angularDrag = 5;
         return go;

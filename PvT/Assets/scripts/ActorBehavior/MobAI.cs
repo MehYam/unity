@@ -60,7 +60,7 @@ public sealed class MobAI
             new RateLimiter(3, 0.5f));
         return new CompositeBehavior(bf.facePlayer, retval);
     }
-    static IActorBehavior ChargeWeaponBehavior(VehicleType vehicle)
+    static IActorBehavior ChargeWeaponAI(VehicleType vehicle)
     {
         var bf = ActorBehaviorFactory.Instance;
         var retval = new SequencedBehavior();
@@ -90,7 +90,7 @@ public sealed class MobAI
         };
         _behaviorFactory["BLUEK"] = (vehicle) =>
         {
-            return ChargeWeaponBehavior(vehicle);
+            return ChargeWeaponAI(vehicle);
         };
         _behaviorFactory["MOTH"] = (vehicle) =>
         {
