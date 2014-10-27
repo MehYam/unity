@@ -60,7 +60,7 @@ public class WorldObjectType
 
         //KAI: MAJOR CHEESE
         var actor = this.name == "HEROLING" ? go.AddComponent<HerolingActor>() : go.AddComponent<Actor>();
-        actor.worldObject = this;
+        actor.worldObjectType = this;
         return go;
     }
 

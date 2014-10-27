@@ -104,7 +104,7 @@ public class HerolingActor : Actor
             }
         }
         // go back home
-        SetBehavior(RETURN, new ActorModifier(float.MaxValue, worldObject.maxSpeed * 1.5f, 0));
+        SetBehavior(RETURN, new ActorModifier(float.MaxValue, worldObjectType.maxSpeed * 1.5f, 0));
     }
 
     protected override void FixedUpdate()

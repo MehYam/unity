@@ -199,7 +199,7 @@ public sealed class GameController : IGame
             actor.behavior = ActorBehaviorFactory.Instance.thrust;
         }
 
-        if (launcher.worldObject is TankPartType)
+        if (launcher.worldObjectType is TankPartType)
         {
             // it's a turret
             SpawnMuzzleFlash(actor);
@@ -290,7 +290,7 @@ public sealed class GameController : IGame
         // 4. Host becomes the new player
         var oldHero = player;
         player = host.gameObject;
-        var vehicle = player.GetComponent<Actor>().worldObject as VehicleType;
+        var vehicle = player.GetComponent<Actor>().worldObjectType as VehicleType;
 
         InitPlayerVehicle(player, vehicle);
         if (vehicle is TankHullType)
@@ -409,8 +409,8 @@ public sealed class GameController : IGame
             this.treadLeft = gameObject.transform.FindChild(LEFT_TREAD_NAME).gameObject;
             this.treadRight = gameObject.transform.FindChild(RIGHT_TREAD_NAME).gameObject;
 
-            this.hull = (TankHullType)hullGO.GetComponent<Actor>().worldObject;
-            this.turret = (TankPartType)turretGO.GetComponent<Actor>().worldObject;
+            this.hull = (TankHullType)hullGO.GetComponent<Actor>().worldObjectType;
+            this.turret = (TankPartType)turretGO.GetComponent<Actor>().worldObjectType;
         }
     }
 

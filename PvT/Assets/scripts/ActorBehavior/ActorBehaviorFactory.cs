@@ -661,7 +661,7 @@ sealed class PlayerShieldBehavior : IActorBehavior
                 var game = Main.Instance.game;
 
                 // create the GameObject
-                var shieldWeapon = actor.worldObject.weapons[0];
+                var shieldWeapon = actor.worldObjectType.weapons[0];
                 _shield = Main.Instance.game.SpawnAmmo(actor, shieldWeapon, Consts.CollisionLayer.FRIENDLY);
 
                 _shield.rigidbody2D.velocity = Vector2.zero;
@@ -669,11 +669,11 @@ sealed class PlayerShieldBehavior : IActorBehavior
 
                 // init the Actor
                 var shieldActor = _shield.GetComponent<Actor>();
-                shieldActor.health = actor.worldObject.health * Consts.SHIELD_HEALTH_MULTIPLIER;
+                shieldActor.health = actor.worldObjectType.health * Consts.SHIELD_HEALTH_MULTIPLIER;
                 shieldActor.SetExpiry(Actor.EXPIRY_INFINITE);
                 shieldActor.explodesOnDeath = false;
                 shieldActor.showsHealthBar = false;
-                shieldActor.behavior = ActorBehaviorFactory.Instance.CreateFadeWithHealthAndExpiry(actor.worldObject.health);
+                shieldActor.behavior = ActorBehaviorFactory.Instance.CreateFadeWithHealthAndExpiry(actor.worldObjectType.health);
 
                 _shield.transform.parent = actor.transform;
 
@@ -686,14 +686,14 @@ sealed class PlayerShieldBehavior : IActorBehavior
 
                 if (boost)
                 {
-                    actor.modifier = new ActorModifier(Time.fixedTime + BOOST_SECONDS, actor.worldObject.maxSpeed * 2, ((VehicleType)(actor.worldObject)).acceleration * 2);
+                    actor.modifier = new ActorModifier(Time.fixedTime + BOOST_SECONDS, actor.worldObjectType.maxSpeed * 2, ((VehicleType)(actor.worldObjectType)).acceleration * 2);
                 }
                 _lastShieldTime = Time.fixedTime;
             }
         }
         if (_shield != null)
         {
-            var shieldWeapon = actor.worldObject.weapons[0];
+            var shieldWeapon = actor.worldObjectType.weapons[0];
             _shield.transform.localPosition = shieldWeapon.offset;
 
             if (newState == State.NONE)
@@ -838,10 +838,10 @@ sealed class HealthRegen : IActorBehavior
     }
     public void FixedUpdate(Actor actor)
     {
-        if (actor.health < actor.worldObject.health)
+        if (actor.health < actor.worldObjectType.health)
         {
             actor.health += healthPerSecond * Time.fixedDeltaTime;
-            actor.health = Mathf.Min(actor.worldObject.health, actor.health);
+            actor.health = Mathf.Min(actor.worldObjectType.health, actor.health);
         }
     }
 }
