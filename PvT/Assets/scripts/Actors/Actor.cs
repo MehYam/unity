@@ -31,6 +31,7 @@ public class Actor : MonoBehaviour
         GlobalGameEvent.Instance.FireActorSpawned(this);
     }
 
+    public bool isPlayer { get { return Main.Instance.game.player == gameObject; } }
     public bool isHero { get { return worldObjectType.name == "HERO"; } }
     void OnDestroy()
     {
@@ -90,19 +91,22 @@ public class Actor : MonoBehaviour
     {
         get
         {
-            return worldObjectType.maxSpeed;
+            var speed = worldObjectType.maxSpeed;
+            return isPlayer ? speed * Consts.PLAYER_SPEED_MULTIPLIER : speed;
         }
     }
     public float acceleration
     {
         get
         {
-            //KAI: cheese - sort this out
+            //KAI: cheese
             var v = (VehicleType) worldObjectType;
 
-            // We want acceleration to be a direct value affecting velocity, without being slowed by mass.  Therefore,
-            // multiple it by mass to make the force.  If we start using drag more, we'll have to compensate for that as well.
-            return v.acceleration * worldObjectType.mass;
+            // Our config wants acceleration to be absolute, without being slowed by mass.  Therefore,
+            // derive the force required by multiplying it by mass.  If we start using drag more, 
+            // that will have to compensate for as well.
+            var accel = v.acceleration * worldObjectType.mass;
+            return isPlayer ? accel * Consts.PLAYER_ACCEL_MULTIPLIER : accel;
         }
     }
     public bool firingEnabled { get; set; }
@@ -134,7 +138,7 @@ public class Actor : MonoBehaviour
         {
             this.health -= effectiveDamage;
 
-            if (gameObject == Main.Instance.game.player)
+            if (isPlayer)
             {
                 //GrantInvuln(Consts.POST_DAMAGE_INVULN);
             }
@@ -338,8 +342,8 @@ public class Actor : MonoBehaviour
         var game = Main.Instance.game;
         
         var otherActor = other.GetComponent<Actor>();
-        var thisIsHeroCapturingOverwhelmedMob = otherActor != null && otherActor.overwhelmPct == 1 && game.player == self.gameObject;
-        var thisIsOverwhelmedMobBeingCaptured = otherActor != null && overwhelmPct            == 1 && game.player == otherActor.gameObject;
+        var thisIsHeroCapturingOverwhelmedMob = otherActor != null && otherActor.overwhelmPct == 1 && isPlayer;
+        var thisIsOverwhelmedMobBeingCaptured = otherActor != null && overwhelmPct            == 1 && otherActor.isPlayer;
 
         if (thisIsHeroCapturingOverwhelmedMob)
         {
