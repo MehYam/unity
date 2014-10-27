@@ -253,8 +253,13 @@ public sealed class GameController : IGame
         }
         else
         {
-            // kill the old possessee first
-            playerActor.SetExpiry(Actor.EXPIRY_IMMEDIATE);
+            // eject from the previous possessee
+            var prevHost = playerActor;
+
+            SpawnPlayer(playerActor.transform.position);
+
+            prevHost.behavior = null;
+            prevHost.SetExpiry(2);
         }
     }
 

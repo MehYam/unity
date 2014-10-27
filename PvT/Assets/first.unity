@@ -169,7 +169,7 @@ MonoBehaviour:
   sounds: {fileID: 3432513}
   music: {fileID: 3432519}
   hud: {fileID: 1873991296}
-  defaultVehicle: greenk
+  defaultVehicle: 
   playMusic: 1
 --- !u!114 &3432517
 MonoBehaviour:
