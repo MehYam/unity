@@ -358,6 +358,8 @@ public class Actor : MonoBehaviour
                 var boom = Main.Instance.game.effects.GetRandomSmallExplosion().ToRawGameObject(Consts.SortingLayer.EXPLOSIONS);
                 boom.transform.localPosition = contact.point;
 
+                GlobalGameEvent.Instance.FireExplosionSpawned(boom);
+
                 if (otherActor != null && otherActor.worldObjectType.health > 0 && worldObjectType.health > 0)
                 {
                     AudioSource.PlayClipAtPoint(Main.Instance.sounds.SmallCollision, contact.point);

@@ -18,6 +18,8 @@ public class VehicleExplosion : MonoBehaviour
         explosion.transform.parent = transform;
         explosion.transform.localPosition = Util.ScatterRandomly(0.3f);
 
+        GlobalGameEvent.Instance.FireExplosionSpawned(explosion);
+
         yield return new WaitForSeconds(0.1f);
 
         for (var i = 0; i < 4; ++i)

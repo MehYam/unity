@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class MainLighting : MonoBehaviour
@@ -23,9 +23,17 @@ public class MainLighting : MonoBehaviour
         {
             GlobalGameEvent.Instance.ActorSpawned += OnActorSpawned;
             GlobalGameEvent.Instance.AmmoSpawned += OnAmmoSpawned;
+            GlobalGameEvent.Instance.ExplosionSpawned += OnExplosionSpawned;
             GlobalGameEvent.Instance.MapReady += OnMapReady;
         }
 	}
+    void OnDestroy()
+    {
+        GlobalGameEvent.Instance.ActorSpawned -= OnActorSpawned;
+        GlobalGameEvent.Instance.AmmoSpawned -= OnAmmoSpawned;
+        GlobalGameEvent.Instance.ExplosionSpawned -= OnExplosionSpawned;
+        GlobalGameEvent.Instance.MapReady -= OnMapReady;
+    }
 
     void OnMapReady(GameObject map, XRect bounds)
     {
@@ -43,18 +51,19 @@ public class MainLighting : MonoBehaviour
         }
     }
 
-    static readonly Vector3 s_lightPosition = new Vector3(0, 0, -1);
     void OnAmmoSpawned(Actor actor)
     {
-        var pointLight = (Light)GameObject.Instantiate(PointLight);
-        pointLight.transform.parent = actor.transform;
-        pointLight.transform.localPosition = s_lightPosition;
+        AddLight(actor.gameObject);
     }
-
-    void OnDestroy()
+    void OnExplosionSpawned(GameObject explosion)
     {
-        GlobalGameEvent.Instance.ActorSpawned -= OnActorSpawned;
-        GlobalGameEvent.Instance.AmmoSpawned -= OnAmmoSpawned;
-        GlobalGameEvent.Instance.MapReady -= OnMapReady;
+        AddLight(explosion);
+    }
+    static readonly Vector3 s_lightPosition = new Vector3(0, 0, -1);
+    void AddLight(GameObject go)
+    {
+        var pointLight = (Light)GameObject.Instantiate(PointLight);
+        pointLight.transform.parent = go.transform;
+        pointLight.transform.localPosition = s_lightPosition;
     }
 }

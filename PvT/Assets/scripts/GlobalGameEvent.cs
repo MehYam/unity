@@ -45,6 +45,7 @@ class GlobalGameEvent
     public event Action<Actor> ActorSpawned = delegate { };
     public event Action<GameObject> PlayerSpawned = delegate { };
     public event Action<Actor> AmmoSpawned = delegate { };
+    public event Action<GameObject> ExplosionSpawned = delegate { };
     public event Action EnemySpawned = delegate { };
     public event Action EnemyDestroyed = delegate { };
 
@@ -67,9 +68,10 @@ class GlobalGameEvent
     public void FirePossessionStart() { PossessionStart(); }
     public void FirePossessionEnd() { PossessionEnd(); }
 
+    public void FireActorSpawned(Actor a) { ActorSpawned(a); }
     public void FirePlayerSpawned(GameObject player) { PlayerSpawned(player); }
     public void FireAmmoSpawned(Actor a) { AmmoSpawned(a); }
-    public void FireActorSpawned(Actor a) { ActorSpawned(a); }
+    public void FireExplosionSpawned(GameObject a) { ExplosionSpawned(a); }
     public void FireEnemySpawned() { EnemySpawned(); }
     public void FireEnemyDeath() { EnemyDestroyed(); }
 
