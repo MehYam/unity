@@ -678,16 +678,16 @@ sealed class PlayerShieldBehavior : IActorBehavior
                 _shield.transform.parent = actor.transform;
 
                 // boost, but only if we're keyboard shooting or facing the mouse
-                var boost = newState == State.FIRING_FORWARD || 
-                    Mathf.Abs(Mathf.DeltaAngle(
-                        Util.GetLookAtAngle(PlayerInput.CurrentInputVector).eulerAngles.z, 
-                        Util.GetAngleToMouse(actor.transform).eulerAngles.z)) 
-                        < 90;
+                //var boost = newState == State.FIRING_FORWARD || 
+                //    Mathf.Abs(Mathf.DeltaAngle(
+                //        Util.GetLookAtAngle(PlayerInput.CurrentInputVector).eulerAngles.z, 
+                //        Util.GetAngleToMouse(actor.transform).eulerAngles.z)) 
+                //        < 90;
 
-                if (boost)
-                {
-                    actor.modifier = new ActorModifier(Time.fixedTime + BOOST_SECONDS, actor.worldObjectType.maxSpeed * 2, ((VehicleType)(actor.worldObjectType)).acceleration * 2);
-                }
+                //if (boost)
+                //{
+                //    actor.modifier = new ActorModifier(Time.fixedTime + BOOST_SECONDS, actor.maxSpeed * 2, actor.acceleration * 2);
+                //}
                 _lastShieldTime = Time.fixedTime;
             }
         }

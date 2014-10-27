@@ -90,7 +90,7 @@ public class Actor : MonoBehaviour
     {
         get
         {
-            return (modifier != null) ? worldObjectType.maxSpeed + modifier.maxSpeed : worldObjectType.maxSpeed;
+            return worldObjectType.maxSpeed;
         }
     }
     public float acceleration
@@ -100,11 +100,9 @@ public class Actor : MonoBehaviour
             //KAI: cheese - sort this out
             var v = (VehicleType) worldObjectType;
 
-            var modifiedAcceleration = (modifier != null) ? v.acceleration + modifier.acceleration : v.acceleration;
-
             // We want acceleration to be a direct value affecting velocity, without being slowed by mass.  Therefore,
             // multiple it by mass to make the force.  If we start using drag more, we'll have to compensate for that as well.
-            return modifiedAcceleration * worldObjectType.mass;
+            return v.acceleration * worldObjectType.mass;
         }
     }
     public bool firingEnabled { get; set; }
@@ -161,7 +159,7 @@ public class Actor : MonoBehaviour
             behavior.FixedUpdate(this);
         }
 
-        if (rigidbody2D != null && worldObjectType.maxSpeed > 0 && rigidbody2D.velocity.sqrMagnitude > worldObjectType.sqrMaxSpeed)
+        if (rigidbody2D != null && maxSpeed > 0 && rigidbody2D.velocity.sqrMagnitude > worldObjectType.sqrMaxSpeed)
         {
             rigidbody2D.velocity = Vector2.ClampMagnitude(rigidbody2D.velocity, maxSpeed);
         }

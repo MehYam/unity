@@ -117,18 +117,3 @@ public sealed class MobAI
         };
     }
 }
-
-/// <summary>
-/// Given a tank Actor, this wraps a behavior, and applies it to the turret instead of the tank
-/// </summary>
-sealed class TurretBehavior : IActorBehavior
-{
-    public TurretBehavior()
-    {
-    }
-
-    public void FixedUpdate(Actor actor)
-    {
-        throw new NotImplementedException();
-    }
-}
