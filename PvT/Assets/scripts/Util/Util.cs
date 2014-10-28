@@ -17,11 +17,11 @@ namespace PvT.Util
         /// <summary>
         /// Flips a coin.  You can set the odds
         /// </summary>
-        /// <param name="odds">The % of chance of heads</param>
-        /// <returns></returns>
-        static public bool CoinFlip(float odds = 0.5f)
+        /// <param name="oddsOfTrue">The % of chance of heads</param>
+        /// <returns>Returns true if heads</returns>
+        static public bool CoinFlip(float oddsOfTrue = 0.5f)
         {
-            return Random.value >= odds;
+            return Random.value <= oddsOfTrue;
         }
 
         static public float SPRITE_FORWARD_ANGLE { get; set; }

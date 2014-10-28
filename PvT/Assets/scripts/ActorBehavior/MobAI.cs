@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 
 using PvT.DOM;
+using PvT.Util;
 
 /// <summary>
 /// This is used to map AI from the vehicles.json config file to actual C# objects.  There's also
@@ -102,6 +103,10 @@ public sealed class MobAI
         var bf = ActorBehaviorFactory.Instance;
 
         _behaviorFactory["GREENK"] = (vehicle) =>
+        {
+            return Util.CoinFlip(0.2f) ? ShieldWeaponAI(vehicle) : bf.followPlayer;
+        };
+        _behaviorFactory["GREENK2"] = (vehicle) =>
         {
             return ShieldWeaponAI(vehicle);
         };

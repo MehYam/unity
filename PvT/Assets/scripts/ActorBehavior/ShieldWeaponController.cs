@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 
 using PvT.Util;
@@ -10,17 +10,19 @@ public sealed class ShieldWeaponController
 {
     readonly Consts.CollisionLayer _layer;
     readonly WorldObjectType.Weapon _weapon;
+    readonly RateLimiter _limiter;
     public ShieldWeaponController(Consts.CollisionLayer layer, WorldObjectType.Weapon weapon)
     {
         _layer = layer;
         _weapon = weapon;
+        _limiter = new RateLimiter(weapon.rate);
     }
 
     GameObject _shield;
     Vector2 _localShieldPos;
     public void Start(Actor actor)
     {
-        if (_shield == null)
+        if (_shield == null && _limiter.reached)
         {
             // create the GameObject
             var vehicle = Main.Instance.game.loader.GetVehicle(_weapon.vehicleName);
@@ -49,6 +51,10 @@ public sealed class ShieldWeaponController
 
     public void OnFrame(Actor actor)
     {
+        if (_shield == null && _limiter.reached)
+        {
+            Start(actor);
+        }
         if (_shield != null)
         {
             _shield.transform.localPosition = _localShieldPos;
@@ -75,6 +81,8 @@ public sealed class ShieldWeaponController
 
             _shield.rigidbody2D.velocity = shieldVelocity;
             _shield = null;
+
+            _limiter.Start();
         }
     }
 }
