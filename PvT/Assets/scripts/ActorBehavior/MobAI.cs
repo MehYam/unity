@@ -79,6 +79,23 @@ public sealed class MobAI
 
         return retval;
     }
+    static IActorBehavior ShieldWeaponAI(VehicleType vehicle)
+    {
+        var bf = ActorBehaviorFactory.Instance;
+        var retval = new CompositeBehavior(bf.followPlayer);
+        var weapon = vehicle.weapons[0];
+
+        var shield = new ShieldWeaponController(Consts.CollisionLayer.MOB_AMMO, weapon);
+        var sequence = new SequencedBehavior();
+
+        sequence.Add((IActorBehavior)null, new RateLimiter(5, 0.8f));
+        sequence.Add(shield.Start, new RateLimiter(0.25f));
+        sequence.Add(shield.OnFrame, new RateLimiter(3, 0.5f));
+        sequence.Add(shield.Discharge, new RateLimiter(1));
+
+        retval.Add(sequence);
+        return retval;
+    }
     readonly Dictionary<string, Func<VehicleType, IActorBehavior>> _behaviorFactory = new Dictionary<string, Func<VehicleType, IActorBehavior>>();
     MobAI()
     {
@@ -86,7 +103,7 @@ public sealed class MobAI
 
         _behaviorFactory["GREENK"] = (vehicle) =>
         {
-            return bf.followPlayer;
+            return ShieldWeaponAI(vehicle);
         };
         _behaviorFactory["BLUEK"] = (vehicle) =>
         {

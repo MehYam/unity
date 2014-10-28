@@ -436,7 +436,7 @@ public sealed class GameController : IGame
         var heroType = Main.Instance.game.loader.GetVehicle("HERO");
         var isHero = vehicle == heroType;
 
-        if (HasShieldWeapon(vehicle)) //KAI: cheese
+        if (HasShieldWeapon(vehicle))
         {
             var controller = new ShieldWeaponController(Consts.CollisionLayer.FRIENDLY, vehicle.weapons[0]);
 
