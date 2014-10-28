@@ -1,12 +1,12 @@
 using UnityEngine;
 using System.Collections;
 
-public sealed class ChargeWeapon
+public sealed class ChargeWeaponController
 {
     readonly Consts.CollisionLayer _layer;
     readonly WorldObjectType.Weapon _weapon;
     readonly RateLimiter _limiter;
-    public ChargeWeapon(Consts.CollisionLayer layer, WorldObjectType.Weapon weapon)
+    public ChargeWeaponController(Consts.CollisionLayer layer, WorldObjectType.Weapon weapon)
     {
         _layer = layer;
         _weapon = weapon;

@@ -65,7 +65,7 @@ public sealed class MobAI
         var bf = ActorBehaviorFactory.Instance;
         var retval = new SequencedBehavior();
         var weapon = vehicle.weapons[0];
-        var charge = new ChargeWeapon(Consts.CollisionLayer.MOB_AMMO, weapon);
+        var charge = new ChargeWeaponController(Consts.CollisionLayer.MOB_AMMO, weapon);
 
         // follow
         retval.Add(bf.followPlayer, new RateLimiter(4, 0.5f));

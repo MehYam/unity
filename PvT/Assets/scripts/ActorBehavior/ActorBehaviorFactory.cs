@@ -345,15 +345,11 @@ public sealed class ActorBehaviorFactory
     }
     public IActorBehavior CreatePlayerButton(string button, IActorBehavior behavior)
     {
-        return new PlayerButton(button, null, behavior, null);
+        return new PlayerButton(button, null, behavior.FixedUpdate, null);
     }
     public IActorBehavior CreatePlayerButton(string button, IActorBehavior onDown, IActorBehavior onFrame, IActorBehavior onUp)
     {
-        return new PlayerButton(button, onDown, onFrame, onUp);
-    }
-    public IActorBehavior CreateShield()
-    {
-        return new PlayerShieldBehavior();
+        return new PlayerButton(button, onDown.FixedUpdate, onFrame.FixedUpdate, onUp.FixedUpdate);
     }
     public IActorBehavior CreateFadeWithHealthAndExpiry(float maxHealth)
     {
@@ -554,57 +550,27 @@ sealed class WeaponDischargeBehavior : IActorBehavior
     }
 }
 
-sealed class PlayerButton : IActorBehavior
-{
-    readonly string button;
-    readonly IActorBehavior behaviorDown;
-    readonly IActorBehavior behaviorFrame;
-    readonly IActorBehavior behaviorUp;
-
-    public PlayerButton(string button, IActorBehavior behaviorDown, IActorBehavior behaviorFrame, IActorBehavior behaviorUp)
-    {
-        this.button = button;
-        this.behaviorDown = behaviorDown;
-        this.behaviorFrame = behaviorFrame;
-        this.behaviorUp = behaviorUp;
-    }
-    bool down;
-    public void FixedUpdate(Actor actor)
-    {
-        if (Input.GetButton(button))
-        {
-            if (!down)
-            {
-                if (behaviorDown != null) behaviorDown.FixedUpdate(actor);
-                down = true;
-            }
-            else
-            {
-                if (behaviorFrame != null) behaviorFrame.FixedUpdate(actor);
-            }
-        }
-        else if (down && behaviorUp != null)
-        {
-            behaviorUp.FixedUpdate(actor);
-            down = false;
-        }
-    }
-}
-
 // KAI: trying something new here - Actions instead of interfaces, for slightly more flexibility
-sealed class PlayerButton_Mark2 : IActorBehavior
+sealed class PlayerButton : IActorBehavior
 {
     readonly string button;
     readonly Action<Actor> onDown;
     readonly Action<Actor> onFrame;
     readonly Action<Actor> onUp;
 
-    public PlayerButton_Mark2(string button, Action<Actor> onDown, Action<Actor> onFrame, Action<Actor> onUp)
+    public PlayerButton(string button, Action<Actor> onDown, Action<Actor> onFrame, Action<Actor> onUp)
     {
         this.button = button;
         this.onDown = onDown;
         this.onFrame = onFrame;
         this.onUp = onUp;
+    }
+    public PlayerButton(string button, IActorBehavior onDown, IActorBehavior onFrame, IActorBehavior onUp)
+    {
+        this.button = button;
+        this.onDown = onDown == null ? null : (Action<Actor>)onDown.FixedUpdate;
+        this.onFrame = onFrame == null ? null : (Action<Actor>)onFrame.FixedUpdate;
+        this.onUp = onUp == null ? null : (Action<Actor>)onFrame.FixedUpdate;
     }
     bool down;
     public void FixedUpdate(Actor actor)
@@ -626,103 +592,6 @@ sealed class PlayerButton_Mark2 : IActorBehavior
             onUp(actor);
             down = false;
         }
-    }
-}
-
-sealed class PlayerShieldBehavior : IActorBehavior
-{
-    const float LAUNCH_LIFE = 1.5f;
-    const float SHIELD_RECHARGE = 1;
-    const float BOOST_SECONDS = 0.3f;
-    GameObject _shield;
-    float _lastShieldTime = -SHIELD_RECHARGE;
-
-    enum State { NONE, FIRING_AT_MOUSE, FIRING_FORWARD }
-    State _prevState;
-    public void FixedUpdate(Actor actor)
-    {
-        var newState = State.NONE;
-        if (Input.GetButton("Jump"))
-        {
-            newState = State.FIRING_FORWARD;
-        }
-        else if (Input.GetButton("Fire1"))
-        {
-            newState = State.FIRING_AT_MOUSE;
-        }
-        if (newState != State.NONE)
-        {
-            if (newState == State.FIRING_AT_MOUSE)
-            {
-                ActorBehaviorFactory.Instance.faceMouse.FixedUpdate(actor);
-            }
-            if (_shield == null && (Time.fixedTime - _lastShieldTime >= SHIELD_RECHARGE))
-            {
-                var game = Main.Instance.game;
-
-                // create the GameObject
-                var shieldWeapon = actor.worldObjectType.weapons[0];
-                _shield = Main.Instance.game.SpawnAmmo(actor, shieldWeapon, Consts.CollisionLayer.FRIENDLY);
-
-                _shield.rigidbody2D.velocity = Vector2.zero;
-                GameObject.Destroy(_shield.rigidbody2D);  //KAI: cheese
-
-                // init the Actor
-                var shieldActor = _shield.GetComponent<Actor>();
-                shieldActor.health = actor.worldObjectType.health * Consts.SHIELD_HEALTH_MULTIPLIER;
-                shieldActor.SetExpiry(Actor.EXPIRY_INFINITE);
-                shieldActor.explodesOnDeath = false;
-                shieldActor.showsHealthBar = false;
-                shieldActor.behavior = ActorBehaviorFactory.Instance.CreateFadeWithHealthAndExpiry(actor.worldObjectType.health);
-
-                _shield.transform.parent = actor.transform;
-
-                // boost, but only if we're keyboard shooting or facing the mouse
-                //var boost = newState == State.FIRING_FORWARD || 
-                //    Mathf.Abs(Mathf.DeltaAngle(
-                //        Util.GetLookAtAngle(PlayerInput.CurrentInputVector).eulerAngles.z, 
-                //        Util.GetAngleToMouse(actor.transform).eulerAngles.z)) 
-                //        < 90;
-
-                //if (boost)
-                //{
-                //    actor.modifier = new ActorModifier(Time.fixedTime + BOOST_SECONDS, actor.maxSpeed * 2, actor.acceleration * 2);
-                //}
-                _lastShieldTime = Time.fixedTime;
-            }
-        }
-        if (_shield != null)
-        {
-            var shieldWeapon = actor.worldObjectType.weapons[0];
-            _shield.transform.localPosition = shieldWeapon.offset;
-
-            if (newState == State.NONE)
-            {
-                // point the actor to the mouse briefly to fire the shield in that direction, if that's how we were firing
-                if (_prevState == State.FIRING_AT_MOUSE)
-                {
-                    ActorBehaviorFactory.Instance.faceMouse.FixedUpdate(actor);
-                }
-
-                // release shield
-                var shieldActor = _shield.GetComponent<Actor>();
-                shieldActor.SetExpiry(LAUNCH_LIFE);
-
-                _shield.transform.parent = Main.Instance.AmmoParent.transform;
-                _shield.AddComponent<Rigidbody2D>();
-                _shield.rigidbody2D.drag = 1;
-                _shield.rigidbody2D.mass = 500;
-
-                // boost the shield away
-                //var shieldBoost = new Vector2();
-                //shieldBoost = Util.GetLookAtVector(_shield.transform.rotation.eulerAngles.z, Consts.SHIELD_BOOST) + actor.rigidbody2D.velocity;
-                //shieldBoost = Vector2.ClampMagnitude(shieldBoost, actor.worldObject.maxSpeed * 4);
-
-                _shield.rigidbody2D.velocity = actor.rigidbody2D.velocity;
-                _shield = null;
-            }
-        }
-        _prevState = newState;
     }
 }
 

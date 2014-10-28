@@ -104,7 +104,7 @@ public class HerolingActor : Actor
             }
         }
         // go back home
-        SetBehavior(RETURN, new ActorModifier(1.5f, 1));
+        SetBehavior(RETURN, new ActorModifier(3, 1));
     }
 
     protected override void FixedUpdate()

@@ -102,7 +102,7 @@ public class Actor : MonoBehaviour
     {
         get
         {
-            var speed = worldObjectType.maxSpeed * speedModifier.maxSpeed;
+            var speed = worldObjectType.maxSpeed * speedModifier.speedMultiplier;
             return isPlayer ? speed * Consts.PLAYER_SPEED_MULTIPLIER : speed;
         }
     }
@@ -115,7 +115,7 @@ public class Actor : MonoBehaviour
             // Our config wants acceleration to be absolute, without being slowed by mass.  Therefore,
             // derive the force required by multiplying it by mass.  If we start using drag more, 
             // that will have to compensate for as well.
-            var accel = v.acceleration * speedModifier.acceleration * worldObjectType.mass;
+            var accel = v.acceleration * speedModifier.accelerationMultiplier * worldObjectType.mass;
             return isPlayer ? accel * Consts.PLAYER_ACCEL_MULTIPLIER : accel;
         }
     }
@@ -343,8 +343,6 @@ public class Actor : MonoBehaviour
 
         DebugUtil.Assert(self.gameObject == gameObject);
 
-        var game = Main.Instance.game;
-        
         var otherActor = other.GetComponent<Actor>();
         var thisIsHeroCapturingOverwhelmedMob = otherActor != null && otherActor.overwhelmPct == 1 && isPlayer;
         var thisIsOverwhelmedMobBeingCaptured = otherActor != null && overwhelmPct            == 1 && otherActor.isPlayer;

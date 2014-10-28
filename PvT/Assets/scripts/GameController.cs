@@ -171,7 +171,6 @@ public sealed class GameController : IGame
 
     public GameObject SpawnAmmo(Actor launcher, WorldObjectType.Weapon weapon, Consts.CollisionLayer layer)
     {
-        // now onto to regularly scheduled program(ming)
         var type = loader.GetVehicle(weapon.vehicleName);
         var go = type.Spawn(Consts.SortingLayer.AMMO, true);
 
@@ -423,6 +422,10 @@ public sealed class GameController : IGame
     {
         return obj.weapons != null && obj.weapons.Length > 0 && obj.weapons[0].chargeSeconds > 0;
     }
+    static bool HasShieldWeapon(WorldObjectType obj)
+    {
+        return obj.weapons != null && obj.weapons.Length > 0 && obj.weapons[0].vehicleName == "SHIELD"; // KAI: cheese
+    }
     void SetPlayerPlaneBehaviors(GameObject go, VehicleType vehicle)
     {
         var bf = ActorBehaviorFactory.Instance;
@@ -433,49 +436,61 @@ public sealed class GameController : IGame
         var heroType = Main.Instance.game.loader.GetVehicle("HERO");
         var isHero = vehicle == heroType;
 
-        if (vehicle.weapons.Length > 0 && vehicle.weapons[0].vehicleName == "SHIELD") //KAI: cheese
+        if (HasShieldWeapon(vehicle)) //KAI: cheese
         {
-            behaviors.Add(bf.CreateShield());
+            var controller = new ShieldWeaponController(Consts.CollisionLayer.FRIENDLY, vehicle.weapons[0]);
+
+            var shieldBehavior = new PlayerButton(
+                "Fire1",
+                controller.Start,
+                new CompositeBehavior(bf.faceMouse, (Action<Actor>)controller.OnFrame).FixedUpdate,
+                new CompositeBehavior(bf.faceMouse, (Action<Actor>)controller.Discharge).FixedUpdate
+            );
+            behaviors.Add(shieldBehavior);
+            shieldBehavior = new PlayerButton(
+                "Jump",
+                controller.Start,
+                controller.OnFrame,
+                controller.Discharge
+            );
+            behaviors.Add(shieldBehavior);
+        }
+        else if (HasChargeWeapon(vehicle))
+        {
+            var controller = new ChargeWeaponController(Consts.CollisionLayer.FRIENDLY_AMMO, vehicle.weapons[0]);
+
+            var chargeBehavior = new PlayerButton(
+                "Fire1",
+                controller.StartCharge,
+                new CompositeBehavior(bf.faceMouse, new GoHomeYouAreDrunkBehavior(), (Action<Actor>)controller.Charge).FixedUpdate,
+                new CompositeBehavior(bf.faceMouse, (Action<Actor>)controller.Discharge).FixedUpdate
+            );
+            behaviors.Add(chargeBehavior);
+            chargeBehavior = new PlayerButton(
+                "Jump",
+                controller.StartCharge,
+                new CompositeBehavior(new GoHomeYouAreDrunkBehavior(), (Action<Actor>)controller.Charge).FixedUpdate,
+                controller.Discharge
+            );
+            behaviors.Add(chargeBehavior);
         }
         else
         {
-            if (HasChargeWeapon(vehicle))
-            {
-                var charge = new ChargeWeapon(Consts.CollisionLayer.FRIENDLY_AMMO, vehicle.weapons[0]);
+            // set up the primary and secondary fire buttons
+            var layer = isHero ? Consts.CollisionLayer.HEROLINGS : Consts.CollisionLayer.FRIENDLY_AMMO;
 
-                var chargeBehavior = new PlayerButton_Mark2(
-                    "Fire1",
-                    charge.StartCharge,
-                    new CompositeBehavior(bf.faceMouse, new GoHomeYouAreDrunkBehavior(), (Action<Actor>)charge.Charge).FixedUpdate,
-                    new CompositeBehavior(bf.faceMouse, (Action<Actor>)charge.Discharge).FixedUpdate
-                );
-                behaviors.Add(chargeBehavior);
-                chargeBehavior = new PlayerButton_Mark2(
-                    "Jump",
-                    charge.StartCharge,
-                    new CompositeBehavior(new GoHomeYouAreDrunkBehavior(), (Action<Actor>)charge.Charge).FixedUpdate,
-                    charge.Discharge
-                );
-                behaviors.Add(chargeBehavior);
-            }
-            else
-            {
-                // set up the primary and secondary fire buttons
-                var layer = isHero ? Consts.CollisionLayer.HEROLINGS : Consts.CollisionLayer.FRIENDLY_AMMO;
+            var fireAhead = bf.CreateAutofire(layer, vehicle.weapons);
+            behaviors.Add(bf.CreatePlayerButton("Jump", fireAhead));
 
-                var fireAhead = bf.CreateAutofire(layer, vehicle.weapons);
-                behaviors.Add(bf.CreatePlayerButton("Jump", fireAhead));
+            // hero doesn't point to the mouse when firing
+            var fireToMouse = isHero ? fireAhead : new CompositeBehavior(bf.faceMouse, fireAhead);
+            behaviors.Add(bf.CreatePlayerButton("Fire1", fireToMouse));
+        }
 
-                // hero doesn't point to the mouse when firing
-                var fireToMouse = isHero ? fireAhead : new CompositeBehavior(bf.faceMouse, fireAhead);
-                behaviors.Add(bf.CreatePlayerButton("Fire1", fireToMouse));
-            }
-
-            if (isHero)
-            {
-                behaviors.Add(bf.CreateHeroAnimator(go));
-                behaviors.Add(bf.heroRegen);
-            }
+        if (isHero)
+        {
+            behaviors.Add(bf.CreateHeroAnimator(go));
+            behaviors.Add(bf.heroRegen);
         }
 
         actor.behavior = behaviors;
