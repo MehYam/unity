@@ -299,7 +299,7 @@ public class Loader
         foreach (var strLevel in levelStrings)
         {
             var level = LoadLevel(strLevel);
-            if (level.waves.Count > 0)
+            if (level.events.Count > 0)
             {
                 retval.Add(level);
             }
@@ -308,43 +308,47 @@ public class Loader
     }
     static Level LoadLevel(string strLevel)
     {
-        var waves = new List<Level.Wave>();
-        var waveStrings = strLevel.Split('\n');
-        foreach (var strWave in waveStrings)
+        var events = new List<Level.IScriptEvent>();
+        var eventLines = strLevel.Split('\n');
+        foreach (var line in eventLines)
         {
-            var wave = LoadWave(strWave);
-            if (wave.squads.Count > 0)
+            if (line.Contains("EVENT_"))
             {
-                waves.Add(wave);
+                events.Add(LoadScriptEvent(line));
+            }
+            if (line.Contains(","))
+            {
+                events.Add(LoadMobSpawnEvent(line));
             }
         }
-        return new Level(waves);
+        return new Level(events);
     }
-    static Level.Wave LoadWave(string strWave)
+    static Level.IScriptEvent LoadMobSpawnEvent(string strLine)
     {
-        var squads = new List<Level.Squad>();
-        if (strWave.Contains(","))
+        var mobs = new List<Level.Mobs>();
+        var mobSpecs = strLine.Split(';');
+        foreach (var mobSpec in mobSpecs)
         {
-            var squadStrings = strWave.Split(';');
-            foreach (var strSquad in squadStrings)
+            if (mobSpec.Length > 2)
             {
-                if (strSquad.Length > 2)
-                {
-                    var squad = LoadSquad(strSquad);
-                    squads.Add(squad);
-                }
-                else
-                {
-                    Debug.LogError("Bad wave string: " + strWave);
-                }
+                var m = LoadMobs(mobSpec);
+                mobs.Add(m);
+            }
+            else
+            {
+                Debug.LogError("Bad mob string: " + mobSpec);
             }
         }
-        return new Level.Wave(squads);
+        return new Level.MobSpawnEvent(mobs);
     }
-    static Level.Squad LoadSquad(string squad)
+    static Level.IScriptEvent LoadScriptEvent(string strLine)
     {
-        var parts = squad.Split(',');
-        return new Level.Squad(parts[0], int.Parse(parts[1]));
+        return new Level.ScriptEvent(strLine.Trim());
+    }
+    static Level.Mobs LoadMobs(string str)
+    {
+        var parts = str.Split(',');
+        return new Level.Mobs(parts[0], int.Parse(parts[1]));
     }
 
     static Dictionary<string, AI> LoadAI(string ai)
@@ -393,21 +397,28 @@ public sealed class Tank
 
 public sealed class Level
 {
-    public sealed class Squad
+    public sealed class Mobs
     {
-        public readonly string enemyID;
+        public readonly string mobID;
         public readonly int count;
 
-        public Squad(string enemy, int count) { this.enemyID = enemy; this.count = count; }
+        public Mobs(string mobID, int count) { this.mobID = mobID; this.count = count; }
 
     }
-    public sealed class Wave
+    public interface IScriptEvent {}
+    public sealed class ScriptEvent : IScriptEvent
     {
-        public readonly IList<Squad> squads;
+        public readonly string id;
 
-        public Wave(IList<Squad> squads) { this.squads = squads; }
+        public ScriptEvent(string id) { this.id = id; }
+    }
+    public sealed class MobSpawnEvent : IScriptEvent
+    {
+        public readonly IList<Mobs> mobs;
+
+        public MobSpawnEvent(IList<Mobs> mobs) { this.mobs = mobs; }
     }
 
-    public readonly IList<Wave> waves;
-    public Level(IList<Wave> waves) { this.waves = waves; }
+    public readonly IList<IScriptEvent> events;
+    public Level(IList<IScriptEvent> events) { this.events = events; }
 }

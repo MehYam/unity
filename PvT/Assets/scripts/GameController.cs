@@ -172,42 +172,42 @@ public sealed class GameController : IGame
     public GameObject SpawnAmmo(Actor launcher, WorldObjectType.Weapon weapon, Consts.CollisionLayer layer)
     {
         var type = loader.GetVehicle(weapon.vehicleName);
-        var go = type.Spawn(Consts.SortingLayer.AMMO, true);
+        var goAmmo = type.Spawn(Consts.SortingLayer.AMMO, true);
 
-        go.transform.parent = Main.Instance.AmmoParent.transform;
-        go.layer = (int)layer;
+        goAmmo.transform.parent = Main.Instance.AmmoParent.transform;
+        goAmmo.layer = (int)layer;
 
-        go.rigidbody2D.drag = 0;
+        goAmmo.rigidbody2D.drag = 0;
 
-        var actor = go.GetComponent<Actor>();
-        actor.SetExpiry(2);
-        actor.collisionDamage = weapon.damage;
-        actor.showsHealthBar = false;
+        var actorAmmo = goAmmo.GetComponent<Actor>();
+        actorAmmo.SetExpiry(2);
+        actorAmmo.collisionDamage = weapon.damage;
+        actorAmmo.showsHealthBar = false;
 
-        Util.PrepareLaunch(launcher.transform, actor.transform, weapon.offset, weapon.angle);
+        Util.PrepareLaunch(launcher.transform, actorAmmo.transform, weapon.offset, weapon.angle);
         if (type.acceleration == 0)
         {
             // give the ammo instant acceleration
-            go.rigidbody2D.mass = 0;
-            go.rigidbody2D.velocity = Util.GetLookAtVector(actor.transform.rotation.eulerAngles.z, type.maxSpeed);
+            goAmmo.rigidbody2D.mass = 0;
+            goAmmo.rigidbody2D.velocity = Util.GetLookAtVector(actorAmmo.transform.rotation.eulerAngles.z, type.maxSpeed);
         }
         else
         {
             // treat the ammo like a vehicle (i.e. rocket)
-            go.rigidbody2D.mass = type.mass;
-            actor.behavior = ActorBehaviorFactory.Instance.thrust;
+            goAmmo.rigidbody2D.mass = type.mass;
+            actorAmmo.behavior = ActorBehaviorFactory.Instance.thrust;
         }
 
         if (launcher.worldObjectType is TankPartType)
         {
             // it's a turret
-            SpawnMuzzleFlash(actor);
+            SpawnMuzzleFlash(launcher.gameObject, goAmmo);
         }
 
         AudioSource.PlayClipAtPoint(Main.Instance.sounds.Bullet, launcher.transform.position);
 
-        GlobalGameEvent.Instance.FireAmmoSpawned(actor);
-        return go;
+        GlobalGameEvent.Instance.FireAmmoSpawned(actorAmmo);
+        return goAmmo;
     }
 
     public GameObject SpawnHotspot(Actor launcher, WorldObjectType.Weapon weapon, float damageMultiplier, Consts.CollisionLayer layer)
@@ -349,11 +349,12 @@ public sealed class GameController : IGame
         Time.timeScale = timeScale;
     }
 
-    void SpawnMuzzleFlash(Actor launcher)
+    void SpawnMuzzleFlash(GameObject launcher, GameObject firePoint)
     {
         var flash = effects.GetRandomMuzzleFlash().ToRawGameObject(Consts.SortingLayer.EXPLOSIONS);
-        flash.transform.position = launcher.transform.position;
-        flash.transform.rotation = launcher.transform.rotation;
+        flash.transform.position = firePoint.transform.position;
+        flash.transform.rotation = firePoint.transform.rotation;
+        flash.transform.parent = launcher.transform;
     }
 
     sealed class TankSpawnHelper
@@ -376,7 +377,7 @@ public sealed class GameController : IGame
             var tread = game.loader.GetMisc("tanktreadParent");
 
             hullGO = hull.Spawn(Consts.SortingLayer.TANKBODY, true);
-            turretGO = turret.Spawn(Consts.SortingLayer.TANKTURRET, true);
+            turretGO = turret.Spawn(Consts.SortingLayer.TANKTURRET, false);
 
             hullGO.name = HULL_NAME;
             turretGO.name = TURRET_NAME;
@@ -394,6 +395,8 @@ public sealed class GameController : IGame
             var hullBounds = hullSprite.sprite.bounds;
             var pivotY = hullBounds.min.y + hull.turretPivotY / Consts.PixelsToUnits;
             turretGO.gameObject.transform.localPosition = new Vector3(0, pivotY);
+
+            Debug.Log("TURRET LOCAL POS " + turretGO.gameObject.transform.localPosition + ", " + hull.turretPivotY);
 
             treadLeft.gameObject.transform.Rotate(0, 0, 180);
             treadRight.gameObject.transform.Rotate(0, 0, 180);
@@ -420,11 +423,11 @@ public sealed class GameController : IGame
 
     static bool HasChargeWeapon(WorldObjectType obj)
     {
-        return obj.weapons != null && obj.weapons.Length > 0 && obj.weapons[0].chargeSeconds > 0;
+        return obj.HasWeapons && obj.weapons[0].chargeSeconds > 0;
     }
     static bool HasShieldWeapon(WorldObjectType obj)
     {
-        return obj.weapons != null && obj.weapons.Length > 0 && obj.weapons[0].vehicleName == "SHIELD"; // KAI: cheese
+        return obj.HasWeapons && obj.weapons[0].vehicleName == "SHIELD"; // KAI: cheese
     }
     void SetPlayerPlaneBehaviors(GameObject go, VehicleType vehicle)
     {
@@ -509,9 +512,12 @@ public sealed class GameController : IGame
         behaviors.Add(new PlayerInput());
         behaviors.Add(bf.faceForward);
 
-        var hullFire = bf.CreateAutofire(Consts.CollisionLayer.FRIENDLY_AMMO, tankHelper.hull.weapons);
-        behaviors.Add(bf.CreatePlayerButton("Fire1", hullFire));
-        behaviors.Add(bf.CreatePlayerButton("Jump", hullFire));
+        if (tankHelper.hull.HasWeapons)
+        {
+            var hullFire = bf.CreateAutofire(Consts.CollisionLayer.FRIENDLY_AMMO, tankHelper.hull.weapons);
+            behaviors.Add(bf.CreatePlayerButton("Fire1", hullFire));
+            behaviors.Add(bf.CreatePlayerButton("Jump", hullFire));
+        }
         behaviors.Add(bf.CreateTankTreadAnimator(tankHelper.treadLeft, tankHelper.treadRight));
         tankHelper.hullGO.GetComponent<Actor>().behavior = behaviors;
 

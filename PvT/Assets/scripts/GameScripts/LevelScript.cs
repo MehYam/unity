@@ -15,7 +15,6 @@ public class LevelScript : MonoBehaviour
     {
         DebugUtil.Log(this, "Start");
         Main.Instance.hud.curtain.Fade(1, 0);
-        Main.Instance.hud.curtain.Fade(0, Consts.TEXT_FADE_SECONDS_FAST);
 
         GlobalGameEvent.Instance.EnemyDestroyed += OnEnemyDestroyed;
         GlobalGameEvent.Instance.GameReady += OnGameReady;
@@ -40,57 +39,73 @@ public class LevelScript : MonoBehaviour
         {
             var level = main.game.loader.levels[iLevel];
 
-            AnimatedText.FadeIn(main.hud.centerPrintTop, "Chapter " + iLevel, Consts.TEXT_FADE_SECONDS);
-            yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
-
-            AnimatedText.FadeOut(main.hud.centerPrintTop, Consts.TEXT_FADE_SECONDS);
-
-            yield return StartCoroutine(RunLevel(level));
-
-            Main.Instance.hud.curtain.Fade(1, Consts.TEXT_FADE_SECONDS);
-            yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
-
-            Main.Instance.hud.curtain.Fade(0, Consts.TEXT_FADE_SECONDS_FAST);
+            yield return StartCoroutine(RunLevel(level, iLevel));
         }
     }
 
-    int _liveEnemies;
-    IEnumerator RunLevel(Level level)
+    IEnumerator RunLevel(Level level, int chapterNumber)
     {
-        var game = Main.Instance.game;
-
-        foreach (var wave in level.waves)
+        foreach (var evt in level.events)
         {
-            _liveEnemies = 0;
-            foreach (var squad in wave.squads)
+            Debug.Log(evt);
+            if (evt is Level.MobSpawnEvent)
             {
-                for (int i = 0; i < squad.count; ++i)
-                {
-                    SpawnMob(game, squad.enemyID);
-
-                    yield return new WaitForSeconds(Consts.MOB_SPAWN_DELAY);
-                }
+                yield return StartCoroutine(RunMobSpawnEvent((Level.MobSpawnEvent)evt));
             }
-
-            // wait until all the enemies are dead - but spawn randomly too
-            var spawnLimiter = new RateLimiter(Consts.GREENK_SPAWN_RATE, 0.5f);
-            while (_liveEnemies > 0)
+            else if (evt is Level.ScriptEvent)
             {
-                spawnLimiter.Start();
-                yield return StartCoroutine(Util.YieldUntil(() =>
-                    _liveEnemies == 0 || spawnLimiter.reached
-                ));
+                var scriptEvent = (Level.ScriptEvent)evt;
+                var main = Main.Instance;
 
-                if (_liveEnemies > 0 && _liveEnemies < 6 && spawnLimiter.reached)
-                {
-                    // always keep a mob handy in case the player needs to recapture one
-                    SpawnMob(game, "GREENK");
+                switch(scriptEvent.id) {
+                    case "EVENT_CHAPTER":
+                        AnimatedText.FadeIn(main.hud.centerPrintTop, "Chapter " + chapterNumber, 0);
+                        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
+
+                        AnimatedText.FadeOut(main.hud.centerPrintTop, Consts.TEXT_FADE_SECONDS);
+                        break;
+                    case "EVENT_DROP_CURTAIN":
+                        Main.Instance.hud.curtain.Fade(1, Consts.TEXT_FADE_SECONDS_FAST);
+                        break;
+                    case "EVENT_RAISE_CURTAIN":
+                        Main.Instance.hud.curtain.Fade(0, Consts.TEXT_FADE_SECONDS_FAST);
+                        break;
                 }
             }
         }        
         yield return null;
     }
+    int _liveEnemies;
+    IEnumerator RunMobSpawnEvent(Level.MobSpawnEvent evt)
+    {
+        _liveEnemies = 0;
+        var game = Main.Instance.game;
+        foreach (var mobs in evt.mobs)
+        {
+            for (int i = 0; i < mobs.count; ++i)
+            {
+                SpawnMob(game, mobs.mobID);
 
+                yield return new WaitForSeconds(Consts.MOB_SPAWN_DELAY);
+            }
+        }
+
+        // wait until all the enemies are dead - but spawn randomly too
+        var spawnLimiter = new RateLimiter(Consts.GREENK_SPAWN_RATE, 0.5f);
+        while (_liveEnemies > 0)
+        {
+            spawnLimiter.Start();
+            yield return StartCoroutine(Util.YieldUntil(() =>
+                _liveEnemies == 0 || spawnLimiter.reached
+            ));
+
+            if (_liveEnemies > 0 && _liveEnemies < 6 && spawnLimiter.reached)
+            {
+                // always keep a mob handy in case the player needs to recapture one
+                SpawnMob(game, "GREENK");
+            }
+        }
+    }
     void SpawnMob(IGame game, string id)
     {
         var mob = game.SpawnMob(id);

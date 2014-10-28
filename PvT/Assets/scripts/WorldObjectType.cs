@@ -44,6 +44,7 @@ public class WorldObjectType
         this.health = rhs.health;
         this.weapons = rhs.weapons;
     }
+    public bool HasWeapons { get { return weapons != null && weapons.Length > 0; } }
     public GameObject ToRawGameObject(Consts.SortingLayer sortingLayer)
     {
         var retval = (GameObject)GameObject.Instantiate(prefab);
