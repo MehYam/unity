@@ -198,7 +198,10 @@ public sealed class ActorBehaviorFactory
     {
         get
         {
-            if (_facePlayer == null){_facePlayer = new FacePlayerBehavior(Consts.MAX_MOB_ROTATION_DEG_PER_SEC);}
+            if (_facePlayer == null)
+            {
+                _facePlayer = new FaceTarget(PlayerTarget.Instance, Consts.MAX_MOB_ROTATION_DEG_PER_SEC);
+            }
             return _facePlayer;
         }
     }
@@ -256,22 +259,22 @@ public sealed class ActorBehaviorFactory
             return _faceForward;
         }
     }
-    IActorBehavior _playerGravitate;
-    public IActorBehavior playerGravitate
+    IActorBehavior _gravitateToPlayer;
+    public IActorBehavior gravitateToPlayer
     {
         get
         {
-            if (_playerGravitate == null) { _playerGravitate = new PlayerGravitate(); }
-            return _playerGravitate;
+            if (_gravitateToPlayer == null) { _gravitateToPlayer = new GravitateToTarget(PlayerTarget.Instance); }
+            return _gravitateToPlayer;
         }
     }
-    IActorBehavior _playerHome;
-    public IActorBehavior playerHome
+    IActorBehavior _homeToPlayer;
+    public IActorBehavior homeToPlayer
     {
         get
         {
-            if (_playerHome == null) { _playerHome = new PlayerHome(); }
-            return _playerHome;
+            if (_homeToPlayer == null) { _homeToPlayer = new HomeToTarget(PlayerTarget.Instance); }
+            return _homeToPlayer;
         }
     }
     IActorBehavior _drift;
@@ -294,7 +297,7 @@ public sealed class ActorBehaviorFactory
     }
     public IActorBehavior CreateFacePoint(Vector2 point)
     {
-        return new FacePointBehavior(point);
+        return new FacePoint(point);
     }
     public IActorBehavior CreatePositionTween(Vector2 position, float seconds)
     {
@@ -302,7 +305,7 @@ public sealed class ActorBehaviorFactory
     }
     public IActorBehavior CreateRotateToPlayer(float degPerSec)
     {
-        return new FacePlayerBehavior(degPerSec);
+        return new FaceTarget(PlayerTarget.Instance, degPerSec);
     }
     public IActorBehavior CreateRoam(float maxRotate, bool stopBeforeRotate)
     {
@@ -367,16 +370,12 @@ public sealed class ActorBehaviorFactory
     {
         return new GoHomeYouAreDrunkBehavior();
     }
-    public IActorBehavior CreateHopBehavior()
-    {
-        return new HopBehavior();
-    }
 }
 
-sealed class FacePointBehavior : IActorBehavior
+sealed class FacePoint : IActorBehavior
 {
     readonly Vector2 point;
-    public FacePointBehavior(Vector2 point)
+    public FacePoint(Vector2 point)
     {
         this.point = point;
     }
@@ -385,12 +384,13 @@ sealed class FacePointBehavior : IActorBehavior
         Util.LookAt2D(actor.transform, point, -1);
     }
 }
-sealed class FacePlayerBehavior : IActorBehavior
+sealed class FaceTarget : IActorBehavior
 {
     public const float ROTATE_IMMEDIATE = -1;
 
+    readonly ITarget target;
     readonly float degPerSec;
-    public FacePlayerBehavior(float degPerSec = ROTATE_IMMEDIATE)
+    public FaceTarget(ITarget target, float degPerSec = ROTATE_IMMEDIATE)
     {
         this.degPerSec = degPerSec;
     }
@@ -402,30 +402,65 @@ sealed class FacePlayerBehavior : IActorBehavior
         {
             maxRotation = Time.fixedDeltaTime * degPerSec;
         }
-        Util.LookAt2D(actor.transform, Main.Instance.game.player.transform, maxRotation);
+        Util.LookAt2D(actor.transform, target.actor.transform, maxRotation);
     }
 }
-sealed class PlayerGravitate : IActorBehavior
+sealed class FaceForward : IActorBehavior
 {
     public void FixedUpdate(Actor actor)
     {
         var go = actor.gameObject;
-
-        var newRot = Util.GetLookAtAngle(Main.Instance.game.player.transform.localPosition - go.transform.localPosition);
-        var thrustVector = Util.GetLookAtVector(newRot.eulerAngles.z, actor.acceleration);
-
-        actor.gameObject.rigidbody2D.AddForce(thrustVector);
+        if (go.rigidbody2D.velocity != Vector2.zero)
+        {
+            go.transform.rotation = Util.GetLookAtAngle(go.rigidbody2D.velocity);
+        }
     }
 }
-sealed class PlayerHome : IActorBehavior
+
+sealed class FaceMouse : IActorBehavior
 {
+    readonly bool whileFiring;
+    public FaceMouse(bool whileFiring = false)
+    {
+        this.whileFiring = whileFiring;
+    }
+    public void FixedUpdate(Actor actor)
+    {
+        if (!whileFiring || Input.GetButton("Fire1"))
+        {
+            // point towards the mouse when firing
+            actor.gameObject.transform.rotation = Util.GetAngleToMouse(actor.gameObject.transform);
+        }
+    }
+}
+/// <summary>
+/// Gives an object gravity towards the target.  This will tend to make the object elasticly rotate
+/// around the player if the player is moving.
+/// </summary>
+sealed class GravitateToTarget : IActorBehavior
+{
+    readonly ITarget target;
+    public GravitateToTarget(ITarget target) { this.target = target; }
     public void FixedUpdate(Actor actor)
     {
         var go = actor.gameObject;
-        var newRot = Util.GetLookAtAngle(Main.Instance.game.player.transform.position - go.transform.position);
-
-        //actor.gameObject.transform.rotation = newRot;
-        actor.gameObject.rigidbody2D.velocity = Util.GetLookAtVector(newRot.eulerAngles.z, actor.maxSpeed / 2);
+        var lookAt = Util.GetLookAtVector(go.transform.position, target.actor.transform.position);
+        actor.gameObject.rigidbody2D.AddForce(lookAt * actor.acceleration);
+    }
+}
+/// <summary>
+/// Similar to PlayerGravitate, the difference being that the object gets instant velocity towards the
+/// player, making it unerringly collide with the target
+/// </summary>
+sealed class HomeToTarget : IActorBehavior
+{
+    readonly ITarget target;
+    public HomeToTarget(ITarget target) { this.target = target; }
+    public void FixedUpdate(Actor actor)
+    {
+        var go = actor.gameObject;
+        var lookAt = Util.GetLookAtVector(go.transform.position, target.actor.transform.position);
+        actor.gameObject.rigidbody2D.velocity = lookAt * actor.maxSpeed;
     }
 }
 
@@ -497,35 +532,6 @@ sealed class RoamBehavior : IActorBehavior
                     state = State.ROTATING;
                 }
                 break;
-        }
-    }
-}
-
-sealed class FaceForward : IActorBehavior
-{
-    public void FixedUpdate(Actor actor)
-    {
-        var go = actor.gameObject;
-        if (go.rigidbody2D.velocity != Vector2.zero)
-        {
-            go.transform.rotation = Util.GetLookAtAngle(go.rigidbody2D.velocity);
-        }
-    }
-}
-
-sealed class FaceMouse : IActorBehavior
-{
-    readonly bool whileFiring;
-    public FaceMouse(bool whileFiring = false)
-    {
-        this.whileFiring = whileFiring;
-    }
-    public void FixedUpdate(Actor actor)
-    {
-        if (!whileFiring || Input.GetButton("Fire1"))
-        {
-            // point towards the mouse when firing
-            actor.gameObject.transform.rotation = Util.GetAngleToMouse(actor.gameObject.transform);
         }
     }
 }
@@ -780,5 +786,53 @@ sealed class TweenRotationBehavior : IActorBehavior
         angles.z = _state.Update(actor.transform.eulerAngles.z);
 
         actor.transform.eulerAngles = angles;
+    }
+}
+
+/// <summary>
+/// This implements a pseudo-3D hopping.  Would it be better to use real 3D?
+/// </summary>
+sealed class HopBehavior : IActorBehavior
+{
+    static readonly float GRAVITY = 1.5f;
+    static readonly float JUMP_VELOCITY = 0.75f;
+
+    readonly ITarget target;
+    public HopBehavior(ITarget target)
+    {
+        this.target = target;
+    }
+
+    float _verticalVelocity = 0;
+    float _height = 0;
+    Vector3 _originalScale = Vector3.zero;
+    public void FixedUpdate(Actor actor)
+    {
+        if (_height <= 0)
+        {
+            // jump!
+            if (_originalScale == Vector3.zero)
+            {
+                _originalScale = actor.transform.localScale;
+            }
+            var to = target.actor.transform.position;
+
+            _verticalVelocity = JUMP_VELOCITY;
+
+            var lookAt = Util.GetLookAtVector(actor.transform.position, to);
+            actor.rigidbody2D.velocity = lookAt * actor.maxSpeed;
+        }
+
+        // tween the actor
+        _height += Time.deltaTime * _verticalVelocity;
+        _verticalVelocity -= Time.deltaTime * GRAVITY;
+
+        actor.transform.localScale = (1 + _height) * _originalScale;
+
+        var dropShadow = actor.GetComponentInChildren<DropShadow>();
+        if (dropShadow != null)
+        {
+            dropShadow.distanceModifier = _height;
+        }
     }
 }

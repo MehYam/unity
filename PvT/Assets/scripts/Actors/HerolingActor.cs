@@ -143,6 +143,6 @@ public class HerolingActor : Actor
 
     static readonly IActorBehavior RETURN = new CompositeBehavior(
         ActorBehaviorFactory.Instance.faceForward,
-        ActorBehaviorFactory.Instance.playerHome
+        ActorBehaviorFactory.Instance.homeToPlayer
     );
 }

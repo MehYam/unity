@@ -151,54 +151,10 @@ public sealed class MobAI
         {
             return TheCount(vehicle.weapons);
         };
-        _behaviorFactory["FLY"] = (vehicle) =>
+        _behaviorFactory["FLY"] = _behaviorFactory["FLY2"] = _behaviorFactory["FLY3"] = (vehicle) =>
         {
-            return new HopBehavior();
+            return new HopBehavior(PlayerTarget.Instance);
         };
     }
 }
 
-//var angle = Util.GetLookAtAngle(actor.transform.position, Main.Instance.game.player.transform.position);
-
-/// <summary>
-/// This implements a pseudo-3D hopping.  Would it be better to use real 3D?
-/// </summary>
-sealed class HopBehavior : IActorBehavior
-{
-    static readonly float GRAVITY = 1.5f;
-    static readonly float JUMP_VELOCITY = 0.75f;
-
-    float _verticalVelocity = 0;
-    float _height = 0;
-
-    Vector3 _originalScale = Vector3.zero;
-    public void FixedUpdate(Actor actor)
-    {
-        if (_height <= 0)
-        {
-            // jump!
-            if (_originalScale == Vector3.zero)
-            {
-                _originalScale = actor.transform.localScale;
-            }
-            var target = Main.Instance.game.player.transform.position;
-
-            _verticalVelocity = JUMP_VELOCITY;
-
-            var lookAt = Util.GetLookAtVector(actor.transform.position, target);
-            actor.rigidbody2D.velocity = lookAt * actor.maxSpeed;
-        }
-
-        // tween the actor
-        _height += Time.deltaTime * _verticalVelocity;
-        _verticalVelocity -= Time.deltaTime * GRAVITY;
-
-        actor.transform.localScale = (1 + _height) * _originalScale;
-
-        var dropShadow = actor.GetComponentInChildren<DropShadow>();
-        if (dropShadow != null)
-        {
-            dropShadow.distanceModifier = _height;
-        }
-    }
-}
