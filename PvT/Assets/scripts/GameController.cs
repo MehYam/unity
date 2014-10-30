@@ -123,7 +123,7 @@ public sealed class GameController : IGame
         return this.player.gameObject;
     }
 
-    public GameObject SpawnMob(string vehicleKey, bool defaultAI = true)
+    public GameObject SpawnMob(string vehicleKey)
     {
         var tank = loader.GetTank(vehicleKey);
         if (tank != null)
@@ -154,11 +154,6 @@ public sealed class GameController : IGame
         }
         var vehicle = loader.GetVehicle(vehicleKey);
         var go = vehicle.Spawn(Consts.SortingLayer.MOB, true);
-
-        if (defaultAI)
-        {
-            go.GetComponent<Actor>().behavior = MobAI.Instance.Get(vehicle);
-        }
 
         SpawnMobHelper(go);
         return go;

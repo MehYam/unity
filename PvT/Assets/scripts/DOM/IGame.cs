@@ -14,7 +14,7 @@ public interface IGame
     Effects effects { get; }
 
     GameObject SpawnPlayer(Vector3 location);
-    GameObject SpawnMob(string vehicleKey, bool defaultAI = true);
+    GameObject SpawnMob(string vehicleKey);
     GameObject SpawnAmmo(Actor launcher, WorldObjectType.Weapon weapon, Consts.CollisionLayer layer);
     GameObject SpawnHotspot(Actor launcher, WorldObjectType.Weapon weapon, float damageMultiplier, Consts.CollisionLayer layer);
 

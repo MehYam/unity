@@ -144,6 +144,40 @@ public sealed class TimedSequenceBehavior: IActorBehavior
     }
 }
 
+public class SequenceBehavior : IActorBehavior
+{
+    readonly IList<ICompletableActorBehavior> _phases = new List<ICompletableActorBehavior>();
+    int _current;
+
+    public SequenceBehavior(params ICompletableActorBehavior[] behaviors)
+    {
+        foreach (var b in behaviors)
+        {
+            Add(b);
+        }
+    }
+    public void Add(ICompletableActorBehavior behavior)
+    {
+        _phases.Add(behavior);
+    }
+
+    public void FixedUpdate(Actor actor)
+    {
+        if (_current >= _phases.Count)
+        {
+            _current = 0;
+        }
+        if (_current < _phases.Count)
+        {
+            _phases[_current].FixedUpdate(actor);
+            if (_phases[_current].IsComplete(actor))
+            {
+                ++_current;
+            }
+        }
+    }
+}
+
 /// <summary>
 /// Allows blocking of a behavior with another one (or none at all)
 /// </summary>
@@ -392,6 +426,7 @@ sealed class FaceTarget : IActorBehavior
     readonly float degPerSec;
     public FaceTarget(ITarget target, float degPerSec = ROTATE_IMMEDIATE)
     {
+        this.target = target;
         this.degPerSec = degPerSec;
     }
 
@@ -755,11 +790,11 @@ sealed class TweenPositionBehavior : IActorBehavior
     }
 }
 
-sealed class TweenRotationBehavior : IActorBehavior
+sealed class TweenRotationBehavior : ICompletableActorBehavior
 {
     sealed class TweenState
     {
-        readonly float targetAngle;
+        public readonly float targetAngle;
         readonly float time;
         public TweenState(float targetAngle, float time)
         {
@@ -787,12 +822,18 @@ sealed class TweenRotationBehavior : IActorBehavior
 
         actor.transform.eulerAngles = angles;
     }
+
+    static readonly float ANGLE_EPSILON = 1;
+    public bool IsComplete(Actor actor)
+    {
+        return Math.Abs(Mathf.DeltaAngle(actor.transform.eulerAngles.z, _state.targetAngle)) < ANGLE_EPSILON;
+    }
 }
 
 /// <summary>
 /// This implements a pseudo-3D hopping.  Would it be better to use real 3D?
 /// </summary>
-sealed class HopBehavior : IActorBehavior
+sealed class HopBehavior : ICompletableActorBehavior
 {
     static readonly float GRAVITY = 1.5f;
     static readonly float JUMP_VELOCITY = 0.75f;
@@ -808,31 +849,41 @@ sealed class HopBehavior : IActorBehavior
     Vector3 _originalScale = Vector3.zero;
     public void FixedUpdate(Actor actor)
     {
-        if (_height <= 0)
+        if (!IsComplete(actor))
         {
-            // jump!
-            if (_originalScale == Vector3.zero)
+            // perform the jump
+            if (_height == 0)
             {
-                _originalScale = actor.transform.localScale;
+                if (_originalScale == Vector3.zero)
+                {
+                    _originalScale = actor.transform.localScale;
+                }
+                var to = target.actor.transform.position;
+
+                _verticalVelocity = JUMP_VELOCITY;
             }
-            var to = target.actor.transform.position;
 
-            _verticalVelocity = JUMP_VELOCITY;
+            // tween the simulated height
+            _height += Time.deltaTime * _verticalVelocity;
+            _verticalVelocity -= Time.deltaTime * GRAVITY;
 
-            var lookAt = Util.GetLookAtVector(actor.transform.position, to);
-            actor.rigidbody2D.velocity = lookAt * actor.maxSpeed;
+            actor.transform.localScale = (1 + _height) * _originalScale;
+
+            var dropShadow = actor.GetComponentInChildren<DropShadow>();
+            if (dropShadow != null)
+            {
+                dropShadow.distanceModifier = _height;
+            }
+
+            if (_height <= 0)
+            {
+                actor.transform.localScale = _originalScale;
+            }
         }
+    }
 
-        // tween the actor
-        _height += Time.deltaTime * _verticalVelocity;
-        _verticalVelocity -= Time.deltaTime * GRAVITY;
-
-        actor.transform.localScale = (1 + _height) * _originalScale;
-
-        var dropShadow = actor.GetComponentInChildren<DropShadow>();
-        if (dropShadow != null)
-        {
-            dropShadow.distanceModifier = _height;
-        }
+    public bool IsComplete(Actor unused)
+    {
+        return _height < 0;
     }
 }

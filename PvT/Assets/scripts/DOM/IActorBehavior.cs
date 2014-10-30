@@ -15,4 +15,8 @@ namespace PvT.DOM
     {
         void Update(Actor actor);
     }
+    public interface ICompletableActorBehavior : IActorBehavior
+    {
+        bool IsComplete(Actor actor);
+    }
 }

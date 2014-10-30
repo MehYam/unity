@@ -110,6 +110,8 @@ public class LevelScript : MonoBehaviour
     void SpawnMob(IGame game, string id)
     {
         var mob = game.SpawnMob(id);
+        MobAI.Instance.AttachAI(mob.GetComponent<Actor>());
+
         PositionMob(mob, spawnDistance);
 
         ++_liveEnemies;

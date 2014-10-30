@@ -355,21 +355,25 @@ public class Actor : MonoBehaviour
         else if (!thisIsOverwhelmedMobBeingCaptured)
         {
             // give collision damage
-            if (other.gameObject.layer > self.gameObject.layer) // prevent duplicate collision sparks
-            {
-                var boom = Main.Instance.game.effects.GetRandomSmallExplosion().ToRawGameObject(Consts.SortingLayer.EXPLOSIONS);
-                boom.transform.localPosition = contact.point;
-
-                GlobalGameEvent.Instance.FireExplosionSpawned(boom);
-
-                if (otherActor != null && otherActor.worldObjectType.health > 0 && worldObjectType.health > 0)
-                {
-                    AudioSource.PlayClipAtPoint(Main.Instance.sounds.SmallCollision, contact.point);
-                }
-            }
             if (otherActor != null)
             {
-                TakeDamage(otherActor.collisionDamage * Random.Range(0.9f, 1.1f));
+                var damage = otherActor.collisionDamage * Random.Range(0.9f, 1.1f);
+                if (damage > 0)
+                {
+                    if (other.gameObject.layer > self.gameObject.layer) // prevent duplicate collision sparks and damage sounds
+                    {
+                        var boom = Main.Instance.game.effects.GetRandomSmallExplosion().ToRawGameObject(Consts.SortingLayer.EXPLOSIONS);
+                        boom.transform.localPosition = contact.point;
+
+                        GlobalGameEvent.Instance.FireExplosionSpawned(boom);
+
+                        if (otherActor != null && otherActor.worldObjectType.health > 0 && worldObjectType.health > 0)
+                        {
+                            AudioSource.PlayClipAtPoint(Main.Instance.sounds.SmallCollision, contact.point);
+                        }
+                    }
+                    TakeDamage(damage);
+                }
             }
         }
     }

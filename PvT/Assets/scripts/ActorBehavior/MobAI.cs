@@ -23,15 +23,36 @@ public sealed class MobAI
             return _instance;
         }
     }
-    public IActorBehavior Get(VehicleType vehicle)
+    public void AttachAI(Actor mob)
+    {
+        var vehicle = (VehicleType)mob.worldObjectType;
+        mob.behavior = Get(vehicle);
+        if (mob.behavior == null)
+        {
+            if (!AttachMonoBehavior(mob))
+            {
+                Debug.LogWarning(string.Format("no AI found for {0}, substituting a default one", vehicle.name));
+                mob.behavior = AttackAndFlee(3, 2, 2, vehicle.weapons);
+            }
+        }
+    }
+    IActorBehavior Get(VehicleType vehicle)
     {
         Func<VehicleType, IActorBehavior> retval = null;
-        if (!_behaviorFactory.TryGetValue(vehicle.name, out retval))
-        {
-            Debug.LogWarning(string.Format("no AI found for {0}, substituting a default one", vehicle.name));
-            return AttackAndFlee(3, 2, 2, vehicle.weapons);
+        _behaviorFactory.TryGetValue(vehicle.name, out retval);
+        return retval == null ? null : retval(vehicle);
+    }
+    bool AttachMonoBehavior(Actor actor)
+    {
+        var vehicleName = actor.worldObjectType.name;
+        switch (vehicleName) {
+            case "FLY":
+            case "FLY2":
+            case "FLY3":
+                actor.gameObject.AddComponent<DeathHopperAI>();
+                return true;
         }
-        return retval != null ? retval(vehicle) : null;
+        return false;
     }
     static IActorBehavior AttackAndFlee(float followTime, float attackTime, float roamTime, WorldObjectType.Weapon[] weapons)
     {
@@ -97,17 +118,6 @@ public sealed class MobAI
         retval.Add(sequence);
         return retval;
     }
-    static IActorBehavior Hopper(VehicleType vehicle)
-    {
-        var bf = ActorBehaviorFactory.Instance;
-        var sequence = new TimedSequenceBehavior();
-
-        sequence.Add(bf.facePlayer, new RateLimiter(1, 0));
-
-
-        return sequence;
-    }
-
     /// <summary>
     /// AI registry
     /// </summary>
@@ -150,10 +160,6 @@ public sealed class MobAI
         _behaviorFactory["ESOX"] = _behaviorFactory["PIKE"] = _behaviorFactory["PIKE0"] = (vehicle) =>
         {
             return TheCount(vehicle.weapons);
-        };
-        _behaviorFactory["FLY"] = _behaviorFactory["FLY2"] = _behaviorFactory["FLY3"] = (vehicle) =>
-        {
-            return new HopBehavior(PlayerTarget.Instance);
         };
     }
 }

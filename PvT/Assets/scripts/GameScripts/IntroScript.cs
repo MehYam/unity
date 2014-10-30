@@ -101,7 +101,7 @@ public class IntroScript : MonoBehaviour
     void SetupMobTween(GameObject parent, string vehicle, Vector2 target, Vector2 start)
     {
         var main = Main.Instance;
-        var mob = main.game.SpawnMob(vehicle, false);
+        var mob = main.game.SpawnMob(vehicle);
         mob.transform.position = start;
         mob.transform.parent = parent.transform;
 
