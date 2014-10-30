@@ -83,7 +83,7 @@ public sealed class PeriodicBehavior : IActorBehavior
 /// <summary>
 /// A behavior list that iterates through its behaviors over user-specified intervals
 /// </summary>
-public sealed class SequencedBehavior: IActorBehavior
+public sealed class TimedSequenceBehavior: IActorBehavior
 {
     struct Phase
     {
@@ -324,7 +324,7 @@ public sealed class ActorBehaviorFactory
             //KAI: the logic ahead isn't quite right - this is a good place to use LINQ -
             // sort by sequence, then iterate through them
             int iLastSequence = 0;
-            var retval = new SequencedBehavior();
+            var retval = new TimedSequenceBehavior();
             foreach (var w in weapons)
             {
                 float rate = w.sequence != iLastSequence ? w.rate : 0;
@@ -367,6 +367,10 @@ public sealed class ActorBehaviorFactory
     {
         return new GoHomeYouAreDrunkBehavior();
     }
+    public IActorBehavior CreateHopBehavior()
+    {
+        return new HopBehavior();
+    }
 }
 
 sealed class FacePointBehavior : IActorBehavior
@@ -406,6 +410,7 @@ sealed class PlayerGravitate : IActorBehavior
     public void FixedUpdate(Actor actor)
     {
         var go = actor.gameObject;
+
         var newRot = Util.GetLookAtAngle(Main.Instance.game.player.transform.localPosition - go.transform.localPosition);
         var thrustVector = Util.GetLookAtVector(newRot.eulerAngles.z, actor.acceleration);
 
@@ -718,8 +723,8 @@ sealed class TweenPositionBehavior : IActorBehavior
     //KAI: copy pasta with TweenPosition
     sealed class TweenState
     {
-        public readonly Vector3 destination;
-        public readonly float time;
+        readonly Vector3 destination;
+        readonly float time;
         public TweenState(Vector3 destination, float time)
         {
             this.destination = destination;
@@ -741,5 +746,39 @@ sealed class TweenPositionBehavior : IActorBehavior
     public void FixedUpdate(Actor actor)
     {
         actor.transform.position = _state.Update(actor.transform);
+    }
+}
+
+sealed class TweenRotationBehavior : IActorBehavior
+{
+    sealed class TweenState
+    {
+        readonly float targetAngle;
+        readonly float time;
+        public TweenState(float targetAngle, float time)
+        {
+            this.targetAngle = targetAngle;
+            this.time = time * Consts.SMOOTH_DAMP_MULTIPLIER;
+        }
+        float velocity = 0;
+        Vector3 velocities = Vector3.zero;
+        public float Update(float angle)
+        {
+            return Mathf.SmoothDampAngle(angle, targetAngle, ref velocity, time);
+        }
+    }
+
+    readonly TweenState _state;
+    public TweenRotationBehavior(float targetAngle, float time)
+    {
+        _state = new TweenState(targetAngle, time);
+    }
+
+    public void FixedUpdate(Actor actor)
+    {
+        var angles = actor.transform.eulerAngles;
+        angles.z = _state.Update(actor.transform.eulerAngles.z);
+
+        actor.transform.eulerAngles = angles;
     }
 }

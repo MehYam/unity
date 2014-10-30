@@ -138,7 +138,7 @@ public sealed class GameController : IGame
                 bf.CreateAutofire(Consts.CollisionLayer.MOB_AMMO, tankHelper.hull.weapons)
             );
 
-            var turretFireBehavior = new SequencedBehavior();
+            var turretFireBehavior = new TimedSequenceBehavior();
             turretFireBehavior.Add(bf.CreateAutofire(Consts.CollisionLayer.MOB_AMMO, tankHelper.turret.weapons), new RateLimiter(3, 3));
             turretFireBehavior.Add(ActorBehaviorFactory.NULL, new RateLimiter(3, 0.75f));
             

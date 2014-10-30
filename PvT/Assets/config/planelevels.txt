@@ -1,6 +1,6 @@
 #0 sample level with all mobs
-
-greenk,2;bee,1
+EVENT_RAISE_CURTAIN
+FLY,2
 MOTH,2
 BEE,2
 GHOST,2

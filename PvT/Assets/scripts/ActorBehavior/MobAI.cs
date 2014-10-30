@@ -36,7 +36,7 @@ public sealed class MobAI
     static IActorBehavior AttackAndFlee(float followTime, float attackTime, float roamTime, WorldObjectType.Weapon[] weapons)
     {
         var bf = ActorBehaviorFactory.Instance;
-        var retval = new SequencedBehavior();
+        var retval = new TimedSequenceBehavior();
         retval.Add(bf.followPlayer, new RateLimiter(followTime, 0.5f));
         retval.Add(
             new CompositeBehavior(
@@ -50,7 +50,7 @@ public sealed class MobAI
     static IActorBehavior TheCount(WorldObjectType.Weapon[] weapons)
     {
         var bf = ActorBehaviorFactory.Instance;
-        var retval = new SequencedBehavior();
+        var retval = new TimedSequenceBehavior();
 
         retval.Add(bf.thrust, new RateLimiter(6, 0.5f));
         retval.Add(ActorBehaviorFactory.NULL, new RateLimiter(2, 0.5f));
@@ -64,7 +64,7 @@ public sealed class MobAI
     static IActorBehavior ChargeWeaponAI(VehicleType vehicle)
     {
         var bf = ActorBehaviorFactory.Instance;
-        var retval = new SequencedBehavior();
+        var retval = new TimedSequenceBehavior();
         var weapon = vehicle.weapons[0];
         var charge = new ChargeWeaponController(Consts.CollisionLayer.MOB_AMMO, weapon);
 
@@ -87,7 +87,7 @@ public sealed class MobAI
         var weapon = vehicle.weapons[0];
 
         var shield = new ShieldWeaponController(Consts.CollisionLayer.MOB_AMMO, weapon);
-        var sequence = new SequencedBehavior();
+        var sequence = new TimedSequenceBehavior();
 
         sequence.Add((IActorBehavior)null, new RateLimiter(5, 0.8f));
         sequence.Add(shield.Start, new RateLimiter(0.25f));
@@ -97,6 +97,20 @@ public sealed class MobAI
         retval.Add(sequence);
         return retval;
     }
+    static IActorBehavior Hopper(VehicleType vehicle)
+    {
+        var bf = ActorBehaviorFactory.Instance;
+        var sequence = new TimedSequenceBehavior();
+
+        sequence.Add(bf.facePlayer, new RateLimiter(1, 0));
+
+
+        return sequence;
+    }
+
+    /// <summary>
+    /// AI registry
+    /// </summary>
     readonly Dictionary<string, Func<VehicleType, IActorBehavior>> _behaviorFactory = new Dictionary<string, Func<VehicleType, IActorBehavior>>();
     MobAI()
     {
@@ -120,7 +134,7 @@ public sealed class MobAI
         };
         _behaviorFactory["OSPREY"] = (vehicle) =>
         {
-            var retval = new SequencedBehavior();
+            var retval = new TimedSequenceBehavior();
             retval.Add(bf.followPlayer, new RateLimiter(2, 0.75f));
             retval.Add(bf.CreateTurret(Consts.CollisionLayer.MOB_AMMO, vehicle.weapons), new RateLimiter(2, 0.5f));
             return retval;
@@ -137,5 +151,54 @@ public sealed class MobAI
         {
             return TheCount(vehicle.weapons);
         };
+        _behaviorFactory["FLY"] = (vehicle) =>
+        {
+            return new HopBehavior();
+        };
+    }
+}
+
+//var angle = Util.GetLookAtAngle(actor.transform.position, Main.Instance.game.player.transform.position);
+
+/// <summary>
+/// This implements a pseudo-3D hopping.  Would it be better to use real 3D?
+/// </summary>
+sealed class HopBehavior : IActorBehavior
+{
+    static readonly float GRAVITY = 1.5f;
+    static readonly float JUMP_VELOCITY = 0.75f;
+
+    float _verticalVelocity = 0;
+    float _height = 0;
+
+    Vector3 _originalScale = Vector3.zero;
+    public void FixedUpdate(Actor actor)
+    {
+        if (_height <= 0)
+        {
+            // jump!
+            if (_originalScale == Vector3.zero)
+            {
+                _originalScale = actor.transform.localScale;
+            }
+            var target = Main.Instance.game.player.transform.position;
+
+            _verticalVelocity = JUMP_VELOCITY;
+
+            var lookAt = Util.GetLookAtVector(actor.transform.position, target);
+            actor.rigidbody2D.velocity = lookAt * actor.maxSpeed;
+        }
+
+        // tween the actor
+        _height += Time.deltaTime * _verticalVelocity;
+        _verticalVelocity -= Time.deltaTime * GRAVITY;
+
+        actor.transform.localScale = (1 + _height) * _originalScale;
+
+        var dropShadow = actor.GetComponentInChildren<DropShadow>();
+        if (dropShadow != null)
+        {
+            dropShadow.distanceModifier = _height;
+        }
     }
 }

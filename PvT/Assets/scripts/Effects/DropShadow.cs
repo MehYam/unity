@@ -3,7 +3,8 @@ using System.Collections;
 
 public class DropShadow : MonoBehaviour
 {
-    public float distance = 0.06f;
+    public float distance = 0.08f;
+    public float distanceModifier = 0;
     public float angle = 45;
 
     GameObject _shadow;
@@ -28,6 +29,7 @@ public class DropShadow : MonoBehaviour
 	
 	void LateUpdate()
     {
-        _shadow.transform.position = transform.position + new Vector3(distance, -distance);
+        var trueDistance = distance + distanceModifier;
+        _shadow.transform.position = transform.position + new Vector3(trueDistance, -trueDistance);
     }
 }

@@ -8,6 +8,7 @@ public class LevelScript : MonoBehaviour
 {
     public bool mobs = true;
     public int startLevel = 1;
+    public float spawnDistance = 4;
 
     public GameObject map;
     public GameObject[] rooms;
@@ -109,17 +110,17 @@ public class LevelScript : MonoBehaviour
     void SpawnMob(IGame game, string id)
     {
         var mob = game.SpawnMob(id);
-        PositionMob(mob);
+        PositionMob(mob, spawnDistance);
 
         ++_liveEnemies;
     }
 
-    static void PositionMob(GameObject mob)
+    static void PositionMob(GameObject mob, float offset)
     {
         // put the actor at the edge
         Vector3 spawnLocation;
         var bounds = new XRect(Main.Instance.game.WorldBounds);
-        bounds.Inflate(4);
+        bounds.Inflate(offset);
 
         if (Util.CoinFlip())
         {

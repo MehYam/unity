@@ -27,12 +27,23 @@ namespace PvT.Util
         static public float SPRITE_FORWARD_ANGLE { get; set; }
         static public Quaternion GetLookAtAngle(Vector2 point)
         {
-            return Quaternion.Euler(0, 0, Mathf.Atan2(point.y, point.x) * Mathf.Rad2Deg + SPRITE_FORWARD_ANGLE);
+            return Quaternion.Euler(0, 0, DegreesRotation(point) + SPRITE_FORWARD_ANGLE);
+        }
+        static public float GetLookAtAngle(Vector2 looker, Vector2 target)
+        {
+            return DegreesRotation(target - looker) + SPRITE_FORWARD_ANGLE;
         }
         static public Vector2 GetLookAtVector(float angle, float magnitude)
         {
             var vector = new Vector2(0, magnitude);
             return RotatePoint(vector, -SPRITE_FORWARD_ANGLE - angle);
+        }
+        //KAI: look at replacing more calls with the following
+        static public Vector2 GetLookAtVector(Vector2 looker, Vector2 target)
+        {
+            var retval = target - looker;
+            retval.Normalize();
+            return retval;
         }
         static public Vector2 RotatePoint(Vector2 point, float degrees)
         {
@@ -56,8 +67,7 @@ namespace PvT.Util
         }
         static public void LookAt2D(Transform looker, Vector3 target, float maxDegrees = -1)
         {
-            var lookVector = target - looker.position;
-            var angle = Mathf.Atan2(lookVector.y, lookVector.x) * Mathf.Rad2Deg;
+            var angle = DegreesRotation(target - looker.position);
             if (maxDegrees != -1)
             {
                 var currentAngle = looker.transform.rotation.eulerAngles.z - SPRITE_FORWARD_ANGLE;
@@ -71,7 +81,7 @@ namespace PvT.Util
         static public bool IsLookingAt(Transform looker, Vector2 target, float toleranceDegrees)
         {
             var lookVector = new Vector3(target.x, target.y) - looker.position;
-            var angle = Mathf.Atan2(lookVector.y, lookVector.x) * Mathf.Rad2Deg;
+            var angle = DegreesRotation(lookVector);
 
             var diff = Mathf.DeltaAngle(looker.transform.rotation.eulerAngles.z - SPRITE_FORWARD_ANGLE, angle);
             return Mathf.Abs(diff) < toleranceDegrees;
@@ -90,7 +100,11 @@ namespace PvT.Util
         }
         static public float DegreesRotation(Vector2 point)
         {
-            return Mathf.Atan2(point.x, point.y) * Mathf.Rad2Deg;
+            return Mathf.Atan2(point.y, point.x) * Mathf.Rad2Deg;
+        }
+        static public float DegreesRotation(float x, float y)
+        {
+            return Mathf.Atan2(y, x) * Mathf.Rad2Deg;
         }
         // returns a signed difference between two angles useful for evolving one to the other
         //static public float diffRadians(float source, float target)
