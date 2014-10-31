@@ -427,18 +427,25 @@ public sealed class GameController : IGame
     }
     void SetPlayerPlaneBehaviors(GameObject go, VehicleType vehicle)
     {
+        var isHopper = go.GetComponent<DeathHopperAI>() != null;  // HACK HACK HACK
         var bf = ActorBehaviorFactory.Instance;
-        IActorBehavior inputBehavior = new PlayerInput(bf.faceForward);
         var behaviors = new CompositeBehavior();
+        if (isHopper)
+        {
+            behaviors.Add(new PlayerHopInput());
+        }
+        else
+        {
+            behaviors.Add(new PlayerInput(bf.faceForward));
+        }
 
         var actor = go.GetComponent<Actor>();
         var heroType = Main.Instance.game.loader.GetVehicle("HERO");
         var isHero = vehicle == heroType;
 
-        if (go.GetComponent<DeathHopperAI>() != null) // HACK HACK HACK
+        if (isHopper)
         {
             go.GetComponent<DeathHopperAI>().enabled = false;
-            inputBehavior = new PlayerHopInput();
         }
         else if (HasShieldWeapon(vehicle))
         {
@@ -490,8 +497,6 @@ public sealed class GameController : IGame
             var fireToMouse = isHero ? fireAhead : new CompositeBehavior(bf.faceMouse, fireAhead);
             behaviors.Add(bf.CreatePlayerButton("Fire1", fireToMouse));
         }
-
-        behaviors.Add(inputBehavior);
 
         if (isHero)
         {

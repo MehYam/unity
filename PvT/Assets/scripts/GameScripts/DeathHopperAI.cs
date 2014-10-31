@@ -38,22 +38,29 @@ public class DeathHopperAI : MonoBehaviour
 
             yield return StartCoroutine(Util.YieldUntil(() => hop.IsComplete(actor) ));
 
-            // 4. land with some fanfare, a shockwave, and wait
-            actor.gameObject.rigidbody2D.velocity = Vector2.zero;
-
-            var impact = game.loader.GetMisc("landingImpact").ToRawGameObject(Consts.SortingLayer.TANKBODY);
-            impact.transform.position = actor.gameObject.transform.position;
-
-            var vibe = actor.gameObject.AddComponent<Vibrate>();
-            vibe.enabled = true;
-
-            if (actor.worldObjectType.HasWeapons)
-            {
-                game.SpawnAmmo(actor, actor.worldObjectType.weapons[0], Consts.CollisionLayer.MOB_AMMO);
-            }
-            yield return new WaitForSeconds(0.2f);
-            vibe.enabled = false;
-            yield return new WaitForSeconds(0.1f);
+            yield return StartCoroutine(AnimateLanding(actor, Consts.CollisionLayer.MOB_AMMO));
         }
+    }
+
+    static public IEnumerator AnimateLanding(Actor actor, Consts.CollisionLayer impactLayer)
+    {
+        var game = Main.Instance.game;
+
+        // 4. land with some fanfare, a shockwave, and wait
+        actor.gameObject.rigidbody2D.velocity = Vector2.zero;
+
+        var impact = game.loader.GetMisc("landingImpact").ToRawGameObject(Consts.SortingLayer.TANKBODY);
+        impact.transform.position = actor.gameObject.transform.position;
+
+        var vibe = actor.gameObject.AddComponent<Vibrate>();
+        vibe.enabled = true;
+
+        if (actor.worldObjectType.HasWeapons)
+        {
+            game.SpawnAmmo(actor, actor.worldObjectType.weapons[0], impactLayer);
+        }
+        yield return new WaitForSeconds(0.2f);
+        vibe.enabled = false;
+        yield return new WaitForSeconds(0.1f);
     }
 }

@@ -30,7 +30,7 @@ public class PlayerHopInput : IActorBehavior
             {
                 hop = null;
 
-                actor.rigidbody2D.velocity = Vector2.zero;
+                actor.StartCoroutine(DeathHopperAI.AnimateLanding(actor, Consts.CollisionLayer.FRIENDLY_AMMO));
             }
         }
     }
