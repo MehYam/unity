@@ -23,7 +23,7 @@ public class DeathHopperAI : MonoBehaviour
             {
                 var angle = Util.GetLookAtAngle(actor.transform.position, game.player.transform.position);
 
-                ICompletableActorBehavior swivel = new TweenRotationBehavior(angle, 0.5f);
+                ICompletableActorBehavior swivel = new TweenRotationBehavior(angle, 0.25f);
                 actor.behavior = swivel;
 
                 yield return StartCoroutine(Util.YieldUntil(() => swivel.IsComplete(actor) ));
@@ -41,7 +41,10 @@ public class DeathHopperAI : MonoBehaviour
             // 4. land with some fanfare and wait
             actor.gameObject.rigidbody2D.velocity = Vector2.zero;
 
-            yield return new WaitForSeconds(0.5f);
+            var impact = game.loader.GetMisc("landingImpact").ToRawGameObject(Consts.SortingLayer.TANKBODY);
+            impact.transform.position = actor.gameObject.transform.position;
+
+            yield return new WaitForSeconds(0.25f);
         }
     }
 }
