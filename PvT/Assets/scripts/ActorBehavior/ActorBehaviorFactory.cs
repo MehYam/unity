@@ -382,7 +382,8 @@ public sealed class ActorBehaviorFactory
     }
     public IActorBehavior CreatePlayerButton(string button, IActorBehavior behavior)
     {
-        return new PlayerButton(button, null, behavior.FixedUpdate, null);
+        Action<Actor> onFrame = behavior == null ? (Action<Actor>)null : behavior.FixedUpdate;
+        return new PlayerButton(button, null, onFrame, null);
     }
     public IActorBehavior CreatePlayerButton(string button, IActorBehavior onDown, IActorBehavior onFrame, IActorBehavior onUp)
     {

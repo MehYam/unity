@@ -180,6 +180,12 @@ public sealed class GameController : IGame
         actorAmmo.collisionDamage = weapon.damage;
         actorAmmo.showsHealthBar = false;
 
+        var renderer = actorAmmo.GetComponent<SpriteRenderer>();
+        if (renderer != null)
+        {
+            renderer.color = weapon.color;
+        }
+
         Util.PrepareLaunch(launcher.transform, actorAmmo.transform, weapon.offset, weapon.angle);
         if (type.acceleration == 0)
         {
