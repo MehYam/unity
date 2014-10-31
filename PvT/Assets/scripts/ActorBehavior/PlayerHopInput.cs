@@ -21,6 +21,7 @@ public class PlayerHopInput : IActorBehavior
     ICompletableActorBehavior hop;
     public void FixedUpdate(Actor actor)
     {
+        ActorBehaviorFactory.Instance.faceMouse.FixedUpdate(actor);
         playerInput.FixedUpdate(actor);
 
         if (hop != null)
@@ -41,10 +42,19 @@ public class PlayerHopInput : IActorBehavior
         {
             hop = new HopBehavior();
 
-            var lookAt = Util.GetLookAtVectorToMouse(actor.transform.position);
-            actor.rigidbody2D.velocity = lookAt * actor.maxSpeed;
+            // jump onto mouse cursor
+            var mouseInWorld = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mouseInWorld.z = 0;
 
-            ActorBehaviorFactory.Instance.faceForward.FixedUpdate(actor);
+            // calculate the velocity required based on the height of the jump
+            var jumpVector = (mouseInWorld - actor.transform.position);
+            jumpVector *= HopBehavior.AIRBORNE_TIME * 1.4f ;
+
+            var velocity = jumpVector;
+            actor.rigidbody2D.velocity = velocity;
+
+            //actor.transform.Translate(lookAt);
+
         }
     }
 }

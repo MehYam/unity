@@ -446,6 +446,7 @@ public sealed class GameController : IGame
         if (isHopper)
         {
             go.GetComponent<DeathHopperAI>().enabled = false;
+            actor.speedModifier = new ActorModifier(1000, 1000); // unlock the speed limit
         }
         else if (HasShieldWeapon(vehicle))
         {

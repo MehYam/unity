@@ -837,9 +837,12 @@ sealed class HopBehavior : ICompletableActorBehavior
     static readonly float GRAVITY = 1.5f;
     static readonly float JUMP_VELOCITY = 0.75f;
 
+    public static float AIRBORNE_TIME = 2 * JUMP_VELOCITY / GRAVITY;
+
     float _verticalVelocity = 0;
     float _height = 0;
     Vector3 _originalScale = Vector3.zero;
+
     public void FixedUpdate(Actor actor)
     {
         if (!IsComplete(actor))
