@@ -41,6 +41,9 @@ public class DeathHopperAI : MonoBehaviour
             // 4. land with some fanfare and wait
             actor.gameObject.rigidbody2D.velocity = Vector2.zero;
 
+            var impact = game.loader.GetMisc("landingImpact").ToRawGameObject(Consts.SortingLayer.TANKBODY);
+            impact.transform.position = actor.gameObject.transform.position;
+
             yield return new WaitForSeconds(0.5f);
         }
     }

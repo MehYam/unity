@@ -47,6 +47,10 @@
 	{
 		"asset": "smoke2"
 	},
+	"landingImpact":
+	{
+		"asset": "landingImpact"
+	}
 	"vehicleExplosion":
 	{
 		"asset": "vehicleExplosion"
