@@ -30,7 +30,7 @@ public class DeathHopperAI : MonoBehaviour
             }
 
             // 3. hop
-            var hop = new HopBehavior(PlayerTarget.Instance);
+            var hop = new HopBehavior();
             actor.behavior = hop;
 
             var lookAt = Util.GetLookAtVector(actor.transform.position, game.player.transform.position);

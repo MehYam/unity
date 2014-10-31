@@ -86,14 +86,15 @@ namespace PvT.Util
             var diff = Mathf.DeltaAngle(looker.transform.rotation.eulerAngles.z - SPRITE_FORWARD_ANGLE, angle);
             return Mathf.Abs(diff) < toleranceDegrees;
         }
+        static public Vector2 GetLookAtVectorToMouse(Vector2 looker)
+        {
+            var screen = Camera.main.WorldToScreenPoint(looker);
+            return Input.mousePosition - screen;
+        }
         static public Quaternion GetAngleToMouse(Transform transform)
         {
-            var mouse = Input.mousePosition;
-            var screen = Camera.main.WorldToScreenPoint(transform.position);
-            var lookDirection = new Vector2(mouse.x - screen.x, mouse.y - screen.y);
-            return Util.GetLookAtAngle(lookDirection);
+            return Util.GetLookAtAngle(GetLookAtVectorToMouse(transform.position));
         }
-        
         static public float DegreesBetweenPoints(Vector2 a, Vector2 b)
         {
             return DegreesRotation(a - b);

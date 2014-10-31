@@ -633,9 +633,9 @@ sealed class PlayerButton : IActorBehavior
                 if (onFrame != null) onFrame(actor);
             }
         }
-        else if (down && onUp != null)
+        else if (down)
         {
-            onUp(actor);
+            if (onUp != null) onUp(actor);
             down = false;
         }
     }
@@ -838,12 +838,6 @@ sealed class HopBehavior : ICompletableActorBehavior
     static readonly float GRAVITY = 1.5f;
     static readonly float JUMP_VELOCITY = 0.75f;
 
-    readonly ITarget target;
-    public HopBehavior(ITarget target)
-    {
-        this.target = target;
-    }
-
     float _verticalVelocity = 0;
     float _height = 0;
     Vector3 _originalScale = Vector3.zero;
@@ -858,8 +852,6 @@ sealed class HopBehavior : ICompletableActorBehavior
                 {
                     _originalScale = actor.transform.localScale;
                 }
-                var to = target.actor.transform.position;
-
                 _verticalVelocity = JUMP_VELOCITY;
             }
 

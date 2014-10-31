@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
+using PvT.DOM;
 using PvT.Util;
 
 public sealed class GameController : IGame
@@ -427,14 +428,19 @@ public sealed class GameController : IGame
     void SetPlayerPlaneBehaviors(GameObject go, VehicleType vehicle)
     {
         var bf = ActorBehaviorFactory.Instance;
+        IActorBehavior inputBehavior = new PlayerInput(bf.faceForward);
         var behaviors = new CompositeBehavior();
-        behaviors.Add(new PlayerInput(bf.faceForward));
 
         var actor = go.GetComponent<Actor>();
         var heroType = Main.Instance.game.loader.GetVehicle("HERO");
         var isHero = vehicle == heroType;
 
-        if (HasShieldWeapon(vehicle))
+        if (go.GetComponent<DeathHopperAI>() != null) // HACK HACK HACK
+        {
+            go.GetComponent<DeathHopperAI>().enabled = false;
+            inputBehavior = new PlayerHopInput();
+        }
+        else if (HasShieldWeapon(vehicle))
         {
             var controller = new ShieldWeaponController(Consts.CollisionLayer.FRIENDLY, vehicle.weapons[0]);
 
@@ -484,6 +490,8 @@ public sealed class GameController : IGame
             var fireToMouse = isHero ? fireAhead : new CompositeBehavior(bf.faceMouse, fireAhead);
             behaviors.Add(bf.CreatePlayerButton("Fire1", fireToMouse));
         }
+
+        behaviors.Add(inputBehavior);
 
         if (isHero)
         {
