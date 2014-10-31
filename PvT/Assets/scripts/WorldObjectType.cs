@@ -89,21 +89,27 @@ public class WorldObjectType
         public readonly int damage;
         public readonly Vector2 offset;
         public readonly float angle;
+        public readonly Color32 color;
+        public readonly bool lit;
         public readonly float rate;
         public readonly int sequence;
         public readonly float chargeSeconds;
+        public readonly float ttl;
 
         public float severity { get; set; } // calculated later, once we know all the weapons
 
-        public Weapon(string type, int dmg, Vector2 offset, float angle, float rate, int sequence, float chargeSeconds)
+        public Weapon(string type, int dmg, Vector2 offset, float angle, Color32 color, bool lit, float rate, int sequence, float chargeSeconds, float ttl)
         {
             this.vehicleName = type;
             this.damage = dmg;
             this.offset = offset;
             this.angle = angle;
+            this.color = color;
+            this.lit = lit;
             this.rate = rate;
             this.sequence = sequence;
             this.chargeSeconds = chargeSeconds;
+            this.ttl = ttl;
 
             this.severity = 0;
         }
@@ -111,20 +117,22 @@ public class WorldObjectType
         static public Weapon FromString(string str, float offsetY = 0)
         {
             var parts = new Util.CSVParseHelper(str);
-            parts.SetIndex(1);
+            parts.SkipField();
 
             var vehicle = parts.GetString();
             var dmg = parts.GetInt();
             var x = parts.GetFloat() / Consts.PixelsToUnits;
             var y = offsetY + parts.GetFloat()/Consts.PixelsToUnits;
             var angle = parts.GetFloat();
-            
-            parts.GetInt(); // level, not currently used
+            var color = parts.GetHexColor();
+            var lit = parts.GetBool();
             var rate = parts.GetFloat();
             var sequence = parts.GetInt();
             var charge = parts.GetFloat();
+            parts.SkipField();
+            var timeToLive = parts.GetFloat();
 
-            return new Weapon(vehicle, dmg, new Vector2(x, y), angle, rate, sequence, charge);
+            return new Weapon(vehicle, dmg, new Vector2(x, y), angle, color, lit, rate, sequence, charge, timeToLive);
         }
 
         public override string ToString()
@@ -142,29 +150,37 @@ public class VehicleType : WorldObjectType
 {
     public readonly float acceleration;
     public readonly float inertia;
+    public readonly bool dropShadow;
 
-    public VehicleType(GameObject prefab, string name, string assetID, float mass, Weapon[] weapons, int health, float maxSpeed, float acceleration, float inertia) :
+    public VehicleType(GameObject prefab, string name, string assetID, float mass, Weapon[] weapons, int health, float maxSpeed, float acceleration, float inertia, bool dropShadow) :
         base(prefab, name, assetID, mass, maxSpeed, health, weapons)
     {
         this.acceleration = acceleration;
         this.inertia = inertia;
+        this.dropShadow = dropShadow;
     }
-    public VehicleType(WorldObjectType baseClass, float acceleration, float inertia) :
+    public VehicleType(WorldObjectType baseClass, float acceleration, float inertia, bool dropShadow) :
         base(baseClass)
     {
         this.acceleration = acceleration;
         this.inertia = inertia;
+        this.dropShadow = dropShadow;
     }
     public VehicleType(VehicleType rhs) :
         base(rhs)
     {
         this.acceleration = rhs.acceleration;
         this.inertia = rhs.inertia;
+        this.dropShadow = rhs.dropShadow;
     }
     public override GameObject Spawn(Consts.SortingLayer sortingLayer, bool rigidBody)
     {
         var go = base.Spawn(sortingLayer, rigidBody);
-        go.AddComponent<DropShadow>();
+
+        if (dropShadow)
+        {
+            go.AddComponent<DropShadow>();
+        }
         return go;
     }
     public override string ToCSV()
@@ -178,7 +194,7 @@ public sealed class TankHullType : VehicleType
     public readonly float turretPivotY;
 
     public TankHullType(GameObject prefab, string name, string assetID, float mass, Weapon[] weapons, int health, float maxSpeed, float acceleration, float inertia, float collDmg, float turretPivotY)
-        : base(prefab, name, assetID, mass, weapons, health, maxSpeed, acceleration, inertia)
+        : base(prefab, name, assetID, mass, weapons, health, maxSpeed, acceleration, inertia, true)
     {
         this.turretPivotY = turretPivotY;
     }

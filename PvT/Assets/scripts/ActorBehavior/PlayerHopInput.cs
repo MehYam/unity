@@ -13,7 +13,7 @@ public class PlayerHopInput : IActorBehavior
         playerInput = new PlayerButton(
             "Fire1",
             ButtonDownUpdate,
-            null,
+            ButtonDownUpdate,
             null
         );
     }
@@ -37,7 +37,6 @@ public class PlayerHopInput : IActorBehavior
 
     void ButtonDownUpdate(Actor actor)
     {
-        Debug.Log("ButtonDown");
         if (hop == null)
         {
             hop = new HopBehavior();

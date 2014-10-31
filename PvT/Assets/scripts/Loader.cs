@@ -234,11 +234,13 @@ public class Loader
     {
         var accel = csvHelper.GetFloat();
         var inertia = csvHelper.GetFloat();
+        var dropShadow = csvHelper.GetBool();
 
         return new VehicleType(
                 worldObject,
                 accel,
-                inertia
+                inertia,
+                dropShadow
         );
     }
     static Dictionary<string, VehicleType> LoadVehicles(string csv, string assetPath, Dictionary<string, IList<string>> weaponStrings)

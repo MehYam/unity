@@ -45,7 +45,7 @@ public sealed class ShieldWeaponController
             _shield.transform.parent = actor.transform;
             _localShieldPos = _shield.transform.localPosition;
 
-            GlobalGameEvent.Instance.FireAmmoSpawned(shieldActor);
+            GlobalGameEvent.Instance.FireAmmoSpawned(shieldActor, _weapon);
         }
     }
 
@@ -61,14 +61,13 @@ public sealed class ShieldWeaponController
         }
     }
 
-    const float LAUNCH_LIFE = 1.5f;
     public void Discharge(Actor actor)
     {
         if (_shield != null)
         {
             // release shield
             var shieldActor = _shield.GetComponent<Actor>();
-            shieldActor.SetExpiry(LAUNCH_LIFE);
+            shieldActor.SetExpiry(actor.worldObjectType.weapons[0].ttl);
 
             _shield.transform.parent = Main.Instance.AmmoParent.transform;
             _shield.AddComponent<Rigidbody2D>();

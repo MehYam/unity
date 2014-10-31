@@ -9,10 +9,10 @@ public class DeathHopperAI : MonoBehaviour
 	// Use this for initialization
 	void Start()
     {
-	    StartCoroutine(AI());
+	    StartCoroutine(HopSequence());
 	}
 	
-    IEnumerator AI()
+    IEnumerator HopSequence()
     {
         var game = Main.Instance.game;
         var actor = GetComponent<Actor>();
@@ -38,13 +38,22 @@ public class DeathHopperAI : MonoBehaviour
 
             yield return StartCoroutine(Util.YieldUntil(() => hop.IsComplete(actor) ));
 
-            // 4. land with some fanfare and wait
+            // 4. land with some fanfare, a shockwave, and wait
             actor.gameObject.rigidbody2D.velocity = Vector2.zero;
 
             var impact = game.loader.GetMisc("landingImpact").ToRawGameObject(Consts.SortingLayer.TANKBODY);
             impact.transform.position = actor.gameObject.transform.position;
 
-            yield return new WaitForSeconds(0.25f);
+            var vibe = actor.gameObject.AddComponent<Vibrate>();
+            vibe.enabled = true;
+
+            if (actor.worldObjectType.HasWeapons)
+            {
+                game.SpawnAmmo(actor, actor.worldObjectType.weapons[0], Consts.CollisionLayer.MOB_AMMO);
+            }
+            yield return new WaitForSeconds(0.2f);
+            vibe.enabled = false;
+            yield return new WaitForSeconds(0.1f);
         }
     }
 }

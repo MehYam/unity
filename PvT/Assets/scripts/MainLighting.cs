@@ -51,18 +51,22 @@ public class MainLighting : MonoBehaviour
         }
     }
 
-    void OnAmmoSpawned(Actor actor)
+    void OnAmmoSpawned(Actor actor, WorldObjectType.Weapon weapon)
     {
-        AddLight(actor.gameObject);
+        if (weapon.lit)
+        {
+            AddLight(actor.gameObject, weapon.color);
+        }
     }
     void OnExplosionSpawned(GameObject explosion)
     {
-        AddLight(explosion);
+        AddLight(explosion, Color.white);
     }
     static readonly Vector3 s_lightPosition = new Vector3(0, 0, -1);
-    void AddLight(GameObject go)
+    void AddLight(GameObject go, Color color)
     {
         var pointLight = (Light)GameObject.Instantiate(PointLight);
+        pointLight.color = color;
         pointLight.transform.parent = go.transform;
         pointLight.transform.localPosition = s_lightPosition;
     }

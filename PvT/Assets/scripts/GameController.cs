@@ -176,7 +176,7 @@ public sealed class GameController : IGame
         goAmmo.rigidbody2D.drag = 0;
 
         var actorAmmo = goAmmo.GetComponent<Actor>();
-        actorAmmo.SetExpiry(2);
+        actorAmmo.SetExpiry(weapon.ttl);
         actorAmmo.collisionDamage = weapon.damage;
         actorAmmo.showsHealthBar = false;
 
@@ -202,7 +202,7 @@ public sealed class GameController : IGame
 
         AudioSource.PlayClipAtPoint(Main.Instance.sounds.Bullet, launcher.transform.position);
 
-        GlobalGameEvent.Instance.FireAmmoSpawned(actorAmmo);
+        GlobalGameEvent.Instance.FireAmmoSpawned(actorAmmo, weapon);
         return goAmmo;
     }
 

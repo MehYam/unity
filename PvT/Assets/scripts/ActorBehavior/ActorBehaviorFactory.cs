@@ -802,7 +802,6 @@ sealed class TweenRotationBehavior : ICompletableActorBehavior
             this.time = time * Consts.SMOOTH_DAMP_MULTIPLIER;
         }
         float velocity = 0;
-        Vector3 velocities = Vector3.zero;
         public float Update(float angle)
         {
             return Mathf.SmoothDampAngle(angle, targetAngle, ref velocity, time);

@@ -221,7 +221,14 @@ namespace PvT.Util
             color.a = alpha;
             text.color = color;
         }
-
+        public static Color32 UIntToColor(uint value)
+        {
+            byte a = (byte)(value >> 24);
+            byte r = (byte)(value >> 16);
+            byte g = (byte)(value >> 8);
+            byte b = (byte)(value >> 0);
+            return new Color32(r, g, b, a);
+        } 
         static public void Log(string fmt, params object[] args)
         {
             Debug.Log(string.Format(fmt, args));
@@ -285,9 +292,13 @@ namespace PvT.Util
                 var item = GetString().ToLowerInvariant();
                 return item == "yes" || item == "1" || item == "true" || item == "sure" || item == "why not";
             }
-
+            public Color32 GetHexColor()
+            {
+                uint value = Convert.ToUInt32(items[iItem++], 16);
+                return UIntToColor(value);
+            }
             public int Count { get { return items.Length; } }
-            public void SetIndex(int i) { iItem = i; }
+            public void SkipField(int nFields = 1) { iItem += nFields; }
 
             readonly string[] items;
             int iItem = 0;
