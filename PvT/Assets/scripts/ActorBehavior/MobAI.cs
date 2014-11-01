@@ -27,13 +27,12 @@ public sealed class MobAI
     {
         var vehicle = (VehicleType)mob.worldObjectType;
         mob.behavior = Get(vehicle);
-        if (mob.behavior == null)
+
+        var hasCustomMonoBehavior = AttachMonoBehavior(mob);
+        if (mob.behavior == null && !hasCustomMonoBehavior)
         {
-            if (!AttachMonoBehavior(mob))
-            {
-                Debug.LogWarning(string.Format("no AI found for {0}, substituting a default one", vehicle.name));
-                mob.behavior = AttackAndFlee(3, 2, 2, vehicle.weapons);
-            }
+            Debug.LogWarning(string.Format("no AI found for {0}, substituting a default one", vehicle.name));
+            mob.behavior = AttackAndFlee(3, 2, 2, vehicle.weapons);
         }
     }
     IActorBehavior Get(VehicleType vehicle)
@@ -50,6 +49,10 @@ public sealed class MobAI
             case "FLY2":
             case "FLY3":
                 actor.gameObject.AddComponent<DeathHopperAI>();
+
+                var spawner = actor.gameObject.AddComponent<DeathSpawnerAI>();
+                spawner.toSpawnOnDeath = vehicleName + "_FRY";
+                spawner.count = UnityEngine.Random.Range(3, 6);
                 return true;
         }
         return false;

@@ -169,7 +169,7 @@ MonoBehaviour:
   sounds: {fileID: 3432513}
   music: {fileID: 3432519}
   hud: {fileID: 1873991296}
-  defaultVehicle: tank1
+  defaultVehicle: 
   playMusic: 1
 --- !u!114 &3432517
 MonoBehaviour:
@@ -183,7 +183,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mobs: 1
-  startLevel: 0
+  startLevel: 1
   spawnDistance: -3
   map: {fileID: 100004, guid: a79bb10566c417243a18065740b954fe, type: 2}
   rooms: []
@@ -314,7 +314,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
 --- !u!114 &11695402
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1340,7 +1340,7 @@ RectTransform:
   - {fileID: 108059132}
   - {fileID: 1760193806}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}

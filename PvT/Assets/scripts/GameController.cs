@@ -260,7 +260,8 @@ public sealed class GameController : IGame
             SpawnPlayer(playerActor.transform.position);
 
             prevHost.behavior = null;
-            prevHost.SetExpiry(2);
+            prevHost.gameObject.layer = (int)Consts.CollisionLayer.MOB;
+            prevHost.SetExpiry(10);
         }
     }
 
