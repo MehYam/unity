@@ -74,10 +74,10 @@ public class LevelScript : MonoBehaviour
         }        
         yield return null;
     }
-    int _liveEnemies;
+
+    HashSet<GameObject> _mobsSpawned = new HashSet<GameObject>();
     IEnumerator RunMobSpawnEvent(Level.MobSpawnEvent evt)
     {
-        _liveEnemies = 0;
         var game = Main.Instance.game;
         foreach (var mobs in evt.mobs)
         {
@@ -91,28 +91,32 @@ public class LevelScript : MonoBehaviour
 
         // wait until all the enemies are dead - but spawn randomly too
         var spawnLimiter = new RateLimiter(Consts.GREENK_SPAWN_RATE, 0.5f);
-        while (_liveEnemies > 0)
+        while (_mobsSpawned.Count > 0)
         {
             spawnLimiter.Start();
             yield return StartCoroutine(Util.YieldUntil(() =>
-                _liveEnemies == 0 || spawnLimiter.reached
+                _mobsSpawned.Count == 0 || spawnLimiter.reached
             ));
 
-            if (_liveEnemies > 0 && _liveEnemies < 6 && spawnLimiter.reached)
+            if (_mobsSpawned.Count > 0 && _mobsSpawned.Count < 6 && spawnLimiter.reached)
             {
                 // always keep a mob handy in case the player needs to recapture one
                 SpawnMob(game, "GREENK");
             }
         }
     }
+
     void SpawnMob(IGame game, string id)
     {
         var mob = game.SpawnMob(id);
         MobAI.Instance.AttachAI(mob.GetComponent<Actor>());
 
         PositionMob(mob, spawnDistance);
-
-        ++_liveEnemies;
+        _mobsSpawned.Add(mob.gameObject);
+    }
+    void OnEnemyDestroyed(Actor mob)
+    {
+        _mobsSpawned.Remove(mob.gameObject);
     }
 
     static void PositionMob(GameObject mob, float offset)
@@ -133,9 +137,5 @@ public class LevelScript : MonoBehaviour
         mob.transform.localPosition = spawnLocation;
 
         mob.GetComponent<Actor>().trackingArrowEnabled = true;
-    }
-    void OnEnemyDestroyed()
-    {
-        --_liveEnemies;
     }
 }

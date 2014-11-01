@@ -250,7 +250,7 @@ public sealed class GameController : IGame
             enemyInPossession = true;
             host.StartCoroutine(RunPossessionAnimation(host));
 
-            GlobalGameEvent.Instance.FireEnemyDeath();
+            GlobalGameEvent.Instance.FireEnemyDeath(host);
         }
         else
         {
@@ -576,7 +576,7 @@ public sealed class GameController : IGame
         if (enemy)
         {
             AudioSource.PlayClipAtPoint(Main.Instance.sounds.Explosion1, actor.gameObject.transform.position);
-            GlobalGameEvent.Instance.FireEnemyDeath();
+            GlobalGameEvent.Instance.FireEnemyDeath(actor);
         }
 
         var wasPlayer = actor.gameObject == player;

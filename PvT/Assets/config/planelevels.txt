@@ -1,6 +1,5 @@
 #0 sample level with all mobs
 EVENT_RAISE_CURTAIN
-MOTH,2
 FLY,3
 RAVEN,1
 MOTH,2

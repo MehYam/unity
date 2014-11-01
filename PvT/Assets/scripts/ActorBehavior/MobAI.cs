@@ -121,6 +121,16 @@ public sealed class MobAI
         retval.Add(sequence);
         return retval;
     }
+    static IActorBehavior Buzz()
+    {
+        var bf = ActorBehaviorFactory.Instance;
+        var retval = new TimedSequenceBehavior();
+
+        retval.Add(bf.thrust, new RateLimiter(1, 0.5f));
+        retval.Add(bf.gravitateToPlayer, new RateLimiter(3, 0.5f));
+
+        return retval;
+    }
     /// <summary>
     /// AI registry
     /// </summary>
@@ -163,6 +173,10 @@ public sealed class MobAI
         _behaviorFactory["ESOX"] = _behaviorFactory["PIKE"] = _behaviorFactory["PIKE0"] = (vehicle) =>
         {
             return TheCount(vehicle.weapons);
+        };
+        _behaviorFactory["FLY_FRY"] = _behaviorFactory["FLY_FRY2"] = _behaviorFactory["FLY_FRY3"] = (vehicle) =>
+        {
+            return Buzz();
         };
     }
 }
