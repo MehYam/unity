@@ -29,6 +29,7 @@ public class Main : MonoBehaviour
     public MainSounds sounds;
     public MainMusic music;
     public GameObject collisionParticles;
+    public GameObject damageSmokeParticles;
     public HUD hud;
 
     /// <summary>

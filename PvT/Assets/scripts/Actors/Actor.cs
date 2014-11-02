@@ -211,6 +211,8 @@ public class Actor : MonoBehaviour
             _healthBar.gameObject.SetActive(true);
             _healthBar.percent = health / worldObjectType.health;
             _healthBar.transform.position = transform.position + HEALTH_BAR_POSITION;
+
+            UpdateDamageSmoke();
         }
         else if (_healthBar != null)
         {
@@ -236,6 +238,32 @@ public class Actor : MonoBehaviour
         {
             _overwhelmBar.gameObject.SetActive(false);
         }
+    }
+    GameObject _damageSmokeParticles;
+    void UpdateDamageSmoke()
+    {
+        var pct = health / worldObjectType.health;
+        if (pct < 0.33)
+        {
+            /////// PARTICLE STUFF
+            //KAI: move this to a MainParticles class like MainLighting
+            if (_damageSmokeParticles == null)
+            {
+                _damageSmokeParticles = ((GameObject)GameObject.Instantiate(Main.Instance.damageSmokeParticles));
+                _damageSmokeParticles.transform.parent = transform;
+                _damageSmokeParticles.transform.localPosition = Util.ScatterRandomly(0.25f);
+                _damageSmokeParticles.particleSystem.Play();
+            }
+            _damageSmokeParticles.gameObject.SetActive(true);
+        }
+        else
+        {
+            if (_damageSmokeParticles != null)
+            {
+                _damageSmokeParticles.gameObject.SetActive(false);
+            }
+        }
+        /////// END PARTICLE STUFF
     }
     void LateUpdate()
     {
@@ -335,6 +363,7 @@ public class Actor : MonoBehaviour
         }
     }
 
+    GameObject _collisionParticles;
     protected virtual void HandleCollision(ContactPoint2D contact)
     {
         var other = contact.collider;
@@ -371,18 +400,17 @@ public class Actor : MonoBehaviour
                         {
                             AudioSource.PlayClipAtPoint(Main.Instance.sounds.SmallCollision, contact.point);
                         }
-
+/////// PARTICLE STUFF
                         //KAI: move this to a MainParticles class like MainLighting
-                        var particlesContainer = transform.FindChild("collisionParticlesParent");
-                        if (!particlesContainer)
+                        if (_collisionParticles == null)
                         {
-                            particlesContainer = ((GameObject)GameObject.Instantiate(Main.Instance.collisionParticles)).transform;
-                            particlesContainer.parent = transform;
+                            _collisionParticles = ((GameObject)GameObject.Instantiate(Main.Instance.collisionParticles));
+                            _collisionParticles.transform.parent = transform;
                         }
-                        particlesContainer.transform.position = contact.point;
+                        _collisionParticles.transform.position = contact.point;
+                        _collisionParticles.particleSystem.Play();
 
-                        var particles = particlesContainer.GetComponentInChildren<ParticleSystem>();
-                        particles.Play();
+/////// END PARTICLE STUFF
                     }
                     TakeDamage(damage);
                 }
