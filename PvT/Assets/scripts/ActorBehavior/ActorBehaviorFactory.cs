@@ -448,7 +448,7 @@ sealed class FaceForward : IActorBehavior
         var go = actor.gameObject;
         if (go.rigidbody2D.velocity != Vector2.zero)
         {
-            go.transform.rotation = Util.GetLookAtAngle(go.rigidbody2D.velocity);
+            go.transform.eulerAngles = new Vector3(0, 0, Util.GetLookAtAngle(go.rigidbody2D.velocity));
         }
     }
 }
@@ -465,7 +465,7 @@ sealed class FaceMouse : IActorBehavior
         if (!whileFiring || Input.GetButton("Fire1"))
         {
             // point towards the mouse when firing
-            actor.gameObject.transform.rotation = Util.GetAngleToMouse(actor.gameObject.transform);
+            actor.gameObject.transform.eulerAngles = new Vector3(0, 0, Util.GetAngleToMouse(actor.gameObject.transform));
         }
     }
 }

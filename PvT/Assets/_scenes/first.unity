@@ -86,10 +86,10 @@ GameObject:
   - 114: {fileID: 3432516}
   - 114: {fileID: 3432513}
   - 114: {fileID: 3432519}
+  - 114: {fileID: 3432521}
   - 114: {fileID: 3432515}
   - 114: {fileID: 3432520}
   - 114: {fileID: 3432517}
-  - 114: {fileID: 3432521}
   m_Layer: 0
   m_Name: _gameState
   m_TagString: Untagged
@@ -168,8 +168,9 @@ MonoBehaviour:
   AmmoParent: {fileID: 291939734}
   sounds: {fileID: 3432513}
   music: {fileID: 3432519}
+  collisionParticles: {fileID: 100000, guid: 279effee09e49d449a5a7a8acac90223, type: 2}
   hud: {fileID: 1873991296}
-  defaultVehicle: bee2
+  defaultVehicle: moth
   playMusic: 1
 --- !u!114 &3432517
 MonoBehaviour:
@@ -183,7 +184,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mobs: 1
-  startLevel: 0
+  startLevel: 1
   spawnDistance: -3
   map: {fileID: 100004, guid: a79bb10566c417243a18065740b954fe, type: 2}
   rooms: []

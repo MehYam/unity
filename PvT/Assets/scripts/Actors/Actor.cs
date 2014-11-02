@@ -371,6 +371,18 @@ public class Actor : MonoBehaviour
                         {
                             AudioSource.PlayClipAtPoint(Main.Instance.sounds.SmallCollision, contact.point);
                         }
+
+                        //KAI: move this to a MainParticles class like MainLighting
+                        var particlesContainer = transform.FindChild("collisionParticlesParent");
+                        if (!particlesContainer)
+                        {
+                            particlesContainer = ((GameObject)GameObject.Instantiate(Main.Instance.collisionParticles)).transform;
+                            particlesContainer.parent = transform;
+                        }
+                        particlesContainer.transform.position = contact.point;
+
+                        var particles = particlesContainer.GetComponentInChildren<ParticleSystem>();
+                        particles.Play();
                     }
                     TakeDamage(damage);
                 }

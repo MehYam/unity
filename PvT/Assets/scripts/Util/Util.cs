@@ -25,9 +25,9 @@ namespace PvT.Util
         }
 
         static public float SPRITE_FORWARD_ANGLE { get; set; }
-        static public Quaternion GetLookAtAngle(Vector2 point)
+        static public float GetLookAtAngle(Vector2 point)
         {
-            return Quaternion.Euler(0, 0, DegreesRotation(point) + SPRITE_FORWARD_ANGLE);
+            return DegreesRotation(point) + SPRITE_FORWARD_ANGLE;
         }
         static public float GetLookAtAngle(Vector2 looker, Vector2 target)
         {
@@ -91,7 +91,7 @@ namespace PvT.Util
             var screen = Camera.main.WorldToScreenPoint(looker);
             return Input.mousePosition - screen;
         }
-        static public Quaternion GetAngleToMouse(Transform transform)
+        static public float GetAngleToMouse(Transform transform)
         {
             return Util.GetLookAtAngle(GetLookAtVectorToMouse(transform.position));
         }
