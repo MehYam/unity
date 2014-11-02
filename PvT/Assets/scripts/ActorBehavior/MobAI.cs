@@ -127,7 +127,7 @@ public sealed class MobAI
         var retval = new TimedSequenceBehavior();
 
         retval.Add(bf.thrust, new RateLimiter(1, 0.5f));
-        retval.Add(bf.gravitateToPlayer, new RateLimiter(3, 0.5f));
+        retval.Add(bf.followPlayer, new RateLimiter(3, 0.5f));
 
         return retval;
     }
