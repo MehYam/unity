@@ -49,8 +49,8 @@ public class DeathHopperAI : MonoBehaviour
         // 4. land with some fanfare, a shockwave, and wait
         actor.gameObject.rigidbody2D.velocity = Vector2.zero;
 
-        var impact = game.loader.GetMisc("landingImpact").ToRawGameObject(Consts.SortingLayer.TANKBODY);
-        impact.transform.position = actor.gameObject.transform.position;
+        //var impact = game.loader.GetMisc("landingImpact").ToRawGameObject(Consts.SortingLayer.TANKBODY);
+        //impact.transform.position = actor.gameObject.transform.position;
 
         var vibe = actor.gameObject.AddComponent<Vibrate>();
         vibe.enabled = true;

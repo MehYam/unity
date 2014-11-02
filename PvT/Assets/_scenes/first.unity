@@ -171,7 +171,7 @@ MonoBehaviour:
   collisionParticles: {fileID: 100000, guid: cd6e2569a8e7e8942800f539985e267c, type: 2}
   damageSmokeParticles: {fileID: 100000, guid: 4f59ae4a3c7ba96418e1ec41b49a232b, type: 2}
   hud: {fileID: 1873991296}
-  defaultVehicle: bee
+  defaultVehicle: 
   playMusic: 1
 --- !u!114 &3432517
 MonoBehaviour:
@@ -185,7 +185,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mobs: 1
-  startLevel: 1
+  startLevel: 0
   spawnDistance: -3
   map: {fileID: 100004, guid: a79bb10566c417243a18065740b954fe, type: 2}
   rooms: []
