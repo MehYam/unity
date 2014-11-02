@@ -6,7 +6,7 @@ public sealed class Vibrate : MonoBehaviour
     RateLimiter _rate;
     void Awake()
     {
-         _rate = new RateLimiter(0.03f);
+         _rate = new RateLimiter(0.03f, 0.25f);
     }
 
     float _lastOffset = 0.1f;

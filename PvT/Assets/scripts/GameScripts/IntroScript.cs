@@ -57,6 +57,18 @@ public class IntroScript : MonoBehaviour
 
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
+        AnimatedText.FadeIn(main.hud.centerPrintTop, "We lived in peace and simplicity,", Consts.TEXT_FADE_SECONDS);
+
+        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeIn(main.hud.centerPrintMiddle, "Not knowing of others.", Consts.TEXT_FADE_SECONDS);
+
+        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
+
+        AnimatedText.FadeOut(main.hud.centerPrintTop, Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeOut(main.hud.centerPrintMiddle, Consts.TEXT_FADE_SECONDS);
+
+        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
+
         AnimatedText.FadeIn(main.hud.centerPrintTop, "Until one day.", Consts.TEXT_FADE_SECONDS);
 
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
@@ -64,9 +76,6 @@ public class IntroScript : MonoBehaviour
         AnimatedText.FadeOut(main.hud.centerPrintTop, Consts.TEXT_FADE_SECONDS_FAST);
 
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_FAST);
-
-        // Introduce enemies
-        AnimatedText.FadeIn(main.hud.centerPrintTop, "We were found.", Consts.TEXT_FADE_SECONDS);
 
         var mobParent = new GameObject("mobParent");
 
@@ -80,7 +89,10 @@ public class IntroScript : MonoBehaviour
         yield return new WaitForSeconds(0.25f);
         SetupMobTween(mobParent, "ESOX", school.transform.position, new Vector2(screen.left - 1, screen.top + 1));
 
-        StartCoroutine(CollapseSchool(school));
+        StartCoroutine(Fear(school));
+
+        // Introduce enemies
+        AnimatedText.FadeIn(main.hud.centerPrintTop, "We were found.", Consts.TEXT_FADE_SECONDS);
 
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
         AnimatedText.FadeOut(main.hud.centerPrintTop, Consts.TEXT_FADE_SECONDS_SLOW);
@@ -113,7 +125,7 @@ public class IntroScript : MonoBehaviour
         );
     }
 
-    IEnumerator CollapseSchool(GameObject school)
+    IEnumerator Fear(GameObject school)
     {
         var mainHero = school.transform.FindChild("scaler/mainHero");
 
@@ -125,6 +137,8 @@ public class IntroScript : MonoBehaviour
             {
                 var tween = child.gameObject.AddComponent<TweenPosition>();
                 children.Add(tween);
+
+                child.gameObject.AddComponent<Vibrate>();
             }
         }
 

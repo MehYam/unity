@@ -119,6 +119,10 @@ public sealed class GameController : IGame
         this.player.gameObject.transform.position = location;
 
         enemyInPossession = !player.GetComponent<Actor>().isHero;
+        if (!enemyInPossession)
+        {
+            player.GetComponent<Actor>().collisionDamage = 0;
+        }
 
         GlobalGameEvent.Instance.FirePlayerSpawned(this.player);
         return this.player.gameObject;

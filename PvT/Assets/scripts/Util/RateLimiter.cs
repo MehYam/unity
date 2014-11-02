@@ -51,6 +51,10 @@ public sealed class RateLimiter
 
         ++numStarts;
     }
+    public void End()
+    {
+        _nextTime = 0;
+    }
     public override string ToString()
     {
         return string.Format("RateLimiter min {0} max {1}, next in {2}, started {3} times", _min, _max, _nextTime - Time.fixedTime, numStarts);
