@@ -4,9 +4,9 @@ using System.Collections;
 public sealed class ChargeWeaponController
 {
     readonly Consts.CollisionLayer _layer;
-    readonly WorldObjectType.Weapon _weapon;
+    readonly ActorType.Weapon _weapon;
     readonly RateLimiter _limiter;
-    public ChargeWeaponController(Consts.CollisionLayer layer, WorldObjectType.Weapon weapon)
+    public ChargeWeaponController(Consts.CollisionLayer layer, ActorType.Weapon weapon)
     {
         _layer = layer;
         _weapon = weapon;

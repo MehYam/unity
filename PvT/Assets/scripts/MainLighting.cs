@@ -60,7 +60,7 @@ public class MainLighting : MonoBehaviour
         }
     }
 
-    void OnAmmoSpawned(Actor actor, WorldObjectType.Weapon weapon)
+    void OnAmmoSpawned(Actor actor, ActorType.Weapon weapon)
     {
         if (weapon.lit)
         {

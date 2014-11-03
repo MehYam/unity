@@ -169,7 +169,7 @@ public sealed class GameController : IGame
         go.layer = (int)Consts.CollisionLayer.MOB;
     }
 
-    public GameObject SpawnAmmo(Actor launcher, WorldObjectType.Weapon weapon, Consts.CollisionLayer layer)
+    public GameObject SpawnAmmo(Actor launcher, ActorType.Weapon weapon, Consts.CollisionLayer layer)
     {
         var type = loader.GetVehicle(weapon.vehicleName);
         var goAmmo = type.Spawn(Consts.SortingLayer.AMMO, true);
@@ -204,7 +204,7 @@ public sealed class GameController : IGame
             actorAmmo.behavior = ActorBehaviorFactory.Instance.thrust;
         }
 
-        if (launcher.worldObjectType is TankPartType)
+        if (launcher.actorType is TankTurretType)
         {
             // it's a turret
             SpawnMuzzleFlash(launcher.gameObject, goAmmo);
@@ -216,7 +216,7 @@ public sealed class GameController : IGame
         return goAmmo;
     }
 
-    public GameObject SpawnHotspot(Actor launcher, WorldObjectType.Weapon weapon, float damageMultiplier, Consts.CollisionLayer layer)
+    public GameObject SpawnHotspot(Actor launcher, ActorType.Weapon weapon, float damageMultiplier, Consts.CollisionLayer layer)
     {
         ///THIS IS COPY PASTA FROM SpawnAmmo
         var type = loader.GetVehicle(weapon.vehicleName);
@@ -303,7 +303,7 @@ public sealed class GameController : IGame
         // 4. Host becomes the new player
         var oldHero = player;
         player = host.gameObject;
-        var vehicle = player.GetComponent<Actor>().worldObjectType as VehicleType;
+        var vehicle = player.GetComponent<Actor>().actorType as ActorType;
 
         InitPlayerVehicle(player, vehicle);
         if (vehicle is TankHullType)
@@ -374,7 +374,7 @@ public sealed class GameController : IGame
         const string RIGHT_TREAD_NAME = "treadRight";
 
         public readonly TankHullType hull;
-        public readonly TankPartType turret;
+        public readonly TankTurretType turret;
         public readonly GameObject hullGO;
         public readonly GameObject turretGO;
         public readonly GameObject treadLeft;
@@ -425,20 +425,20 @@ public sealed class GameController : IGame
             this.treadLeft = gameObject.transform.FindChild(LEFT_TREAD_NAME).gameObject;
             this.treadRight = gameObject.transform.FindChild(RIGHT_TREAD_NAME).gameObject;
 
-            this.hull = (TankHullType)hullGO.GetComponent<Actor>().worldObjectType;
-            this.turret = (TankPartType)turretGO.GetComponent<Actor>().worldObjectType;
+            this.hull = (TankHullType)hullGO.GetComponent<Actor>().actorType;
+            this.turret = (TankTurretType)turretGO.GetComponent<Actor>().actorType;
         }
     }
 
-    static bool HasChargeWeapon(WorldObjectType obj)
+    static bool HasChargeWeapon(ActorType actorType)
     {
-        return obj.HasWeapons && obj.weapons[0].chargeSeconds > 0;
+        return actorType.HasWeapons && actorType.weapons[0].chargeSeconds > 0;
     }
-    static bool HasShieldWeapon(WorldObjectType obj)
+    static bool HasShieldWeapon(ActorType actorType)
     {
-        return obj.HasWeapons && obj.weapons[0].vehicleName == "SHIELD"; // KAI: cheese
+        return actorType.HasWeapons && actorType.weapons[0].vehicleName == "SHIELD"; // KAI: cheese
     }
-    void SetPlayerPlaneBehaviors(GameObject go, VehicleType vehicle)
+    void SetPlayerPlaneBehaviors(GameObject go, ActorType vehicle)
     {
         var isHopper = go.GetComponent<DeathHopperAI>() != null;  // HACK HACK HACK
         var bf = ActorBehaviorFactory.Instance;
@@ -561,7 +561,7 @@ public sealed class GameController : IGame
         var secondaryFire = bf.CreateAutofire(Consts.CollisionLayer.HEROLINGS, herolingFire);
         behaviors.Add(bf.CreatePlayerButton("Fire2", secondaryFire));
     }
-    static void InitPlayerVehicle(GameObject player, VehicleType vehicle)
+    static void InitPlayerVehicle(GameObject player, ActorType vehicle)
     {
         player.name += " player";
         player.layer = (int)Consts.CollisionLayer.FRIENDLY;

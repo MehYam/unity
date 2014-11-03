@@ -1,4 +1,4 @@
-owner,type,damage,offsetX,offsetY,angle,color,lit,rate,sequence,charge,hotspot,ttl
+owner,weapon (actorType),damage,offsetX,offsetY,angle,color,lit,rate,sequence,charge,hotspot,ttl
 BAT,ROCKET2,20,-35,-5,0,0,,0.5,1,0,,2
 BAT,ROCKET2,20,36,-5,0,0,,0.5,2,0,,2
 BAT2,ROCKET,40,-36,0,0,0,,0.4,1,0,,2
@@ -45,7 +45,7 @@ GHOST3,LASER,120,-36,-5,0,0xffffffff,TRUE,1,0,0,,2
 GHOST3,LASER,120,36,-5,0,0xffffffff,TRUE,1,0,0,,2
 GREENK,SHIELD,5,0,0,0,0xffffffff,TRUE,1,0,0,,1.5
 GREENK2,SHIELD,10,0,0,0,0xffffffff,TRUE,1,0,0,,1.5
-HERO,HEROLING,0,0,0,0,0xffffffff,TRUE,0.5,0,0,,2
+HERO,HEROLING,0,0,0,0,0xffff7700,TRUE,0.5,0,0,,2
 MOTH,BULLET,10,0,0,0,0xffff0000,TRUE,0.6,0,0,,0.75
 MOTH2,BULLET,40,0,0,5,0xffff0000,TRUE,0.6,0,0,,1
 MOTH2,BULLET,40,0,0,-5,0xffff0000,TRUE,0.6,0,0,,1.25

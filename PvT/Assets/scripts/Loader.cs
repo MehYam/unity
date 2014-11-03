@@ -11,11 +11,13 @@ using PvT.Util;
 public class Loader
 {
     // need ReadOnlyDictionary's here
-    readonly Dictionary<string, WorldObjectType> _miscLookup;
-    readonly Dictionary<string, VehicleType> _vehicleLookup;
+    readonly Dictionary<string, Asset> _assets = new Dictionary<string, Asset>();
+
+    readonly Dictionary<string, Asset> _miscLookup;
+    readonly Dictionary<string, ActorType> _actorTypeLookup;
     readonly Dictionary<string, Tank> _tankLookup;
     readonly Dictionary<string, TankHullType> _tankHullLookup;
-    readonly Dictionary<string, TankPartType> _tankTurretLookup;
+    readonly Dictionary<string, TankTurretType> _tankTurretLookup;
     readonly Dictionary<string, AI> _ai;
 
     public readonly ReadOnlyCollection<Level> levels;
@@ -29,12 +31,14 @@ public class Loader
         // Chicken/egg - we load the weapon CSV first, then process it later.  WorldObjectType needs an
         // array of weapons to be constructed, but the weapons take the world object's dimensions into
         // account, so they both need to be dealth with simultaneously.
+
         var weaponStrings = LoadWeaponStrings(strWeapons);
 
-        _vehicleLookup = LoadVehicles(strVehicles, "planes/", weaponStrings);
+        _actorTypeLookup = LoadActorTypes(strVehicles, "planes/", weaponStrings);
+
         _tankLookup = LoadTanks(strTanks);
-        _tankHullLookup = LoadTankHulls(strHulls, "tanks/", weaponStrings);
-        _tankTurretLookup = LoadTankTurrets(strTurrets, "tanks/", weaponStrings);
+        _tankHullLookup = LoadTankHullTypes(strHulls, "tanks/", weaponStrings);
+        _tankTurretLookup = LoadTankTurretTypes(strTurrets, "tanks/", weaponStrings);
 
         levels = new ReadOnlyCollection<Level>(LoadLevels(strLevels));
         _ai = LoadAI(strAI);
@@ -47,7 +51,7 @@ public class Loader
         // scan through all the weapon severities to find the min/max damage per weapon type.
         // we'll use this info later to give the more menacing weapons an appropriate effect
         var damageRanges = new Dictionary<string, Pair<float, float>>();
-        foreach (var vehicle in _vehicleLookup)
+        foreach (var vehicle in _actorTypeLookup)
         {
             // 1. find all the weapon damage ranges
             foreach (var weapon in vehicle.Value.weapons)
@@ -71,7 +75,7 @@ public class Loader
             }
         }
         // 2. do the fix up
-        foreach (var vehicle in _vehicleLookup)
+        foreach (var vehicle in _actorTypeLookup)
         {
             foreach (var weapon in vehicle.Value.weapons)
             {
@@ -82,28 +86,16 @@ public class Loader
         }
     }
 
-#if !UNITY_WEBPLAYER
-    void ExportCSV(string path, Dictionary<string, VehicleType> items)
+    public Asset GetMisc(string type)
     {
-        var file = File.CreateText(path);
-        foreach (var item in items)
-        {
-            file.WriteLine(item.Value.ToCSV());
-        }
-        file.Close();
-    }
-#endif
-
-    public WorldObjectType GetMisc(string type)
-    {
-        WorldObjectType retval = null;
+        Asset retval = null;
         _miscLookup.TryGetValue(type, out retval);
         return retval;
     }
-    public VehicleType GetVehicle(string type)  // planes, ammo
+    public ActorType GetVehicle(string type)  // planes, ammo
     {
-        VehicleType retval = null;
-        _vehicleLookup.TryGetValue(type, out retval);
+        ActorType retval = null;
+        _actorTypeLookup.TryGetValue(type, out retval);
         return retval;
     }
     public Tank GetTank(string tankName)
@@ -118,9 +110,9 @@ public class Loader
         _tankHullLookup.TryGetValue(type, out retval);
         return retval;
     }
-    public TankPartType GetTankPart(string type)
+    public TankTurretType GetTankPart(string type)
     {
-        TankPartType retval = null;
+        TankTurretType retval = null;
         _tankTurretLookup.TryGetValue(type, out retval);
         return retval;
     }
@@ -150,109 +142,220 @@ public class Loader
         return lookup;
     }
 
-    static WorldObjectType LoadWorldObject(Util.CSVParseHelper csv, Dictionary<string, IList<string>> weaponLookup, string assetPath)
+    ActorType LoadActorType(Util.CSVParseHelper csv, Dictionary<string, IList<string>> weaponLookup, string assetPath)
     {
         var name = csv.GetString();
         var assetID = csv.GetString();
         var mass = csv.GetFloat();
         var speed = csv.GetFloat();
         var health = csv.GetInt();
+        var accel = csv.GetFloat();
+        var inertia = csv.GetFloat();
+        var dropShadow = csv.GetBool();
 
-        // load the asset and extract the firepoints
-        var prefab = Resources.Load<GameObject>(assetPath + assetID);
-        prefab.transform.localPosition = Vector3.zero;
+        var asset = LoadAsset(assetID, assetPath);
 
         // parse the weapons, if there are any
         IList<string> weaponStrings = null;
         weaponLookup.TryGetValue(name, out weaponStrings);
 
-        WorldObjectType.Weapon[] weapons = new WorldObjectType.Weapon[ weaponStrings != null ? weaponStrings.Count : 0];
+        ActorType.Weapon[] weapons = new ActorType.Weapon[ weaponStrings != null ? weaponStrings.Count : 0];
         if (weapons.Length > 0)
         {
             // programmatically determine the top of the sprite, since the weapon's Y offset
-            // is relative to the top of the image.  This is nonideal...
+            // is relative to the top of the image.  It's not perfect, but it's simple because
+            // weapons usually fire from the front
             float offsetY = 0;
-            var sprite = prefab.GetComponent<SpriteRenderer>();
+            var sprite = asset.prefab.GetComponent<SpriteRenderer>();
             if (sprite != null)
             {
                 var bounds = sprite.bounds;
                 offsetY = bounds.max.y;
-
-                //Debug.Log(string.Format("{0} bounds {1} offsetY {2}", name, bounds, offsetY));
             }
 
             // now add each weapon
             int i = 0;
             foreach (var weaponString in weaponStrings)
             {
-                var weapon = WorldObjectType.Weapon.FromString(weaponString, offsetY);
+                var weapon = ActorType.Weapon.FromString(weaponString, offsetY);
                 weapons[i++] = weapon;
             }
         }
-        return new WorldObjectType(
-            prefab,
-            name,
-            assetID,
-            mass,
-            speed,
-            health,
-            weapons
+        return new ActorType(
+            asset: asset,
+            name: name,
+            mass: mass,
+            weapons: weapons,
+            health: health,
+            maxSpeed: speed,
+            acceleration: accel,
+            inertia: inertia,
+            dropShadow: dropShadow
         );
     }
-    static WorldObjectType LoadWorldObject(string name, Hashtable obj, string assetPath)
+    //KAI: FIX THE COPY/PASTA
+    TankHullType LoadTankHullType(Util.CSVParseHelper csv, Dictionary<string, IList<string>> weaponLookup, string assetPath)
     {
-        var assetID = MJSON.SafeGetValue(obj, "asset");
+        var name = csv.GetString();
+        var assetID = csv.GetString();
+        var mass = csv.GetFloat();
+        var speed = csv.GetFloat();
+        var health = csv.GetInt();
+        var accel = csv.GetFloat();
+        var inertia = csv.GetFloat();
+        var dropShadow = csv.GetBool();
+        var turretPivotY = csv.GetFloat();
 
-        var prefab = Resources.Load<GameObject>(assetPath + assetID);
-        prefab.transform.localPosition = Vector3.zero;
+        var asset = LoadAsset(assetID, assetPath);
 
-        return new WorldObjectType(
-            prefab,
-            name,
-            assetID,
-            MJSON.SafeGetFloat(obj, "mass"),
-            MJSON.SafeGetFloat(obj, "maxSpeed"),
-            MJSON.SafeGetFloat(obj, "health"),
-            null
-        );
-    }
-    //KAI: the value of this is quite slim - putting these into WorldObjectTypes doesn't do
-    //much except make it easy to call ToGameObject()
-    static Dictionary<string, WorldObjectType> LoadMisc(string strJSON, string assetPath)
-    {
-        var retval = new Dictionary<string, WorldObjectType>(StringComparer.OrdinalIgnoreCase);
-        var json = MJSON.hashtableFromJson(strJSON);
-        foreach (DictionaryEntry entry in json)
+        // parse the weapons, if there are any
+        IList<string> weaponStrings = null;
+        weaponLookup.TryGetValue(name, out weaponStrings);
+
+        ActorType.Weapon[] weapons = new ActorType.Weapon[weaponStrings != null ? weaponStrings.Count : 0];
+        if (weapons.Length > 0)
         {
-            var node = (Hashtable)entry.Value;
-            var name = (string)entry.Key;
-            retval[name] = LoadWorldObject(name, node, assetPath);
+            // programmatically determine the top of the sprite, since the weapon's Y offset
+            // is relative to the top of the image.  It's not perfect, but it's simple because
+            // weapons usually fire from the front
+            float offsetY = 0;
+            var sprite = asset.prefab.GetComponent<SpriteRenderer>();
+            if (sprite != null)
+            {
+                var bounds = sprite.bounds;
+                offsetY = bounds.max.y;
+            }
+
+            // now add each weapon
+            int i = 0;
+            foreach (var weaponString in weaponStrings)
+            {
+                var weapon = ActorType.Weapon.FromString(weaponString, offsetY);
+                weapons[i++] = weapon;
+            }
+        }
+        return new TankHullType(
+            asset: asset,
+            name: name,
+            mass: mass,
+            weapons: weapons,
+            health: health,
+            maxSpeed: speed,
+            acceleration: accel,
+            inertia: inertia,
+            dropShadow: dropShadow,
+            turretPivotY: turretPivotY
+        );
+    }
+    TankTurretType LoadTankTurretType(Util.CSVParseHelper csv, Dictionary<string, IList<string>> weaponLookup, string assetPath)
+    {
+        var name = csv.GetString();
+        var assetID = csv.GetString();
+        var mass = csv.GetFloat();
+        var speed = csv.GetFloat();
+        var health = csv.GetInt();
+        var accel = csv.GetFloat();
+        var inertia = csv.GetFloat();
+        var dropShadow = csv.GetBool();
+        var hullPivotY = csv.GetFloat();
+
+        var asset = LoadAsset(assetID, assetPath);
+
+        // parse the weapons, if there are any
+        IList<string> weaponStrings = null;
+        weaponLookup.TryGetValue(name, out weaponStrings);
+
+        ActorType.Weapon[] weapons = new ActorType.Weapon[weaponStrings != null ? weaponStrings.Count : 0];
+        if (weapons.Length > 0)
+        {
+            // programmatically determine the top of the sprite, since the weapon's Y offset
+            // is relative to the top of the image.  It's not perfect, but it's simple because
+            // weapons usually fire from the front
+            float offsetY = 0;
+            var sprite = asset.prefab.GetComponent<SpriteRenderer>();
+            if (sprite != null)
+            {
+                var bounds = sprite.bounds;
+                offsetY = bounds.max.y;
+            }
+
+            // now add each weapon
+            int i = 0;
+            foreach (var weaponString in weaponStrings)
+            {
+                var weapon = ActorType.Weapon.FromString(weaponString, offsetY);
+                weapons[i++] = weapon;
+            }
+        }
+        return new TankTurretType(
+            asset: asset,
+            name: name,
+            mass: mass,
+            weapons: weapons,
+            health: health,
+            maxSpeed: speed,
+            acceleration: accel,
+            inertia: inertia,
+            dropShadow: dropShadow,
+            hullPivotY: hullPivotY
+        );
+    }
+    Asset LoadAsset(string name, string assetPath)
+    {
+        Asset retval = null;
+        if (!_assets.TryGetValue(name, out retval))
+        {
+            var prefab = Resources.Load<GameObject>(assetPath + name);
+            prefab.transform.localPosition = Vector3.zero;
+            retval = new Asset(name, prefab);
         }
         return retval;
     }
-    static VehicleType LoadVehicleType(WorldObjectType worldObject, Util.CSVParseHelper csvHelper)
+    //KAI: the value of this is quite slim - putting these into WorldObjectTypes doesn't do
+    //much except make it easy to call ToGameObject()
+    Dictionary<string, Asset> LoadMisc(string strJSON, string assetPath)
     {
-        var accel = csvHelper.GetFloat();
-        var inertia = csvHelper.GetFloat();
-        var dropShadow = csvHelper.GetBool();
-
-        return new VehicleType(
-                worldObject,
-                accel,
-                inertia,
-                dropShadow
-        );
+        var retval = new Dictionary<string, Asset>(StringComparer.OrdinalIgnoreCase);
+        var json = MJSON.hashtableFromJson(strJSON);
+        foreach (DictionaryEntry entry in json)
+        {
+            var name = (string)entry.Key;
+            retval[name] = LoadAsset(name, assetPath);
+        }
+        return retval;
     }
-    static Dictionary<string, VehicleType> LoadVehicles(string csv, string assetPath, Dictionary<string, IList<string>> weaponStrings)
+    Dictionary<string, ActorType> LoadActorTypes(string csv, string assetPath, Dictionary<string, IList<string>> weaponStrings)
     {
-        var results = new Dictionary<string, VehicleType>(StringComparer.OrdinalIgnoreCase);
+        var results = new Dictionary<string, ActorType>(StringComparer.OrdinalIgnoreCase);
         foreach (var line in Util.SplitLines(csv, true))
         {
             var csvHelper = new Util.CSVParseHelper(line);
-            var worldObject = LoadWorldObject(csvHelper, weaponStrings, assetPath);
-            results[worldObject.name] = LoadVehicleType(worldObject, csvHelper);
+            var actorType = LoadActorType(csvHelper, weaponStrings, assetPath);
+            results[actorType.name] = actorType;
         }
 
+        return results;
+    }
+    Dictionary<string, TankHullType> LoadTankHullTypes(string csv, string assetPath, Dictionary<string, IList<string>> weaponStrings)
+    {
+        var results = new Dictionary<string, TankHullType>(StringComparer.OrdinalIgnoreCase);
+        foreach (var line in Util.SplitLines(csv, true))
+        {
+            var csvHelper = new Util.CSVParseHelper(line);
+            var actorType = LoadTankHullType(csvHelper, weaponStrings, assetPath);
+            results[actorType.name] = actorType;
+        }
+        return results;
+    }
+    Dictionary<string, TankTurretType> LoadTankTurretTypes(string csv, string assetPath, Dictionary<string, IList<string>> weaponStrings)
+    {
+        var results = new Dictionary<string, TankTurretType>(StringComparer.OrdinalIgnoreCase);
+        foreach (var line in Util.SplitLines(csv, true))
+        {
+            var csvHelper = new Util.CSVParseHelper(line);
+            var actorType = LoadTankTurretType(csvHelper, weaponStrings, assetPath);
+            results[actorType.name] = actorType;
+        }
         return results;
     }
     static Dictionary<string, Tank> LoadTanks(string strJSON)
@@ -266,31 +369,6 @@ public class Loader
             tanks[name] = new Tank(name, MJSON.SafeGetValue(node, "hull"), MJSON.SafeGetValue(node, "turret"));
         }
         return tanks;
-    }
-    static Dictionary<string, TankHullType> LoadTankHulls(string csv, string assetPath, Dictionary<string, IList<string>> weaponStrings)
-    {
-        var results = new Dictionary<string, TankHullType>(StringComparer.OrdinalIgnoreCase);
-        foreach (var line in Util.SplitLines(csv, true))
-        {
-            var csvHelper = new Util.CSVParseHelper(line);
-            var worldObject = LoadWorldObject(csvHelper, weaponStrings, assetPath);
-            var vehicle = LoadVehicleType(worldObject, csvHelper);
-
-            results[worldObject.name] = new TankHullType(vehicle, csvHelper.GetFloat());
-        }
-        return results;
-    }
-    static Dictionary<string, TankPartType> LoadTankTurrets(string csv, string assetPath, Dictionary<string, IList<string>> weaponStrings)
-    {
-        var results = new Dictionary<string, TankPartType>(StringComparer.OrdinalIgnoreCase);
-        foreach (var line in Util.SplitLines(csv, true))
-        {
-            var csvHelper = new Util.CSVParseHelper(line);
-            var worldObject = LoadWorldObject(csvHelper, weaponStrings, assetPath);
-
-            results[worldObject.name] = new TankPartType(worldObject, csvHelper.GetFloat());
-        }
-        return results;
     }
 
     static IList<Level> LoadLevels(string strLevels)

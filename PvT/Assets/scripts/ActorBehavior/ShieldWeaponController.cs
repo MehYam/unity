@@ -9,9 +9,9 @@ using PvT.Util;
 public sealed class ShieldWeaponController 
 {
     readonly Consts.CollisionLayer _layer;
-    readonly WorldObjectType.Weapon _weapon;
+    readonly ActorType.Weapon _weapon;
     readonly RateLimiter _limiter;
-    public ShieldWeaponController(Consts.CollisionLayer layer, WorldObjectType.Weapon weapon)
+    public ShieldWeaponController(Consts.CollisionLayer layer, ActorType.Weapon weapon)
     {
         _layer = layer;
         _weapon = weapon;
@@ -34,12 +34,12 @@ public sealed class ShieldWeaponController
 
             // init the Actor
             var shieldActor = _shield.GetComponent<Actor>();
-            shieldActor.health = actor.worldObjectType.health * Consts.SHIELD_HEALTH_MULTIPLIER;
+            shieldActor.health = actor.actorType.health * Consts.SHIELD_HEALTH_MULTIPLIER;
             shieldActor.SetExpiry(Actor.EXPIRY_INFINITE);
             shieldActor.explodesOnDeath = false;
             shieldActor.showsHealthBar = false;
 
-            shieldActor.behavior = ActorBehaviorFactory.Instance.CreateFadeWithHealthAndExpiry(actor.worldObjectType.health);
+            shieldActor.behavior = ActorBehaviorFactory.Instance.CreateFadeWithHealthAndExpiry(actor.actorType.health);
 
             // position the shield
             Util.PrepareLaunch(actor.transform, _shield.transform, _weapon.offset, _weapon.angle);
@@ -68,7 +68,7 @@ public sealed class ShieldWeaponController
         {
             // release shield
             var shieldActor = _shield.GetComponent<Actor>();
-            shieldActor.SetExpiry(actor.worldObjectType.weapons[0].ttl);
+            shieldActor.SetExpiry(actor.actorType.weapons[0].ttl);
 
             _shield.transform.parent = Main.Instance.AmmoParent.transform;
             _shield.AddComponent<Rigidbody2D>();

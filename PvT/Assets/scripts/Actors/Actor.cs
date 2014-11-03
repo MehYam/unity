@@ -34,7 +34,7 @@ public class Actor : MonoBehaviour
     }
 
     public bool isPlayer { get { return Main.Instance.game.player == gameObject; } }
-    public bool isHero { get { return worldObjectType.name == "HERO"; } }
+    public bool isHero { get { return actorType.name == "HERO"; } }
     void OnDestroy()
     {
         if (_trackingArrow != null)
@@ -51,13 +51,13 @@ public class Actor : MonoBehaviour
         }
     }
 
-    WorldObjectType _worldObjectType;
-    public WorldObjectType worldObjectType 
+    ActorType _actorType;
+    public ActorType actorType 
     {
-        get { return _worldObjectType; }
+        get { return _actorType; }
         set
         {
-            _worldObjectType = value;
+            _actorType = value;
             health = (float.IsNaN(value.health) || value.health == 0) ? 1 : value.health;
         }
     }
@@ -102,7 +102,7 @@ public class Actor : MonoBehaviour
     {
         get
         {
-            var speed = worldObjectType.maxSpeed * speedModifier.speedMultiplier;
+            var speed = actorType.maxSpeed * speedModifier.speedMultiplier;
             return isPlayer ? speed * Consts.PLAYER_SPEED_MULTIPLIER : speed;
         }
     }
@@ -110,12 +110,12 @@ public class Actor : MonoBehaviour
     {
         get
         {
-            var v = (VehicleType)worldObjectType; //KAI: cheese
+            var v = (ActorType)actorType; //KAI: cheese
 
             // Our config wants acceleration to be absolute, without being slowed by mass.  Therefore,
             // derive the force required by multiplying it by mass.  If we start using drag more, 
             // that will have to compensate for as well.
-            var accel = v.acceleration * speedModifier.accelerationMultiplier * worldObjectType.mass;
+            var accel = v.acceleration * speedModifier.accelerationMultiplier * actorType.mass;
             return isPlayer ? accel * Consts.PLAYER_ACCEL_MULTIPLIER : accel;
         }
     }
@@ -171,7 +171,7 @@ public class Actor : MonoBehaviour
             behavior.FixedUpdate(this);
         }
 
-        if (rigidbody2D != null && maxSpeed > 0 && rigidbody2D.velocity.sqrMagnitude > worldObjectType.sqrMaxSpeed)
+        if (rigidbody2D != null && maxSpeed > 0 && rigidbody2D.velocity.sqrMagnitude > actorType.sqrMaxSpeed)
         {
             rigidbody2D.velocity = Vector2.ClampMagnitude(rigidbody2D.velocity, maxSpeed);
         }
@@ -189,7 +189,7 @@ public class Actor : MonoBehaviour
             visualBehavior.Update(this);
         }
 
-        var showHealth = showsHealthBar && _health > 0 && _health < worldObjectType.health;
+        var showHealth = showsHealthBar && _health > 0 && _health < actorType.health;
         if (showHealth)
         {
             if (_healthBar == null)
@@ -209,7 +209,7 @@ public class Actor : MonoBehaviour
 #endif
             }
             _healthBar.gameObject.SetActive(true);
-            _healthBar.percent = health / worldObjectType.health;
+            _healthBar.percent = health / actorType.health;
             _healthBar.transform.position = transform.position + HEALTH_BAR_POSITION;
 
             UpdateDamageSmoke();
@@ -242,7 +242,7 @@ public class Actor : MonoBehaviour
     GameObject _damageSmokeParticles;
     void UpdateDamageSmoke()
     {
-        var pct = health / worldObjectType.health;
+        var pct = health / actorType.health;
         if (pct < 0.33)
         {
             /////// PARTICLE STUFF
@@ -396,7 +396,7 @@ public class Actor : MonoBehaviour
 
                         GlobalGameEvent.Instance.FireExplosionSpawned(boom);
 
-                        if (otherActor != null && otherActor.worldObjectType.health > 0 && worldObjectType.health > 0)
+                        if (otherActor != null && otherActor.actorType.health > 0 && actorType.health > 0)
                         {
                             AudioSource.PlayClipAtPoint(Main.Instance.sounds.SmallCollision, contact.point);
                         }

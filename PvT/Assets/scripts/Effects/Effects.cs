@@ -4,11 +4,11 @@ using System.Collections.ObjectModel;
 
 public sealed class Effects
 {
-    readonly ReadOnlyCollection<WorldObjectType> _explosions;
-    readonly ReadOnlyCollection<WorldObjectType> _smallExplosions;
-    readonly ReadOnlyCollection<WorldObjectType> _muzzleFlashes;
-    readonly ReadOnlyCollection<WorldObjectType> _smoke;
-    readonly WorldObjectType _vehicleExplosion;
+    readonly ReadOnlyCollection<Asset> _explosions;
+    readonly ReadOnlyCollection<Asset> _smallExplosions;
+    readonly ReadOnlyCollection<Asset> _muzzleFlashes;
+    readonly ReadOnlyCollection<Asset> _smoke;
+    readonly Asset _vehicleExplosion;
     public Effects(Loader loader)
     {
         _explosions = Load(loader, "largeExplosion", 1);
@@ -17,9 +17,9 @@ public sealed class Effects
         _smoke = Load(loader, "smoke", 1);
         _vehicleExplosion = loader.GetMisc("vehicleExplosion");
     }
-    static ReadOnlyCollection<WorldObjectType> Load(Loader loader, string name, int startIndex)
+    static ReadOnlyCollection<Asset> Load(Loader loader, string name, int startIndex)
     {
-        var list = new List<WorldObjectType>();
+        var list = new List<Asset>();
         for (int i = startIndex; ; ++i)
         {
             var effect = loader.GetMisc(name + i);
@@ -32,30 +32,30 @@ public sealed class Effects
                 break;
             }
         }
-        return new ReadOnlyCollection<WorldObjectType>(list);
+        return new ReadOnlyCollection<Asset>(list);
     }
 
-    static WorldObjectType Rand(IList<WorldObjectType> container)
+    static Asset Rand(IList<Asset> container)
     {
         return container[Random.Range(0, container.Count)];
     }
-    public WorldObjectType GetRandomExplosion()
+    public Asset GetRandomExplosion()
     {
         return Rand(_explosions);
     }
-    public WorldObjectType GetRandomSmallExplosion()
+    public Asset GetRandomSmallExplosion()
     {
         return Rand(_smallExplosions);
     }
-    public WorldObjectType GetRandomMuzzleFlash()
+    public Asset GetRandomMuzzleFlash()
     {
         return Rand(_muzzleFlashes);
     }
-    public WorldObjectType GetRandomSmoke()
+    public Asset GetRandomSmoke()
     {
         return Rand(_smoke);
     }
-    public WorldObjectType GetVehicleExplosion()
+    public Asset GetVehicleExplosion()
     {
         return _vehicleExplosion;
     }

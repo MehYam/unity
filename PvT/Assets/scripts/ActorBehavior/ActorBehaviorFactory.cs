@@ -345,11 +345,11 @@ public sealed class ActorBehaviorFactory
     {
         return new RoamBehavior(maxRotate, stopBeforeRotate);
     }
-    IActorBehavior CreateOneAutofire(Consts.CollisionLayer layer, WorldObjectType.Weapon weapon)
+    IActorBehavior CreateOneAutofire(Consts.CollisionLayer layer, ActorType.Weapon weapon)
     {
         return new PeriodicBehavior(new WeaponDischargeBehavior(layer, weapon), new RateLimiter(weapon.rate));
     }
-    public IActorBehavior CreateAutofire(Consts.CollisionLayer layer, WorldObjectType.Weapon[] weapons)
+    public IActorBehavior CreateAutofire(Consts.CollisionLayer layer, ActorType.Weapon[] weapons)
     {
         if (weapons != null && weapons.Length > 0)
         {
@@ -373,7 +373,7 @@ public sealed class ActorBehaviorFactory
         }
         return null;
     }
-    public IActorBehavior CreateTurret(Consts.CollisionLayer layer, WorldObjectType.Weapon[] weapons)
+    public IActorBehavior CreateTurret(Consts.CollisionLayer layer, ActorType.Weapon[] weapons)
     {
         return new CompositeBehavior(
             CreateAutofire(layer, weapons),
@@ -575,9 +575,9 @@ sealed class RoamBehavior : IActorBehavior
 sealed class WeaponDischargeBehavior : IActorBehavior
 {
     readonly Consts.CollisionLayer layer;
-    readonly WorldObjectType.Weapon weapon;
+    readonly ActorType.Weapon weapon;
 
-    public WeaponDischargeBehavior(Consts.CollisionLayer layer, WorldObjectType.Weapon weapon)
+    public WeaponDischargeBehavior(Consts.CollisionLayer layer, ActorType.Weapon weapon)
     {
         this.layer = layer;
         this.weapon = weapon;
@@ -752,10 +752,10 @@ sealed class HealthRegen : IActorBehavior
     }
     public void FixedUpdate(Actor actor)
     {
-        if (actor.health < actor.worldObjectType.health)
+        if (actor.health < actor.actorType.health)
         {
             actor.health += healthPerSecond * Time.fixedDeltaTime;
-            actor.health = Mathf.Min(actor.worldObjectType.health, actor.health);
+            actor.health = Mathf.Min(actor.actorType.health, actor.health);
         }
     }
 }

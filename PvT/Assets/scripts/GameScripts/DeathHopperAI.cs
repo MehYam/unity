@@ -55,9 +55,9 @@ public class DeathHopperAI : MonoBehaviour
         var vibe = actor.gameObject.AddComponent<Vibrate>();
         vibe.enabled = true;
 
-        if (actor.worldObjectType.HasWeapons)
+        if (actor.actorType.HasWeapons)
         {
-            game.SpawnAmmo(actor, actor.worldObjectType.weapons[0], impactLayer);
+            game.SpawnAmmo(actor, actor.actorType.weapons[0], impactLayer);
         }
         yield return new WaitForSeconds(0.2f);
         vibe.enabled = false;

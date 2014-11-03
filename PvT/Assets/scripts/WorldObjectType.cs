@@ -4,47 +4,19 @@ using System.Collections.Generic;
 
 using PvT.Util;
 
-public class WorldObjectType
+public class Asset
 {
-    readonly GameObject prefab;
-
     public readonly int index;
     public readonly string name;
-    public readonly string assetID;  //KAI: enum? int?  not string.
-
-    public readonly float mass;
-    public readonly float maxSpeed;
-    public readonly float sqrMaxSpeed; // useful for comparing vector magnitudes
-
-    public readonly float health = 1;
-    public readonly Weapon[] weapons; // the behavior's in charge of choosing a weapon and firing it
+    public readonly GameObject prefab;
 
     static int s_instances = 0;
-    public WorldObjectType(GameObject prefab, string name, string assetID, float mass, float maxSpeed, float health, Weapon[] weapons)
+    public Asset(string name, GameObject prefab)
     {
         this.index = ++s_instances;
-        this.prefab = prefab;
         this.name = name;
-        this.assetID = assetID;
-        this.maxSpeed = maxSpeed;
-        this.sqrMaxSpeed = (float)System.Math.Pow(maxSpeed, 2);
-        this.mass = mass;
-        this.health = health;
-        this.weapons = weapons;
+        this.prefab = prefab;
     }
-    public WorldObjectType(WorldObjectType rhs)
-    {
-        this.index = rhs.index;
-        this.prefab = rhs.prefab;
-        this.name = rhs.name;
-        this.assetID = rhs.assetID;
-        this.mass = rhs.mass;
-        this.maxSpeed = rhs.maxSpeed;
-        this.sqrMaxSpeed = rhs.sqrMaxSpeed;
-        this.health = rhs.health;
-        this.weapons = rhs.weapons;
-    }
-    public bool HasWeapons { get { return weapons != null && weapons.Length > 0; } }
     public GameObject ToRawGameObject(Consts.SortingLayer sortingLayer)
     {
         var retval = (GameObject)GameObject.Instantiate(prefab);
@@ -54,10 +26,46 @@ public class WorldObjectType
         }
         return retval;
     }
+    public override string ToString()
+    {
+        return string.Format("{0} {1}", index, name);
+    }
+}
+
+public class ActorType
+{
+    public readonly Asset asset;
+    public readonly string name;
+    public readonly float mass;
+    public readonly float maxSpeed;
+    public readonly float sqrMaxSpeed; // useful for comparing vector magnitudes
+
+    public readonly float acceleration;
+    public readonly float inertia;
+    public readonly bool dropShadow;
+
+    public readonly float health = 1;
+    public readonly Weapon[] weapons; // the behavior's in charge of choosing a weapon and firing it
+
+    public ActorType(Asset asset, string name, float mass, Weapon[] weapons, int health, float maxSpeed, float acceleration, float inertia, bool dropShadow)
+    {
+        this.name = name;
+        this.asset = asset;
+        this.maxSpeed = maxSpeed;
+        this.sqrMaxSpeed = (float)System.Math.Pow(maxSpeed, 2);
+        this.mass = mass;
+        this.health = health;
+        this.weapons = weapons;
+        
+        this.acceleration = acceleration;
+        this.inertia = inertia;
+        this.dropShadow = dropShadow;
+    }
+    public bool HasWeapons { get { return weapons != null && weapons.Length > 0; } }
     public virtual GameObject Spawn(Consts.SortingLayer sortingLayer, bool rigidBody)
     {
-        var go = ToRawGameObject(sortingLayer);
-        go.name = name;
+        var go = asset.ToRawGameObject(sortingLayer);
+        //go.name = asset.name;
 
         if (rigidBody)
         {
@@ -68,21 +76,19 @@ public class WorldObjectType
 
             go.GetComponent<Collider2D>().sharedMaterial = Main.Instance.assets.Bounce;
         }
+
         //KAI: MAJOR CHEESE
         var actor = this.name == "HEROLING" ? go.AddComponent<HerolingActor>() : go.AddComponent<Actor>();
-        actor.worldObjectType = this;
+        actor.actorType = this;
         actor.collisionDamage = health / 4;
+
+        if (dropShadow)
+        {
+            go.AddComponent<DropShadow>();
+        }
         return go;
     }
 
-    public override string ToString()
-    {
-        return string.Format("{0} {1} mass {2} maxSpeed {3}", name, assetID, mass, maxSpeed);
-    }
-    public virtual string ToCSV()
-    {
-        return string.Format("{4},{0},{1},{2},{3}", name, assetID, mass, maxSpeed, index);
-    }
     public sealed class Weapon
     {
         public readonly string vehicleName;
@@ -122,7 +128,7 @@ public class WorldObjectType
             var vehicle = parts.GetString();
             var dmg = parts.GetInt();
             var x = parts.GetFloat() / Consts.PixelsToUnits;
-            var y = offsetY + parts.GetFloat()/Consts.PixelsToUnits;
+            var y = offsetY + parts.GetFloat() / Consts.PixelsToUnits;
             var angle = parts.GetFloat();
             var color = parts.GetHexColor();
             var lit = parts.GetBool();
@@ -146,60 +152,12 @@ public class WorldObjectType
     }
 }
 
-public class VehicleType : WorldObjectType
-{
-    public readonly float acceleration;
-    public readonly float inertia;
-    public readonly bool dropShadow;
-
-    public VehicleType(GameObject prefab, string name, string assetID, float mass, Weapon[] weapons, int health, float maxSpeed, float acceleration, float inertia, bool dropShadow) :
-        base(prefab, name, assetID, mass, maxSpeed, health, weapons)
-    {
-        this.acceleration = acceleration;
-        this.inertia = inertia;
-        this.dropShadow = dropShadow;
-    }
-    public VehicleType(WorldObjectType baseClass, float acceleration, float inertia, bool dropShadow) :
-        base(baseClass)
-    {
-        this.acceleration = acceleration;
-        this.inertia = inertia;
-        this.dropShadow = dropShadow;
-    }
-    public VehicleType(VehicleType rhs) :
-        base(rhs)
-    {
-        this.acceleration = rhs.acceleration;
-        this.inertia = rhs.inertia;
-        this.dropShadow = rhs.dropShadow;
-    }
-    public override GameObject Spawn(Consts.SortingLayer sortingLayer, bool rigidBody)
-    {
-        var go = base.Spawn(sortingLayer, rigidBody);
-
-        if (dropShadow)
-        {
-            go.AddComponent<DropShadow>();
-        }
-        return go;
-    }
-    public override string ToCSV()
-    {
-        return base.ToCSV() + string.Format(",{0},{1},{2}", health, acceleration, inertia);
-    }
-}
-
-public sealed class TankHullType : VehicleType
+public sealed class TankHullType : ActorType
 {
     public readonly float turretPivotY;
 
-    public TankHullType(GameObject prefab, string name, string assetID, float mass, Weapon[] weapons, int health, float maxSpeed, float acceleration, float inertia, float collDmg, float turretPivotY)
-        : base(prefab, name, assetID, mass, weapons, health, maxSpeed, acceleration, inertia, true)
-    {
-        this.turretPivotY = turretPivotY;
-    }
-    public TankHullType(VehicleType baseClass, float turretPivotY) :
-        base(baseClass)
+    public TankHullType(Asset asset, string name, float mass, Weapon[] weapons, int health, float maxSpeed, float acceleration, float inertia, bool dropShadow, float turretPivotY)
+        : base(asset, name, mass, weapons, health, maxSpeed, acceleration, inertia, dropShadow)
     {
         this.turretPivotY = turretPivotY;
     }
@@ -210,28 +168,15 @@ public sealed class TankHullType : VehicleType
         go.rigidbody2D.angularDrag = 5;
         return go;
     }
-    public override string ToCSV()
-    {
-        return base.ToCSV() + ", " + turretPivotY;
-    }
 }
 
-public sealed class TankPartType : WorldObjectType
+public sealed class TankTurretType : ActorType
 {
     public readonly float hullPivotY;
-    public TankPartType(GameObject prefab, string name, string assetID, float mass, float health, Weapon[] weapons, float hullPivotY) :
-        base(prefab, name, assetID, mass, float.NaN, health, weapons)
+    public TankTurretType(Asset asset, string name, float mass, Weapon[] weapons, int health, float maxSpeed, float acceleration, float inertia, bool dropShadow, float hullPivotY) :
+        base(asset, name, mass, weapons, health, maxSpeed, acceleration, inertia, dropShadow)
     {
         this.hullPivotY = hullPivotY;
-    }
-    public TankPartType(WorldObjectType baseClass, float hullPivotY) : 
-        base(baseClass)
-    {
-        this.hullPivotY = hullPivotY;
-    }
-    public override string ToCSV()
-    {
-        return base.ToCSV() + ", " + hullPivotY;
     }
 }
 

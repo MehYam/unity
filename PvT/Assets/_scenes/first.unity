@@ -152,7 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf480abf7403bc5418c812aa44d3f3df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Vehicles: {fileID: 4900000, guid: d0fd88a699435904685ba5682e4a6315, type: 3}
+  Actors: {fileID: 4900000, guid: c3c8724d6f67cb1409917627a931c838, type: 3}
   Tanks: {fileID: 4900000, guid: 65b8fd4495cb3214583906b37503d222, type: 3}
   TankHulls: {fileID: 4900000, guid: 45f928cee5d548946969be75e8989a7c, type: 3}
   TankTurrets: {fileID: 4900000, guid: 40ddc28d15d6e49419d1dca9b59ff237, type: 3}
@@ -179,7 +179,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 597ae4a43a018e741acec37b97132aa4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mobs: 0
+  mobs: 1
   startLevel: 1
   spawnDistance: -3
   map: {fileID: 100004, guid: a79bb10566c417243a18065740b954fe, type: 2}

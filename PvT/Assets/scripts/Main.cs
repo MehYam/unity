@@ -7,7 +7,7 @@ using PvT.Util;
 
 public class Main : MonoBehaviour
 {
-    public TextAsset Vehicles;
+    public TextAsset Actors;
     public TextAsset Tanks;
     public TextAsset TankHulls;
     public TextAsset TankTurrets;
@@ -68,7 +68,7 @@ public class Main : MonoBehaviour
 	}
     Loader CreateLoader()
     {
-        return new Loader(Vehicles.text, Tanks.text, TankHulls.text, TankTurrets.text, Weapons.text, Levels.text, AI.text, Misc.text);
+        return new Loader(Actors.text, Tanks.text, TankHulls.text, TankTurrets.text, Weapons.text, Levels.text, AI.text, Misc.text);
     }
     public void Debug_Respawn()
     {

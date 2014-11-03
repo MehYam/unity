@@ -25,25 +25,24 @@ public sealed class MobAI
     }
     public void AttachAI(Actor mob)
     {
-        var vehicle = (VehicleType)mob.worldObjectType;
-        mob.behavior = Get(vehicle);
+        mob.behavior = Get(mob.actorType);
 
         var hasCustomMonoBehavior = AttachMonoBehavior(mob);
         if (mob.behavior == null && !hasCustomMonoBehavior)
         {
-            Debug.LogWarning(string.Format("no AI found for {0}, substituting a default one", vehicle.name));
-            mob.behavior = AttackAndFlee(3, 2, 2, vehicle.weapons);
+            Debug.LogWarning(string.Format("no AI found for {0}, substituting a default one", mob.actorType.name));
+            mob.behavior = AttackAndFlee(3, 2, 2, mob.actorType.weapons);
         }
     }
-    IActorBehavior Get(VehicleType vehicle)
+    IActorBehavior Get(ActorType vehicle)
     {
-        Func<VehicleType, IActorBehavior> retval = null;
+        Func<ActorType, IActorBehavior> retval = null;
         _behaviorFactory.TryGetValue(vehicle.name, out retval);
         return retval == null ? null : retval(vehicle);
     }
     bool AttachMonoBehavior(Actor actor)
     {
-        var vehicleName = actor.worldObjectType.name;
+        var vehicleName = actor.actorType.name;
         switch (vehicleName) {
             case "FLY":
             case "FLY2":
@@ -57,7 +56,7 @@ public sealed class MobAI
         }
         return false;
     }
-    static IActorBehavior AttackAndFlee(float followTime, float attackTime, float roamTime, WorldObjectType.Weapon[] weapons)
+    static IActorBehavior AttackAndFlee(float followTime, float attackTime, float roamTime, ActorType.Weapon[] weapons)
     {
         var bf = ActorBehaviorFactory.Instance;
         var retval = new TimedSequenceBehavior();
@@ -71,7 +70,7 @@ public sealed class MobAI
         retval.Add(bf.CreateRoam(Consts.MAX_MOB_ROTATION_DEG_PER_SEC, false), new RateLimiter(roamTime, 1));
         return retval;
     }
-    static IActorBehavior TheCount(WorldObjectType.Weapon[] weapons)
+    static IActorBehavior TheCount(ActorType.Weapon[] weapons)
     {
         var bf = ActorBehaviorFactory.Instance;
         var retval = new TimedSequenceBehavior();
@@ -85,7 +84,7 @@ public sealed class MobAI
             new RateLimiter(3, 0.5f));
         return new CompositeBehavior(bf.facePlayer, retval);
     }
-    static IActorBehavior ChargeWeaponAI(VehicleType vehicle)
+    static IActorBehavior ChargeWeaponAI(ActorType vehicle)
     {
         var bf = ActorBehaviorFactory.Instance;
         var retval = new TimedSequenceBehavior();
@@ -104,7 +103,7 @@ public sealed class MobAI
 
         return retval;
     }
-    static IActorBehavior ShieldWeaponAI(VehicleType vehicle)
+    static IActorBehavior ShieldWeaponAI(ActorType vehicle)
     {
         var bf = ActorBehaviorFactory.Instance;
         var retval = new CompositeBehavior(bf.followPlayer);
@@ -134,7 +133,7 @@ public sealed class MobAI
     /// <summary>
     /// AI registry
     /// </summary>
-    readonly Dictionary<string, Func<VehicleType, IActorBehavior>> _behaviorFactory = new Dictionary<string, Func<VehicleType, IActorBehavior>>();
+    readonly Dictionary<string, Func<ActorType, IActorBehavior>> _behaviorFactory = new Dictionary<string, Func<ActorType, IActorBehavior>>();
     MobAI()
     {
         var bf = ActorBehaviorFactory.Instance;
