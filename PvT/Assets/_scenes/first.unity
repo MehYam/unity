@@ -166,7 +166,7 @@ MonoBehaviour:
   hud: {fileID: 1873991296}
   EffectParent: {fileID: 653143524}
   AmmoParent: {fileID: 291939734}
-  defaultVehicle: tank1
+  defaultVehicle: hero
   playMusic: 1
 --- !u!114 &3432517
 MonoBehaviour:

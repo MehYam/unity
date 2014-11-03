@@ -34,11 +34,11 @@ public class Loader
 
         var weaponStrings = LoadWeaponStrings(strWeapons);
 
-        _actorTypeLookup = LoadActorTypes(strVehicles, "planes/", weaponStrings);
+        _actorTypeLookup = LoadActorTypes(strVehicles, "actors/", weaponStrings);
 
         _tankLookup = LoadTanks(strTanks);
-        _tankHullLookup = LoadTankHullTypes(strHulls, "tanks/", weaponStrings);
-        _tankTurretLookup = LoadTankTurretTypes(strTurrets, "tanks/", weaponStrings);
+        _tankHullLookup = LoadTankHullTypes(strHulls, "actors/", weaponStrings);
+        _tankTurretLookup = LoadTankTurretTypes(strTurrets, "actors/", weaponStrings);
 
         levels = new ReadOnlyCollection<Level>(LoadLevels(strLevels));
         _ai = LoadAI(strAI);
@@ -210,7 +210,12 @@ public class Loader
         Asset retval = null;
         if (!_assets.TryGetValue(name, out retval))
         {
-            var prefab = Resources.Load<GameObject>(assetPath + name);
+            var fullPath = assetPath + name;
+            var prefab = Resources.Load<GameObject>(fullPath);
+            if (prefab == null)
+            {
+                Debug.LogError("Warning:  no asset found for " + fullPath);
+            }
             prefab.transform.localPosition = Vector3.zero;
             retval = new Asset(name, prefab);
         }

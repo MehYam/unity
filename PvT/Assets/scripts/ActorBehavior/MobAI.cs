@@ -177,6 +177,18 @@ public sealed class MobAI
         {
             return Buzz();
         };
+        _behaviorFactory["LASERTURRET1"] = _behaviorFactory["LASERTURRET2"] = (vehicle) =>
+        {
+            var sequence = new TimedSequenceBehavior();
+            sequence.Add(new CompositeBehavior( 
+                bf.CreateAutofire(Consts.CollisionLayer.MOB_AMMO, vehicle.weapons),
+                bf.facePlayer
+                ),
+                new RateLimiter(2, 0.25f)
+            );
+            sequence.Add(bf.facePlayer, new RateLimiter(2));
+            return sequence;
+        };
     }
 }
 

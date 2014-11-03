@@ -9,8 +9,9 @@ GameObject:
   m_Component:
   - 4: {fileID: 400000}
   - 212: {fileID: 21200000}
+  - 60: {fileID: 6000000}
   m_Layer: 0
-  m_Name: tankturret4
+  m_Name: tankturret0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -28,6 +29,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!60 &6000000
+PolygonCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Poly:
+    m_Paths:
+    - - {x: -.33199501, y: -.0905892849}
+      - {x: .0474939346, y: -.518843055}
+      - {x: .301744461, y: -.0632286072}
+      - {x: .224533081, y: .825398207}
+      - {x: .0177202225, y: 1.20274746}
+      - {x: -.204101562, y: .860556364}
 --- !u!212 &21200000
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -48,7 +66,7 @@ SpriteRenderer:
   m_ScaleInLightmap: 1
   m_SortingLayerID: 1172581653
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 76d20fd3b2c61dd44944c3b3a85f9cba, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 6a8ebc88a00f2c249a06dd125e62b7bf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &100100000
 Prefab:

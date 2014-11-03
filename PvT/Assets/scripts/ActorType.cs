@@ -79,8 +79,6 @@ public class ActorType
     public virtual GameObject Spawn(Consts.SortingLayer sortingLayer, bool rigidBody)
     {
         var go = asset.ToRawGameObject(sortingLayer);
-        //go.name = asset.name;
-
         if (rigidBody)
         {
             var body = go.AddComponent<Rigidbody2D>();

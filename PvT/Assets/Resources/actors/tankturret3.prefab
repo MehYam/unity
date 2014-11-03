@@ -9,8 +9,9 @@ GameObject:
   m_Component:
   - 4: {fileID: 400000}
   - 212: {fileID: 21200000}
+  - 65: {fileID: 6500000}
   m_Layer: 0
-  m_Name: tankturret2
+  m_Name: tankturret3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -28,6 +29,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!65 &6500000
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: .689999998, y: 1.47000003, z: .200000003}
+  m_Center: {x: 0, y: .367499977, z: 0}
 --- !u!212 &21200000
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -48,7 +61,7 @@ SpriteRenderer:
   m_ScaleInLightmap: 1
   m_SortingLayerID: 1172581653
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 0d412a5a5e378354eb3c511c1a0ada74, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e1df0340a1d9f114e8ac1508c1916fda, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &100100000
 Prefab:
