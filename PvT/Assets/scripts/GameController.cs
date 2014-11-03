@@ -254,7 +254,11 @@ public sealed class GameController : IGame
             host.attachedHerolings = 0;
 
             enemyInPossession = true;
-            host.StartCoroutine(RunPossessionAnimation(host));
+            host.StartCoroutine(PossessionSequence(host));
+
+            //KAI: the modifier system kinda sucks.  This currently gets obliterated by something.
+            // It would be better to have a dynamic list of modifiers that can be applied
+            playerActor.GrantInvuln(Consts.POST_POSSESSION_INVULN);
 
             GlobalGameEvent.Instance.FireEnemyDeath(host);
         }
@@ -266,12 +270,12 @@ public sealed class GameController : IGame
             SpawnPlayer(playerActor.transform.position);
 
             prevHost.behavior = null;
-            prevHost.gameObject.layer = (int)Consts.CollisionLayer.MOB;
+            //prevHost.gameObject.layer = (int)Consts.CollisionLayer.MOB;
             prevHost.SetExpiry(10);
         }
     }
 
-    IEnumerator RunPossessionAnimation(Actor host)
+    IEnumerator PossessionSequence(Actor host)
     {
         var clipLength = Main.Instance.sounds.fanfare1.length * 1.25f;
         AudioSource.PlayClipAtPoint(Main.Instance.sounds.fanfare1, player.transform.position, 0.25f);
@@ -327,7 +331,7 @@ public sealed class GameController : IGame
         GlobalGameEvent.Instance.FirePlayerSpawned(this.player);
         yield return null;
     }
-    IEnumerator RunDepossessionAnimation()
+    IEnumerator DepossessionSequence()
     {
         yield return new WaitForSeconds(0.3f);
 
@@ -602,7 +606,7 @@ public sealed class GameController : IGame
                 SpawnPlayer(deathPos);
 
                 var playerActor = player.GetComponent<Actor>();
-                playerActor.StartCoroutine(RunDepossessionAnimation());
+                playerActor.StartCoroutine(DepossessionSequence());
                 playerActor.GrantInvuln(Consts.POST_DEPOSSESSION_INVULN);
             }
         }
