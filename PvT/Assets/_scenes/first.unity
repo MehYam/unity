@@ -166,7 +166,7 @@ MonoBehaviour:
   hud: {fileID: 1873991296}
   EffectParent: {fileID: 653143524}
   AmmoParent: {fileID: 291939734}
-  defaultVehicle: bluek
+  defaultVehicle: tank1
   playMusic: 1
 --- !u!114 &3432517
 MonoBehaviour:
@@ -180,7 +180,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mobs: 1
-  startLevel: 1
+  startLevel: 0
   spawnDistance: -3
   map: {fileID: 100004, guid: a79bb10566c417243a18065740b954fe, type: 2}
   rooms: []

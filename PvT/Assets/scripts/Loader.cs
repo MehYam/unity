@@ -193,112 +193,17 @@ public class Loader
             dropShadow: dropShadow
         );
     }
-    //KAI: FIX THE COPY/PASTA
     TankHullType LoadTankHullType(Util.CSVParseHelper csv, Dictionary<string, IList<string>> weaponLookup, string assetPath)
     {
-        var name = csv.GetString();
-        var assetID = csv.GetString();
-        var mass = csv.GetFloat();
-        var speed = csv.GetFloat();
-        var health = csv.GetInt();
-        var accel = csv.GetFloat();
-        var inertia = csv.GetFloat();
-        var dropShadow = csv.GetBool();
+        var baseActorType = LoadActorType(csv, weaponLookup, assetPath);
         var turretPivotY = csv.GetFloat();
-
-        var asset = LoadAsset(assetID, assetPath);
-
-        // parse the weapons, if there are any
-        IList<string> weaponStrings = null;
-        weaponLookup.TryGetValue(name, out weaponStrings);
-
-        ActorType.Weapon[] weapons = new ActorType.Weapon[weaponStrings != null ? weaponStrings.Count : 0];
-        if (weapons.Length > 0)
-        {
-            // programmatically determine the top of the sprite, since the weapon's Y offset
-            // is relative to the top of the image.  It's not perfect, but it's simple because
-            // weapons usually fire from the front
-            float offsetY = 0;
-            var sprite = asset.prefab.GetComponent<SpriteRenderer>();
-            if (sprite != null)
-            {
-                var bounds = sprite.bounds;
-                offsetY = bounds.max.y;
-            }
-
-            // now add each weapon
-            int i = 0;
-            foreach (var weaponString in weaponStrings)
-            {
-                var weapon = ActorType.Weapon.FromString(weaponString, offsetY);
-                weapons[i++] = weapon;
-            }
-        }
-        return new TankHullType(
-            asset: asset,
-            name: name,
-            mass: mass,
-            weapons: weapons,
-            health: health,
-            maxSpeed: speed,
-            acceleration: accel,
-            inertia: inertia,
-            dropShadow: dropShadow,
-            turretPivotY: turretPivotY
-        );
+        return new TankHullType(baseActorType, turretPivotY);
     }
     TankTurretType LoadTankTurretType(Util.CSVParseHelper csv, Dictionary<string, IList<string>> weaponLookup, string assetPath)
     {
-        var name = csv.GetString();
-        var assetID = csv.GetString();
-        var mass = csv.GetFloat();
-        var speed = csv.GetFloat();
-        var health = csv.GetInt();
-        var accel = csv.GetFloat();
-        var inertia = csv.GetFloat();
-        var dropShadow = csv.GetBool();
+        var baseActorType = LoadActorType(csv, weaponLookup, assetPath);
         var hullPivotY = csv.GetFloat();
-
-        var asset = LoadAsset(assetID, assetPath);
-
-        // parse the weapons, if there are any
-        IList<string> weaponStrings = null;
-        weaponLookup.TryGetValue(name, out weaponStrings);
-
-        ActorType.Weapon[] weapons = new ActorType.Weapon[weaponStrings != null ? weaponStrings.Count : 0];
-        if (weapons.Length > 0)
-        {
-            // programmatically determine the top of the sprite, since the weapon's Y offset
-            // is relative to the top of the image.  It's not perfect, but it's simple because
-            // weapons usually fire from the front
-            float offsetY = 0;
-            var sprite = asset.prefab.GetComponent<SpriteRenderer>();
-            if (sprite != null)
-            {
-                var bounds = sprite.bounds;
-                offsetY = bounds.max.y;
-            }
-
-            // now add each weapon
-            int i = 0;
-            foreach (var weaponString in weaponStrings)
-            {
-                var weapon = ActorType.Weapon.FromString(weaponString, offsetY);
-                weapons[i++] = weapon;
-            }
-        }
-        return new TankTurretType(
-            asset: asset,
-            name: name,
-            mass: mass,
-            weapons: weapons,
-            health: health,
-            maxSpeed: speed,
-            acceleration: accel,
-            inertia: inertia,
-            dropShadow: dropShadow,
-            hullPivotY: hullPivotY
-        );
+        return new TankTurretType(baseActorType, hullPivotY);
     }
     Asset LoadAsset(string name, string assetPath)
     {

@@ -61,6 +61,20 @@ public class ActorType
         this.inertia = inertia;
         this.dropShadow = dropShadow;
     }
+    public ActorType(ActorType rhs)
+    {
+        this.name = rhs.name;
+        this.asset = rhs.asset;
+        this.maxSpeed = rhs.maxSpeed;
+        this.sqrMaxSpeed = (float)System.Math.Pow(maxSpeed, 2);
+        this.mass = rhs.mass;
+        this.health = rhs.health;
+        this.weapons = rhs.weapons;
+
+        this.acceleration = rhs.acceleration;
+        this.inertia = rhs.inertia;
+        this.dropShadow = rhs.dropShadow;
+    }
     public bool HasWeapons { get { return weapons != null && weapons.Length > 0; } }
     public virtual GameObject Spawn(Consts.SortingLayer sortingLayer, bool rigidBody)
     {
@@ -155,9 +169,7 @@ public class ActorType
 public sealed class TankHullType : ActorType
 {
     public readonly float turretPivotY;
-
-    public TankHullType(Asset asset, string name, float mass, Weapon[] weapons, int health, float maxSpeed, float acceleration, float inertia, bool dropShadow, float turretPivotY)
-        : base(asset, name, mass, weapons, health, maxSpeed, acceleration, inertia, dropShadow)
+    public TankHullType(ActorType baseType, float turretPivotY) : base(baseType)
     {
         this.turretPivotY = turretPivotY;
     }
@@ -173,8 +185,7 @@ public sealed class TankHullType : ActorType
 public sealed class TankTurretType : ActorType
 {
     public readonly float hullPivotY;
-    public TankTurretType(Asset asset, string name, float mass, Weapon[] weapons, int health, float maxSpeed, float acceleration, float inertia, bool dropShadow, float hullPivotY) :
-        base(asset, name, mass, weapons, health, maxSpeed, acceleration, inertia, dropShadow)
+    public TankTurretType(ActorType baseType, float hullPivotY) : base(baseType)
     {
         this.hullPivotY = hullPivotY;
     }
