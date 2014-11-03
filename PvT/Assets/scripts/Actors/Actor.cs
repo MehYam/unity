@@ -49,6 +49,10 @@ public class Actor : MonoBehaviour
         {
             GameObject.Destroy(_overwhelmBar.gameObject);
         }
+        if (_damageSmoke != null)
+        {
+            _damageSmoke.Destroy();
+        }
     }
 
     ActorType _actorType;
@@ -241,7 +245,37 @@ public class Actor : MonoBehaviour
             _overwhelmBar.gameObject.SetActive(false);
         }
     }
-    GameObject _damageSmokeParticles;
+    sealed class DamageSmoke
+    {
+        public readonly GameObject go;
+        public readonly Vector2 offset;
+        public DamageSmoke(Actor host)
+        {
+            go = ((GameObject)GameObject.Instantiate(Main.Instance.assets.damageSmokeParticles));
+            offset = Util.ScatterRandomly(0.25f);
+            go.transform.parent = Main.Instance.EffectParent.transform;
+
+            Update(host);
+            go.particleSystem.Play();
+        }
+        public void Update(Actor host)
+        {
+            go.transform.position = Util.Add(host.transform.position, offset);
+        }
+        public void Destroy()
+        {
+            // fade the particle system eventually
+            if (go != null)
+            {
+                go.particleSystem.Stop();
+
+                var expiry = go.AddComponent<Expire>();
+                expiry.SetExpiry(5);
+            }
+        }
+        //KAI: make sure this does the right thing when the actor heals
+    }
+    DamageSmoke _damageSmoke;
     void UpdateDamageSmoke()
     {
         var pct = health / actorType.health;
@@ -249,21 +283,16 @@ public class Actor : MonoBehaviour
         {
             /////// PARTICLE STUFF
             //KAI: move this to a MainParticles class like MainLighting
-            if (_damageSmokeParticles == null)
+            if (_damageSmoke == null)
             {
-                _damageSmokeParticles = ((GameObject)GameObject.Instantiate(Main.Instance.assets.damageSmokeParticles));
-                _damageSmokeParticles.transform.parent = transform;
-                _damageSmokeParticles.transform.localPosition = Util.ScatterRandomly(0.25f);
-                _damageSmokeParticles.particleSystem.Play();
+                _damageSmoke = new DamageSmoke(this);
             }
-            _damageSmokeParticles.gameObject.SetActive(true);
+            _damageSmoke.Update(this);
         }
-        else
+        else if (_damageSmoke != null)
         {
-            if (_damageSmokeParticles != null)
-            {
-                _damageSmokeParticles.gameObject.SetActive(false);
-            }
+            _damageSmoke.Destroy();
+            _damageSmoke = null;
         }
         /////// END PARTICLE STUFF
     }
