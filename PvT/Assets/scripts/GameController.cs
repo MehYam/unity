@@ -232,6 +232,8 @@ public sealed class GameController : IGame
         Util.PrepareLaunch(launcher.transform, actor.transform, weapon.offset, weapon.angle);
 
         AudioSource.PlayClipAtPoint(Main.Instance.sounds.Laser, launcher.transform.position, Mathf.Max(0.2f, damageMultiplier));
+
+        GlobalGameEvent.Instance.FireAmmoSpawned(actor, weapon);
         return go;
     }
 

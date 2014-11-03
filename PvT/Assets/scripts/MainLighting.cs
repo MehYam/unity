@@ -10,6 +10,7 @@ public class MainLighting : MonoBehaviour
     public Light PointLightPrefab;
     public Shader DynamicLightingShader;
     public GameObject CheapLightPrefab;
+    public GameObject CheapLightPrefabFusion;
 
     // KAI: this is neat, this class works like a filter, attaching functionality when things happen -
     // but it's inconsistent with how the rest of the design works.  This functionality should either
@@ -63,15 +64,16 @@ public class MainLighting : MonoBehaviour
     {
         if (weapon.lit)
         {
-            AddLight(actor.gameObject, weapon.color);
+            bool fusion = weapon.vehicleName == "FUSION";
+            AddLight(actor.gameObject, weapon.color, fusion);
         }
     }
     void OnExplosionSpawned(GameObject explosion)
     {
-        AddLight(explosion, Color.white);
+        AddLight(explosion, Color.white, false);
     }
     static readonly Vector3 s_lightPosition = new Vector3(0, 0, -1);
-    void AddLight(GameObject go, Color color)
+    void AddLight(GameObject go, Color color, bool fusion)
     {
         switch (lightingMode)
         {
@@ -82,9 +84,11 @@ public class MainLighting : MonoBehaviour
                 pointLight.transform.localPosition = s_lightPosition;
                 break;
             case LightingMode.CHEAP:
-                var glow = (GameObject)GameObject.Instantiate(CheapLightPrefab);
+
+                var glow = (GameObject)GameObject.Instantiate(fusion ? CheapLightPrefabFusion : CheapLightPrefab);
                 glow.transform.parent = go.transform;
                 glow.transform.localPosition = Vector3.zero;
+                glow.transform.rotation = go.transform.rotation;
 
                 var renderer = glow.GetComponent<SpriteRenderer>();
                 color.a = renderer.color.a; // preserve alpha from the glow prefab, since it's essential to our cheap lighting hack
