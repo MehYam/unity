@@ -71,6 +71,8 @@ public class Actor : MonoBehaviour
         expireTime = secondsFromNow == EXPIRY_INFINITE ? EXPIRY_INFINITE : Time.fixedTime + secondsFromNow;
     }
 
+    public bool isAmmo { get; set; }
+    public bool bouncesAmmo { get; set; }
     public bool showsHealthBar{ get; set; }
     public bool explodesOnDeath { get; set; }
 
@@ -383,36 +385,47 @@ public class Actor : MonoBehaviour
         }
         else if (!thisIsOverwhelmedMobBeingCaptured)
         {
-            // give collision damage
+            // take collision damage from the other
             if (otherActor != null)
             {
-                var damage = otherActor.collisionDamage * Random.Range(0.9f, 1.1f);
-                if (damage > 0)
+                if (isAmmo && otherActor.bouncesAmmo)
                 {
-                    if (other.gameObject.layer > self.gameObject.layer) // prevent duplicate collision sparks and damage sounds
+                    // we're ammo being bounced by a shield - switch allegiance, and go the other way
+                    //rigidbody2D.velocity = -rigidbody2D.velocity;
+                    gameObject.layer = gameObject.layer == (int)Consts.CollisionLayer.MOB_AMMO ? 
+                        (int)Consts.CollisionLayer.FRIENDLY_AMMO :
+                        (int)Consts.CollisionLayer.MOB_AMMO;
+                }
+                else
+                {
+                    var damage = otherActor.collisionDamage * Random.Range(0.9f, 1.1f);
+                    if (damage > 0)
                     {
-                        var boom = Main.Instance.game.effects.GetRandomSmallExplosion().ToRawGameObject(Consts.SortingLayer.EXPLOSIONS);
-                        boom.transform.localPosition = contact.point;
-
-                        GlobalGameEvent.Instance.FireExplosionSpawned(boom);
-
-                        if (otherActor != null && otherActor.actorType.health > 0 && actorType.health > 0)
+                        if (other.gameObject.layer > self.gameObject.layer) // prevent duplicate collision sparks and damage sounds
                         {
-                            AudioSource.PlayClipAtPoint(Main.Instance.sounds.SmallCollision, contact.point);
-                        }
-/////// PARTICLE STUFF
-                        //KAI: move this to a MainParticles class like MainLighting
-                        if (_collisionParticles == null)
-                        {
-                            _collisionParticles = ((GameObject)GameObject.Instantiate(Main.Instance.assets.collisionParticles));
-                            _collisionParticles.transform.parent = transform;
-                        }
-                        _collisionParticles.transform.position = contact.point;
-                        _collisionParticles.particleSystem.Play();
+                            var boom = Main.Instance.game.effects.GetRandomSmallExplosion().ToRawGameObject(Consts.SortingLayer.EXPLOSIONS);
+                            boom.transform.localPosition = contact.point;
 
-/////// END PARTICLE STUFF
+                            GlobalGameEvent.Instance.FireExplosionSpawned(boom);
+
+                            if (otherActor != null && otherActor.actorType.health > 0 && actorType.health > 0)
+                            {
+                                AudioSource.PlayClipAtPoint(Main.Instance.sounds.SmallCollision, contact.point);
+                            }
+    /////// PARTICLE STUFF
+                            //KAI: move this to a MainParticles class like MainLighting
+                            if (_collisionParticles == null)
+                            {
+                                _collisionParticles = ((GameObject)GameObject.Instantiate(Main.Instance.assets.collisionParticles));
+                                _collisionParticles.transform.parent = transform;
+                            }
+                            _collisionParticles.transform.position = contact.point;
+                            _collisionParticles.particleSystem.Play();
+
+    /////// END PARTICLE STUFF
+                        }
+                        TakeDamage(damage);
                     }
-                    TakeDamage(damage);
                 }
             }
         }

@@ -183,6 +183,7 @@ public sealed class GameController : IGame
         actorAmmo.SetExpiry(weapon.ttl);
         actorAmmo.collisionDamage = weapon.damage;
         actorAmmo.showsHealthBar = false;
+        actorAmmo.isAmmo = true;
 
         var renderer = actorAmmo.GetComponent<SpriteRenderer>();
         if (renderer != null)
@@ -268,10 +269,11 @@ public sealed class GameController : IGame
             var prevHost = playerActor;
 
             SpawnPlayer(playerActor.transform.position);
+            prevHost.health = 5;
 
             prevHost.behavior = null;
             //prevHost.gameObject.layer = (int)Consts.CollisionLayer.MOB;
-            prevHost.SetExpiry(10);
+            prevHost.SetExpiry(UnityEngine.Random.Range(2, 4));
         }
     }
 
