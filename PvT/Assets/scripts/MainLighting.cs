@@ -73,18 +73,24 @@ public class MainLighting : MonoBehaviour
     static readonly Vector3 s_lightPosition = new Vector3(0, 0, -1);
     void AddLight(GameObject go, Color color)
     {
-        switch(lightingMode) {
-        case LightingMode.DYNAMIC:
-            var pointLight = (Light)GameObject.Instantiate(PointLightPrefab);
-            pointLight.color = color;
-            pointLight.transform.parent = go.transform;
-            pointLight.transform.localPosition = s_lightPosition;
-            break;
-        case LightingMode.CHEAP:
-            var glow = (GameObject)GameObject.Instantiate(CheapLightPrefab);
-            glow.transform.parent = go.transform;
-            glow.transform.localPosition = Vector3.zero;
-            break;  
+        switch (lightingMode)
+        {
+            case LightingMode.DYNAMIC:
+                var pointLight = (Light)GameObject.Instantiate(PointLightPrefab);
+                pointLight.color = color;
+                pointLight.transform.parent = go.transform;
+                pointLight.transform.localPosition = s_lightPosition;
+                break;
+            case LightingMode.CHEAP:
+                var glow = (GameObject)GameObject.Instantiate(CheapLightPrefab);
+                glow.transform.parent = go.transform;
+                glow.transform.localPosition = Vector3.zero;
+
+                var renderer = glow.GetComponent<SpriteRenderer>();
+                color.a = renderer.color.a; // preserve alpha from the glow prefab, since it's essential to our cheap lighting hack
+
+                renderer.color = color;
+                break;
         }
     }
 }
