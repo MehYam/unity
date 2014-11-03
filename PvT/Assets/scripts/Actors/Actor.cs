@@ -194,7 +194,7 @@ public class Actor : MonoBehaviour
         {
             if (_healthBar == null)
             {
-                var bar = (GameObject)GameObject.Instantiate(Main.Instance.HealthProgressBar);
+                var bar = (GameObject)GameObject.Instantiate(Main.Instance.assets.HealthProgressBar);
                 _healthBar = bar.GetComponent<ProgressBar>();
 
                 //STRANGE UNITY BUG?
@@ -224,7 +224,7 @@ public class Actor : MonoBehaviour
         {
             if (_overwhelmBar == null)
             {
-                var bar = (GameObject)GameObject.Instantiate(Main.Instance.OverwhelmProgressBar);
+                var bar = (GameObject)GameObject.Instantiate(Main.Instance.assets.OverwhelmProgressBar);
                 _overwhelmBar = bar.GetComponent<ProgressBar>();
                 //_overwhelmBar.transform.Rotate(0, 0, 90);
 
@@ -249,7 +249,7 @@ public class Actor : MonoBehaviour
             //KAI: move this to a MainParticles class like MainLighting
             if (_damageSmokeParticles == null)
             {
-                _damageSmokeParticles = ((GameObject)GameObject.Instantiate(Main.Instance.damageSmokeParticles));
+                _damageSmokeParticles = ((GameObject)GameObject.Instantiate(Main.Instance.assets.damageSmokeParticles));
                 _damageSmokeParticles.transform.parent = transform;
                 _damageSmokeParticles.transform.localPosition = Util.ScatterRandomly(0.25f);
                 _damageSmokeParticles.particleSystem.Play();
@@ -293,7 +293,7 @@ public class Actor : MonoBehaviour
             // act overwhelmed
             _overwhelmBehavior = ActorBehaviorFactory.Instance.CreateHerolingOverwhelmBehavior();
 
-            var blinker = (GameObject)GameObject.Instantiate(Main.Instance.OverwhelmedIndicator);
+            var blinker = (GameObject)GameObject.Instantiate(Main.Instance.assets.OverwhelmedIndicator);
             blinker.transform.parent = transform;
             blinker.transform.localPosition = Vector3.zero;
             blinker.name = Consts.BLINKER_TAG;
@@ -324,7 +324,7 @@ public class Actor : MonoBehaviour
             if (_trackingArrow == null)
             {
                 //KAI: stick to one way of creating assets?
-                _trackingArrow = (GameObject)GameObject.Instantiate(Main.Instance.TrackingArrow);
+                _trackingArrow = (GameObject)GameObject.Instantiate(Main.Instance.assets.TrackingArrow);
             }
             Vector2 indPos = new Vector2(0, 0);
             indPos.x = Mathf.Max(rect.left + INDICATOR_MARGIN, Mathf.Min(rect.right - INDICATOR_MARGIN, pos.x));
@@ -404,7 +404,7 @@ public class Actor : MonoBehaviour
                         //KAI: move this to a MainParticles class like MainLighting
                         if (_collisionParticles == null)
                         {
-                            _collisionParticles = ((GameObject)GameObject.Instantiate(Main.Instance.collisionParticles));
+                            _collisionParticles = ((GameObject)GameObject.Instantiate(Main.Instance.assets.collisionParticles));
                             _collisionParticles.transform.parent = transform;
                         }
                         _collisionParticles.transform.position = contact.point;

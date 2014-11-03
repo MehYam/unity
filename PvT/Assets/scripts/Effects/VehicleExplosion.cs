@@ -18,7 +18,7 @@ public class VehicleExplosion : MonoBehaviour
         explosion.transform.parent = transform;
         explosion.transform.localPosition = Util.ScatterRandomly(0.3f);
 
-        var particles = (GameObject)GameObject.Instantiate(Main.Instance.collisionParticles);
+        var particles = (GameObject)GameObject.Instantiate(Main.Instance.assets.collisionParticles);
         particles.transform.parent = transform;
         particles.transform.localPosition = Vector3.zero;
 

@@ -66,7 +66,7 @@ public class WorldObjectType
             body.drag = 0.5f;
             body.angularDrag = 5;
 
-            go.GetComponent<Collider2D>().sharedMaterial = Main.Instance.Bounce;
+            go.GetComponent<Collider2D>().sharedMaterial = Main.Instance.assets.Bounce;
         }
         //KAI: MAJOR CHEESE
         var actor = this.name == "HEROLING" ? go.AddComponent<HerolingActor>() : go.AddComponent<Actor>();

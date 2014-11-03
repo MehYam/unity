@@ -7,8 +7,6 @@ using PvT.Util;
 
 public class Main : MonoBehaviour
 {
-    public PhysicsMaterial2D Bounce;
-
     public TextAsset Vehicles;
     public TextAsset Tanks;
     public TextAsset TankHulls;
@@ -18,19 +16,13 @@ public class Main : MonoBehaviour
     public TextAsset AI;
     public TextAsset Misc;
 
-    public GameObject HealthProgressBar;
-    public GameObject OverwhelmProgressBar;
-    public GameObject TrackingArrow;
-    public GameObject OverwhelmedIndicator;
-
-    public GameObject EffectParent;
-    public GameObject AmmoParent;
-
     public MainSounds sounds;
     public MainMusic music;
-    public GameObject collisionParticles;
-    public GameObject damageSmokeParticles;
+    public MainAssets assets;
+    
     public HUD hud;
+    public GameObject EffectParent;
+    public GameObject AmmoParent;
 
     /// <summary>
     /// ///////////////////////// debug/dev items

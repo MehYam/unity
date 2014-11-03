@@ -3,11 +3,13 @@ using System.Collections;
 
 public class MainLighting : MonoBehaviour
 {
-    public bool UseDynamicLighting = true;
+    public enum LightingMode { NONE, CHEAP, DYNAMIC };
+    public LightingMode lightingMode = LightingMode.DYNAMIC;
 
     public Light SceneLight;
-    public Light PointLight;
-    public Shader LightingShader;
+    public Light PointLightPrefab;
+    public Shader DynamicLightingShader;
+    public GameObject CheapLightPrefab;
 
     // KAI: this is neat, this class works like a filter, attaching functionality when things happen -
     // but it's inconsistent with how the rest of the design works.  This functionality should either
@@ -17,9 +19,9 @@ public class MainLighting : MonoBehaviour
 	// Use this for initialization
 	void Start()
     {
-        SceneLight.gameObject.SetActive(UseDynamicLighting);
+        SceneLight.gameObject.SetActive(lightingMode == LightingMode.DYNAMIC);
 
-        if (UseDynamicLighting)
+        if (lightingMode != LightingMode.NONE)
         {
             GlobalGameEvent.Instance.ActorSpawned += OnActorSpawned;
             GlobalGameEvent.Instance.AmmoSpawned += OnAmmoSpawned;
@@ -37,17 +39,23 @@ public class MainLighting : MonoBehaviour
 
     void OnMapReady(GameObject map, XRect bounds)
     {
-        var renderer = map.GetComponentInChildren<MeshRenderer>();
-        renderer.material.shader = LightingShader;
+        if (lightingMode == LightingMode.DYNAMIC)
+        {
+            var renderer = map.GetComponentInChildren<MeshRenderer>();
+            renderer.material.shader = DynamicLightingShader;
+        }
     }
 
     void OnActorSpawned(Actor actor)
     {
-        var renderer = actor.GetComponent<SpriteRenderer>();
-
-        if (renderer != null)
+        if (lightingMode == LightingMode.DYNAMIC)
         {
-            renderer.material.shader = LightingShader;
+            var renderer = actor.GetComponent<SpriteRenderer>();
+
+            if (renderer != null)
+            {
+                renderer.material.shader = DynamicLightingShader;
+            }
         }
     }
 
@@ -65,9 +73,18 @@ public class MainLighting : MonoBehaviour
     static readonly Vector3 s_lightPosition = new Vector3(0, 0, -1);
     void AddLight(GameObject go, Color color)
     {
-        var pointLight = (Light)GameObject.Instantiate(PointLight);
-        pointLight.color = color;
-        pointLight.transform.parent = go.transform;
-        pointLight.transform.localPosition = s_lightPosition;
+        switch(lightingMode) {
+        case LightingMode.DYNAMIC:
+            var pointLight = (Light)GameObject.Instantiate(PointLightPrefab);
+            pointLight.color = color;
+            pointLight.transform.parent = go.transform;
+            pointLight.transform.localPosition = s_lightPosition;
+            break;
+        case LightingMode.CHEAP:
+            var glow = (GameObject)GameObject.Instantiate(CheapLightPrefab);
+            glow.transform.parent = go.transform;
+            glow.transform.localPosition = Vector3.zero;
+            break;  
+        }
     }
 }

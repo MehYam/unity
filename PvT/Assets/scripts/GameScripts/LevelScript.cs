@@ -69,6 +69,8 @@ public class LevelScript : MonoBehaviour
                     case "EVENT_RAISE_CURTAIN":
                         Main.Instance.hud.curtain.Fade(0, Consts.TEXT_FADE_SECONDS_FAST);
                         break;
+                    case "EVENT_COMMENT_1":
+                        break;
                 }
             }
         }        
