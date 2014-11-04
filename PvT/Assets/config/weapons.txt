@@ -102,3 +102,10 @@ tankhull4,BULLET,15,-30,-142,180,0xffffffff,TRUE,1,0,0,,1
 tankhull4,BULLET,15,30,-142,180,0xffffffff,TRUE,1,0,0,,1
 laserturret1,LASER,20,0,-10,0,0xffff0000,TRUE,0.2,0,0,,5
 laserturret2,LASER,100,0,-10,0,0xffff0000,TRUE,0.2,0,0,,5
+BOSS1,LASER,40,-127,0,0,0xffffffff,TRUE,1,0,0,,2
+BOSS1,LASER,40,-87,-30,0,0xffffffff,TRUE,1,0,0,,2
+BOSS1,LASER,40,-46,-60,0,0xffffffff,TRUE,1,0,0,,2
+BOSS1,LASER,40,46,-60,0,0xffffffff,TRUE,1,0,0,,2
+BOSS1,LASER,40,87,-30,0,0xffffffff,TRUE,1,0,0,,2
+BOSS1,LASER,40,127,0,0,0xffffffff,TRUE,1,0,0,,2
+BOSS1,FUSION,100,0,-60,0,0xffff7700,TRUE,1,0,0,,2

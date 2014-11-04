@@ -6,6 +6,14 @@ public sealed class Boss1AI : MonoBehaviour
     void Start()
     {
         StartCoroutine(Script());
+
+        var actor = GetComponent<Actor>();
+
+        actor.behavior = ActorBehaviorFactory.Instance.CreateAutofire(
+            Consts.CollisionLayer.MOB_AMMO,
+            actor.actorType.weapons
+        );
+        //actor.behavior = ActorBehaviorFactory.Instance.facePlayer;
     }
 
     IEnumerator Script()
