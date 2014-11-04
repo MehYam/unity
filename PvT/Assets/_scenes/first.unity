@@ -110,9 +110,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HerolingBump: {fileID: 0}
-  HerolingCapture: {fileID: 8300000, guid: e1a5b766df9549941ba46a6f6cdd482b, type: 3}
+  HerolingCapture: {fileID: 8300000, guid: 4d3fcb40b76db6f4ba0f2df6ea1eb851, type: 3}
   Laser: {fileID: 8300000, guid: 38a4f86e695d5454e81657deb088217f, type: 3}
-  Bullet: {fileID: 8300000, guid: ef1d6da4ce99ac146940895cc0c638e5, type: 3}
+  Bullet: {fileID: 8300000, guid: 7be935c801756524e902ebdbe9dbfe1c, type: 3}
   SmallCollision: {fileID: 8300000, guid: 3cad01b4cdd23a24c935a9e355adabc5, type: 3}
   BigCollision: {fileID: 8300000, guid: fd04cca0b8ed6454391e5b23271f175d, type: 3}
   Explosion1: {fileID: 8300000, guid: 2f747f00e6dcb2f4eb316425d69c9383, type: 3}

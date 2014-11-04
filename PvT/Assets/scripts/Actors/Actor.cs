@@ -51,7 +51,7 @@ public class Actor : MonoBehaviour
         }
         if (_damageSmoke != null)
         {
-            _damageSmoke.Destroy();
+            _damageSmoke.Detach();
         }
     }
 
@@ -183,7 +183,13 @@ public class Actor : MonoBehaviour
         }
         if (((expireTime != EXPIRY_INFINITE) && Time.fixedTime >= expireTime) || (health <= 0))
         {
+            //KAI: THIS HAS TO BE THE AUTHORITATIVE PLACE WHERE AN ACTOR DIES
+            // - think about this design some.
             GlobalGameEvent.Instance.FireActorDeath(this);
+            if (_damageSmoke != null)
+            {
+                _damageSmoke.Detach();
+            }
             GameObject.Destroy(gameObject);
         }
     }
@@ -249,32 +255,24 @@ public class Actor : MonoBehaviour
     sealed class DamageSmoke
     {
         public readonly GameObject go;
-        public readonly Vector2 offset;
         public DamageSmoke(Actor host)
         {
             go = ((GameObject)GameObject.Instantiate(Main.Instance.assets.damageSmokeParticles));
-            offset = Util.ScatterRandomly(0.25f);
-            go.transform.parent = Main.Instance.EffectParent.transform;
-
-            Update(host);
+            go.transform.parent = host.transform;
+            go.transform.localPosition = Util.ScatterRandomly(0.4f);
             go.particleSystem.Play();
         }
-        public void Update(Actor host)
+        public void Detach()
         {
-            go.transform.position = Util.Add(host.transform.position, offset);
-        }
-        public void Destroy()
-        {
-            // fade the particle system eventually
             if (go != null)
             {
+                go.transform.parent = Main.Instance.EffectParent.transform;
                 go.particleSystem.Stop();
 
                 var expiry = go.AddComponent<Expire>();
                 expiry.SetExpiry(5);
             }
         }
-        //KAI: make sure this does the right thing when the actor heals
     }
     DamageSmoke _damageSmoke;
     void UpdateDamageSmoke()
@@ -288,11 +286,10 @@ public class Actor : MonoBehaviour
             {
                 _damageSmoke = new DamageSmoke(this);
             }
-            _damageSmoke.Update(this);
         }
         else if (_damageSmoke != null)
         {
-            _damageSmoke.Destroy();
+            _damageSmoke.Detach();
             _damageSmoke = null;
         }
         /////// END PARTICLE STUFF
