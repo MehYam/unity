@@ -117,6 +117,7 @@ MonoBehaviour:
   BigCollision: {fileID: 8300000, guid: fd04cca0b8ed6454391e5b23271f175d, type: 3}
   Explosion1: {fileID: 8300000, guid: 2f747f00e6dcb2f4eb316425d69c9383, type: 3}
   fanfare1: {fileID: 8300000, guid: 13c193cf99d81eb47a4b2d4eee111281, type: 3}
+  roar: {fileID: 8300000, guid: 3c1aabbef31e18c459116afd7a3fd8fd, type: 3}
 --- !u!4 &3432514
 Transform:
   m_ObjectHideFlags: 0

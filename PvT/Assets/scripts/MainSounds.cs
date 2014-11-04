@@ -13,4 +13,5 @@ public sealed class MainSounds : MonoBehaviour
     public AudioClip Explosion1;
 
     public AudioClip fanfare1;
+    public AudioClip roar;
 }

@@ -18,5 +18,8 @@ public interface IGame
     GameObject SpawnAmmo(Actor launcher, ActorType.Weapon weapon, Consts.CollisionLayer layer);
     GameObject SpawnHotspot(Actor launcher, ActorType.Weapon weapon, float damageMultiplier, Consts.CollisionLayer layer);
 
+    void ShakeGround();
+    void PlaySound(AudioClip clip, Vector2 position, float volume = 1);
+
     void Debug_Respawn(Loader loader);
 }

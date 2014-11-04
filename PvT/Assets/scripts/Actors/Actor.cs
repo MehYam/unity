@@ -323,7 +323,7 @@ public class Actor : MonoBehaviour
             blinker.transform.localPosition = Vector3.zero;
             blinker.name = Consts.BLINKER_TAG;
 
-            AudioSource.PlayClipAtPoint(Main.Instance.sounds.HerolingCapture, transform.position);
+            Main.Instance.game.PlaySound(Main.Instance.sounds.HerolingCapture, transform.position);
         }
     }
 
@@ -433,7 +433,7 @@ public class Actor : MonoBehaviour
 
                             if (otherActor != null && otherActor.actorType.health > 0 && actorType.health > 0)
                             {
-                                AudioSource.PlayClipAtPoint(Main.Instance.sounds.SmallCollision, contact.point);
+                                Main.Instance.game.PlaySound(Main.Instance.sounds.SmallCollision, contact.point);
                             }
     /////// PARTICLE STUFF
                             //KAI: move this to a MainParticles class like MainLighting

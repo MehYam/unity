@@ -53,6 +53,9 @@ public sealed class MobAI
                 spawner.toSpawnOnDeath = vehicleName + "_FRY";
                 spawner.count = UnityEngine.Random.Range(3, 6);
                 return true;
+            case "BOSS1":
+                actor.gameObject.AddComponent<Boss1AI>();
+                return true;
         }
         return false;
     }

@@ -212,7 +212,7 @@ public sealed class GameController : IGame
             SpawnMuzzleFlash(launcher.gameObject, goAmmo);
         }
 
-        AudioSource.PlayClipAtPoint(Main.Instance.sounds.Bullet, launcher.transform.position);
+        PlaySound(Main.Instance.sounds.Bullet, launcher.transform.position);
 
         GlobalGameEvent.Instance.FireAmmoSpawned(actorAmmo, weapon);
         return goAmmo;
@@ -233,10 +233,37 @@ public sealed class GameController : IGame
 
         Util.PrepareLaunch(launcher.transform, actor.transform, weapon.offset, weapon.angle);
 
-        AudioSource.PlayClipAtPoint(Main.Instance.sounds.Laser, launcher.transform.position, Mathf.Max(0.2f, damageMultiplier));
+        PlaySound(Main.Instance.sounds.Laser, launcher.transform.position, Mathf.Max(0.2f, damageMultiplier));
 
         GlobalGameEvent.Instance.FireAmmoSpawned(actor, weapon);
         return go;
+    }
+
+    public void PlaySound(AudioClip clip, Vector2 position, float volume = 1)
+    {
+        // play the sound at the Z of the camera
+        var cameraPos = Camera.main.transform.position;
+        var soundPos = new Vector3(position.x, position.y, cameraPos.z);  
+
+        AudioSource.PlayClipAtPoint(clip, soundPos, volume);
+    }
+    public void ShakeGround()
+    {
+        var go = new GameObject("earthquake");
+        var shaker = go.AddComponent<Vibrate>();
+
+        shaker.StartCoroutine(ShakeGroundScript(shaker));
+    }
+    IEnumerator ShakeGroundScript(MonoBehaviour host)
+    {
+        var cameraTransform = Camera.main.gameObject.transform;
+        cameraTransform.parent = host.transform;
+
+        PlaySound(Main.Instance.sounds.roar, cameraTransform.position);
+        yield return new WaitForSeconds(Main.Instance.sounds.roar.length /2 );
+
+        cameraTransform.parent = null;
+        GameObject.Destroy(host);
     }
 
     void OnHerolingAttached(Actor host)
@@ -281,7 +308,7 @@ public sealed class GameController : IGame
     IEnumerator PossessionSequence(Actor host)
     {
         var clipLength = Main.Instance.sounds.fanfare1.length * 1.25f;
-        AudioSource.PlayClipAtPoint(Main.Instance.sounds.fanfare1, player.transform.position, 0.25f);
+        PlaySound(Main.Instance.sounds.fanfare1, player.transform.position, 0.25f);
 
         // 1. Stop all activity and pause
         var timeScale = Time.timeScale;
@@ -584,11 +611,11 @@ public sealed class GameController : IGame
             var asplode = effects.GetVehicleExplosion().ToRawGameObject(Consts.SortingLayer.EXPLOSIONS);
             asplode.transform.position = actor.transform.position;
 
-            AudioSource.PlayClipAtPoint(Main.Instance.sounds.Explosion1, asplode.transform.position);
+            PlaySound(Main.Instance.sounds.Explosion1, asplode.transform.position);
         }
         if (enemy)
         {
-            AudioSource.PlayClipAtPoint(Main.Instance.sounds.Explosion1, actor.gameObject.transform.position);
+            PlaySound(Main.Instance.sounds.Explosion1, actor.gameObject.transform.position);
             GlobalGameEvent.Instance.FireEnemyDeath(actor);
         }
 
