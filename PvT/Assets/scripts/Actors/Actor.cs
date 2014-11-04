@@ -49,10 +49,6 @@ public class Actor : MonoBehaviour
         {
             GameObject.Destroy(_overwhelmBar.gameObject);
         }
-        if (_damageSmoke != null)
-        {
-            _damageSmoke.Detach();
-        }
     }
 
     ActorType _actorType;
