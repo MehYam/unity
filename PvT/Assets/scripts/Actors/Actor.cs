@@ -184,6 +184,7 @@ public class Actor : MonoBehaviour
         if (((expireTime != EXPIRY_INFINITE) && Time.fixedTime >= expireTime) || (health <= 0))
         {
             GlobalGameEvent.Instance.FireActorDeath(this);
+            GameObject.Destroy(gameObject);
         }
     }
     static readonly Vector3 HEALTH_BAR_POSITION = new Vector3(0, 0.5f);

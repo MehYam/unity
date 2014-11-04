@@ -22,6 +22,8 @@ public class HerolingActor : Actor
     {
         base.Start();
 
+        GlobalGameEvent.Instance.ActorDeath += OnActorDeath;
+
         _reabsorbTimeout = new RateLimiter(Consts.HEROLING_UNABSORBABLE);
         _roamBoredom = new RateLimiter(Consts.HEROLING_ROAM_BOREDOM);
 
@@ -40,6 +42,24 @@ public class HerolingActor : Actor
         //    Util.GetLookAtVector(actor.transform.rotation.eulerAngles.z, type.maxSpeed);
 
         GlobalGameEvent.Instance.FireHerolingLaunched();
+    }
+    void OnActorDeath(Actor actor)
+    {
+        if (behavior == ATTACHED)
+        {
+            // if we're parented to a dying actor, return
+            if (transform.parent == actor.transform)
+            {
+                Debug.Log("returning the herolings");
+                Return();
+            }
+        }
+    }
+    void OnDestroy()
+    {
+        --ActiveHerolings;
+
+        GlobalGameEvent.Instance.ActorDeath -= OnActorDeath;
     }
 
     protected override void HandleCollision(ContactPoint2D contact)
@@ -98,11 +118,11 @@ public class HerolingActor : Actor
             {
                 transform.parent = null;
                 GlobalGameEvent.Instance.FireHerolingDetached(parentActor);
-
-                // re-enable physics
-                Util.EnablePhysics(gameObject);
             }
         }
+        // re-enable physics
+        Util.EnablePhysics(gameObject);
+        
         // go back home
         SetBehavior(RETURN, new ActorModifier(3, 1));
     }
@@ -125,12 +145,6 @@ public class HerolingActor : Actor
     void Reabsorb()
     {
         GameObject.Destroy(gameObject);
-    }
-    void OnDestroy()
-    {
-        //KAI: need something tighter than this - squishy Unity behavior might make this
-        // number inaccurate
-        --ActiveHerolings;
     }
 
     //KAI: cheese?

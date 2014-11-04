@@ -596,9 +596,9 @@ public sealed class GameController : IGame
         var wasHero = actor.isHero;
         var deathPos = actor.gameObject.transform.position;
 
-        GameObject.Destroy(actor.gameObject);
         if (wasPlayer)
         {
+            //KAI: does this belong in LevelScript?
             if (wasHero)
             {
                 GlobalGameEvent.Instance.FireCenterPrint("Game Over");
