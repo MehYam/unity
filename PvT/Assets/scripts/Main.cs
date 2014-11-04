@@ -23,6 +23,7 @@ public class Main : MonoBehaviour
     public HUD hud;
     public GameObject EffectParent;
     public GameObject AmmoParent;
+    public GameObject MobParent;
 
     /// <summary>
     /// ///////////////////////// debug/dev items

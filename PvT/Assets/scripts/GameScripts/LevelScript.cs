@@ -43,6 +43,7 @@ public class LevelScript : MonoBehaviour
 
     IEnumerator RunLevel(Level level, int chapterNumber)
     {
+        Debug.Log("LevelScript.RunLevel starting chapter " + chapterNumber);
         foreach (var evt in level.events)
         {
             if (evt is Level.MobSpawnEvent)

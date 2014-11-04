@@ -167,6 +167,7 @@ public sealed class GameController : IGame
     {
         go.name += " mob";
         go.layer = (int)Consts.CollisionLayer.MOB;
+        go.transform.parent = Main.Instance.MobParent.transform;
     }
 
     public GameObject SpawnAmmo(Actor launcher, ActorType.Weapon weapon, Consts.CollisionLayer layer)
