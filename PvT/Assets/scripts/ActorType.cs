@@ -189,3 +189,67 @@ public sealed class TankTurretType : ActorType
     }
 }
 
+public sealed class TankSpawnHelper
+{
+    const string HULL_NAME = "hull";
+    const string TURRET_NAME = "turret";
+    const string LEFT_TREAD_NAME = "treadLeft";
+    const string RIGHT_TREAD_NAME = "treadRight";
+
+    public readonly TankHullType hull;
+    public readonly TankTurretType turret;
+    public readonly GameObject hullGO;
+    public readonly GameObject turretGO;
+    public readonly GameObject treadLeft;
+    public readonly GameObject treadRight;
+    public TankSpawnHelper(GameController game, string tankHull, string tankTurret)
+    {
+        hull = game.loader.GetTankHull(tankHull);
+        turret = game.loader.GetTankPart(tankTurret);
+        var tread = game.loader.GetMisc("tanktreadParent");
+
+        hullGO = hull.Spawn(Consts.SortingLayer.TANKBODY, true);
+        turretGO = turret.Spawn(Consts.SortingLayer.TANKTURRET, false);
+
+        hullGO.name = HULL_NAME;
+        turretGO.name = TURRET_NAME;
+
+        treadLeft = tread.ToRawGameObject(Consts.SortingLayer.TANKTREAD);
+        treadRight = tread.ToRawGameObject(Consts.SortingLayer.TANKTREAD);
+        treadLeft.name = LEFT_TREAD_NAME;
+        treadRight.name = RIGHT_TREAD_NAME;
+
+        turretGO.transform.parent = hullGO.transform;
+        treadLeft.transform.parent = hullGO.transform;
+        treadRight.transform.parent = hullGO.transform;
+
+        var hullSprite = hullGO.GetComponent<SpriteRenderer>();
+        var hullBounds = hullSprite.sprite.bounds;
+        var pivotY = hullBounds.min.y + hull.turretPivotY / Consts.PixelsToUnits;
+        turretGO.gameObject.transform.localPosition = new Vector3(0, pivotY);
+
+        Debug.Log("TURRET LOCAL POS " + turretGO.gameObject.transform.localPosition + ", " + hull.turretPivotY);
+
+        treadLeft.gameObject.transform.Rotate(0, 0, 180);
+        treadRight.gameObject.transform.Rotate(0, 0, 180);
+        treadLeft.gameObject.transform.localPosition = new Vector3(hullBounds.min.x, 0);
+        treadRight.gameObject.transform.localPosition = new Vector3(hullBounds.max.x, 0);
+    }
+
+    //KAI: cheesy - if we had a proper TankActor type, we wouldn't need this...  all this type-aversion is making for scrambled code
+    /// <summary>
+    /// Re-constructs the spawn helper for an already-spawned tank, useful for the possession case
+    /// </summary>
+    /// <param name="gameObject">The already spawned tank</param>
+    public TankSpawnHelper(GameObject gameObject)
+    {
+        this.hullGO = gameObject;
+        this.turretGO = gameObject.transform.FindChild(TURRET_NAME).gameObject;
+        this.treadLeft = gameObject.transform.FindChild(LEFT_TREAD_NAME).gameObject;
+        this.treadRight = gameObject.transform.FindChild(RIGHT_TREAD_NAME).gameObject;
+
+        this.hull = (TankHullType)hullGO.GetComponent<Actor>().actorType;
+        this.turret = (TankTurretType)turretGO.GetComponent<Actor>().actorType;
+    }
+}
+

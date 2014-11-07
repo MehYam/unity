@@ -28,11 +28,43 @@ public sealed class MobAI
         mob.behavior = Get(mob.actorType);
 
         var hasCustomMonoBehavior = AttachMonoBehavior(mob);
+
+        if (mob.actorType is TankHullType)
+        {
+            AttachTankAI(mob);
+        }
         if (mob.behavior == null && !hasCustomMonoBehavior)
         {
             Debug.LogWarning(string.Format("no AI found for {0}, substituting a default one", mob.actorType.name));
             mob.behavior = AttackAndFlee(3, 2, 2, mob.actorType.weapons);
         }
+    }
+    void AttachTankAI(Actor tank)
+    {
+        var tankHelper = new TankSpawnHelper(tank.gameObject);
+
+        var bf = ActorBehaviorFactory.Instance;
+        var hullBehavior = new CompositeBehavior(
+            bf.CreateTankTreadAnimator(tankHelper.treadLeft, tankHelper.treadRight),
+            bf.CreateRoam(true),
+            bf.CreateAutofire(Consts.CollisionLayer.MOB_AMMO, tankHelper.hull.weapons)
+        );
+
+        var turretFireBehavior = new TimedSequenceBehavior();
+        turretFireBehavior.Add(bf.CreateAutofire(Consts.CollisionLayer.MOB_AMMO, tankHelper.turret.weapons), new RateLimiter(3, 3));
+        turretFireBehavior.Add(ActorBehaviorFactory.NULL, new RateLimiter(3, 0.75f));
+
+        var turretBehavior = new CompositeBehavior();
+        turretBehavior.Add(bf.facePlayer);
+        turretBehavior.Add(turretFireBehavior);
+
+        var hullActor = tankHelper.hullGO.GetComponent<Actor>();
+        var turretActor = tankHelper.turretGO.GetComponent<Actor>();
+        hullActor.behavior = hullBehavior;
+        turretActor.behavior = turretBehavior;
+
+        hullActor.maxRotationalVelocity = Consts.MAX_MOB_HULL_ROTATION_DEG_PER_SEC;
+        turretActor.maxRotationalVelocity = Consts.MAX_MOB_TURRET_ROTATION_DEG_PER_SEC;
     }
     IActorBehavior Get(ActorType vehicle)
     {
@@ -70,7 +102,7 @@ public sealed class MobAI
                 bf.facePlayer),
             new RateLimiter(attackTime, 1)
         );
-        retval.Add(bf.CreateRoam(Consts.MAX_MOB_ROTATION_DEG_PER_SEC, false), new RateLimiter(roamTime, 1));
+        retval.Add(bf.CreateRoam(false), new RateLimiter(roamTime, 1));
         return retval;
     }
     static IActorBehavior TheCount(ActorType.Weapon[] weapons)
@@ -87,11 +119,10 @@ public sealed class MobAI
             new RateLimiter(3, 0.5f));
         return new CompositeBehavior(bf.facePlayer, retval);
     }
-    static IActorBehavior ChargeWeaponAI(ActorType vehicle)
+    public IActorBehavior ChargeWeaponAI(ActorType.Weapon weapon)
     {
         var bf = ActorBehaviorFactory.Instance;
         var retval = new TimedSequenceBehavior();
-        var weapon = vehicle.weapons[0];
         var charge = new ChargeWeaponController(Consts.CollisionLayer.MOB_AMMO, weapon);
 
         // follow
@@ -151,7 +182,7 @@ public sealed class MobAI
         };
         _behaviorFactory["BLUEK"] = (vehicle) =>
         {
-            return ChargeWeaponAI(vehicle);
+            return ChargeWeaponAI(vehicle.weapons[0]);
         };
         _behaviorFactory["MOTH"] = (vehicle) =>
         {

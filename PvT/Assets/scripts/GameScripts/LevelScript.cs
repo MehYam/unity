@@ -8,7 +8,7 @@ public class LevelScript : MonoBehaviour
 {
     public bool mobs = true;
     public int startLevel = 1;
-    public float spawnDistance = 4;
+    public float spawnDistanceFromEdge = 4;
 
     public GameObject map;
     public GameObject[] rooms;
@@ -87,7 +87,6 @@ public class LevelScript : MonoBehaviour
             for (int i = 0; i < mobs.count; ++i)
             {
                 SpawnMob(game, mobs.mobID);
-
                 yield return new WaitForSeconds(Consts.MOB_SPAWN_DELAY);
             }
         }
@@ -114,7 +113,7 @@ public class LevelScript : MonoBehaviour
         var mob = game.SpawnMob(id);
         MobAI.Instance.AttachAI(mob.GetComponent<Actor>());
 
-        PositionMob(mob, spawnDistance);
+        PositionMob(mob, spawnDistanceFromEdge);
         _mobsSpawned.Add(mob.gameObject);
     }
     void OnEnemyDestroyed(Actor mob)

@@ -1,35 +1,44 @@
 using UnityEngine;
 using System.Collections;
 
+using PvT.Util;
+
 public class DropShadow : MonoBehaviour
 {
     public float distance = 0.08f;
     public float distanceModifier = 0;
     public float angle = 45;
 
-    GameObject _shadow;
-	void Start()
+    struct Renderers
     {
-        var sourceRenderer = GetComponent<SpriteRenderer>();
-
+        public readonly SpriteRenderer source;
+        public readonly SpriteRenderer shadow;
+        public Renderers(SpriteRenderer source, SpriteRenderer shadow) { this.source = source; this.shadow = shadow; }
+    }
+    Renderers _state;
+    void Start()
+    {
         var shadow = new GameObject();
+        var shadowRenderer = shadow.AddComponent<SpriteRenderer>();
+
+        _state = new Renderers(GetComponent<SpriteRenderer>(), shadowRenderer);
+
         shadow.name = "dropshadow";
         shadow.transform.parent = transform;
         shadow.transform.localScale = Vector3.one;
         shadow.transform.rotation = transform.rotation;
         
-        var shadowRenderer = shadow.AddComponent<SpriteRenderer>();
-        shadowRenderer.sprite = sourceRenderer.sprite;
+        shadowRenderer.sprite = _state.source.sprite;
         shadowRenderer.material = Resources.Load<Material>("DropShadowMaterial");
-        shadowRenderer.sortingLayerID = sourceRenderer.sortingLayerID;
+        shadowRenderer.sortingLayerID = _state.source.sortingLayerID;
         shadowRenderer.sortingOrder = -1;
-
-        _shadow = shadow;
 	}
 	
 	void LateUpdate()
     {
         var trueDistance = distance + distanceModifier;
-        _shadow.transform.position = transform.position + new Vector3(trueDistance, -trueDistance);
+        _state.shadow.transform.position = transform.position + new Vector3(trueDistance, -trueDistance);
+
+        Util.SetAlpha(_state.shadow, _state.source.color.a);
     }
 }

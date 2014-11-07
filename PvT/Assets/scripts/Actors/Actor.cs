@@ -20,6 +20,7 @@ public class Actor : MonoBehaviour
         thrustEnabled = true;
         immortal = false;
 
+        maxRotationalVelocity = Consts.MAX_MOB_ROTATION_DEG_PER_SEC;
         speedModifier = ActorModifier.IDENTITY;
     }
 
@@ -121,6 +122,7 @@ public class Actor : MonoBehaviour
             return isPlayer ? accel * Consts.PLAYER_ACCEL_MULTIPLIER : accel;
         }
     }
+    public float maxRotationalVelocity { get; set; }
     public bool firingEnabled { get; set; }
     public bool trackingArrowEnabled { get; set; }
     public bool thrustEnabled { get; set; }
@@ -348,7 +350,6 @@ public class Actor : MonoBehaviour
         {
             if (_trackingArrow == null)
             {
-                //KAI: stick to one way of creating assets?
                 _trackingArrow = (GameObject)GameObject.Instantiate(Main.Instance.assets.TrackingArrow);
             }
             Vector2 indPos = new Vector2(0, 0);

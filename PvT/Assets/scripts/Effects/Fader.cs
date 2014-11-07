@@ -73,20 +73,31 @@ public class Fader : MonoBehaviour  // this is almost the same class as Tween
         public readonly float endTime;
         public readonly float startAlpha;
         public readonly float targetAlpha;
-        public FadeState(float startTime, float endTime, float startAlpha, float targetAlpha) { this.startTime = startTime; this.endTime = endTime; this.startAlpha = startAlpha; this.targetAlpha = targetAlpha; }
+        public readonly bool  autoActivate;
+        public FadeState(float startTime, float endTime, float startAlpha, float targetAlpha, bool activate) { this.startTime = startTime; this.endTime = endTime; this.startAlpha = startAlpha; this.targetAlpha = targetAlpha; this.autoActivate = activate;}
     }
     FadeState _fade;
-    public void Fade(float targetAlpha, float seconds)
+    /// <summary>
+    /// Fades the GameObject's alpha, whether it's a Sprite, TextMesh, or Text object.
+    /// </summary>
+    /// <param name="targetAlpha">The alpha to tween to</param>
+    /// <param name="seconds">Time over which to tween</param>
+    /// <param name="autoActivate">Whether to activate and deactivate the GameObject as it transitions in and out of alpha == 0</param>
+    public void Fade(float targetAlpha, float seconds, bool autoActivate = true)
     {
         seconds = Mathf.Max(0.00001f, seconds); // prevent DIVZERO
 
-        _fade = new FadeState(Time.time, Time.time + seconds, 1 - targetAlpha, targetAlpha);
-        gameObject.SetActive(true);
+        _fade = new FadeState(Time.time, Time.time + seconds, 1 - targetAlpha, targetAlpha, autoActivate);
 
+        if (_fade.autoActivate)
+        {
+            gameObject.SetActive(true);
+        }
         DebugUtil.Assert(_setter != null);
 
         Update();
     }
+
     void Update()
     {
         if (_fade != null)
@@ -95,8 +106,10 @@ public class Fader : MonoBehaviour  // this is almost the same class as Tween
             _setter.alpha = Mathf.Lerp(_fade.startAlpha, _fade.targetAlpha, pctTime);
             if (pctTime >= 1 && _setter.alpha == 0)
             {
-                //Debug.Log(string.Format("Fader {0} going to sleep now.", name));
-                gameObject.SetActive(false);
+                if (_fade.autoActivate)
+                {
+                    gameObject.SetActive(false);
+                }
 
                 _fade = null;
             }

@@ -234,7 +234,7 @@ public sealed class ActorBehaviorFactory
         {
             if (_facePlayer == null)
             {
-                _facePlayer = new FaceTarget(PlayerTarget.Instance, Consts.MAX_MOB_ROTATION_DEG_PER_SEC);
+                _facePlayer = new FaceTarget(PlayerTarget.Instance);
             }
             return _facePlayer;
         }
@@ -337,13 +337,9 @@ public sealed class ActorBehaviorFactory
     {
         return new TweenPositionBehavior(position, seconds);
     }
-    public IActorBehavior CreateRotateToPlayer(float degPerSec)
+    public IActorBehavior CreateRoam(bool stopBeforeRotate)
     {
-        return new FaceTarget(PlayerTarget.Instance, degPerSec);
-    }
-    public IActorBehavior CreateRoam(float maxRotate, bool stopBeforeRotate)
-    {
-        return new RoamBehavior(maxRotate, stopBeforeRotate);
+        return new RoamBehavior(stopBeforeRotate);
     }
     IActorBehavior CreateOneAutofire(Consts.CollisionLayer layer, ActorType.Weapon weapon)
     {
@@ -421,23 +417,15 @@ sealed class FacePoint : IActorBehavior
 }
 sealed class FaceTarget : IActorBehavior
 {
-    public const float ROTATE_IMMEDIATE = -1;
-
     readonly ITarget target;
-    readonly float degPerSec;
-    public FaceTarget(ITarget target, float degPerSec = ROTATE_IMMEDIATE)
+    public FaceTarget(ITarget target)
     {
         this.target = target;
-        this.degPerSec = degPerSec;
     }
 
     public void FixedUpdate(Actor actor)
     {
-        float maxRotation = -1;
-        if (degPerSec != ROTATE_IMMEDIATE)
-        {
-            maxRotation = Time.fixedDeltaTime * degPerSec;
-        }
+        float maxRotation = Time.fixedDeltaTime * actor.maxRotationalVelocity;
         Util.LookAt2D(actor.transform, target.actor.transform, maxRotation);
     }
 }
@@ -519,11 +507,9 @@ sealed class RoamBehavior : IActorBehavior
     enum State { ROTATING, FORWARD, BRAKING };
     State state;
 
-    readonly float maxRotation;
     readonly bool brake;
-    public RoamBehavior(float maxRotation, bool brake)
+    public RoamBehavior(bool brake)
     {
-        this.maxRotation = maxRotation;
         this.brake = brake;
 
         state = State.ROTATING;
@@ -546,14 +532,14 @@ sealed class RoamBehavior : IActorBehavior
         switch (state)
         {
             case State.ROTATING: 
-                Util.LookAt2D(actor.transform, target, maxRotation);
+                Util.LookAt2D(actor.transform, target, actor.maxRotationalVelocity * Time.fixedDeltaTime);
                 if (Util.IsLookingAt(actor.transform, target, 0.1f))
                 {
                     state = State.FORWARD;
                 }
                 break;
-            case State.FORWARD: 
-                Util.LookAt2D(actor.transform, target, maxRotation);
+            case State.FORWARD:
+                Util.LookAt2D(actor.transform, target, actor.maxRotationalVelocity * Time.fixedDeltaTime);
                 ActorBehaviorFactory.Instance.thrust.FixedUpdate(actor);
 
                 if (Util.Sub(actor.transform.position, target).sqrMagnitude < 1)

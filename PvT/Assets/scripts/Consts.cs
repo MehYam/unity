@@ -16,7 +16,8 @@ public static class Consts
         FRIENDLY = 11,
         ENVIRONMENT = 12,
         HEROLINGS = 13,
-        HEROLINGS_RETURNING = 14
+        HEROLINGS_RETURNING = 14,
+        BOSS_NO_MOB_COLLISION = 15  // so that the boss can contain and parent mobs
     };
 
     public enum SortingLayer : int
