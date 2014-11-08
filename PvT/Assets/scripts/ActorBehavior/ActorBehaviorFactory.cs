@@ -203,7 +203,7 @@ public class BypassedBehavior : IActorBehavior
 
     public void FixedUpdate(Actor actor)
     {
-        DebugUtil.Assert(actor == this.actor);
+        DebugUtil.Assert(actor == this.actor, "BypassedBehavior has incorrect actor");
         if (currentBehavior != null)
         {
             currentBehavior.FixedUpdate(actor);

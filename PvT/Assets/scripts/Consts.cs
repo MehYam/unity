@@ -76,6 +76,7 @@ public static class Consts
     static public readonly float SMOOTH_DAMP_MULTIPLIER = 0.5f;
 
     static public readonly string BLINKER_TAG = "blinker";
+    static public readonly string SPAWNED_MOB_TAG = "spawnedMobTag";
 
     // UI and cinematics ///////////////////////////////////////
 #if DEBUG_INTRO

@@ -132,6 +132,7 @@ public class Actor : MonoBehaviour
     public float collisionDamage;
     public IActorBehavior behavior { get; set; }
     public IActorVisualBehavior visualBehavior { get; set; }
+    public bool pauseBehavior { get; set; }
 
     public int attachedHerolings { get; set; }
     public float overwhelmPct
@@ -166,13 +167,16 @@ public class Actor : MonoBehaviour
     protected virtual void FixedUpdate()
     {
         DetectChangeInOverwhelm();
-        if (_overwhelmBehavior != null)
+        if (!pauseBehavior)
         {
-            _overwhelmBehavior.FixedUpdate(this);
-        }
-        else if (behavior != null)
-        {
-            behavior.FixedUpdate(this);
+            if (_overwhelmBehavior != null)
+            {
+                _overwhelmBehavior.FixedUpdate(this);
+            }
+            else if (behavior != null)
+            {
+                behavior.FixedUpdate(this);
+            }
         }
 
         if (rigidbody2D != null && maxSpeed > 0 && rigidbody2D.velocity.sqrMagnitude > actorType.sqrMaxSpeed)
@@ -396,7 +400,7 @@ public class Actor : MonoBehaviour
         var self = contact.otherCollider;
         //Debug.Log(string.Format("Collision {0} to {1}, me {2}", collider.name, other.name, name));
 
-        DebugUtil.Assert(self.gameObject == gameObject);
+        DebugUtil.Assert(self.gameObject == gameObject, "Actor.HandleCollision called on actor " + name + " incorrectly");
 
         var otherActor = other.GetComponent<Actor>();
         var thisIsHeroCapturingOverwhelmedMob = otherActor != null && otherActor.overwhelmPct == 1 && isPlayer;
@@ -458,51 +462,32 @@ public class Actor : MonoBehaviour
 
 public sealed class PostDamageInvuln : IActorVisualBehavior
 {
-    readonly RateLimiter rate;
     readonly RateLimiter duration;
-    readonly SpriteRenderer[] dropShadows;
-
+    readonly Fader fader;
     public PostDamageInvuln(Actor actor, float duration)
     {
-        this.rate = new RateLimiter(0.1f);
+        this.fader = actor.gameObject.AddComponent<Fader>();
         this.duration = new RateLimiter(duration);
-
-        var shadows = actor.gameObject.GetComponentsInChildren<SpriteRenderer>();
-        dropShadows = shadows.Length > 0 ? shadows : null;
 
         actor.takenDamageMultiplier = 0;
     }
     public void Update(Actor actor)
     {
-        if (rate.reached)
-        {
-            rate.Start();
-
-            var alpha = (rate.numStarts % 2) == 0 ? 0.25f : 1;
-            SetAlpha(actor, alpha);
-        }
         if (duration.reached)
         {
             // remove self
-            DebugUtil.Assert(actor.visualBehavior == this);
+            DebugUtil.Assert(actor.visualBehavior == this, "PostDamageInvuln visualBehavior mixup");
 
             actor.visualBehavior = null;
             actor.takenDamageMultiplier = 1;
 
-            SetAlpha(actor, 1);
+            fader.Fade(1, 0, false);
         }
-    }
-    void SetAlpha(Actor actor, float alpha)
-    {
-        var sprite = actor.gameObject.GetComponent<SpriteRenderer>();
-        Util.SetAlpha(sprite, alpha);
-
-        if (dropShadows != null)
+        else if (fader.complete)
         {
-            foreach (var shadow in dropShadows)
-            {
-                Util.SetAlpha(shadow, alpha);
-            }
+            float targetAlpha = (fader.alpha < 1) ? 1 : 0.25f;
+
+            fader.Fade(0.25f, targetAlpha, false);
         }
     }
 }

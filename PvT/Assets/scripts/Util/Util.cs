@@ -180,7 +180,7 @@ namespace PvT.Util
 
                 _lastCalcedScreenRectTime = Time.time;
             }
-            DebugUtil.Assert(_screenRect != null);
+            DebugUtil.Assert(_screenRect != null, "_screenRect failed to calculate");
             return _screenRect;
         }
 
@@ -309,9 +309,13 @@ namespace PvT.Util
     public static class DebugUtil
     {
         [System.Diagnostics.Conditional("DEBUG")]
-        static public void Assert(bool condition)
+        static public void Assert(bool condition, string msg = "")
         {
-            if (!condition) throw new System.Exception();
+            if (!condition)
+            {
+                if (!string.IsNullOrEmpty(msg)) { Debug.LogError(msg); }
+                throw new System.ApplicationException(msg);
+            }
         }
 
         [System.Diagnostics.Conditional("DEBUG")]

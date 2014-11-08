@@ -39,6 +39,9 @@ public class DropShadow : MonoBehaviour
         var trueDistance = distance + distanceModifier;
         _state.shadow.transform.position = transform.position + new Vector3(trueDistance, -trueDistance);
 
-        Util.SetAlpha(_state.shadow, _state.source.color.a);
+        if (_state.shadow.color.a != _state.source.color.a)
+        {
+            Util.SetAlpha(_state.shadow, _state.source.color.a);
+        }
     }
 }

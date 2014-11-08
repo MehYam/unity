@@ -6,60 +6,52 @@ using PvT.Util;
 
 public class Fader : MonoBehaviour  // this is almost the same class as Tween
 {
-    IFadeSetter _setter;
+    IAlphaSetter _alphaSetter;
     void Awake()
     {
-        var unityText = GetComponent<Text>();
-        if (unityText != null)
+        if (GetComponent<SpriteRenderer>() != null)
         {
-            _setter = new UnityTextFadeSetter(unityText);
+            _alphaSetter = new SpriteRendererAlphaSetter(GetComponent<SpriteRenderer>());
         }
-        else
+        else if (GetComponent<TextMesh>() != null)
         {
-            var text = GetComponent<TextMesh>();
-            if (text != null)
-            {
-                _setter = new TextMeshFadeSetter(text);
-            }
-            else
-            {
-                var sprite = GetComponent<SpriteRenderer>();
-                if (sprite != null)
-                {
-                    _setter = new SpriteRendererFadeSetter(sprite);
-                }
-            }
+            _alphaSetter = new TextMeshAlphaSetter(GetComponent<TextMesh>());
         }
+        else if (GetComponent<Text>() != null)
+        {
+            _alphaSetter = new UnityTextAlphaSetter(GetComponent<Text>());
+        }
+        DebugUtil.Assert(_alphaSetter != null);
     }
 
-    interface IFadeSetter
+    interface IAlphaSetter
     {
         float alpha { get; set; }
     }
-    sealed class TextMeshFadeSetter : IFadeSetter
-    {
-        readonly TextMesh target;
-        public TextMeshFadeSetter(TextMesh target) { this.target = target; }
-        public float alpha
-        {
-            get { return target.color.a; }
-            set { Util.SetAlpha(target, value); }
-        }
-    }
-    sealed class SpriteRendererFadeSetter : IFadeSetter
+    sealed class SpriteRendererAlphaSetter : IAlphaSetter
     {
         readonly SpriteRenderer target;
-        public SpriteRendererFadeSetter(SpriteRenderer target) { this.target = target; }
+        public SpriteRendererAlphaSetter(SpriteRenderer target) { this.target = target; }
         public float alpha
         {
             get { return target.color.a; }
             set { Util.SetAlpha(target, value); }
         }
     }
-    sealed class UnityTextFadeSetter : IFadeSetter
+    sealed class TextMeshAlphaSetter : IAlphaSetter
+    {
+        readonly TextMesh target;
+        public TextMeshAlphaSetter(TextMesh target) { this.target = target; }
+        public float alpha
+        {
+            get { return target.color.a; }
+            set { Util.SetAlpha(target, value); }
+        }
+    }
+    sealed class UnityTextAlphaSetter : IAlphaSetter
     {
         readonly Text text;
-        public UnityTextFadeSetter(Text target) { this.text = target; }
+        public UnityTextAlphaSetter(Text target) { this.text = target; }
         public float alpha
         {
             get { return text.color.a; }
@@ -74,44 +66,56 @@ public class Fader : MonoBehaviour  // this is almost the same class as Tween
         public readonly float startAlpha;
         public readonly float targetAlpha;
         public readonly bool  autoActivate;
-        public FadeState(float startTime, float endTime, float startAlpha, float targetAlpha, bool activate) { this.startTime = startTime; this.endTime = endTime; this.startAlpha = startAlpha; this.targetAlpha = targetAlpha; this.autoActivate = activate;}
+        public FadeState(float startTime, float endTime, float startAlpha, float targetAlpha, bool activate) 
+        { 
+            this.startTime = startTime; 
+            this.endTime = endTime; 
+            this.startAlpha = startAlpha; 
+            this.targetAlpha = targetAlpha; 
+            this.autoActivate = activate;
+        }
     }
-    FadeState _fade;
+    FadeState _currentFade;
+
     /// <summary>
     /// Fades the GameObject's alpha, whether it's a Sprite, TextMesh, or Text object.
     /// </summary>
     /// <param name="targetAlpha">The alpha to tween to</param>
-    /// <param name="seconds">Time over which to tween</param>
+    /// <param name="seconds">Length of tween in seconds</param>
+    /// <param name="children">Set alpha on any child objects as well</param>
     /// <param name="autoActivate">Whether to activate and deactivate the GameObject as it transitions in and out of alpha == 0</param>
     public void Fade(float targetAlpha, float seconds, bool autoActivate = true)
     {
-        seconds = Mathf.Max(0.00001f, seconds); // prevent DIVZERO
+        _currentFade = new FadeState(Time.time, Time.time + seconds, 1 - targetAlpha, targetAlpha, autoActivate);
 
-        _fade = new FadeState(Time.time, Time.time + seconds, 1 - targetAlpha, targetAlpha, autoActivate);
-
-        if (_fade.autoActivate)
+        if (_currentFade.autoActivate)
         {
             gameObject.SetActive(true);
         }
-        DebugUtil.Assert(_setter != null);
-
+        enabled = true;
         Update();
     }
 
+    public float alpha { get { return _alphaSetter.alpha; } }
+    public bool complete { get { return _currentFade == null; } }
     void Update()
     {
-        if (_fade != null)
+        if (_currentFade != null)
         {
-            var pctTime = (Time.time - _fade.startTime) / (_fade.endTime - _fade.startTime);
-            _setter.alpha = Mathf.Lerp(_fade.startAlpha, _fade.targetAlpha, pctTime);
-            if (pctTime >= 1 && _setter.alpha == 0)
+            var totalTime = (_currentFade.endTime - _currentFade.startTime);
+            var pctTime = totalTime > 0 ? (Time.time - _currentFade.startTime) / totalTime : 1;
+
+            _alphaSetter.alpha = Mathf.Lerp(_currentFade.startAlpha, _currentFade.targetAlpha, pctTime);
+            
+            if (pctTime >= 1)
             {
-                if (_fade.autoActivate)
+                if (_alphaSetter.alpha == 0 && _currentFade.autoActivate)
                 {
                     gameObject.SetActive(false);
                 }
 
-                _fade = null;
+                enabled = false;
+                _currentFade = null;
             }
         }
     }
