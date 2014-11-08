@@ -642,6 +642,7 @@ sealed class FadeWithHealthAndExpiry : IActorBehavior
         this.maxHealth = maxHealth;  
     }
 
+    const float MIN_ALPHA = 0.25f;
     const float END_FADE_SECONDS = 2;
     public void FixedUpdate(Actor actor)
     {
@@ -655,6 +656,8 @@ sealed class FadeWithHealthAndExpiry : IActorBehavior
 
             pct = Mathf.Min(pct, timePct);
         }
+        pct = Mathf.Max(pct, MIN_ALPHA);
+        
         var sprite = actor.GetComponent<SpriteRenderer>();
         sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, pct);
     }

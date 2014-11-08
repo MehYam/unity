@@ -60,6 +60,7 @@ public sealed class ShieldWeaponController
         if (_shield != null)
         {
             _shield.transform.localPosition = _localShieldPos;
+            _limiter.Start();
         }
     }
 
