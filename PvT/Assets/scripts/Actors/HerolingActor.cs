@@ -16,7 +16,6 @@ public class HerolingActor : Actor
         }
     }
 
-    RateLimiter _reabsorbTimeout;
     RateLimiter _roamBoredom;
     protected override void Start()
     {
@@ -24,7 +23,6 @@ public class HerolingActor : Actor
 
         GlobalGameEvent.Instance.ActorDeath += OnActorDeath;
 
-        _reabsorbTimeout = new RateLimiter(Consts.HEROLING_UNABSORBABLE);
         _roamBoredom = new RateLimiter(Consts.HEROLING_ROAM_BOREDOM);
 
         SetBehavior(ROAM);
@@ -74,10 +72,7 @@ public class HerolingActor : Actor
                 }
                 break;
             case Consts.CollisionLayer.FRIENDLY:
-                if (_reabsorbTimeout.reached)
-                {
-                    Reabsorb();
-                }
+                Reabsorb();
                 break;
         }
     }
