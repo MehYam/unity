@@ -246,16 +246,12 @@ public sealed class GameController : IGame
 
     void OnCollisionWithOverwhelmed(Actor host)
     {
+        Debug.Log("Collision with overwhelmed " + host.name);
+
         var playerActor = player.GetComponent<Actor>();
         if (playerActor.isHero)
         {
             host.StartCoroutine(PossessionSequence(host));
-
-            //KAI: the modifier system kinda sucks.  This currently gets obliterated by something.
-            // It would be better to have a dynamic list of modifiers that can be applied
-            playerActor.GrantInvuln(Consts.POST_POSSESSION_INVULN);
-
-            GlobalGameEvent.Instance.FireEnemyDeath(host);
         }
         else
         {
@@ -329,6 +325,10 @@ public sealed class GameController : IGame
         Time.timeScale = timeScale;
 
         GlobalGameEvent.Instance.FirePlayerSpawned(this.player);
+
+        host.GrantInvuln(Consts.POST_POSSESSION_INVULN);
+        GlobalGameEvent.Instance.FireEnemyDeath(host);
+
         yield return null;
     }
     IEnumerator DepossessionSequence()
@@ -360,6 +360,8 @@ public sealed class GameController : IGame
 
         // 3. Resume all activity
         Time.timeScale = timeScale;
+
+        player.GetComponent<Actor>().GrantInvuln(Consts.POST_DEPOSSESSION_INVULN);
     }
 
     void SpawnMuzzleFlash(GameObject launcher, GameObject firePoint)
@@ -543,7 +545,6 @@ public sealed class GameController : IGame
 
                 var playerActor = player.GetComponent<Actor>();
                 playerActor.StartCoroutine(DepossessionSequence());
-                playerActor.GrantInvuln(Consts.POST_DEPOSSESSION_INVULN);
             }
         }
     }
