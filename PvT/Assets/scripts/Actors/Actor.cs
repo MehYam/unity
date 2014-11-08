@@ -26,7 +26,7 @@ public class Actor : MonoBehaviour
 
     protected virtual void Start()  // KAI: interesting Unity gotcha - must document somewhere
     {
-        var trail = GetComponent<TrailRenderer>();
+        var trail = GetComponentInChildren<TrailRenderer>();
         if (trail != null)
         {
             trail.sortingLayerID = GetComponent<SpriteRenderer>().sortingLayerID;
@@ -403,7 +403,6 @@ public class Actor : MonoBehaviour
         foreach (ContactPoint2D contact in collision.contacts)
         {
             //Debug.Log(string.Format("{0} sees ContactPoint2D.collider {1} <=> ContactPoint2D.otherCollider {2}", name, contact.collider.name, contact.otherCollider.name));
-
             if (contact.otherCollider.gameObject == gameObject &&
                 contact.collider.gameObject.layer != contact.otherCollider.gameObject.layer)
             {
@@ -441,11 +440,16 @@ public class Actor : MonoBehaviour
             {
                 if (isAmmo && otherActor.bouncesAmmo)
                 {
-                    // we're ammo being bounced by a shield - switch allegiance, and go the other way
-                    //rigidbody2D.velocity = -rigidbody2D.velocity;
+                    // we're ammo being bounced by a shield - switch allegiance
                     gameObject.layer = gameObject.layer == (int)Consts.CollisionLayer.MOB_AMMO ? 
                         (int)Consts.CollisionLayer.FRIENDLY_AMMO :
                         (int)Consts.CollisionLayer.MOB_AMMO;
+
+                    // replace the "realistic" collision with one that looks better - otherwise lasers
+                    // look wonky
+                    rigidbody2D.angularVelocity = 0;
+                    rigidbody2D.velocity = rigidbody2D.velocity.normalized * actorType.maxSpeed;
+                    ActorBehaviorFactory.Instance.faceForward.FixedUpdate(this);
                 }
                 else
                 {

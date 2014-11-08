@@ -75,7 +75,7 @@ public sealed class ShieldWeaponController
             _shield.transform.parent = Main.Instance.AmmoParent.transform;
             _shield.AddComponent<Rigidbody2D>();
             _shield.rigidbody2D.drag = 1;
-            _shield.rigidbody2D.mass = 250;
+            _shield.rigidbody2D.mass = 100;
 
             var shieldVelocity = actor.rigidbody2D.velocity;
 

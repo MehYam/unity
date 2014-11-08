@@ -41,6 +41,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 400004}
   - 95: {fileID: 9500000}
+  - 96: {fileID: 9600000}
   m_Layer: 0
   m_Name: rocketFlame
   m_TagString: Untagged
@@ -58,7 +59,6 @@ GameObject:
   - 4: {fileID: 400002}
   - 212: {fileID: 21200002}
   - 61: {fileID: 6100000}
-  - 96: {fileID: 9600000}
   m_Layer: 0
   m_Name: Rocket
   m_TagString: Untagged
@@ -89,7 +89,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: .572000027, y: .0450000018, z: -.246000007}
+  m_LocalPosition: {x: -.0105760004, y: .0133379996, z: -.246000007}
   m_LocalScale: {x: .430000007, y: 1.34977722, z: 1}
   m_Children: []
   m_Father: {fileID: 400004}
@@ -114,7 +114,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100004}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -.563869476, y: -.341798753, z: .245849609}
+  m_LocalPosition: {x: .00604220014, y: -.329129994, z: .245849997}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400008}
@@ -129,7 +129,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: .572000027, y: .184, z: -.246000007}
+  m_LocalPosition: {x: -.0105760004, y: .152339995, z: -.246000007}
   m_LocalScale: {x: .430000007, y: 1.66177952, z: 1}
   m_Children: []
   m_Father: {fileID: 400004}
@@ -141,7 +141,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100008}
   m_LocalRotation: {x: 0, y: 0, z: .364551723, w: .931183159}
-  m_LocalPosition: {x: .568000019, y: -.0149999997, z: -.246000007}
+  m_LocalPosition: {x: -.0145760002, y: -.0466619991, z: -.246000007}
   m_LocalScale: {x: .5, y: .5, z: 1}
   m_Children: []
   m_Father: {fileID: 400004}
@@ -177,7 +177,7 @@ TrailRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100006}
+  m_GameObject: {fileID: 100004}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
