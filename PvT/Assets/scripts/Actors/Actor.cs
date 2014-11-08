@@ -131,7 +131,6 @@ public class Actor : MonoBehaviour
     public float takenDamageMultiplier { get; set; }
     public float collisionDamage;
     public IActorBehavior behavior { get; set; }
-    public IActorVisualBehavior visualBehavior { get; set; }
     public bool pauseBehavior { get; set; }
 
     public int attachedHerolings { get; set; }
@@ -150,17 +149,44 @@ public class Actor : MonoBehaviour
         if (effectiveDamage > 0)
         {
             this.health -= effectiveDamage;
-
-            if (isPlayer)
-            {
-                //GrantInvuln(Consts.POST_DAMAGE_INVULN);
-            }
         }
     }
 
+    Coroutine _currentInvulnerability;
     public void GrantInvuln(float duration)
     {
-        visualBehavior = new PostDamageInvuln(this, duration);
+        //KAI: unity currently crashes really easily on StopCoroutine, so this logic is a little messed up.
+        // Our previous Invuln IActorBehavior worked better, but when the bug's fixed, this is the better
+        // way to do it.
+        if (_currentInvulnerability != null)
+        {
+            //StopCoroutine(_currentInvulnerability);
+        }
+        else
+        {
+            _currentInvulnerability = StartCoroutine(PostDamageInvulnerability(duration));
+        }
+    }
+    IEnumerator PostDamageInvulnerability(float duration)
+    {
+        takenDamageMultiplier = 0;
+
+        const float PULSE_SECONDS = 0.1f;
+        var rate = new RateLimiter(duration);
+        var fader = gameObject.AddComponent<Fader>();
+        while (!rate.reached)
+        {
+            float targetAlpha = (fader.alpha < 1) ? 1 : 0.25f;
+            fader.Fade(targetAlpha, PULSE_SECONDS, false);
+
+            yield return new WaitForSeconds(PULSE_SECONDS);
+        }
+
+        fader.Fade(1, 0, false);
+        takenDamageMultiplier = 1;
+
+        yield return new WaitForEndOfFrame();
+        _currentInvulnerability = null;
     }
 
     IActorBehavior _overwhelmBehavior;  // currently used for overwhelming
@@ -199,11 +225,6 @@ public class Actor : MonoBehaviour
     static readonly Vector3 OVERWHELM_BAR_POSITION = new Vector3(0, -0.5f);
     void Update()
     {
-        if (visualBehavior != null)
-        {
-            visualBehavior.Update(this);
-        }
-
         var showHealth = showsHealthBar && _health > 0 && _health < actorType.health;
         if (showHealth)
         {
@@ -396,11 +417,12 @@ public class Actor : MonoBehaviour
     GameObject _collisionParticles;
     protected virtual void HandleCollision(ContactPoint2D contact)
     {
-        var other = contact.collider;
         var self = contact.otherCollider;
+        var other = contact.collider;
+        
+        DebugUtil.Assert(self.gameObject == gameObject, "Confusion of self != self in HandleCollision");
+        
         //Debug.Log(string.Format("Collision {0} to {1}, me {2}", collider.name, other.name, name));
-
-        DebugUtil.Assert(self.gameObject == gameObject, "Actor.HandleCollision called on actor " + name + " incorrectly");
 
         var otherActor = other.GetComponent<Actor>();
         var thisIsHeroCapturingOverwhelmedMob = otherActor != null && otherActor.overwhelmPct == 1 && isPlayer;
@@ -426,68 +448,48 @@ public class Actor : MonoBehaviour
                 }
                 else
                 {
-                    var damage = otherActor.collisionDamage * Random.Range(0.9f, 1.1f);
-                    if (damage > 0)
-                    {
-                        if (other.gameObject.layer > self.gameObject.layer) // prevent duplicate collision sparks and damage sounds
-                        {
-                            var boom = Main.Instance.game.effects.GetRandomSmallExplosion().ToRawGameObject(Consts.SortingLayer.EXPLOSIONS);
-                            boom.transform.localPosition = contact.point;
-
-                            GlobalGameEvent.Instance.FireExplosionSpawned(boom);
-
-                            if (otherActor != null && otherActor.actorType.health > 0 && actorType.health > 0)
-                            {
-                                Main.Instance.game.PlaySound(Main.Instance.sounds.SmallCollision, contact.point);
-                            }
-    /////// PARTICLE STUFF
-                            //KAI: move this to a MainParticles class like MainLighting
-                            if (_collisionParticles == null)
-                            {
-                                _collisionParticles = ((GameObject)GameObject.Instantiate(Main.Instance.assets.collisionParticles));
-                                _collisionParticles.transform.parent = transform;
-                            }
-                            _collisionParticles.transform.position = contact.point;
-                            _collisionParticles.particleSystem.Play();
-
-    /////// END PARTICLE STUFF
-                        }
-                        TakeDamage(damage);
-                    }
+                    TakeCollisionDamage(contact);
                 }
             }
         }
     }
-}
-
-public sealed class PostDamageInvuln : IActorVisualBehavior
-{
-    readonly RateLimiter duration;
-    readonly Fader fader;
-    public PostDamageInvuln(Actor actor, float duration)
+    void TakeCollisionDamage(ContactPoint2D contact)
     {
-        this.fader = actor.gameObject.AddComponent<Fader>();
-        this.duration = new RateLimiter(duration);
+        var self = contact.otherCollider;
+        var other = contact.collider;
+        var otherActor = other.GetComponent<Actor>();
 
-        actor.takenDamageMultiplier = 0;
-    }
-    public void Update(Actor actor)
-    {
-        if (duration.reached)
+        var damage = otherActor.collisionDamage * Random.Range(0.9f, 1.1f);
+        if (damage > 0)
         {
-            // remove self
-            DebugUtil.Assert(actor.visualBehavior == this, "PostDamageInvuln visualBehavior mixup");
+            if (other.gameObject.layer > self.gameObject.layer) // prevent duplicate collision sparks and damage sounds
+            {
+                var boom = Main.Instance.game.effects.GetRandomSmallExplosion().ToRawGameObject(Consts.SortingLayer.EXPLOSIONS);
+                boom.transform.localPosition = contact.point;
 
-            actor.visualBehavior = null;
-            actor.takenDamageMultiplier = 1;
+                GlobalGameEvent.Instance.FireExplosionSpawned(boom);
 
-            fader.Fade(1, 0, false);
-        }
-        else if (fader.complete)
-        {
-            float targetAlpha = (fader.alpha < 1) ? 1 : 0.25f;
+                if (otherActor != null && otherActor.actorType.health > 0 && actorType.health > 0)
+                {
+                    Main.Instance.game.PlaySound(Main.Instance.sounds.SmallCollision, contact.point);
+                }
+                /////// PARTICLE STUFF
+                //KAI: move this to a MainParticles class like MainLighting
+                if (_collisionParticles == null)
+                {
+                    _collisionParticles = ((GameObject)GameObject.Instantiate(Main.Instance.assets.collisionParticles));
+                    _collisionParticles.transform.parent = transform;
+                }
+                _collisionParticles.transform.position = contact.point;
+                _collisionParticles.particleSystem.Play();
 
-            fader.Fade(0.25f, targetAlpha, false);
+                /////// END PARTICLE STUFF
+            }
+            TakeDamage(damage);
+            if (isPlayer)
+            {
+                GrantInvuln(Consts.POST_DAMAGE_INVULN);
+            }
         }
     }
 }

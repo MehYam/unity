@@ -11,10 +11,6 @@ namespace PvT.DOM
     {
         void FixedUpdate(Actor actor);
     }
-    public interface IActorVisualBehavior
-    {
-        void Update(Actor actor);
-    }
     public interface ICompletableActorBehavior : IActorBehavior
     {
         bool IsComplete(Actor actor);
