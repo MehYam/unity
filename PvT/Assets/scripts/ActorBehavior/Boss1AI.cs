@@ -109,10 +109,12 @@ public sealed class Boss1AI : MonoBehaviour
 
             var mobActor = mob.GetComponent<Actor>();
             mobActor.pauseBehavior = true;
+            mobActor.isCapturable = true;
+
             MobAI.Instance.AttachAI(mobActor);
 
             Util.PrepareLaunch(transform, mob.transform, bossWeapons[i].offset);
-            mobActor.transform.parent = transform;
+            mob.transform.parent = transform;
 
             ++_spawnedMobs;
         }

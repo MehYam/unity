@@ -111,7 +111,10 @@ public class LevelScript : MonoBehaviour
     void SpawnMob(IGame game, string id)
     {
         var mob = game.SpawnMob(id);
-        MobAI.Instance.AttachAI(mob.GetComponent<Actor>());
+        var mobActor = mob.GetComponent<Actor>();
+        mobActor.isCapturable = true;
+
+        MobAI.Instance.AttachAI(mobActor);
 
         PositionMob(mob, spawnDistanceFromEdge);
         _mobsSpawned.Add(mob.gameObject);

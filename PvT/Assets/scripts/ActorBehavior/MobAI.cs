@@ -143,7 +143,7 @@ public sealed class MobAI
         var retval = new CompositeBehavior(bf.followPlayer);
         var weapon = vehicle.weapons[0];
 
-        var shield = new ShieldWeaponController(Consts.CollisionLayer.MOB_AMMO, weapon);
+        var shield = new ShieldWeaponController(Consts.CollisionLayer.MOB, weapon);
         var sequence = new TimedSequenceBehavior();
 
         sequence.Add((IActorBehavior)null, new RateLimiter(5, 0.8f));

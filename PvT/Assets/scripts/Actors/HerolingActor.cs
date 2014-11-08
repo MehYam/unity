@@ -62,13 +62,13 @@ public class HerolingActor : Actor
 
     protected override void HandleCollision(ContactPoint2D contact)
     {
-        var coll = contact.collider.gameObject;
-        switch ((Consts.CollisionLayer)coll.layer)
+        var collidingPartner = contact.collider.gameObject;
+        switch ((Consts.CollisionLayer)collidingPartner.layer)
         {
             case Consts.CollisionLayer.MOB:
                 if (behavior == ROAM)
                 {
-                    AttachToMob(coll.transform);
+                    AttachToMob(collidingPartner.transform);
                 }
                 break;
             case Consts.CollisionLayer.FRIENDLY:
@@ -85,24 +85,28 @@ public class HerolingActor : Actor
     RateLimiter _attachBoredom;
     void AttachToMob(Transform mob)
     {
-        // attach
-        transform.parent = mob;
+        var mobActor = mob.GetComponent<Actor>();
+        if (mobActor.isCapturable)
+        {
+            // attach
+            transform.parent = mob;
 
-        // sidle up
-        var gimmeAKiss = transform.localPosition;
-        gimmeAKiss = gimmeAKiss + Util.ScatterRandomly(0.25f);
-        gimmeAKiss.Scale(new Vector3(0.4f, 0.4f));
-        transform.localPosition = gimmeAKiss;
+            // sidle up
+            var gimmeAKiss = transform.localPosition;
+            gimmeAKiss = gimmeAKiss + Util.ScatterRandomly(0.25f);
+            gimmeAKiss.Scale(new Vector3(0.4f, 0.4f));
+            transform.localPosition = gimmeAKiss;
 
-        // disable physics
-        Util.DisablePhysics(gameObject);
+            // disable physics
+            Util.DisablePhysics(gameObject);
 
-        SetBehavior(ATTACHED);
-        _roamBoredom = null;
-        _attachBoredom = new RateLimiter(Consts.HEROLING_ATTACH_BOREDOM);
+            SetBehavior(ATTACHED);
+            _roamBoredom = null;
+            _attachBoredom = new RateLimiter(Consts.HEROLING_ATTACH_BOREDOM);
 
-        ++mob.GetComponent<Actor>().attachedHerolings;
-        GlobalGameEvent.Instance.FireHerolingAttached(mob.GetComponent<Actor>());
+            ++mob.GetComponent<Actor>().attachedHerolings;
+            GlobalGameEvent.Instance.FireHerolingAttached(mob.GetComponent<Actor>());
+        }
     }
     void Return()
     {

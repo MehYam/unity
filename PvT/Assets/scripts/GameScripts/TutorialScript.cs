@@ -75,6 +75,8 @@ public sealed class TutorialScript : MonoBehaviour
         AnimatedText.FadeIn(hud.centerPrintTop, "In the distance, another appeared.", Consts.TEXT_FADE_SECONDS);
 
         var mobActor = game.SpawnMob("GREENK").GetComponent<Actor>();
+        mobActor.isCapturable = true;
+
         MobAI.Instance.AttachAI(mobActor);
 
         mobActor.firingEnabled = false;

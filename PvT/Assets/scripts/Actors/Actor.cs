@@ -76,6 +76,7 @@ public class Actor : MonoBehaviour
     public bool bouncesAmmo { get; set; }
     public bool showsHealthBar{ get; set; }
     public bool explodesOnDeath { get; set; }
+    public bool isCapturable { get; set; }
 
     float _health;
     public float health
