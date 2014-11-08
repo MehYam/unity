@@ -39,8 +39,6 @@ public sealed class GameController : IGame
         this.effects = new Effects(loader);
 
         var gge = GlobalGameEvent.Instance;
-        gge.HerolingAttached += OnHerolingAttached;
-        gge.HerolingDetached += OnHerolingDetached;
         gge.CollisionWithOverwhelmed += OnCollisionWithOverwhelmed;
         gge.ActorDeath += OnActorDeath;
         gge.MapReady += OnMapReady;
@@ -246,23 +244,11 @@ public sealed class GameController : IGame
         GameObject.Destroy(host);
     }
 
-    void OnHerolingAttached(Actor host)
-    {
-        ++host.attachedHerolings;
-    }
-    void OnHerolingDetached(Actor host)
-    {
-        --host.attachedHerolings;
-    }
-
     void OnCollisionWithOverwhelmed(Actor host)
     {
         var playerActor = player.GetComponent<Actor>();
         if (playerActor.isHero)
         {
-            host.attachedHerolings = 0;
-
-            enemyInPossession = true;
             host.StartCoroutine(PossessionSequence(host));
 
             //KAI: the modifier system kinda sucks.  This currently gets obliterated by something.
@@ -280,13 +266,17 @@ public sealed class GameController : IGame
             prevHost.health = 5;
 
             prevHost.behavior = null;
-            //prevHost.gameObject.layer = (int)Consts.CollisionLayer.MOB;
-            prevHost.SetExpiry(UnityEngine.Random.Range(2, 4));
+            prevHost.gameObject.layer = (int)Consts.CollisionLayer.MOB;
+
+            DebugUtil.Assert(player.GetComponent<Actor>().isHero, "Player must be hero after ejecting from previous possessee");
+            OnCollisionWithOverwhelmed(host);
         }
     }
 
     IEnumerator PossessionSequence(Actor host)
     {
+        enemyInPossession = true;
+
         var clipLength = Main.Instance.sounds.fanfare1.length * 1.25f;
         PlaySound(Main.Instance.sounds.fanfare1, player.transform.position, 0.25f);
 

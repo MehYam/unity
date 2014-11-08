@@ -106,6 +106,7 @@ public class HerolingActor : Actor
         _roamBoredom = null;
         _attachBoredom = new RateLimiter(Consts.HEROLING_ATTACH_BOREDOM);
 
+        ++mob.GetComponent<Actor>().attachedHerolings;
         GlobalGameEvent.Instance.FireHerolingAttached(mob.GetComponent<Actor>());
     }
     void Return()
@@ -117,6 +118,8 @@ public class HerolingActor : Actor
             if (parentActor != null)
             {
                 transform.parent = null;
+                
+                --parentActor.attachedHerolings;
                 GlobalGameEvent.Instance.FireHerolingDetached(parentActor);
             }
         }

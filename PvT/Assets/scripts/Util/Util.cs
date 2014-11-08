@@ -313,7 +313,6 @@ namespace PvT.Util
         {
             if (!condition)
             {
-                if (!string.IsNullOrEmpty(msg)) { Debug.LogError(msg); }
                 throw new System.ApplicationException(msg);
             }
         }
