@@ -720,9 +720,12 @@ sealed class GoHomeYouAreDrunkBehavior : IActorBehavior
         }
 
         actor.gameObject.transform.Rotate(0, 0, spinSpeed);
-        actor.gameObject.transform.Translate(
-            UnityEngine.Random.Range(-VIBE, VIBE), 
-            UnityEngine.Random.Range(-VIBE, VIBE), 0);
+        if (actor.rigidbody2D == null || !actor.rigidbody2D.isKinematic)
+        {
+            actor.gameObject.transform.Translate(
+                UnityEngine.Random.Range(-VIBE, VIBE), 
+                UnityEngine.Random.Range(-VIBE, VIBE), 0);
+        }
     }
 
     void NewSpin()
