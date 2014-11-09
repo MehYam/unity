@@ -38,7 +38,7 @@ public sealed class ShieldWeaponController
             shieldActor.SetExpiry(Actor.EXPIRY_INFINITE);
             shieldActor.explodesOnDeath = false;
             shieldActor.showsHealthBar = false;
-            shieldActor.bouncesAmmo = true;
+            shieldActor.reflectsAmmo = true;
 
             shieldActor.behavior = ActorBehaviorFactory.Instance.CreateFadeWithHealthAndExpiry(actor.actorType.health);
 

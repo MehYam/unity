@@ -73,7 +73,7 @@ public class Actor : MonoBehaviour
     }
 
     public bool isAmmo { get; set; }
-    public bool bouncesAmmo { get; set; }
+    public bool reflectsAmmo { get; set; }
     public bool showsHealthBar{ get; set; }
     public bool explodesOnDeath { get; set; }
     public bool isCapturable { get; set; }
@@ -442,7 +442,7 @@ public class Actor : MonoBehaviour
             // take collision damage from the other
             if (otherActor != null)
             {
-                if (isAmmo && otherActor.bouncesAmmo)
+                if (isAmmo && otherActor.reflectsAmmo)
                 {
                     // we're ammo being bounced by a shield - switch allegiance
                     gameObject.layer = gameObject.layer == (int)Consts.CollisionLayer.MOB_AMMO ? 
@@ -494,6 +494,7 @@ public class Actor : MonoBehaviour
 
                 /////// END PARTICLE STUFF
             }
+            //Debug.Log(string.Format("{0} (health {3}) taking {1} damage from {2}", name, damage, other.name, health));
             TakeDamage(damage);
             if (isPlayer)
             {

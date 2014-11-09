@@ -176,13 +176,13 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 3432512}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 597ae4a43a018e741acec37b97132aa4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   mobs: 1
-  startLevel: 0
+  startLevel: 1
   spawnDistanceFromEdge: -4
   map: {fileID: 100004, guid: a79bb10566c417243a18065740b954fe, type: 2}
   rooms: []
@@ -263,7 +263,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 3432512}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bdf5cf8887ffed240b21f01753b821d7, type: 3}
   m_Name: 
