@@ -1,6 +1,6 @@
 #0 sample level with all mobs
 EVENT_RAISE_CURTAIN
-LASERTURRET1,1
+LASERTURRET1,1;bee,1
 BOSS1,1
 FLY,3;
 BAT,3

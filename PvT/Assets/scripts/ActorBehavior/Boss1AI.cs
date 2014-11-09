@@ -103,20 +103,18 @@ public sealed class Boss1AI : MonoBehaviour
         for (int i = 0; i < FIRE_NODES; ++i)
         {
             var mob = game.SpawnMob(type);
-            mob.AddComponent<AlphaInherit>();
-
             mob.tag = Consts.SPAWNED_MOB_TAG;
+            mob.AddComponent<AlphaInherit>();
+            mob.rigidbody2D.isKinematic = true;
+
+            Util.PrepareLaunch(transform, mob.transform, bossWeapons[i].offset);
+            mob.transform.parent = transform;
 
             var mobActor = mob.GetComponent<Actor>();
             mobActor.pauseBehavior = true;
             mobActor.isCapturable = true;
 
             MobAI.Instance.AttachAI(mobActor);
-
-            Util.PrepareLaunch(transform, mob.transform, bossWeapons[i].offset);
-            mob.transform.parent = transform;
-            mob.rigidbody2D.isKinematic = true;
-
             ++_spawnedMobs;
         }
     }

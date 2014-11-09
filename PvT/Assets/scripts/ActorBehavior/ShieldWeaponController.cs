@@ -72,7 +72,7 @@ public sealed class ShieldWeaponController
             var shieldActor = _shield.GetComponent<Actor>();
             shieldActor.SetExpiry(actor.actorType.weapons[0].ttl);
 
-            _shield.transform.parent = Main.Instance.AmmoParent.transform;
+            _shield.transform.parent = null;
             _shield.AddComponent<Rigidbody2D>();
             _shield.rigidbody2D.drag = 1;
             _shield.rigidbody2D.mass = 100;

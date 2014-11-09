@@ -59,7 +59,7 @@ public class Actor : MonoBehaviour
         set
         {
             _actorType = value;
-            health = (float.IsNaN(value.health) || value.health == 0) ? 1 : value.health;
+            health = value.health;
         }
     }
 
@@ -469,6 +469,12 @@ public class Actor : MonoBehaviour
         var otherActor = other.GetComponent<Actor>();
 
         var damage = otherActor.collisionDamage * Random.Range(0.9f, 1.1f);
+        if (isAmmo && damage == 0)
+        {
+            // if we're ammo, ensure that we take at least one point of collision damage (this is a hack to prevent
+            // the hero from reflecting ammo like lasers, since the hero imparts no collision damage)
+            damage = 1;
+        }
         if (damage > 0)
         {
             if (other.gameObject.layer > self.gameObject.layer) // prevent duplicate collision sparks and damage sounds
@@ -495,6 +501,7 @@ public class Actor : MonoBehaviour
                 /////// END PARTICLE STUFF
             }
             //Debug.Log(string.Format("{0} (health {3}) taking {1} damage from {2}", name, damage, other.name, health));
+
             TakeDamage(damage);
             if (isPlayer)
             {

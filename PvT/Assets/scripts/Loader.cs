@@ -147,8 +147,8 @@ public class Loader
         var name = csv.GetString();
         var assetID = csv.GetString();
         var mass = csv.GetFloat();
-        var speed = csv.GetFloat();
         var health = csv.GetInt();
+        var speed = csv.GetFloat();
         var accel = csv.GetFloat();
         var inertia = csv.GetFloat();
         var dropShadow = csv.GetBool();

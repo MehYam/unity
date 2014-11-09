@@ -27,7 +27,10 @@ public class LevelScript : MonoBehaviour
         Debug.Log("LevelScript.OnGameReady");
         Main.Instance.game.SpawnPlayer(Vector3.zero);
 
-        StartCoroutine(RunLevels());
+        if (mobs)
+        {
+            StartCoroutine(RunLevels());
+        }
     }
 
     IEnumerator RunLevels()
@@ -48,8 +51,6 @@ public class LevelScript : MonoBehaviour
         {
             if (evt is Level.MobSpawnEvent)
             {
-                if (!mobs) yield break;
-
                 yield return StartCoroutine(RunMobSpawnEvent((Level.MobSpawnEvent)evt));
             }
             else if (evt is Level.ScriptEvent)

@@ -263,7 +263,6 @@ public sealed class GameController : IGame
             var prevHost = playerActor;
 
             SpawnPlayer(playerActor.transform.position);
-            prevHost.health = 5;
 
             prevHost.behavior = null;
             prevHost.gameObject.layer = (int)Consts.CollisionLayer.MOB;
