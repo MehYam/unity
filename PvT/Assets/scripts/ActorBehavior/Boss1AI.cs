@@ -66,14 +66,15 @@ public sealed class Boss1AI : MonoBehaviour
             // wait until any child mobs are all dead
             yield return StartCoroutine(Util.YieldUntil(() => _spawnedMobs == 0));
 
-            // spawn a bunch of new child mobs
-            AttachMobs("GREENK");
-
             // teleport close to player in + earthquake
             var closeToPlayer = Util.GetLookAtVector(UnityEngine.Random.Range(0, 360), 7);
 
             transform.position = Util.Add(main.game.player.transform.position, closeToPlayer);
             Util.LookAt2D(actor.transform, main.game.player.transform);
+
+            // spawn a bunch of new child mobs
+            AttachMobs("GREENK");
+
             fader.Fade(1, 5, false);
 
             main.game.PlaySound(main.sounds.roar, Camera.main.transform.position);

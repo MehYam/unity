@@ -32,6 +32,8 @@ public class DropShadow : MonoBehaviour
         shadowRenderer.material = Resources.Load<Material>("DropShadowMaterial");
         shadowRenderer.sortingLayerID = _state.source.sortingLayerID;
         shadowRenderer.sortingOrder = -1;
+
+        LateUpdate();
 	}
 	
 	void LateUpdate()

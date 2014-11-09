@@ -231,8 +231,6 @@ public sealed class TankSpawnHelper
         var pivotY = hullBounds.min.y + hull.turretPivotY / Consts.PixelsToUnits;
         turretGO.gameObject.transform.localPosition = new Vector3(0, pivotY);
 
-        Debug.Log("TURRET LOCAL POS " + turretGO.gameObject.transform.localPosition + ", " + hull.turretPivotY);
-
         treadLeft.gameObject.transform.Rotate(0, 0, 180);
         treadRight.gameObject.transform.Rotate(0, 0, 180);
         treadLeft.gameObject.transform.localPosition = new Vector3(hullBounds.min.x, 0);
