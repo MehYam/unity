@@ -115,6 +115,7 @@ public sealed class Boss1AI : MonoBehaviour
 
             Util.PrepareLaunch(transform, mob.transform, bossWeapons[i].offset);
             mob.transform.parent = transform;
+            mob.rigidbody2D.isKinematic = true;
 
             ++_spawnedMobs;
         }
@@ -133,6 +134,7 @@ public sealed class Boss1AI : MonoBehaviour
         foreach (var spawn in toDetach)
         {
             spawn.parent = newParent;
+            spawn.rigidbody2D.isKinematic = false;
             spawn.GetComponent<Actor>().pauseBehavior = false;
             spawn.GetComponent<AlphaInherit>().enabled = false;
         }

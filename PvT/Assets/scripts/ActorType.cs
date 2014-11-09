@@ -85,7 +85,10 @@ public class ActorType
             body.mass = float.IsNaN(mass) ? 0 : mass;
             body.drag = 0.5f;
             body.angularDrag = 5;
-
+            if (mass < 0)
+            {
+                body.isKinematic = true;
+            }
             go.GetComponent<Collider2D>().sharedMaterial = Main.Instance.assets.Bounce;
         }
 
