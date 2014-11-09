@@ -15,7 +15,7 @@ public class test : MonoBehaviour
 	void Start () {
         
         // Test the tween with the lambda completion function
-        GetComponent<TweenPosition>().To(Vector3.zero, 1, (gameObject) => { Log("done animation for -> " + gameObject); });
+        GetComponent<TweenPosition>().To(Vector3.zero, 1, (go) => { Log("done animation for -> " + go); });
 
         // Test chaining of coroutines
         // This demonstrates how to wait for the completion of some event using coroutines.
@@ -25,7 +25,15 @@ public class test : MonoBehaviour
 
         Log(" delta 1 " + Mathf.DeltaAngle(30, 45));
         Log(" delta 2 " + Mathf.DeltaAngle(45, 30));
-	}
+
+        // testing what happens with multiple AddComponent calls
+        gameObject.AddComponent<HopBehavior>();
+        gameObject.AddComponent<HopBehavior>();
+        gameObject.AddComponent<HopBehavior>();
+        gameObject.AddComponent<Rigidbody2D>();
+        gameObject.AddComponent<Rigidbody2D>();
+        gameObject.AddComponent<Rigidbody2D>();
+    }
 
     IEnumerator CoroutineChain_waits_for_three_clicks()
     {

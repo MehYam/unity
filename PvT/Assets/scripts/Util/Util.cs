@@ -151,20 +151,6 @@ namespace PvT.Util
             launchee.Rotate(0, 0, -angle);
 
         }
-        static public void RemoveAllChildren(Transform transform)
-        {
-            Debug.Log("Destroying children: " + transform.childCount);
-
-            var children = new GameObject[transform.childCount];
-            for (var i = 0; i < transform.childCount; ++i)
-            {
-                children[i] = transform.GetChild(i).gameObject;
-            }
-            foreach (var child in children)
-            {
-                GameObject.Destroy(child);
-            }
-        }
 
         static float _lastCalcedScreenRectTime = -1;
         static XRect _screenRect;

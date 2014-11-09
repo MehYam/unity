@@ -228,7 +228,11 @@ public sealed class GameController : IGame
     public void ShakeGround()
     {
         var go = new GameObject("earthquake");
-        var shaker = go.AddComponent<Vibrate>();
+        var shaker = go.GetComponent<Vibrate>();
+        if (shaker == null)
+        {
+            shaker = go.AddComponent<Vibrate>();
+        }
 
         shaker.StartCoroutine(ShakeGroundScript(shaker));
     }
@@ -271,6 +275,8 @@ public sealed class GameController : IGame
 
     IEnumerator PossessionSequence(Actor host)
     {
+        GlobalGameEvent.Instance.FirePossessionStart(host);
+
         enemyInPossession = true;
 
         var clipLength = Main.Instance.sounds.fanfare1.length * 1.25f;
@@ -362,6 +368,8 @@ public sealed class GameController : IGame
         Time.timeScale = timeScale;
 
         player.GetComponent<Actor>().GrantInvuln(Consts.POST_DEPOSSESSION_INVULN);
+
+        GlobalGameEvent.Instance.FirePossessionEnd();
     }
 
     void SpawnMuzzleFlash(GameObject launcher, GameObject firePoint)
@@ -382,7 +390,7 @@ public sealed class GameController : IGame
     }
     void SetPlayerPlaneBehaviors(GameObject go, ActorType vehicle)
     {
-        var isHopper = go.GetComponent<DeathHopperAI>() != null;  // HACK HACK HACK
+        var isHopper = go.GetComponent<HopBehavior>() != null;
         var bf = ActorBehaviorFactory.Instance;
         var behaviors = new CompositeBehavior();
         if (isHopper)
@@ -400,7 +408,6 @@ public sealed class GameController : IGame
 
         if (isHopper)
         {
-            go.GetComponent<DeathHopperAI>().enabled = false;
             actor.speedModifier = new ActorModifier(1000, 1000); // unlock the speed limit
         }
         else if (HasShieldWeapon(vehicle))

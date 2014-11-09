@@ -10,6 +10,7 @@ public static class Consts
 {
     public enum CollisionLayer : int
     {
+        DEFAULT = 0,
         MOB = 8, 
         MOB_AMMO = 9,
         FRIENDLY_AMMO = 10,

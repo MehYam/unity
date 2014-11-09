@@ -39,7 +39,7 @@ class GlobalGameEvent
     public event Action<Actor> HerolingDetached = delegate { };
 
     public event Action<Actor> CollisionWithOverwhelmed = delegate { };
-    public event Action PossessionStart = delegate { };
+    public event Action<Actor> PossessionStart = delegate { };
     public event Action PossessionEnd = delegate { };
 
     public event Action<Actor> ActorSpawned = delegate { };
@@ -65,7 +65,7 @@ class GlobalGameEvent
     public void FireHerolingDetached(Actor host) { HerolingDetached(host); }
 
     public void FireCollisionWithOverwhelmed(Actor host) { CollisionWithOverwhelmed(host); }
-    public void FirePossessionStart() { PossessionStart(); }
+    public void FirePossessionStart(Actor host) { PossessionStart(host); }
     public void FirePossessionEnd() { PossessionEnd(); }
 
     public void FireActorSpawned(Actor a) { ActorSpawned(a); }

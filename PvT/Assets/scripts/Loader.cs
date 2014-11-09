@@ -324,10 +324,6 @@ public class Loader
                 var m = LoadMobs(mobSpec);
                 mobs.Add(m);
             }
-            else
-            {
-                Debug.LogError("Bad mob string: " + mobSpec);
-            }
         }
         return new Level.MobSpawnEvent(mobs);
     }

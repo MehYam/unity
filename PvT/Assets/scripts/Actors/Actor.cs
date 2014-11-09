@@ -174,7 +174,11 @@ public class Actor : MonoBehaviour
 
         const float PULSE_SECONDS = 0.1f;
         var rate = new RateLimiter(duration);
-        var fader = gameObject.AddComponent<Fader>();
+        var fader = gameObject.GetComponent<Fader>();
+        if (fader == null)
+        {
+            fader = gameObject.AddComponent<Fader>();
+        }
         while (!rate.reached)
         {
             float targetAlpha = (fader.alpha < 1) ? 1 : 0.25f;
