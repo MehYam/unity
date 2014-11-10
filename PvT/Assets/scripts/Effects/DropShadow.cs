@@ -33,6 +33,8 @@ public class DropShadow : MonoBehaviour
         shadowRenderer.sortingLayerID = _state.source.sortingLayerID;
         shadowRenderer.sortingOrder = -1;
 
+        Util.SetAlpha(_state.shadow, 0);
+
         LateUpdate();
 	}
 	

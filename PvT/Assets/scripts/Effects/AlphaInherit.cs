@@ -12,10 +12,10 @@ public sealed class AlphaInherit : MonoBehaviour
         {
             parentRenderer = transform.parent.GetComponent<SpriteRenderer>();
         }
-        Update();
+        LateUpdate();
 	}
 	
-	void Update()
+	void LateUpdate()
     {
         if (transform.parent != null)
         {
