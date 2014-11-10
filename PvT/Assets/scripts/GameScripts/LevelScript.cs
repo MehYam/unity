@@ -60,10 +60,10 @@ public class LevelScript : MonoBehaviour
 
                 switch(scriptEvent.id) {
                     case "EVENT_CHAPTER":
-                        AnimatedText.FadeIn(main.hud.centerPrintTop, "Chapter " + chapterNumber, 0);
+                        AnimatedText.FadeIn(main.hud.centerPrints.top, "Chapter " + chapterNumber, 0);
                         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
-                        AnimatedText.FadeOut(main.hud.centerPrintTop, Consts.TEXT_FADE_SECONDS);
+                        AnimatedText.FadeOut(main.hud.centerPrints.top, Consts.TEXT_FADE_SECONDS);
                         break;
                     case "EVENT_DROP_CURTAIN":
                         Main.Instance.hud.curtain.Fade(1, Consts.TEXT_FADE_SECONDS_FAST);

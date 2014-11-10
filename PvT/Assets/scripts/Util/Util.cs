@@ -240,6 +240,13 @@ namespace PvT.Util
             }
         }
 
+        /// <summary>
+        /// Extension method on GameObject that adds a component of type T, or returns
+        /// an existing if a T is already attached.
+        /// </summary>
+        /// <typeparam name="T">The type of the component</typeparam>
+        /// <param name="obj">The implicit "this" reference of the GameObject. This is an extension method</param>
+        /// <returns>Returns the new or pre-existing component of type T</returns>
         static public T GetOrAddComponent<T>(this GameObject obj) where T : Component
         {
             T retval = obj.GetComponent<T>();

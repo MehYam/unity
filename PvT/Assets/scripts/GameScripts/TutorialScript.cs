@@ -54,10 +54,10 @@ public sealed class TutorialScript : MonoBehaviour
         playerActor.immortal = true;
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
-        AnimatedText.FadeIn(hud.centerPrintTop, "We were taken somewhere unfamiliar.", Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeIn(hud.centerPrints.top, "We were taken somewhere unfamiliar.", Consts.TEXT_FADE_SECONDS);
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
-        AnimatedText.FadeIn(hud.centerPrintBottom, "(Use W, A, S, D or arrow keys to explore)", Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeIn(hud.centerPrints.bottom, "(Use W, A, S, D or arrow keys to explore)", Consts.TEXT_FADE_SECONDS);
 
         playerActor.thrustEnabled = true;
         yield return StartCoroutine(Util.YieldUntil(() =>
@@ -67,12 +67,12 @@ public sealed class TutorialScript : MonoBehaviour
         }
         ));
 
-        AnimatedText.FadeOut(hud.centerPrintTop, Consts.TEXT_FADE_SECONDS_FAST);
-        AnimatedText.FadeOut(hud.centerPrintBottom, Consts.TEXT_FADE_SECONDS_FAST);
+        AnimatedText.FadeOut(hud.centerPrints.top, Consts.TEXT_FADE_SECONDS_FAST);
+        AnimatedText.FadeOut(hud.centerPrints.bottom, Consts.TEXT_FADE_SECONDS_FAST);
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_FAST);
 
         /////////////////// Introduce mob
-        AnimatedText.FadeIn(hud.centerPrintTop, "In the distance, another appeared.", Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeIn(hud.centerPrints.top, "In the distance, another appeared.", Consts.TEXT_FADE_SECONDS);
 
         var mobActor = game.SpawnMob("GREENK").GetComponent<Actor>();
         mobActor.isCapturable = true;
@@ -85,7 +85,7 @@ public sealed class TutorialScript : MonoBehaviour
         mobActor.trackingArrowEnabled = true;
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
-        AnimatedText.FadeIn(hud.centerPrintBottom, "(Seek out the newcomer)", Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeIn(hud.centerPrints.bottom, "(Seek out the newcomer)", Consts.TEXT_FADE_SECONDS);
 
         yield return StartCoroutine(Util.YieldUntil(() =>
         {
@@ -94,8 +94,8 @@ public sealed class TutorialScript : MonoBehaviour
         }
         ));
 
-        AnimatedText.FadeOut(hud.centerPrintTop, Consts.TEXT_FADE_SECONDS_FAST);
-        AnimatedText.FadeOut(hud.centerPrintBottom, Consts.TEXT_FADE_SECONDS_FAST);
+        AnimatedText.FadeOut(hud.centerPrints.top, Consts.TEXT_FADE_SECONDS_FAST);
+        AnimatedText.FadeOut(hud.centerPrints.bottom, Consts.TEXT_FADE_SECONDS_FAST);
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_FAST);
 
         mobActor.thrustEnabled = true;
@@ -107,10 +107,10 @@ public sealed class TutorialScript : MonoBehaviour
 
         main.PlayMusic(main.music.duskToDawn);
 
-        AnimatedText.FadeIn(hud.centerPrintTop, "This other was unfriendly.", Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeIn(hud.centerPrints.top, "This other was unfriendly.", Consts.TEXT_FADE_SECONDS);
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_FAST);
 
-        AnimatedText.FadeIn(hud.centerPrintBottom, "(FLEE!)", Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeIn(hud.centerPrints.bottom, "(FLEE!)", Consts.TEXT_FADE_SECONDS);
 
         float distance = 0;
         Vector3 lastPosition = playerActor.transform.position;
@@ -124,53 +124,53 @@ public sealed class TutorialScript : MonoBehaviour
         }
         ));
 
-        AnimatedText.FadeOut(hud.centerPrintTop, Consts.TEXT_FADE_SECONDS);
-        AnimatedText.FadeOut(hud.centerPrintBottom, Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeOut(hud.centerPrints.top, Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeOut(hud.centerPrints.bottom, Consts.TEXT_FADE_SECONDS);
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
-        AnimatedText.FadeIn(hud.centerPrintTop, "It persisted, leaving us no choice.", Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeIn(hud.centerPrints.top, "It persisted, leaving us no choice.", Consts.TEXT_FADE_SECONDS);
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_SLOW);
 
-        AnimatedText.FadeOut(hud.centerPrintTop, Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeOut(hud.centerPrints.top, Consts.TEXT_FADE_SECONDS);
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
-        AnimatedText.FadeIn(hud.centerPrintTop, "We had to reveal our secret.", Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeIn(hud.centerPrints.top, "We had to reveal our secret.", Consts.TEXT_FADE_SECONDS);
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
         //////////////////// Teach possession mechanic
         do
         {
-            AnimatedText.FadeIn(hud.centerPrintBottom, "(Aim with the mouse, left button shoots)", Consts.TEXT_FADE_SECONDS);
+            AnimatedText.FadeIn(hud.centerPrints.bottom, "(Aim with the mouse, left button shoots)", Consts.TEXT_FADE_SECONDS);
             playerActor.firingEnabled = true;
 
             // wait until the other ship is subdued
             yield return StartCoroutine(Util.YieldUntil(() => mobActor.overwhelmPct == 1.0f));
 
-            AnimatedText.FadeIn(hud.centerPrintBottom, "(QUICKLY! Collide with it!)", Consts.TEXT_FADE_SECONDS);
+            AnimatedText.FadeIn(hud.centerPrints.bottom, "(QUICKLY! Collide with it!)", Consts.TEXT_FADE_SECONDS);
 
             // wait until the player has either passed or failed the task of possessing the ship
             yield return StartCoroutine(Util.YieldUntil(() => (mobActor.overwhelmPct < 1) || game.enemyInPossession));
         }
         while (!game.enemyInPossession);
 
-        AnimatedText.FadeOut(hud.centerPrintTop, Consts.TEXT_FADE_SECONDS_FAST);
-        AnimatedText.FadeOut(hud.centerPrintBottom, Consts.TEXT_FADE_SECONDS_FAST);
+        AnimatedText.FadeOut(hud.centerPrints.top, Consts.TEXT_FADE_SECONDS_FAST);
+        AnimatedText.FadeOut(hud.centerPrints.bottom, Consts.TEXT_FADE_SECONDS_FAST);
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_FAST);
 
-        AnimatedText.FadeIn(hud.centerPrintTop, "My Eukarytes overwhelmed the vessel.", Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeIn(hud.centerPrints.top, "My Eukarytes overwhelmed the vessel.", Consts.TEXT_FADE_SECONDS);
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
-        AnimatedText.FadeIn(hud.centerPrintBottom, "We took it, and were safe.", Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeIn(hud.centerPrints.bottom, "We took it, and were safe.", Consts.TEXT_FADE_SECONDS);
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_SLOW);
 
-        AnimatedText.FadeOut(hud.centerPrintTop, Consts.TEXT_FADE_SECONDS);
-        AnimatedText.FadeOut(hud.centerPrintBottom, Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeOut(hud.centerPrints.top, Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeOut(hud.centerPrints.bottom, Consts.TEXT_FADE_SECONDS);
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
-        AnimatedText.FadeIn(hud.centerPrintBottom, "Then more arrived.", Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeIn(hud.centerPrints.bottom, "Then more arrived.", Consts.TEXT_FADE_SECONDS);
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_SLOW);
 
-        AnimatedText.FadeOut(hud.centerPrintBottom, Consts.TEXT_FADE_SECONDS_FAST);
+        AnimatedText.FadeOut(hud.centerPrints.bottom, Consts.TEXT_FADE_SECONDS_FAST);
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_FAST);
 
         main.hud.curtain.Fade(1, Consts.TEXT_FADE_SECONDS);

@@ -1,17 +1,23 @@
 using UnityEngine;
 using UnityEngine.UI;
+
+using System;
 using System.Collections;
 
 using PvT.Util;
 
 public sealed class HUD : MonoBehaviour
 {
+    [Serializable]
+    public class CenterPrints
+    {
+        public Text top;
+        public Text middle;
+        public Text bottom;
+    }
+    public CenterPrints centerPrints;
     public Fader curtain;
     public Fader space;
-
-    public Text centerPrintTop;
-    public Text centerPrintMiddle;
-    public Text centerPrintBottom;
 
     public Text score;
     void Start()
@@ -20,12 +26,9 @@ public sealed class HUD : MonoBehaviour
         var gge = GlobalGameEvent.Instance; 
         gge.PlayerSpawned += OnPlayerSpawned;
         gge.HerolingLaunched += OnHerolingChange;
-        //gge.HerolingDestroyed += OnHerolingChange;
         gge.HerolingAttached += OnHerolingAttached;
         gge.HerolingDetached += OnHerolingDetached;
         gge.HealthChange += OnHealthChange;
-
-        gge.CenterPrint += OnCenterPrint;
 
         // layout
         //var rect = Util.GetScreenRectInWorldCoords(Camera.main);
@@ -53,18 +56,6 @@ public sealed class HUD : MonoBehaviour
         {
             UpdateHealth();
         }
-    }
-    void OnCenterPrint(string print)
-    {
-        StartCoroutine(CenterPrintAnim(print));
-    }
-    IEnumerator CenterPrintAnim(string print)
-    {
-        centerPrintTop.gameObject.SetActive(true);
-        centerPrintTop.text = print;
-
-        yield return new WaitForSeconds(3);
-        centerPrintTop.gameObject.SetActive(false);
     }
 
     void UpdateHealth()

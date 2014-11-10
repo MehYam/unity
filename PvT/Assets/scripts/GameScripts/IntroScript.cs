@@ -19,24 +19,25 @@ public class IntroScript : MonoBehaviour
         yield return new WaitForEndOfFrame();  //HACK to ensure that the next line doesn't nullref
 
         var main = Main.Instance;
+        var hud = main.hud;
         main.PlayMusic(main.music.intro);
-        main.hud.curtain.Fade(1, 0);
+        hud.curtain.Fade(1, 0);
 
         // Text
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_FAST);
 
-        AnimatedText.FadeIn(main.hud.centerPrintTop, "We are Eukarya.", Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeIn(hud.centerPrints.top, "We are Eukarya.", Consts.TEXT_FADE_SECONDS);
 
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
-        AnimatedText.FadeIn(main.hud.centerPrintMiddle, "This is our story.", Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeIn(hud.centerPrints.middle, "This is our story.", Consts.TEXT_FADE_SECONDS);
 
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
-        AnimatedText.FadeOut(main.hud.centerPrintTop, Consts.TEXT_FADE_SECONDS);
-        AnimatedText.FadeOut(main.hud.centerPrintMiddle, Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeOut(hud.centerPrints.top, Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeOut(hud.centerPrints.middle, Consts.TEXT_FADE_SECONDS);
 
         // Lift curtain on space and heros
-        main.hud.curtain.Fade(0, Consts.TEXT_FADE_SECONDS_SLOW);
-        main.hud.space.Fade(1, 0);
+        hud.curtain.Fade(0, Consts.TEXT_FADE_SECONDS_SLOW);
+        hud.space.Fade(1, 0);
         var school = (GameObject)GameObject.Instantiate(HeroSchool);
         var screen = Util.GetScreenRectInWorldCoords(Camera.main);
         school.transform.position = new Vector2(0, screen.bottom - 1.5f);
@@ -45,35 +46,35 @@ public class IntroScript : MonoBehaviour
         var tween = school.AddComponent<TweenPosition>();
         tween.To(Vector3.zero - Vector3.up, 10);
 
-        AnimatedText.FadeIn(main.hud.centerPrintTop, "For lifetimes we roamed the stars,", Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeIn(hud.centerPrints.top, "For lifetimes we roamed the stars,", Consts.TEXT_FADE_SECONDS);
 
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
-        AnimatedText.FadeIn(main.hud.centerPrintMiddle, "Sifting the dust, unbothered.", Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeIn(hud.centerPrints.middle, "Sifting the dust, unbothered.", Consts.TEXT_FADE_SECONDS);
 
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
     
-        AnimatedText.FadeOut(main.hud.centerPrintTop, Consts.TEXT_FADE_SECONDS);
-        AnimatedText.FadeOut(main.hud.centerPrintMiddle, Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeOut(hud.centerPrints.top, Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeOut(hud.centerPrints.middle, Consts.TEXT_FADE_SECONDS);
 
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
-        AnimatedText.FadeIn(main.hud.centerPrintTop, "We lived in peace and simplicity,", Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeIn(hud.centerPrints.top, "We lived in peace and simplicity,", Consts.TEXT_FADE_SECONDS);
 
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
-        AnimatedText.FadeIn(main.hud.centerPrintMiddle, "Not knowing of others.", Consts.TEXT_FADE_SECONDS);
-
-        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
-
-        AnimatedText.FadeOut(main.hud.centerPrintTop, Consts.TEXT_FADE_SECONDS);
-        AnimatedText.FadeOut(main.hud.centerPrintMiddle, Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeIn(hud.centerPrints.middle, "Not knowing of others.", Consts.TEXT_FADE_SECONDS);
 
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
-        AnimatedText.FadeIn(main.hud.centerPrintTop, "Until one day.", Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeOut(hud.centerPrints.top, Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeOut(hud.centerPrints.middle, Consts.TEXT_FADE_SECONDS);
 
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
-        AnimatedText.FadeOut(main.hud.centerPrintTop, Consts.TEXT_FADE_SECONDS_FAST);
+        AnimatedText.FadeIn(hud.centerPrints.top, "Until one day.", Consts.TEXT_FADE_SECONDS);
+
+        yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
+
+        AnimatedText.FadeOut(hud.centerPrints.top, Consts.TEXT_FADE_SECONDS_FAST);
 
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS_FAST);
 
@@ -92,16 +93,16 @@ public class IntroScript : MonoBehaviour
         StartCoroutine(Fear(school));
 
         // Introduce enemies
-        AnimatedText.FadeIn(main.hud.centerPrintTop, "We were found.", Consts.TEXT_FADE_SECONDS);
+        AnimatedText.FadeIn(hud.centerPrints.top, "We were found.", Consts.TEXT_FADE_SECONDS);
 
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
-        AnimatedText.FadeOut(main.hud.centerPrintTop, Consts.TEXT_FADE_SECONDS_SLOW);
+        AnimatedText.FadeOut(hud.centerPrints.top, Consts.TEXT_FADE_SECONDS_SLOW);
 
-        main.hud.curtain.Fade(1, Consts.TEXT_FADE_SECONDS);
+        hud.curtain.Fade(1, Consts.TEXT_FADE_SECONDS);
 
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
 
-        main.hud.space.Fade(0, 0);
+        hud.space.Fade(0, 0);
 
         // clean up actors
         GameObject.Destroy(school);
