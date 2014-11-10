@@ -484,19 +484,19 @@ public class Actor : MonoBehaviour
                 {
                     Main.Instance.game.PlaySound(Main.Instance.sounds.SmallCollision, contact.point);
                 }
-                /////// PARTICLE STUFF
-                //KAI: move this to a MainParticles class like MainLighting
-                if (_collisionParticles == null)
-                {
-                    _collisionParticles = ((GameObject)GameObject.Instantiate(Main.Instance.assets.collisionParticles));
-                    _collisionParticles.transform.parent = transform;
-                }
-                _collisionParticles.transform.position = contact.point;
-                _collisionParticles.particleSystem.Play();
-
-                /////// END PARTICLE STUFF
             }
             //Debug.Log(string.Format("{0} (health {3}) taking {1} damage from {2}", name, damage, other.name, health));
+
+            /////// PARTICLE STUFF
+            //KAI: move this to a MainParticles class like MainLighting
+            if (_collisionParticles == null)
+            {
+                _collisionParticles = ((GameObject)GameObject.Instantiate(Main.Instance.assets.collisionParticles));
+                _collisionParticles.transform.parent = transform;
+            }
+            _collisionParticles.transform.position = contact.point;
+            _collisionParticles.particleSystem.Play();
+            /////// END PARTICLE STUFF
 
             TakeDamage(damage);
             if (isPlayer)
