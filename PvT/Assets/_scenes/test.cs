@@ -95,7 +95,6 @@ public class test : MonoBehaviour
         if (Input.GetButtonDown("Fire1"))
         {
             Log("click!");
-
             ++_clicks;
         }
     }
