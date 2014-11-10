@@ -79,7 +79,7 @@ public sealed class GameController : IGame
             GameObject.Destroy(_map);
         }
         _map = (GameObject)GameObject.Instantiate(mapPrefab);
-        _map.AddComponent<Map>();
+        _map.GetOrAddComponent<Map>();
     }
 
     public XRect WorldBounds 
@@ -228,12 +228,7 @@ public sealed class GameController : IGame
     public void ShakeGround()
     {
         var go = new GameObject("earthquake");
-        var shaker = go.GetComponent<Vibrate>();
-        if (shaker == null)
-        {
-            shaker = go.AddComponent<Vibrate>();
-        }
-
+        var shaker = go.GetOrAddComponent<Vibrate>();
         shaker.StartCoroutine(ShakeGroundScript(shaker));
     }
     IEnumerator ShakeGroundScript(MonoBehaviour host)

@@ -8,11 +8,7 @@ public static class AnimatedText
 {
     static public void FadeIn(Text textField, string text, float seconds)
     {
-        var fader = textField.gameObject.GetComponent<Fader>();
-        if (fader == null)
-        {
-            fader = textField.gameObject.AddComponent<Fader>();
-        }
+        var fader = textField.gameObject.GetOrAddComponent<Fader>();
         textField.text = text;
 
         fader.Fade(1, seconds);
@@ -20,11 +16,7 @@ public static class AnimatedText
 
     static public void FadeOut(Text textField, float seconds)
     {
-        var fader = textField.gameObject.GetComponent<Fader>();
-        if (fader == null)
-        {
-            fader = textField.gameObject.AddComponent<Fader>();
-        }
+        var fader = textField.gameObject.GetOrAddComponent<Fader>();
         fader.Fade(0, seconds);
     }
 }

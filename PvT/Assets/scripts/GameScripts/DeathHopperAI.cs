@@ -43,11 +43,7 @@ public class DeathHopperAI : MonoBehaviour
             }
 
             // 3. hop
-            var hop = gameObject.GetComponent<HopBehavior>();
-            if (hop == null)
-            {
-                hop = gameObject.AddComponent<HopBehavior>();
-            }
+            var hop = gameObject.GetOrAddComponent<HopBehavior>();
             hop.Hop(Consts.CollisionLayer.MOB_AMMO);
 
             var lookAt = Util.GetLookAtVector(actor.transform.position, game.player.transform.position);

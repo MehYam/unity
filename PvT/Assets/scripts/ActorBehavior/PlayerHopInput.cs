@@ -25,11 +25,7 @@ public class PlayerHopInput : IActorBehavior
 
     void ButtonDownUpdate(Actor actor)
     {
-        var hop = actor.gameObject.GetComponent<HopBehavior>();
-        if (hop == null)
-        {
-            hop = actor.gameObject.AddComponent<HopBehavior>();
-        }
+        var hop = actor.gameObject.GetOrAddComponent<HopBehavior>();
         if (hop.complete)
         {
             // jump onto mouse cursor

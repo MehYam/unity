@@ -240,6 +240,16 @@ namespace PvT.Util
             }
         }
 
+        static public T GetOrAddComponent<T>(this GameObject obj) where T : Component
+        {
+            T retval = obj.GetComponent<T>();
+            if (retval == null)
+            {
+                retval = obj.AddComponent<T>();
+            }
+            return retval;
+        }
+
         public static string[] SplitLines(string lines, bool skipHeader = false)
         {
             var retval = lines.Split("\n\r".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);

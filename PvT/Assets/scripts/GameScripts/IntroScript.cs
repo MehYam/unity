@@ -135,10 +135,10 @@ public class IntroScript : MonoBehaviour
             var child = school.transform.GetChild(i).GetComponent<SpriteRenderer>();
             if (child != null && child != mainHero)
             {
-                var tween = child.gameObject.AddComponent<TweenPosition>();
+                var tween = child.gameObject.GetOrAddComponent<TweenPosition>();
                 children.Add(tween);
 
-                child.gameObject.AddComponent<Vibrate>();
+                child.gameObject.GetOrAddComponent<Vibrate>();
             }
         }
 

@@ -101,11 +101,7 @@ public sealed class HopBehavior : MonoBehaviour
         //var impact = game.loader.GetMisc("landingImpact").ToRawGameObject(Consts.SortingLayer.TANKBODY);
         //impact.transform.position = actor.gameObject.transform.position;
 
-        var vibe = actor.gameObject.GetComponent<Vibrate>();
-        if (vibe == null)
-        {
-            vibe = actor.gameObject.AddComponent<Vibrate>();
-        }
+        var vibe = actor.gameObject.GetOrAddComponent<Vibrate>();
         vibe.enabled = true;
 
         if (actor.actorType.HasWeapons)
