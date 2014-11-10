@@ -140,7 +140,6 @@ public sealed class Boss1AI : MonoBehaviour
     }
     void OnActorDeath(Actor actor)
     {
-        Debug.Log("OnActorDeath " + actor.tag);
         if (actor.tag == Consts.SPAWNED_MOB_TAG)
         {
             --_spawnedMobs;

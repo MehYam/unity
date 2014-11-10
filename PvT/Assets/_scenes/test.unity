@@ -391,6 +391,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c840f17b780cfb24faa90534852dbb96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  particles: {fileID: 100000, guid: 5c7abb8ec880f3842bc1912d713fda49, type: 2}
 --- !u!96 &90393556
 TrailRenderer:
   m_ObjectHideFlags: 0

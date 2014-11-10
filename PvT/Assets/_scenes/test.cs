@@ -11,6 +11,8 @@ public class test : MonoBehaviour
         Debug.Log(string.Format("### test frame {0} => {1}", Time.frameCount, str));
     }
 
+    public GameObject particles;
+
 	// Use this for initialization
 	void Start () {
         
@@ -27,12 +29,17 @@ public class test : MonoBehaviour
         Log(" delta 2 " + Mathf.DeltaAngle(45, 30));
 
         // testing what happens with multiple AddComponent calls
-        gameObject.AddComponent<HopBehavior>();
-        gameObject.AddComponent<HopBehavior>();
-        gameObject.AddComponent<HopBehavior>();
-        gameObject.AddComponent<Rigidbody2D>();
-        gameObject.AddComponent<Rigidbody2D>();
-        gameObject.AddComponent<Rigidbody2D>();
+        //gameObject.AddComponent<HopBehavior>();
+        //gameObject.AddComponent<HopBehavior>();
+        //gameObject.AddComponent<HopBehavior>();
+        //gameObject.AddComponent<Rigidbody2D>();
+        //gameObject.AddComponent<Rigidbody2D>();
+        //gameObject.AddComponent<Rigidbody2D>();
+
+        if (particles != null)
+        {
+            StartCoroutine(TestParticleColors());
+        }
     }
 
     IEnumerator CoroutineChain_waits_for_three_clicks()
@@ -60,6 +67,24 @@ public class test : MonoBehaviour
         while (!condition())
         {
             yield return new WaitForEndOfFrame();
+        }
+    }
+
+    IEnumerator TestParticleColors()
+    {
+        var p = (GameObject)GameObject.Instantiate(particles);
+
+        while(true)
+        {
+            p.particleSystem.startColor = new Color(
+                UnityEngine.Random.Range(0, 1f),
+                UnityEngine.Random.Range(0, 1f),
+                UnityEngine.Random.Range(0, 1f)
+                );
+
+            p.particleSystem.Play();
+
+            yield return new WaitForSeconds(2);
         }
     }
 
