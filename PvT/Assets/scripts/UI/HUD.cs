@@ -9,7 +9,7 @@ using PvT.Util;
 public sealed class HUD : MonoBehaviour
 {
     [Serializable]
-    public class CenterPrints
+    public sealed class CenterPrints
     {
         public Text top;
         public Text middle;
@@ -17,7 +17,7 @@ public sealed class HUD : MonoBehaviour
     }
     public CenterPrints centerPrints;
     [Serializable]
-    public class Portrait
+    public sealed class Portrait
     {
         public Image image;
         public Text name;
@@ -47,6 +47,8 @@ public sealed class HUD : MonoBehaviour
         //KAI: this won't work for tanks... need to take a 'snapshot' of current player appearance
         var sprite = player.GetComponent<SpriteRenderer>();
         portrait.image.sprite = sprite.sprite;
+
+        portrait.name.text = player.actorType.name;
     }
     void OnHealthChange(Actor actor, float delta)
     {

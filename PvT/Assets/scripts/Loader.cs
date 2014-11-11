@@ -22,9 +22,9 @@ public class Loader
 
     public readonly ReadOnlyCollection<Level> levels;
 
-    public Loader(string strVehicles, string strTanks, string strHulls, string strTurrets, string strWeapons, string strLevels, string strAI, string strMisc)
+    public Loader(Main.GameConfig config)
     {
-        _miscLookup = LoadMisc(strMisc, "other/");
+        _miscLookup = LoadMisc(config.Misc.text, "other/");
 
         // LoadWeapons....
 
@@ -32,16 +32,16 @@ public class Loader
         // array of weapons to be constructed, but the weapons take the world object's dimensions into
         // account, so they both need to be dealth with simultaneously.
 
-        var weaponStrings = LoadWeaponStrings(strWeapons);
+        var weaponStrings = LoadWeaponStrings(config.Weapons.text);
 
-        _actorTypeLookup = LoadActorTypes(strVehicles, "actors/", weaponStrings);
+        _actorTypeLookup = LoadActorTypes(config.Actors.text, "actors/", weaponStrings);
 
-        _tankLookup = LoadTanks(strTanks);
-        _tankHullLookup = LoadTankHullTypes(strHulls, "actors/", weaponStrings);
-        _tankTurretLookup = LoadTankTurretTypes(strTurrets, "actors/", weaponStrings);
+        _tankLookup = LoadTanks(config.Tanks.text);
+        _tankHullLookup = LoadTankHullTypes(config.TankHulls.text, "actors/", weaponStrings);
+        _tankTurretLookup = LoadTankTurretTypes(config.TankTurrets.text, "actors/", weaponStrings);
 
-        levels = new ReadOnlyCollection<Level>(LoadLevels(strLevels));
-        _ai = LoadAI(strAI);
+        levels = new ReadOnlyCollection<Level>(LoadLevels(config.Levels.text));
+        _ai = LoadAI(config.AI.text);
 
         FixupWeaponLevels();
     }

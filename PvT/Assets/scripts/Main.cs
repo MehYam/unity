@@ -1,24 +1,63 @@
 //#define AUTO_SELECT_EDITOR_GAMESTATE
 
 using UnityEngine;
+using System;
 using System.Collections;
 
 using PvT.Util;
 
 public class Main : MonoBehaviour
 {
-    public TextAsset Actors;
-    public TextAsset Tanks;
-    public TextAsset TankHulls;
-    public TextAsset TankTurrets;
-    public TextAsset Weapons;
-    public TextAsset Levels;
-    public TextAsset AI;
-    public TextAsset Misc;
+    [Serializable]
+    public sealed class GameConfig
+    {
+        public TextAsset Actors;
+        public TextAsset Tanks;
+        public TextAsset TankHulls;
+        public TextAsset TankTurrets;
+        public TextAsset Weapons;
+        public TextAsset Levels;
+        public TextAsset AI;
+        public TextAsset Misc;
+    }
+    public GameConfig config;
+    [Serializable]
+    public sealed class Assets
+    {
+        public PhysicsMaterial2D Bounce;
 
-    public MainSounds sounds;
-    public MainMusic music;
-    public MainAssets assets;
+        public GameObject collisionParticles;
+        public GameObject damageSmokeParticles;
+
+        public GameObject HealthProgressBar;
+        public GameObject OverwhelmProgressBar;
+        public GameObject TrackingArrow;
+        public GameObject OverwhelmedIndicator;
+    }
+    public Assets assets;
+    [Serializable]
+    public sealed class Sounds
+    {
+        public AudioClip HerolingBump;
+        public AudioClip HerolingCapture;
+
+        public AudioClip Laser;
+        public AudioClip Bullet;
+        public AudioClip SmallCollision;
+        public AudioClip BigCollision;
+        public AudioClip Explosion1;
+
+        public AudioClip fanfare1;
+        public AudioClip roar;
+    }
+    public Sounds sounds;
+    [Serializable]
+    public sealed class Music
+    {
+        public AudioClip intro;
+        public AudioClip duskToDawn;
+    }
+    public Music music;
     
     public HUD hud;
     public GameObject EffectParent;
@@ -69,7 +108,7 @@ public class Main : MonoBehaviour
 	}
     Loader CreateLoader()
     {
-        return new Loader(Actors.text, Tanks.text, TankHulls.text, TankTurrets.text, Weapons.text, Levels.text, AI.text, Misc.text);
+        return new Loader(config);
     }
     public void Debug_Respawn()
     {
@@ -86,7 +125,7 @@ public class Main : MonoBehaviour
     void OnMapReady(GameObject unused, XRect bounds)
     {
 #if AUTO_SELECT_GAMESTATE_EDITOR
-        Selection.objects = new Object[] { GameObject.Find("_gameState") };
+        Selection.objects = new Object[] { GameObject.Find("_main") };
 #endif
     }
     void OnIntroOver(MonoBehaviour script)
