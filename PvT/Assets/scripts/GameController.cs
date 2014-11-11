@@ -166,12 +166,14 @@ public sealed class GameController : IGame
         actorAmmo.showsHealthBar = false;
         actorAmmo.isAmmo = true;
 
-        var renderer = actorAmmo.GetComponent<SpriteRenderer>();
-        if (renderer != null)
+        if (weapon.lit)
         {
-            renderer.color = weapon.color;
+            var renderer = actorAmmo.GetComponent<SpriteRenderer>();
+            if (renderer != null)
+            {
+                renderer.color = weapon.color;
+            }
         }
-
         Util.PrepareLaunch(launcher.transform, actorAmmo.transform, weapon.offset, weapon.angle);
         if (type.acceleration == 0)
         {

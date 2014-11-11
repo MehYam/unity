@@ -89,7 +89,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -.0105760004, y: .0133379996, z: -.246000007}
+  m_LocalPosition: {x: -.0105760004, y: .0133379996, z: 0}
   m_LocalScale: {x: .430000007, y: 1.34977722, z: 1}
   m_Children: []
   m_Father: {fileID: 400004}
@@ -114,7 +114,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100004}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: .00604220014, y: -.329129994, z: .245849997}
+  m_LocalPosition: {x: .00604220014, y: -.329129994, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400008}
@@ -129,7 +129,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -.0105760004, y: .152339995, z: -.246000007}
+  m_LocalPosition: {x: -.0105760004, y: .152339995, z: 0}
   m_LocalScale: {x: .430000007, y: 1.66177952, z: 1}
   m_Children: []
   m_Father: {fileID: 400004}
@@ -141,7 +141,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100008}
   m_LocalRotation: {x: 0, y: 0, z: .364551723, w: .931183159}
-  m_LocalPosition: {x: -.0145760002, y: -.0466619991, z: -.246000007}
+  m_LocalPosition: {x: -.0145760002, y: -.0466619991, z: 0}
   m_LocalScale: {x: .5, y: .5, z: 1}
   m_Children: []
   m_Father: {fileID: 400004}
@@ -198,19 +198,19 @@ TrailRenderer:
   m_Colors:
     m_Color[0]:
       serializedVersion: 2
-      rgba: 738133248
+      rgba: 721484031
     m_Color[1]:
       serializedVersion: 2
-      rgba: 1275068415
+      rgba: 1258335999
     m_Color[2]:
       serializedVersion: 2
-      rgba: 805306367
+      rgba: 788529407
     m_Color[3]:
       serializedVersion: 2
-      rgba: 587202559
+      rgba: 578188918
     m_Color[4]:
       serializedVersion: 2
-      rgba: 318767103
+      rgba: 310016634
   m_MinVertexDistance: .100000001
   m_Autodestruct: 0
 --- !u!212 &21200000
