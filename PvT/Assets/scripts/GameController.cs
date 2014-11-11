@@ -112,17 +112,19 @@ public sealed class GameController : IGame
 
             this.player = tankHelper.hullGO;
         }
-        SetSecondaryHerolingBehavior((CompositeBehavior)this.player.GetComponent<Actor>().behavior);
+        var playerActor = player.GetComponent<Actor>();
+        SetSecondaryHerolingBehavior((CompositeBehavior)playerActor.behavior);
 
         this.player.gameObject.transform.position = location;
 
-        enemyInPossession = !player.GetComponent<Actor>().isHero;
+        enemyInPossession = !playerActor.isHero;
         if (!enemyInPossession)
         {
-            player.GetComponent<Actor>().collisionDamage = 0;
+            // Hero gets no collisionDamage
+            playerActor.collisionDamage = 0;
         }
 
-        GlobalGameEvent.Instance.FirePlayerSpawned(this.player);
+        GlobalGameEvent.Instance.FirePlayerSpawned(playerActor);
         return this.player.gameObject;
     }
 
@@ -315,7 +317,8 @@ public sealed class GameController : IGame
         {
             SetPlayerPlaneBehaviors(player, vehicle);
         }
-        SetSecondaryHerolingBehavior((CompositeBehavior)player.GetComponent<Actor>().behavior);
+        var playerActor = player.GetComponent<Actor>();
+        SetSecondaryHerolingBehavior((CompositeBehavior)playerActor.behavior);
 
         // 5. Destroy the old hero and return the herolings
         GameObject.Destroy(oldHero);
@@ -324,7 +327,7 @@ public sealed class GameController : IGame
         // 6. Resume all activity
         Time.timeScale = timeScale;
 
-        GlobalGameEvent.Instance.FirePlayerSpawned(this.player);
+        GlobalGameEvent.Instance.FirePlayerSpawned(playerActor);
 
         host.GrantInvuln(Consts.POST_POSSESSION_INVULN);
         GlobalGameEvent.Instance.FireEnemyDeath(host);
@@ -532,21 +535,12 @@ public sealed class GameController : IGame
         var wasHero = actor.isHero;
         var deathPos = actor.gameObject.transform.position;
 
-        if (wasPlayer)
+        if (wasPlayer && ! wasHero)
         {
-            //KAI: does this belong in LevelScript?
-            if (wasHero)
-            {
-                GlobalGameEvent.Instance.FireCenterPrint("Game Over");
-                GlobalGameEvent.Instance.FireGameOver();
-            }
-            else
-            {
-                SpawnPlayer(deathPos);
+            SpawnPlayer(deathPos);
 
-                var playerActor = player.GetComponent<Actor>();
-                playerActor.StartCoroutine(DepossessionSequence());
-            }
+            var playerActor = player.GetComponent<Actor>();
+            playerActor.StartCoroutine(DepossessionSequence());
         }
     }
 }

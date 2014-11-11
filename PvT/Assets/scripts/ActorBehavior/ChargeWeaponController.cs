@@ -41,11 +41,7 @@ public sealed class ChargeWeaponController
                 actor.TakeDamage(selfHarm);
             }
 
-            if (actor.isPlayer)
-            {
-                //KAI: HACK
-                Main.Instance.hud.score.text = string.Format("Charge: {0}%", (int)(_currentCharge * 100));
-            }
+            GlobalGameEvent.Instance.FireWeaponCharge(actor, _currentCharge);
         }
     }
 
@@ -59,7 +55,7 @@ public sealed class ChargeWeaponController
             _currentCharge = 0;
             _limiter.Start();
 
-            Main.Instance.hud.score.text = "";
+            GlobalGameEvent.Instance.FireWeaponCharge(actor, _currentCharge);
         }
     }
 }

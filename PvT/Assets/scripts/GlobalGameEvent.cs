@@ -30,65 +30,55 @@ class GlobalGameEvent
         _singleton = null;
     }
 
+    // High-level scene state changes
     public event Action MainReady = delegate { };
     public event Action<GameObject, XRect> MapReady = delegate { };
     public event Action<IGame> GameReady = delegate { };
-
-    public event Action HerolingLaunched = delegate { };
-    public event Action<Actor> HerolingAttached = delegate { };
-    public event Action<Actor> HerolingDetached = delegate { };
-
-    public event Action<Actor> CollisionWithOverwhelmed = delegate { };
-    public event Action<Actor> PossessionStart = delegate { };
-    public event Action PossessionEnd = delegate { };
-
-    public event Action<Actor> ActorSpawned = delegate { };
-    public event Action<GameObject> PlayerSpawned = delegate { };
-    public event Action<Actor, ActorType.Weapon> AmmoSpawned = delegate { };
-    public event Action<GameObject> ExplosionSpawned = delegate { };
-    public event Action<Actor> EnemySpawned = delegate { };
-    public event Action<Actor> EnemyDestroyed = delegate { };
-
-    public event Action<Actor, float> HealthChange = delegate { };
-    public event Action<Actor> ActorDeath = delegate { };
-
     public event Action<MonoBehaviour> IntroOver = delegate { };
     public event Action<MonoBehaviour> TutorialOver = delegate { };
     public event Action GameOver = delegate { };
 
-    public void FireMainReady() { MainReady(); }
-    public void FireMapReady(GameObject map, XRect bounds) { MapReady(map, bounds); }
-    public void FireGameReady(IGame game) { GameReady(game); }
+    // In-game events
+    public event Action<Actor> ActorSpawned = delegate { };
+    public event Action<Actor> ActorDeath = delegate { };
+    public event Action<Actor> PlayerSpawned = delegate { };
+    public event Action<Actor, ActorType.Weapon> AmmoSpawned = delegate { };
+    public event Action<GameObject> ExplosionSpawned = delegate { };
+    public event Action<Actor> EnemySpawned = delegate { };
+    public event Action<Actor> EnemyDestroyed = delegate { };
+    public event Action<Actor, float> HealthChange = delegate { };
+    public event Action HerolingLaunched = delegate { };
+    public event Action<Actor> HerolingAttached = delegate { };
+    public event Action<Actor> HerolingDetached = delegate { };
+    public event Action<Actor> CollisionWithOverwhelmed = delegate { };
+    public event Action<Actor> PossessionStart = delegate { };
+    public event Action PossessionEnd = delegate { };
 
-    public void FireHerolingLaunched() { HerolingLaunched(); }
+    public event Action<Actor, float> WeaponCharge = delegate { };
+
+
+    // C# events require binding directly to the event source.  GlobalGameEvent works around
+    // this, but the cost is that for each event we have to implement its counterpart
+    // Fire**** method.
+    public void FireActorDeath(Actor actor) { ActorDeath(actor); }
+    public void FireActorSpawned(Actor a) { ActorSpawned(a); }
+    public void FireAmmoSpawned(Actor a, ActorType.Weapon w) { AmmoSpawned(a, w); }
+    public void FireCollisionWithOverwhelmed(Actor host) { CollisionWithOverwhelmed(host); }
+    public void FireEnemyDeath(Actor a) { EnemyDestroyed(a); }
+    public void FireEnemySpawned(Actor a) { EnemySpawned(a); }
+    public void FireExplosionSpawned(GameObject a) { ExplosionSpawned(a); }
+    public void FireGameOver() { GameOver(); }
+    public void FireGameReady(IGame game) { GameReady(game); }
+    public void FireHealthChange(Actor actor, float delta) { HealthChange(actor, delta); }
     public void FireHerolingAttached(Actor host) { HerolingAttached(host); }
     public void FireHerolingDetached(Actor host) { HerolingDetached(host); }
-
-    public void FireCollisionWithOverwhelmed(Actor host) { CollisionWithOverwhelmed(host); }
-    public void FirePossessionStart(Actor host) { PossessionStart(host); }
-    public void FirePossessionEnd() { PossessionEnd(); }
-
-    public void FireActorSpawned(Actor a) { ActorSpawned(a); }
-    public void FirePlayerSpawned(GameObject player) { PlayerSpawned(player); }
-    public void FireAmmoSpawned(Actor a, ActorType.Weapon w) { AmmoSpawned(a, w); }
-    public void FireExplosionSpawned(GameObject a) { ExplosionSpawned(a); }
-    public void FireEnemySpawned(Actor a) { EnemySpawned(a); }
-    public void FireEnemyDeath(Actor a) { EnemyDestroyed(a); }
-
-    public void FireHealthChange(Actor actor, float delta) { HealthChange(actor, delta); }
-    public void FireActorDeath(Actor actor) { ActorDeath(actor); }
-
-    public void FireGameOver() { GameOver(); }
-
+    public void FireHerolingLaunched() { HerolingLaunched(); }
     public void FireIntroOver(MonoBehaviour script) { IntroOver(script); }
+    public void FireMainReady() { MainReady(); }
+    public void FireMapReady(GameObject map, XRect bounds) { MapReady(map, bounds); }
+    public void FirePlayerSpawned(Actor player) { PlayerSpawned(player); }
+    public void FirePossessionEnd() { PossessionEnd(); }
+    public void FirePossessionStart(Actor host) { PossessionStart(host); }
     public void FireTutorialOver(MonoBehaviour script) { TutorialOver(script); }
-
-    // UI-centric
-    public event Action<string> CenterPrint = delegate { };
-
-    public void FireCenterPrint(string centerPrint) { CenterPrint(centerPrint); }
-
-
-    public event Action<string> TestEvent = delegate { };
-    public void FireTestEvent(string blurb) { TestEvent(blurb); }
+    public void FireWeaponCharge(Actor actor, float pct) { WeaponCharge(actor, pct); }
 }

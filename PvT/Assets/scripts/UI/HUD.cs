@@ -16,55 +16,47 @@ public sealed class HUD : MonoBehaviour
         public Text bottom;
     }
     public CenterPrints centerPrints;
+    [Serializable]
+    public class Portrait
+    {
+        public Image image;
+        public Text name;
+        public Text health;
+        public Text kills;
+        public Text captures;
+    }
+    public Portrait portrait;
     public Fader curtain;
     public Fader space;
 
-    public Text score;
     void Start()
     {
         // events
         var gge = GlobalGameEvent.Instance; 
         gge.PlayerSpawned += OnPlayerSpawned;
-        gge.HerolingLaunched += OnHerolingChange;
-        gge.HerolingAttached += OnHerolingAttached;
-        gge.HerolingDetached += OnHerolingDetached;
         gge.HealthChange += OnHealthChange;
 
         // layout
         //var rect = Util.GetScreenRectInWorldCoords(Camera.main);
     }
 
-    void OnPlayerSpawned(GameObject player)
+    void OnPlayerSpawned(Actor player)
     {
-        UpdateHealth();
-    }
-    void OnHerolingChange()
-    {
-        UpdateHerolings();
-    }
-    void OnHerolingAttached(Actor host)
-    {
-        UpdateHerolings();
-    }
-    void OnHerolingDetached(Actor host)
-    {
-        UpdateHerolings();
+        UpdateHealth(player);
+        
+        //KAI: this won't work for tanks... need to take a 'snapshot' of current player appearance
+        var sprite = player.GetComponent<SpriteRenderer>();
+        portrait.image.sprite = sprite.sprite;
     }
     void OnHealthChange(Actor actor, float delta)
     {
-        if (actor.gameObject == Main.Instance.game.player)
+        if (actor.isPlayer)
         {
-            UpdateHealth();
+            UpdateHealth(actor);
         }
     }
-
-    void UpdateHealth()
+    void UpdateHealth(Actor player)
     {
-        //var player = Main.Instance.game.player.GetComponent<Actor>();
-        //health.percent = player.health / player.worldObject.health;
-    }
-    void UpdateHerolings()
-    {
-        //label1.text = "Herolings " + HerolingActor.ActiveHerolings;
+        portrait.health.text = string.Format("Health: {0:f1}%", 100 * player.health / player.actorType.health);
     }
 }
