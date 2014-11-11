@@ -46,6 +46,21 @@ public class Loader
         FixupWeaponLevels();
     }
 
+    public void ForEachActorType(Action<ActorType> action)
+    {
+        foreach (var entry in _actorTypeLookup)
+        {
+            action(entry.Value);
+        }
+        foreach (var entry in _tankHullLookup)
+        {
+            action(entry.Value);
+        }
+        foreach (var entry in _tankTurretLookup)
+        {
+            action(entry.Value);
+        }
+    }
     void FixupWeaponLevels()
     {
         // scan through all the weapon severities to find the min/max damage per weapon type.

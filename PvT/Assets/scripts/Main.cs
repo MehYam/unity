@@ -54,6 +54,7 @@ public class Main : MonoBehaviour
     [Serializable]
     public sealed class Music
     {
+        public bool active = true;
         public AudioClip intro;
         public AudioClip duskToDawn;
     }
@@ -64,11 +65,7 @@ public class Main : MonoBehaviour
     public GameObject AmmoParent;
     public GameObject MobParent;
 
-    /// <summary>
-    /// ///////////////////////// debug/dev items
-    /// </summary>
     public string defaultVehicle = "";
-    public bool playMusic = true;
 
     static Main _instance;
     static public Main Instance
@@ -78,11 +75,11 @@ public class Main : MonoBehaviour
 
     public IGame game { get; private set; }
 
-    public void PlayMusic(AudioClip music)
+    public void PlayMusic(AudioClip clip)
     {
-        if (playMusic)
+        if (music.active)
         {
-            audio.clip = music;
+            audio.clip = clip;
             //audio.loop = true;
             audio.Play();
         }
@@ -96,6 +93,9 @@ public class Main : MonoBehaviour
         Util.SPRITE_FORWARD_ANGLE = -90; // our sprites are pointed facing up, but in the default 2D coordinate system right == 0;
 
         _instance = this;
+
+        // load saved player data
+        Debug.Log("PlayerData: totalKills " + PlayerData.Instance.playerStats.totalKills);
 
         game = new GameController(CreateLoader());
         GlobalGameEvent.Instance.MapReady += OnMapReady;
@@ -120,6 +120,8 @@ public class Main : MonoBehaviour
 
         _instance = null;
         GlobalGameEvent.ReleaseAll();
+
+        PlayerData.Instance.Commit();
     }
 
     void OnMapReady(GameObject unused, XRect bounds)

@@ -161,14 +161,14 @@ MonoBehaviour:
     fanfare1: {fileID: 8300000, guid: 13c193cf99d81eb47a4b2d4eee111281, type: 3}
     roar: {fileID: 8300000, guid: 3c1aabbef31e18c459116afd7a3fd8fd, type: 3}
   music:
+    active: 1
     intro: {fileID: 8300000, guid: 4f9d7c017c6e4ec4281cc232f5ee5812, type: 3}
     duskToDawn: {fileID: 8300000, guid: 017a4272c1fff914da1efb69cc0d80ba, type: 3}
   hud: {fileID: 1873991296}
   EffectParent: {fileID: 653143524}
   AmmoParent: {fileID: 291939734}
   MobParent: {fileID: 1453635488}
-  defaultVehicle: tank1
-  playMusic: 1
+  defaultVehicle: 
 --- !u!114 &3432517
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2075,7 +2075,7 @@ GameObject:
   - 114: {fileID: 1873991293}
   - 114: {fileID: 1873991296}
   m_Layer: 5
-  m_Name: HUD Canvas
+  m_Name: HUD and UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
