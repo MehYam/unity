@@ -29,7 +29,9 @@ public class Actor : MonoBehaviour
         var trail = GetComponentInChildren<TrailRenderer>();
         if (trail != null)
         {
-            trail.sortingLayerID = GetComponent<SpriteRenderer>().sortingLayerID;
+            var ourSprite = GetComponent<SpriteRenderer>();
+            trail.sortingLayerID = ourSprite.sortingLayerID;
+            trail.sortingOrder = ourSprite.sortingOrder - 1;
         }
         GlobalGameEvent.Instance.FireActorSpawned(this);
     }
