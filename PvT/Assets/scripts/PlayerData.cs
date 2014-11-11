@@ -14,6 +14,11 @@ public sealed class PlayerData
         public int numKilled = 0;
         public int numCaptured = 0;
         public ActorStats(int numKilled, int numCaptured) { this.numKilled = numKilled; this.numCaptured = numCaptured; }
+
+        //KAI: to add:
+        // kills using this mob
+        // damage done using this mob
+        // time spent possessing this mob
     }
     [Serializable]
     public sealed class PlayerStats
@@ -36,6 +41,20 @@ public sealed class PlayerData
     }
     public PlayerStats playerStats { get; private set; }
 
+    //KAI: the only reason OnMobDeath and OnPossessionStart are not subscribed to directly from
+    // GlobalGameEvent is that the UIController needs to get them first
+    public void OnMobDeath(Actor actor)
+    {
+        if (!actor.isPlayer && !actor.isAmmo)
+        {
+            AddKill(actor.actorType.name);
+        }
+    }
+    public void OnPossessionStart(Actor host)
+    {
+        AddCapture(host.actorType.name);
+    }
+
     /// <summary>
     /// Should only be called periodically, say when user pauses, when app goes to background, when level's complete, etc
     /// </summary>
@@ -55,9 +74,6 @@ public sealed class PlayerData
     static readonly string PLAYER_STATS = "playerStats1";
     PlayerData()
     {
-        GlobalGameEvent.Instance.ActorDeath += OnActorDeath;
-        GlobalGameEvent.Instance.PossessionStart += OnPossessionStart;
-
         playerStats = new PlayerStats();
 
         // Deserialize from the previous session
@@ -71,17 +87,6 @@ public sealed class PlayerData
         {
             playerStats = Base64Serializer.FromBase64<PlayerStats>(base64);
         }
-    }
-    void OnActorDeath(Actor actor)
-    {
-        if (!actor.isPlayer && !actor.isAmmo)
-        {
-            AddKill(actor.actorType.name);
-        }
-    }
-    void OnPossessionStart(Actor host)
-    {
-        AddCapture(host.actorType.name);
     }
     void AddKill(string actorTypeName)
     {

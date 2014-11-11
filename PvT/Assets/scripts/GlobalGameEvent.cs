@@ -44,8 +44,8 @@ class GlobalGameEvent
     public event Action<Actor> PlayerSpawned = delegate { };
     public event Action<Actor, ActorType.Weapon> AmmoSpawned = delegate { };
     public event Action<GameObject> ExplosionSpawned = delegate { };
-    public event Action<Actor> EnemySpawned = delegate { };
-    public event Action<Actor> EnemyDeath = delegate { };
+    public event Action<Actor> MobSpawned = delegate { };
+    public event Action<Actor> MobDeath = delegate { };
     public event Action<Actor, float> HealthChange = delegate { };
     public event Action HerolingLaunched = delegate { };
     public event Action<Actor> HerolingAttached = delegate { };
@@ -64,8 +64,6 @@ class GlobalGameEvent
     public void FireActorSpawned(Actor a) { ActorSpawned(a); }
     public void FireAmmoSpawned(Actor a, ActorType.Weapon w) { AmmoSpawned(a, w); }
     public void FireCollisionWithOverwhelmed(Actor host) { CollisionWithOverwhelmed(host); }
-    public void FireEnemyDeath(Actor a) { EnemyDeath(a); }
-    public void FireEnemySpawned(Actor a) { EnemySpawned(a); }
     public void FireExplosionSpawned(GameObject a) { ExplosionSpawned(a); }
     public void FireGameOver() { GameOver(); }
     public void FireGameReady(IGame game) { GameReady(game); }
@@ -76,6 +74,8 @@ class GlobalGameEvent
     public void FireIntroOver(MonoBehaviour script) { IntroOver(script); }
     public void FireMainReady() { MainReady(); }
     public void FireMapReady(GameObject map, XRect bounds) { MapReady(map, bounds); }
+    public void FireMobDeath(Actor a) { MobDeath(a); }
+    public void FireMobSpawned(Actor a) { MobSpawned(a); }
     public void FirePlayerSpawned(Actor player) { PlayerSpawned(player); }
     public void FirePossessionEnd() { PossessionEnd(); }
     public void FirePossessionStart(Actor host) { PossessionStart(host); }

@@ -17,7 +17,7 @@ public class LevelScript : MonoBehaviour
         DebugUtil.Log(this, "Start");
         Main.Instance.hud.curtain.Fade(1, 0);
 
-        GlobalGameEvent.Instance.EnemyDeath += OnEnemyDeath;
+        GlobalGameEvent.Instance.MobDeath += OnMobDeath;
         GlobalGameEvent.Instance.GameReady += OnGameReady;
 
         Main.Instance.game.SetMap(map);
@@ -120,7 +120,7 @@ public class LevelScript : MonoBehaviour
         PositionMob(mob, spawnDistanceFromEdge);
         _mobsSpawned.Add(mob.gameObject);
     }
-    void OnEnemyDeath(Actor mob)
+    void OnMobDeath(Actor mob)
     {
         _mobsSpawned.Remove(mob.gameObject);
     }

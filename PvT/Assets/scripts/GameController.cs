@@ -330,7 +330,7 @@ public sealed class GameController : IGame
         GlobalGameEvent.Instance.FirePlayerSpawned(playerActor);
 
         host.GrantInvuln(Consts.POST_POSSESSION_INVULN);
-        GlobalGameEvent.Instance.FireEnemyDeath(host);
+        GlobalGameEvent.Instance.FireMobDeath(host);
 
         yield return null;
     }
@@ -528,7 +528,7 @@ public sealed class GameController : IGame
         if (enemy)
         {
             PlaySound(Main.Instance.sounds.Explosion1, actor.gameObject.transform.position);
-            GlobalGameEvent.Instance.FireEnemyDeath(actor);
+            GlobalGameEvent.Instance.FireMobDeath(actor);
         }
 
         var wasPlayer = actor.gameObject == player;
