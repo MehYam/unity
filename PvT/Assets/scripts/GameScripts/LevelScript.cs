@@ -31,6 +31,10 @@ public class LevelScript : MonoBehaviour
         {
             StartCoroutine(RunLevels());
         }
+        else
+        {
+            Main.Instance.hud.curtain.Fade(0, 0);
+        }
     }
 
     IEnumerator RunLevels()
