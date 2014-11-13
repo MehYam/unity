@@ -101,7 +101,7 @@ namespace PvT.Util
         static public Vector2 GetLookAtVectorToMouse(Vector2 looker)
         {
             var screen = Camera.main.WorldToScreenPoint(looker);
-            return Input.mousePosition - screen;
+            return MasterInput.impl.CurrentPointer - (Vector2)screen;
         }
         static public float GetAngleToMouse(Transform transform)
         {

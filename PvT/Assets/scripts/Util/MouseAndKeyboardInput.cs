@@ -15,6 +15,10 @@ public sealed class MouseAndKeyboardInput : IInput
     {
         return Input.GetButton("Fire2");
     }
+    public Vector2 CurrentPointer
+    {
+        get { return Input.mousePosition; }
+    }
     public Vector2 CurrentInputVector
     {
         get { return new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")); }

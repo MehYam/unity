@@ -29,7 +29,7 @@ public class PlayerHopInput : IActorBehavior
         if (hop.complete)
         {
             // jump onto mouse cursor
-            var mouseInWorld = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            var mouseInWorld = Camera.main.ScreenToWorldPoint(MasterInput.impl.CurrentPointer);
             mouseInWorld.z = 0;
 
             // calculate the velocity required based on the height of the jump

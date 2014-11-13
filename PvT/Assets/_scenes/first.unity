@@ -164,6 +164,7 @@ MonoBehaviour:
     active: 1
     intro: {fileID: 8300000, guid: 4f9d7c017c6e4ec4281cc232f5ee5812, type: 3}
     duskToDawn: {fileID: 8300000, guid: 017a4272c1fff914da1efb69cc0d80ba, type: 3}
+  touchInput: 0
   hud: {fileID: 1873991296}
   EffectParent: {fileID: 653143524}
   AmmoParent: {fileID: 291939734}
