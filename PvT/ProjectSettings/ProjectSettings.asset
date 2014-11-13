@@ -113,7 +113,7 @@ PlayerSettings:
       m_Size: 128
   - m_BuildTarget: Android
     m_Icons:
-    - m_Icon: {fileID: 2800000, guid: 8939a197d722a7649aa069d3927bf0e2, type: 3}
+    - m_Icon: {fileID: 2800000, guid: 5dcc69420d0609b4b81fef7a6d2b5b78, type: 3}
       m_Size: 144
     - m_Icon: {fileID: 0}
       m_Size: 96
