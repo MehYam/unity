@@ -376,14 +376,14 @@ public sealed class ActorBehaviorFactory
             facePlayer
         );
     }
-    public IActorBehavior CreatePlayerButton(string button, IActorBehavior behavior)
+    public IActorBehavior CreatePlayerButton(Func<bool> buttonCallback, IActorBehavior behavior)
     {
         Action<Actor> onFrame = behavior == null ? (Action<Actor>)null : behavior.FixedUpdate;
-        return new PlayerButton(button, null, onFrame, null);
+        return new PlayerButton(buttonCallback, null, onFrame, null);
     }
-    public IActorBehavior CreatePlayerButton(string button, IActorBehavior onDown, IActorBehavior onFrame, IActorBehavior onUp)
+    public IActorBehavior CreatePlayerButton(Func<bool> buttonCallback, IActorBehavior onDown, IActorBehavior onFrame, IActorBehavior onUp)
     {
-        return new PlayerButton(button, onDown.FixedUpdate, onFrame.FixedUpdate, onUp.FixedUpdate);
+        return new PlayerButton(buttonCallback, onDown.FixedUpdate, onFrame.FixedUpdate, onUp.FixedUpdate);
     }
     public IActorBehavior CreateFadeWithHealthAndExpiry(float maxHealth)
     {
@@ -586,21 +586,21 @@ sealed class WeaponDischargeBehavior : IActorBehavior
 // KAI: trying something new here - Actions instead of interfaces, for slightly more flexibility
 sealed class PlayerButton : IActorBehavior
 {
-    readonly string button;
+    readonly Func<bool> buttonCallback;
     readonly Action<Actor> onDown;
     readonly Action<Actor> onFrame;
     readonly Action<Actor> onUp;
 
-    public PlayerButton(string button, Action<Actor> onDown, Action<Actor> onFrame, Action<Actor> onUp)
+    public PlayerButton(Func<bool> buttonCallback, Action<Actor> onDown, Action<Actor> onFrame, Action<Actor> onUp)
     {
-        this.button = button;
+        this.buttonCallback = buttonCallback;
         this.onDown = onDown;
         this.onFrame = onFrame;
         this.onUp = onUp;
     }
-    public PlayerButton(string button, IActorBehavior onDown, IActorBehavior onFrame, IActorBehavior onUp)
+    public PlayerButton(Func<bool> buttonCallback, IActorBehavior onDown, IActorBehavior onFrame, IActorBehavior onUp)
     {
-        this.button = button;
+        this.buttonCallback = buttonCallback;
         this.onDown = onDown == null ? null : (Action<Actor>)onDown.FixedUpdate;
         this.onFrame = onFrame == null ? null : (Action<Actor>)onFrame.FixedUpdate;
         this.onUp = onUp == null ? null : (Action<Actor>)onFrame.FixedUpdate;
@@ -608,7 +608,7 @@ sealed class PlayerButton : IActorBehavior
     bool down;
     public void FixedUpdate(Actor actor)
     {
-        if (Input.GetButton(button))
+        if (buttonCallback())
         {
             if (!down)
             {
