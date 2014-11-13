@@ -79,6 +79,10 @@ public static class Consts
     static public readonly string BLINKER_TAG = "blinker";
     static public readonly string SPAWNED_MOB_TAG = "spawnedMobTag";
 
+    static public readonly int XP_PER_KILL = 10;
+    static public readonly int XP_PER_CAPTURE = 50;
+    static public readonly int XP_CURVE_MULTIPLIER = 100;  // i.e. 100 => 200, 400, 800, 1600, 3200
+
     // UI and cinematics ///////////////////////////////////////
 #if DEBUG_INTRO
     static public readonly float TEXT_FADE_SECONDS = 0.2f;

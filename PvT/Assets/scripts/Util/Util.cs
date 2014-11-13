@@ -14,6 +14,18 @@ namespace PvT.Util
 {
     public static class Util
     {
+        static public int FastLog2Floor(int n)
+        {
+            // Overkill, but fun to investigate.  This is exactly twice as fast as (int)Math.Log in mono,
+            // slightly less advantageous in VS 2010
+            int bits = 0;
+            while (n > 1)
+            {
+                ++bits;
+                n >>= 1;
+            }
+            return bits;
+        }
         /// <summary>
         /// Flips a coin.  You can set the odds
         /// </summary>

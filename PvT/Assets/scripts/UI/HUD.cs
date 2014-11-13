@@ -25,8 +25,9 @@ public sealed class HUD : MonoBehaviour
         public Image image;
         public Text name;
         public Text health;
-        public Text kills;
+        public Text xp;
         public Text captures;
+        public Text level;
     }
     public Portrait portrait;
     public Fader curtain;
@@ -49,17 +50,20 @@ public sealed class HUD : MonoBehaviour
     void OnPlayerSpawned(Actor player)
     {
         UpdateHealth(player);
-        UpdatePortraitImage(player);        
-        UpdateKills(player.actorType);
+        UpdatePortraitImage(player);
+        UpdateLevel(player.actorType);
+        UpdateXP(player.actorType);
         UpdateCaptures(player.actorType);
     }
     void OnMobDeath(Actor mob)
     {
+        var playerType = Main.Instance.game.player.GetComponent<Actor>().actorType;
         PlayerData.Instance.OnMobDeath(mob);
-        if (Main.Instance.game.player.GetComponent<Actor>().actorType.name == mob.actorType.name)
+        if (playerType == mob.actorType)
         {
-            UpdateKills(mob.actorType);
+            UpdateXP(mob.actorType);
         }
+        UpdateLevel(playerType);
     }
     void OnPossessionStart(Actor host)
     {
@@ -84,10 +88,13 @@ public sealed class HUD : MonoBehaviour
 
         portrait.name.text = player.actorType.name;
     }
-    void UpdateKills(ActorType type)
+    void UpdateLevel(ActorType type)
     {
-        var stats = PlayerData.Instance.GetActorStats(type.name);
-        portrait.kills.text = "Kills: " + stats.numKilled;
+        portrait.level.text = PlayerData.Instance.GetLevel(type).ToString();
+    }
+    void UpdateXP(ActorType type)
+    {
+        portrait.xp.text = "XP: " + PlayerData.Instance.GetXP(type);
     }
     void UpdateCaptures(ActorType type)
     {

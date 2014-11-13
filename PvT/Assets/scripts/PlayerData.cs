@@ -13,12 +13,7 @@ public sealed class PlayerData
     {
         public int numKilled = 0;
         public int numCaptured = 0;
-        public ActorStats(int numKilled, int numCaptured) { this.numKilled = numKilled; this.numCaptured = numCaptured; }
-
-        //KAI: to add:
-        // kills using this mob
-        // damage done using this mob
-        // time spent possessing this mob
+        public int numKillsWithActor = 0;
     }
     [Serializable]
     public sealed class PlayerStats
@@ -34,12 +29,25 @@ public sealed class PlayerData
         ActorStats retval = null;
         if (!_actorStatsLookup.TryGetValue(actorName, out retval))
         {
-            retval = new ActorStats(0, 0);
+            retval = new ActorStats();
             _actorStatsLookup[actorName] = retval;
         }
         return retval;
     }
     public PlayerStats playerStats { get; private set; }
+
+    public int GetXP(ActorType type)
+    {
+        var stats = GetActorStats(type.name);
+        var xp = stats.numKillsWithActor * Consts.XP_PER_KILL + stats.numCaptured * Consts.XP_PER_CAPTURE;
+        return xp;
+    }
+    public int GetLevel(ActorType type)
+    {
+        var xp = GetXP(type);
+        int level = Util.FastLog2Floor(xp / Consts.XP_CURVE_MULTIPLIER);
+        return Mathf.Max(1, level);
+    }
 
     //KAI: the only reason OnMobDeath and OnPossessionStart are not subscribed to directly from
     // GlobalGameEvent is that the UIController needs to get them first
@@ -47,7 +55,8 @@ public sealed class PlayerData
     {
         if (!actor.isPlayer && !actor.isAmmo)
         {
-            AddKill(actor.actorType.name);
+            var playerActor = Main.Instance.game.player.GetComponent<Actor>();
+            AddKill(actor.actorType.name, playerActor.actorType.name);
         }
     }
     public void OnPossessionStart(Actor host)
@@ -88,11 +97,14 @@ public sealed class PlayerData
             playerStats = Base64Serializer.FromBase64<PlayerStats>(base64);
         }
     }
-    void AddKill(string actorTypeName)
+    void AddKill(string victimTypeName, string playerTypeName)
     {
-        var stats = GetActorStats(actorTypeName);
+        var stats = GetActorStats(victimTypeName);
         ++stats.numKilled;
         ++playerStats.totalKills;
+
+        stats = GetActorStats(playerTypeName);
+        ++stats.numKillsWithActor;
     }
     void AddCapture(string actorTypeName)
     {
