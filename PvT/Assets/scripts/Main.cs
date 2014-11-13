@@ -59,7 +59,8 @@ public class Main : MonoBehaviour
         public AudioClip duskToDawn;
     }
     public Music music;
-    
+
+    public bool touchInput = false;
     public HUD hud;
     public GameObject EffectParent;
     public GameObject AmmoParent;
@@ -93,6 +94,8 @@ public class Main : MonoBehaviour
         Util.SPRITE_FORWARD_ANGLE = -90; // our sprites are pointed facing up, but in the default 2D coordinate system right == 0;
 
         _instance = this;
+
+        MasterInput.impl = touchInput ? (IInput)new TouchInput() : new MouseAndKeyboardInput();
 
         // load saved player data
         Debug.Log("PlayerData: totalKills " + PlayerData.Instance.playerStats.totalKills);

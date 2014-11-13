@@ -10,7 +10,7 @@ public class PlayerHopInput : IActorBehavior
     public PlayerHopInput()
     {
         playerInput = new PlayerButton(
-            MasterInput.Click,
+            MasterInput.impl.Primary,
             ButtonDownUpdate,
             ButtonDownUpdate,
             null

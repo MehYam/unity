@@ -15,7 +15,7 @@ public class PlayerInput : IActorBehavior
     {
         var go = actor.gameObject;
 
-        var current = MasterInput.CurrentInputVector;
+        var current = MasterInput.impl.CurrentInputVector;
         if (current != Vector2.zero)
         {
             if (actor.thrustEnabled)

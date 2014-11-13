@@ -414,14 +414,14 @@ public sealed class GameController : IGame
             var controller = new ShieldWeaponController(Consts.CollisionLayer.FRIENDLY, vehicle.weapons[0]);
 
             var shieldBehavior = new PlayerButton(
-                MasterInput.Click,
+                MasterInput.impl.Primary,
                 controller.Start,
                 new CompositeBehavior(bf.faceMouse, (Action<Actor>)controller.OnFrame).FixedUpdate,
                 new CompositeBehavior(bf.faceMouse, (Action<Actor>)controller.Discharge).FixedUpdate
             );
             behaviors.Add(shieldBehavior);
             shieldBehavior = new PlayerButton(
-                MasterInput.Fire,
+                MasterInput.impl.PrimaryAlt,
                 controller.Start,
                 controller.OnFrame,
                 controller.Discharge
@@ -433,14 +433,14 @@ public sealed class GameController : IGame
             var controller = new ChargeWeaponController(Consts.CollisionLayer.FRIENDLY_AMMO, vehicle.weapons[0]);
 
             var chargeBehavior = new PlayerButton(
-                MasterInput.Click,
+                MasterInput.impl.Primary,
                 controller.StartCharge,
                 new CompositeBehavior(bf.faceMouse, new GoHomeYouAreDrunkBehavior(), (Action<Actor>)controller.Charge).FixedUpdate,
                 new CompositeBehavior(bf.faceMouse, (Action<Actor>)controller.Discharge).FixedUpdate
             );
             behaviors.Add(chargeBehavior);
             chargeBehavior = new PlayerButton(
-                MasterInput.Fire,
+                MasterInput.impl.PrimaryAlt,
                 controller.StartCharge,
                 new CompositeBehavior(new GoHomeYouAreDrunkBehavior(), (Action<Actor>)controller.Charge).FixedUpdate,
                 controller.Discharge
@@ -453,11 +453,11 @@ public sealed class GameController : IGame
             var layer = isHero ? Consts.CollisionLayer.HEROLINGS : Consts.CollisionLayer.FRIENDLY_AMMO;
 
             var fireAhead = bf.CreateAutofire(layer, vehicle.weapons);
-            behaviors.Add(bf.CreatePlayerButton(MasterInput.Click, fireAhead));
+            behaviors.Add(bf.CreatePlayerButton(MasterInput.impl.Primary, fireAhead));
 
             // hero doesn't point to the mouse when firing
             var fireToMouse = isHero ? fireAhead : new CompositeBehavior(bf.faceMouse, fireAhead);
-            behaviors.Add(bf.CreatePlayerButton(MasterInput.Fire, fireToMouse));
+            behaviors.Add(bf.CreatePlayerButton(MasterInput.impl.PrimaryAlt, fireToMouse));
         }
 
         if (isHero)
@@ -485,8 +485,8 @@ public sealed class GameController : IGame
         if (tankHelper.hull.HasWeapons)
         {
             var hullFire = bf.CreateAutofire(Consts.CollisionLayer.FRIENDLY_AMMO, tankHelper.hull.weapons);
-            behaviors.Add(bf.CreatePlayerButton(MasterInput.Click, hullFire));
-            behaviors.Add(bf.CreatePlayerButton(MasterInput.Fire, hullFire));
+            behaviors.Add(bf.CreatePlayerButton(MasterInput.impl.Primary, hullFire));
+            behaviors.Add(bf.CreatePlayerButton(MasterInput.impl.PrimaryAlt, hullFire));
         }
         behaviors.Add(bf.CreateTankTreadAnimator(tankHelper.treadLeft, tankHelper.treadRight));
         tankHelper.hullGO.GetComponent<Actor>().behavior = behaviors;
@@ -495,8 +495,8 @@ public sealed class GameController : IGame
         var turretFire = bf.CreateAutofire(Consts.CollisionLayer.FRIENDLY_AMMO, tankHelper.turret.weapons);
         tankHelper.turretGO.GetComponent<Actor>().behavior = new CompositeBehavior(
             bf.faceMouse,
-            bf.CreatePlayerButton(MasterInput.Click, turretFire),
-            bf.CreatePlayerButton(MasterInput.Fire, turretFire)
+            bf.CreatePlayerButton(MasterInput.impl.Primary, turretFire),
+            bf.CreatePlayerButton(MasterInput.impl.PrimaryAlt, turretFire)
         );
     }
     void SetSecondaryHerolingBehavior(CompositeBehavior behaviors)
@@ -507,7 +507,7 @@ public sealed class GameController : IGame
 
         // captured ship, add herolings to secondary fire
         var secondaryFire = bf.CreateAutofire(Consts.CollisionLayer.HEROLINGS, herolingFire);
-        behaviors.Add(bf.CreatePlayerButton(MasterInput.Click2, secondaryFire));
+        behaviors.Add(bf.CreatePlayerButton(MasterInput.impl.Secondary, secondaryFire));
     }
     static void InitPlayerVehicle(GameObject player, ActorType vehicle)
     {
