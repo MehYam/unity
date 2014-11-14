@@ -25,6 +25,7 @@ public sealed class TouchInput : IInput
     {
         get
         {
+            _touchState.Update();
             return Vector2.zero;
         }
     }
@@ -32,15 +33,13 @@ public sealed class TouchInput : IInput
     {
         get
         {
-            if (Input.touchCount == 0)
+            _touchState.Update();
+            if (TouchState.Finger.IsDown(_touchState.movement))
             {
-                return Vector2.zero;
+                Vector2 playerInScreen = Camera.main.WorldToScreenPoint(Main.Instance.game.player.transform.position);
+                return (_touchState.movement.position - playerInScreen).normalized;
             }
-            //KAI: unreliable, we need to use fingerID to identify touches
-            var touch0 = Input.GetTouch(0);
-            Vector2 playerInScreen = Camera.main.WorldToScreenPoint(Main.Instance.game.player.transform.position);
-
-            return (touch0.position - playerInScreen).normalized;
+            return Vector2.zero;
         }
     }
 
@@ -55,30 +54,43 @@ public sealed class TouchInput : IInput
     sealed class TouchState
     {
         // keeping track of the currently pressed fingerIDs, and the order in which they were pressed
-        public sealed class FingerState
+        public sealed class Finger
         {
-            public readonly int orderPressed;
-            public int lastKnownFrame;
+            public readonly int id;
             public Vector2 position;
 
-            public FingerState(int orderPressed) { this.orderPressed = orderPressed; }
+            public Finger(Touch touch) 
+            { 
+                this.id = touch.fingerId; 
+                MarkAsDown(touch);
+            }
+            int _lastDownFrame;
+            public void MarkAsDown(Touch touch)
+            {
+                if (id == touch.fingerId)
+                {
+                    _lastDownFrame = Time.frameCount;
+                    position = touch.position;
+                }
+            }
+            static public bool IsDown(Finger fs)
+            {
+                return fs != null && fs._lastDownFrame == Time.frameCount;
+            }
+            static public bool Matches(Finger fs, Touch touch)
+            {
+                return fs != null && fs.id == touch.fingerId;
+            }
         }
 
-        // lookup of ID => FingerState
-        Dictionary<int, FingerState> _fingerIDToState = new Dictionary<int, FingerState>();
+        public Finger movement { get; private set; }
+        public Finger firing { get; private set; }
 
-        IList<int> _expiredFingerIDs = new List<int>(8);
-
-        int _currentFrame;
+        int _lastUpdatedFrame;
         public void Update()
         {
-            // This implementation wouldn't need to be so complicated if I trusted that Unity told us every touch
-            // that has expired.  I don't have confidence in this, so I'm looping all the touches every frame, and
-            // determining myself whether a touch has ended.
-            if (Time.frameCount > _currentFrame)
+            if (Time.frameCount > _lastUpdatedFrame)
             {
-                _currentFrame = Time.frameCount;
-
                 // loop the current touches to refresh our knowledge of them
                 for (int i = 0; i < Input.touchCount; ++i)
                 {
@@ -86,36 +98,39 @@ public sealed class TouchInput : IInput
                     bool down = touch.phase != TouchPhase.Canceled || touch.phase != TouchPhase.Ended;
                     if (down)
                     {
-                        FingerState fingerState = null;
-                        if (!_fingerIDToState.TryGetValue(touch.fingerId, out fingerState))
+                        // This logic is unbelievably convoluted, but I can't find a simpler way to express
+                        // the desired input behavior without creating new Dictionaries every frame.
+                        if (movement == null && !Finger.Matches(firing, touch))
                         {
-                            fingerState = new FingerState(_fingerIDToState.Count);
-                            _fingerIDToState[touch.fingerId] = fingerState;
+                            movement = new Finger(touch);
                         }
-                        fingerState.lastKnownFrame = _currentFrame;
-                        fingerState.position = touch.position;
-                    }
-                }
-                // cull the dropped touches
-                foreach (var node in _fingerIDToState)
-                {
-                    if (node.Value.lastKnownFrame < _currentFrame)
-                    {
-                        _expiredFingerIDs.Add(node.Key);
-                    }
-                }
-                if (_expiredFingerIDs.Count > 0)
-                {
-                    Debug.Log(string.Format("Removing {0} fingers", _expiredFingerIDs.Count));
-                    foreach (var fingerID in _expiredFingerIDs)
-                    {
-                        _fingerIDToState.Remove(fingerID);
-                    }
-                }
+                        if (!Finger.Matches(movement, touch) && !Finger.Matches(firing, touch))
+                        {
+                            firing = new Finger(touch);
+                        }
 
-                DebugUtil.Assert(_fingerIDToState.Count <= Input.touchCount);
+                        // just update the remaining
+                        if (movement != null)
+                        {
+                            movement.MarkAsDown(touch);
+                        }
+                        if (firing != null)
+                        {
+                            firing.MarkAsDown(touch);
+                        }
+                    }
+                }
+                if (!Finger.IsDown(movement))
+                {
+                    movement = null;
+                }
+                if (!Finger.IsDown(firing))
+                {
+                    firing = null;
+                }
+                _lastUpdatedFrame = Time.frameCount;
             }
         }
     }
-    readonly TouchState _state = new TouchState();
+    readonly TouchState _touchState = new TouchState();
 }
