@@ -97,6 +97,8 @@ public class Main : MonoBehaviour
 
         MasterInput.impl = touchInput ? (IInput)new TouchInput() : new MouseAndKeyboardInput();
 
+        Debug.Log("Input " + MasterInput.impl);
+
         // load saved player data
         Debug.Log("PlayerData: totalKills " + PlayerData.Instance.playerStats.totalKills);
 

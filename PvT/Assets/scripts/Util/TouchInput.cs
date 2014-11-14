@@ -8,12 +8,12 @@ public sealed class TouchInput : IInput
 {
     public bool Primary()
     {
-        return false;
+        _touchState.Update();
+        return TouchState.Finger.IsDown(_touchState.firing);
     }
     public bool PrimaryAlt()
     {
-        // never true for mobile
-        return false;
+        return false; // not applicable for mobile, this is equivalent to hitting the spacebar to fire forward
     }
     public bool Secondary()
     {
@@ -21,15 +21,15 @@ public sealed class TouchInput : IInput
         // the hero's location.  "Close" should be defined in real-world inches
         return false;
     }
-    public Vector2 CurrentPointer
+    public Vector2 CurrentCursor
     {
         get
         {
             _touchState.Update();
-            return Vector2.zero;
+            return TouchState.Finger.IsDown(_touchState.firing) ? _touchState.firing.position : Vector2.zero;
         }
     }
-    public Vector2 CurrentInputVector
+    public Vector2 CurrentMovementVector
     {
         get
         {

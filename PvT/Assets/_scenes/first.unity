@@ -169,7 +169,7 @@ MonoBehaviour:
   EffectParent: {fileID: 653143524}
   AmmoParent: {fileID: 291939734}
   MobParent: {fileID: 1453635488}
-  defaultVehicle: 
+  defaultVehicle: bee
 --- !u!114 &3432517
 MonoBehaviour:
   m_ObjectHideFlags: 0

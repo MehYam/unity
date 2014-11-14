@@ -450,7 +450,7 @@ sealed class FaceMouse : IActorBehavior
     }
     public void FixedUpdate(Actor actor)
     {
-        if (!whileFiring || Input.GetButton("Fire1"))
+        if (!whileFiring || MasterInput.impl.Primary())
         {
             // point towards the mouse when firing
             actor.gameObject.transform.eulerAngles = new Vector3(0, 0, Util.GetAngleToMouse(actor.gameObject.transform));

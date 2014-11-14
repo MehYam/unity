@@ -453,11 +453,11 @@ public sealed class GameController : IGame
             var layer = isHero ? Consts.CollisionLayer.HEROLINGS : Consts.CollisionLayer.FRIENDLY_AMMO;
 
             var fireAhead = bf.CreateAutofire(layer, vehicle.weapons);
-            behaviors.Add(bf.CreatePlayerButton(MasterInput.impl.Primary, fireAhead));
+            behaviors.Add(bf.CreatePlayerButton(MasterInput.impl.PrimaryAlt, fireAhead));
 
             // hero doesn't point to the mouse when firing
             var fireToMouse = isHero ? fireAhead : new CompositeBehavior(bf.faceMouse, fireAhead);
-            behaviors.Add(bf.CreatePlayerButton(MasterInput.impl.PrimaryAlt, fireToMouse));
+            behaviors.Add(bf.CreatePlayerButton(MasterInput.impl.Primary, fireToMouse));
         }
 
         if (isHero)
