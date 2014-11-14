@@ -10,6 +10,13 @@ public interface IInput
     bool PrimaryAlt();
     bool Secondary();
 
+    /// <summary>
+    /// Returns the cursor or touch location in screen coordinates
+    /// </summary>
     Vector2 CurrentCursor { get; }
+
+    /// <summary>
+    /// Returns the movement vector, in a rectangle from (-1,-1) to (1, 1).
+    /// </summary>
     Vector2 CurrentMovementVector { get; }
 }

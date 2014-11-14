@@ -6,6 +6,12 @@ using PvT.Util;
 
 public sealed class TouchInput : IInput
 {
+    readonly float maxMovementInPixels;
+    public TouchInput()
+    {
+        maxMovementInPixels = Camera.main.pixelRect.size.x / 5;
+    }
+
     public bool Primary()
     {
         _touchState.Update();
@@ -37,7 +43,12 @@ public sealed class TouchInput : IInput
             if (TouchState.Finger.IsDown(_touchState.movement))
             {
                 Vector2 playerInScreen = Camera.main.WorldToScreenPoint(Main.Instance.game.player.transform.position);
-                return (_touchState.movement.position - playerInScreen).normalized;
+
+                // provide the feel of analog control by factoring the distance of the touch from the player
+                var distance = _touchState.movement.position - playerInScreen;
+                var magnitude = Mathf.Clamp01(distance.magnitude / maxMovementInPixels);
+
+                return distance.normalized * magnitude;
             }
             return Vector2.zero;
         }
