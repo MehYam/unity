@@ -268,6 +268,11 @@ namespace PvT.Util
             }
             return retval;
         }
+        static public void Clamp(this Vector2 obj, float min, float max)
+        {
+            obj.x = Mathf.Clamp(obj.x, min, max);
+            obj.y = Mathf.Clamp(obj.y, min, max);
+        }
 
         public static string[] SplitLines(string lines, bool skipHeader = false)
         {

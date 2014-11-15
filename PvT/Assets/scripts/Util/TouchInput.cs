@@ -1,4 +1,7 @@
-//#define DRAG_PLAYER_FOR_MOVEMENT
+#define TILT_MOVEMENT
+#define MOVE_DUMBLY_TO_TOUCH
+//#define FIRE_AHEAD
+
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,37 +18,75 @@ public sealed class TouchInput : IInput
 
     public bool Primary()
     {
+#if TILT_MOVEMENT
+        // in tilt movement, you hold down two fingers to indicate the secondary
         _touchState.Update();
-        return TouchState.Finger.IsDown(_touchState.firing);
+        return TouchState.Finger.IsDown(_touchState.first) && !TouchState.Finger.IsDown(_touchState.second);
+#else
+
+#if FIRE_AHEAD
+        return false;
+#else
+        _touchState.Update();
+        return TouchState.Finger.IsDown(_touchState.second);
+#endif
+#endif
     }
     public bool PrimaryAlt()
     {
+#if FIRE_AHEAD
+        _touchState.Update();
+        return TouchState.Finger.IsDown(_touchState.second);
+#else
         return false; // not applicable for mobile, this is equivalent to hitting the spacebar to fire forward
+#endif
     }
     public bool Secondary()
     {
+#if TILT_MOVEMENT
+        // in tilt movement, you hold down two fingers to indicate the secondary
+        _touchState.Update();
+        return TouchState.Finger.IsDown(_touchState.second) && TouchState.Finger.IsDown(_touchState.first);
+#else
         // this is true when _state.second.down is true, AND it was initiated close to
         // the hero's location.  "Close" should be defined in real-world inches
         return false;
+#endif
     }
     Vector2 _lastCursor = Vector2.zero;
     public Vector2 CurrentCursor
     {
         get
         {
+#if TILT_MOVEMENT
             _touchState.Update();
-            if (TouchState.Finger.IsDown(_touchState.firing))
+            if (TouchState.Finger.IsDown(_touchState.first))
             {
                 // KAI: okay, this is obscure, but we need to save the last cursor position, otherwise shield and
                 // other charge weapons will have nowhere to shoot during the discharge
                 //
                 // The fix is establishing a proper event system, and not checking for changed user input
                 // in Update/FixedUpdate()'s all over the place
-                _lastCursor = _touchState.firing.position;
+                _lastCursor = _touchState.first.position;
+            }
+            return _lastCursor;
+#else
+            _touchState.Update();
+            if (TouchState.Finger.IsDown(_touchState.second))
+            {
+                // KAI: okay, this is obscure, but we need to save the last cursor position, otherwise shield and
+                // other charge weapons will have nowhere to shoot during the discharge
+                //
+                // The fix is establishing a proper event system, and not checking for changed user input
+                // in Update/FixedUpdate()'s all over the place
+                _lastCursor = _touchState.second.position;
             }
             return  _lastCursor;
+#endif
         }
     }
+    static readonly float TILT_SENSITIVITY = 4;
+    static readonly float TILT_DEADZONE = 0.05f;
     Vector2 _lastMovementVector;
     int     _lastMovementVectorFrame;
     public Vector2 CurrentMovementVector
@@ -55,15 +96,32 @@ public sealed class TouchInput : IInput
             if (Time.frameCount > _lastMovementVectorFrame)
             {
                 _touchState.Update();
-                if (TouchState.Finger.IsDown(_touchState.movement))
+#if TILT_MOVEMENT
+                var currentTilt = (Input.acceleration - _calibratedTilt);
+
+                // deadzone
+                if (Mathf.Abs(currentTilt.x) < TILT_DEADZONE)
                 {
-    #if DRAG_PLAYER_FOR_MOVEMENT
+                    currentTilt.x = 0;
+                }
+                if (Mathf.Abs(currentTilt.y) < TILT_DEADZONE)
+                {
+                    currentTilt.y = 0;
+                }
+                _lastMovementVector = currentTilt * TILT_SENSITIVITY;
+                _lastMovementVector.Clamp(-1, 1);
+
+                //Debug.Log(_lastMovementVector);
+#else
+                if (TouchState.Finger.IsDown(_touchState.first))
+                {
+    #if MOVE_DUMBLY_TO_TOUCH
                     Vector2 playerInScreen = Camera.main.WorldToScreenPoint(Main.Instance.game.player.transform.position);
 
                     // provide the feel of analog control by factoring the distance of the touch from the player
-                    var distance = _touchState.movement.position - playerInScreen;
+                    var distance = _touchState.first.position - playerInScreen;
     #else
-                    var distance = _touchState.movement.position - _touchState.movement.startPosition;
+                    var distance = _touchState.first.position - _touchState.first.startPosition;
     #endif
                     var magnitude = Mathf.Clamp01(distance.magnitude / maxMovementInPixels);
 
@@ -73,6 +131,7 @@ public sealed class TouchInput : IInput
                 {
                     _lastMovementVector = Vector2.zero;
                 }
+#endif
                 _lastMovementVectorFrame = Time.frameCount;
             }
             return _lastMovementVector;
@@ -83,8 +142,13 @@ public sealed class TouchInput : IInput
         get
         {
             _touchState.Update();
-            return TouchState.Finger.IsDown(_touchState.movement) ? _touchState.movement.position : Vector2.zero;
+            return TouchState.Finger.IsDown(_touchState.first) ? _touchState.first.position : Vector2.zero;
         }
+    }
+    Vector3 _calibratedTilt;
+    public void CalibrateTilt()
+    {
+        _calibratedTilt = Input.acceleration;
     }
 
     /// <summary>
@@ -130,8 +194,8 @@ public sealed class TouchInput : IInput
             }
         }
 
-        public Finger movement { get; private set; }
-        public Finger firing { get; private set; }
+        public Finger first { get; private set; }
+        public Finger second { get; private set; }
 
         int _lastUpdatedFrame;
         public void Update()
@@ -147,33 +211,33 @@ public sealed class TouchInput : IInput
                     {
                         // This logic is unbelievably convoluted, but I can't find a simpler way to express
                         // the desired input behavior without creating new Dictionaries every frame.
-                        if (movement == null && !Finger.Matches(firing, touch))
+                        if (first == null && !Finger.Matches(second, touch))
                         {
-                            movement = new Finger(touch);
+                            first = new Finger(touch);
                         }
-                        if (!Finger.Matches(movement, touch) && !Finger.Matches(firing, touch))
+                        if (!Finger.Matches(first, touch) && !Finger.Matches(second, touch))
                         {
-                            firing = new Finger(touch);
+                            second = new Finger(touch);
                         }
 
                         // just update the remaining
-                        if (movement != null)
+                        if (first != null)
                         {
-                            movement.MarkAsDown(touch);
+                            first.MarkAsDown(touch);
                         }
-                        if (firing != null)
+                        if (second != null)
                         {
-                            firing.MarkAsDown(touch);
+                            second.MarkAsDown(touch);
                         }
                     }
                 }
-                if (!Finger.IsDown(movement))
+                if (!Finger.IsDown(first))
                 {
-                    movement = null;
+                    first = null;
                 }
-                if (!Finger.IsDown(firing))
+                if (!Finger.IsDown(second))
                 {
-                    firing = null;
+                    second = null;
                 }
                 _lastUpdatedFrame = Time.frameCount;
             }

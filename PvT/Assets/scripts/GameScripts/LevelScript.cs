@@ -25,6 +25,18 @@ public class LevelScript : MonoBehaviour
     void OnGameReady(IGame game)
     {
         Debug.Log("LevelScript.OnGameReady");
+
+        if (Main.Instance.touchInput)
+        {
+            StartCoroutine(CalibrateTouch());
+        }
+        else
+        {
+            StartGame();
+        }
+    }
+    void StartGame()
+    {
         Main.Instance.game.SpawnPlayer(Vector3.zero);
 
         if (mobs)
@@ -36,7 +48,23 @@ public class LevelScript : MonoBehaviour
             Main.Instance.hud.curtain.Fade(0, 0);
         }
     }
+    IEnumerator CalibrateTouch()
+    {
+        var cp = Main.Instance.hud.centerPrints.top;
 
+        for (int i = 4; i >= 0; --i)
+        {
+            AnimatedText.FadeIn(cp, 
+                string.Format("Calibrating - hold your device in a comfortable position for {0} seconds", i),
+            0);
+            yield return new WaitForSeconds(1);
+        }
+        ((TouchInput)MasterInput.impl).CalibrateTilt();
+        AnimatedText.FadeOut(cp, Consts.TEXT_FADE_SECONDS);
+
+        StartGame();
+        yield break;
+    }
     IEnumerator RunLevels()
     {
         var main = Main.Instance;
@@ -97,7 +125,7 @@ public class LevelScript : MonoBehaviour
         }
 
         // wait until all the enemies are dead - but spawn randomly too
-        var spawnLimiter = new RateLimiter(Consts.GREENK_SPAWN_RATE, 0.5f);
+        var spawnLimiter = new RateLimiter(Consts.RESPAWN_RATE, 0.5f);
         while (_mobsSpawned.Count > 0)
         {
             spawnLimiter.Start();
@@ -108,7 +136,7 @@ public class LevelScript : MonoBehaviour
             if (_mobsSpawned.Count > 0 && _mobsSpawned.Count < 6 && spawnLimiter.reached)
             {
                 // always keep a mob handy in case the player needs to recapture one
-                SpawnMob(game, "GREENK");
+                SpawnMob(game, "BEE");
             }
         }
     }

@@ -72,7 +72,7 @@ public static class Consts
     static public readonly float MAX_MOB_HULL_ROTATION_DEG_PER_SEC = 1;
     static public readonly float MOB_SPAWN_DELAY = 0.5f;
 
-    static public readonly float GREENK_SPAWN_RATE = 15;
+    static public readonly float RESPAWN_RATE = 15;
 
     static public readonly float SMOOTH_DAMP_MULTIPLIER = 0.5f;
 
