@@ -32,6 +32,7 @@ public sealed class HUD : MonoBehaviour
     public Portrait portrait;
     public Fader curtain;
     public Fader space;
+    public GameObject joypadFeedback;
 
     void Start()
     {
@@ -46,7 +47,6 @@ public sealed class HUD : MonoBehaviour
         // layout
         //var rect = Util.GetScreenRectInWorldCoords(Camera.main);
     }
-
     void OnPlayerSpawned(Actor player)
     {
         UpdateHealth(player);

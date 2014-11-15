@@ -13,8 +13,6 @@ public class PlayerInput : IActorBehavior
 
     public void FixedUpdate(Actor actor)
     {
-        var go = actor.gameObject;
-
         var current = MasterInput.impl.CurrentMovementVector;
         if (current != Vector2.zero)
         {

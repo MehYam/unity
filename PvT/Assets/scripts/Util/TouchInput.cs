@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+//#define DRAG_PLAYER_FOR_MOVEMENT
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -35,22 +36,44 @@ public sealed class TouchInput : IInput
             return TouchState.Finger.IsDown(_touchState.firing) ? _touchState.firing.position : Vector2.zero;
         }
     }
+    Vector2 _lastMovementVector;
+    int     _lastMovementVectorFrame;
     public Vector2 CurrentMovementVector
     {
         get
         {
-            _touchState.Update();
-            if (TouchState.Finger.IsDown(_touchState.movement))
+            if (Time.frameCount > _lastMovementVectorFrame)
             {
-                Vector2 playerInScreen = Camera.main.WorldToScreenPoint(Main.Instance.game.player.transform.position);
+                _touchState.Update();
+                if (TouchState.Finger.IsDown(_touchState.movement))
+                {
+    #if DRAG_PLAYER_FOR_MOVEMENT
+                    Vector2 playerInScreen = Camera.main.WorldToScreenPoint(Main.Instance.game.player.transform.position);
 
-                // provide the feel of analog control by factoring the distance of the touch from the player
-                var distance = _touchState.movement.position - playerInScreen;
-                var magnitude = Mathf.Clamp01(distance.magnitude / maxMovementInPixels);
+                    // provide the feel of analog control by factoring the distance of the touch from the player
+                    var distance = _touchState.movement.position - playerInScreen;
+    #else
+                    var distance = _touchState.movement.position - _touchState.movement.startPosition;
+    #endif
+                    var magnitude = Mathf.Clamp01(distance.magnitude / maxMovementInPixels);
 
-                return distance.normalized * magnitude;
+                    _lastMovementVector = distance.normalized * magnitude;
+                }
+                else
+                {
+                    _lastMovementVector = Vector2.zero;
+                }
+                _lastMovementVectorFrame = Time.frameCount;
             }
-            return Vector2.zero;
+            return _lastMovementVector;
+        }
+    }
+    public Vector2 CurrentMovementPosition
+    {
+        get
+        {
+            _touchState.Update();
+            return TouchState.Finger.IsDown(_touchState.movement) ? _touchState.movement.position : Vector2.zero;
         }
     }
 
@@ -62,17 +85,20 @@ public sealed class TouchInput : IInput
     /// There are asset store products that implement touch joysticks and controls - it's just that those control mechanisms suck,
     /// I want something that's more intuitive and enjoyable to use.
     /// </summary>
-    sealed class TouchState
+    public sealed class TouchState
     {
         // keeping track of the currently pressed fingerIDs, and the order in which they were pressed
         public sealed class Finger
         {
             public readonly int id;
+            public readonly Vector2 startPosition;
             public Vector2 position;
 
             public Finger(Touch touch) 
             { 
-                this.id = touch.fingerId; 
+                this.id = touch.fingerId;
+                this.startPosition = touch.position;
+
                 MarkAsDown(touch);
             }
             int _lastDownFrame;

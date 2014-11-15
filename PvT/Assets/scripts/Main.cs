@@ -95,7 +95,15 @@ public class Main : MonoBehaviour
 
         _instance = this;
 
-        MasterInput.impl = touchInput ? (IInput)new TouchInput() : new MouseAndKeyboardInput();
+        if (touchInput)
+        {
+            MasterInput.impl = new TouchInput();
+            hud.joypadFeedback.SetActive(true);
+        }
+        else
+        {
+            MasterInput.impl = new MouseAndKeyboardInput();
+        }
 
         Debug.Log("Input " + MasterInput.impl);
 

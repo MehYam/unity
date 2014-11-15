@@ -56,6 +56,9 @@ class GlobalGameEvent
 
     public event Action<Actor, float> WeaponCharge = delegate { };
 
+    // UI and misc
+    public event Action TouchInputBegin = delegate { };
+    public event Action TouchInputEnd = delegate { };
 
     // C# events require binding directly to the event source.  GlobalGameEvent works around
     // this, but the cost is that for each event we have to implement its counterpart
@@ -79,6 +82,8 @@ class GlobalGameEvent
     public void FirePlayerSpawned(Actor player) { PlayerSpawned(player); }
     public void FirePossessionEnd() { PossessionEnd(); }
     public void FirePossessionStart(Actor host) { PossessionStart(host); }
+    public void FireTouchInputBegin() { TouchInputBegin(); }
+    public void FireTouchInputEnd() { TouchInputEnd(); }
     public void FireTutorialOver(MonoBehaviour script) { TutorialOver(script); }
     public void FireWeaponCharge(Actor actor, float pct) { WeaponCharge(actor, pct); }
 }
