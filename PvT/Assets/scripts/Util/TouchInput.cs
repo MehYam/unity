@@ -28,12 +28,22 @@ public sealed class TouchInput : IInput
         // the hero's location.  "Close" should be defined in real-world inches
         return false;
     }
+    Vector2 _lastCursor = Vector2.zero;
     public Vector2 CurrentCursor
     {
         get
         {
             _touchState.Update();
-            return TouchState.Finger.IsDown(_touchState.firing) ? _touchState.firing.position : Vector2.zero;
+            if (TouchState.Finger.IsDown(_touchState.firing))
+            {
+                // KAI: okay, this is obscure, but we need to save the last cursor position, otherwise shield and
+                // other charge weapons will have nowhere to shoot during the discharge
+                //
+                // The fix is establishing a proper event system, and not checking for changed user input
+                // in Update/FixedUpdate()'s all over the place
+                _lastCursor = _touchState.firing.position;
+            }
+            return  _lastCursor;
         }
     }
     Vector2 _lastMovementVector;
