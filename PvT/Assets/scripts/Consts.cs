@@ -45,7 +45,7 @@ public static class Consts
     static public readonly Color TRACKING_ARROW_COLOR_NORMAL = new Color32(0xff, 0x50, 0x00, 0x96);
     static public readonly Color TRACKING_ARROW_COLOR_OVERWHELMED = new Color32(0x00, 0x99, 0xff, 0x96);
     static public readonly float HEROLING_UNABSORBABLE = 2;
-    static public readonly float HEROLING_ROAM_BOREDOM = 2;
+    static public readonly float HEROLING_ROAM_BOREDOM = 4;
     static public readonly float HEROLING_ATTACH_BOREDOM = 6;
     static public readonly int HEROLING_LIMIT = 4;
     static public readonly float HEROLING_HEALTH_OVERWHELM = 20;
