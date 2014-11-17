@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public sealed class testFlare : MonoBehaviour
@@ -13,7 +13,7 @@ public sealed class testFlare : MonoBehaviour
 	
     IEnumerator DoReplace()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(Consts.FLARE_ANIMATION_PEAK_SECONDS);
 
         // allocate the new ship
         var newShip = (GameObject)Instantiate(ReplaceWith);

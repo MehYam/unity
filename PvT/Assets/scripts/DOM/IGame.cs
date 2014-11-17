@@ -13,7 +13,7 @@ public interface IGame
     Loader loader { get; }
     Effects effects { get; }
 
-    GameObject SpawnPlayer(Vector3 location);
+    void SpawnPlayer(Vector3 location, string actorTypeName = null);
     GameObject SpawnMob(string vehicleKey);
     GameObject SpawnAmmo(Actor launcher, ActorType.Weapon weapon, Consts.CollisionLayer layer);
     GameObject SpawnHotspot(Actor launcher, ActorType.Weapon weapon, float damageMultiplier, Consts.CollisionLayer layer);

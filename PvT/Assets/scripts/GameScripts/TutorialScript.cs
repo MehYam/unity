@@ -47,8 +47,9 @@ public sealed class TutorialScript : MonoBehaviour
 
         ///////////////// Teach movement
         main.PlayMusic(main.music.duskToDawn);
+        game.SpawnPlayer(Vector3.zero);
 
-        var playerActor = game.SpawnPlayer(Vector3.zero).GetComponent<Actor>();
+        var playerActor = main.game.player.GetComponent<Actor>();
         playerActor.firingEnabled = false;
         playerActor.thrustEnabled = false;
         playerActor.immortal = true;

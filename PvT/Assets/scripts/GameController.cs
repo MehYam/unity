@@ -12,7 +12,6 @@ public sealed class GameController : IGame
     GameObject _player;
     public GameObject player
     {
-        //KAI:
         get
         {
             if (_player == null)
@@ -88,16 +87,20 @@ public sealed class GameController : IGame
         private set; 
     }
 
-    public GameObject SpawnPlayer(Vector3 location)
+    public void SpawnPlayer(Vector3 location, string actorTypeName = null)
     {
         var main = Main.Instance;
-        var vehicle = String.IsNullOrEmpty(main.defaultVehicle) ? "hero" : main.defaultVehicle;
-        Debug.Log("Spawning player --- " + vehicle);
 
-        var tank = loader.GetTank(vehicle);
+        if (string.IsNullOrEmpty(actorTypeName))
+        {
+            actorTypeName = String.IsNullOrEmpty(main.defaultVehicle) ? "hero" : main.defaultVehicle;
+        }
+        Debug.Log("Spawning player --- " + actorTypeName);
+
+        var tank = loader.GetTank(actorTypeName);
         if (tank == null)
         {
-            var playerVehicle = loader.GetVehicle(vehicle);
+            var playerVehicle = loader.GetActorType(actorTypeName);
             var go = playerVehicle.Spawn(Consts.SortingLayer.FRIENDLY, true);
             InitPlayerVehicle(go, playerVehicle);
             SetPlayerPlaneBehaviors(go, playerVehicle);
@@ -123,9 +126,18 @@ public sealed class GameController : IGame
             // Hero gets no collisionDamage
             playerActor.collisionDamage = 0;
         }
-
         GlobalGameEvent.Instance.FirePlayerSpawned(playerActor);
-        return this.player.gameObject;
+    }
+    public void SwapPlayer(string key)
+    {
+        var oldPlayer = player;
+
+        SpawnPlayer(oldPlayer.transform.position);
+
+        player.transform.rotation = oldPlayer.transform.rotation;
+        player.rigidbody2D.velocity = oldPlayer.rigidbody2D.velocity;
+
+        GameObject.Destroy(oldPlayer);
     }
 
     public GameObject SpawnMob(string vehicleKey)
@@ -137,7 +149,7 @@ public sealed class GameController : IGame
             SpawnMobHelper(tankHelper.hullGO);
             return tankHelper.hullGO;
         }
-        var vehicle = loader.GetVehicle(vehicleKey);
+        var vehicle = loader.GetActorType(vehicleKey);
         var go = vehicle.Spawn(Consts.SortingLayer.MOB, true);
 
         SpawnMobHelper(go);
@@ -152,7 +164,7 @@ public sealed class GameController : IGame
 
     public GameObject SpawnAmmo(Actor launcher, ActorType.Weapon weapon, Consts.CollisionLayer layer)
     {
-        var type = loader.GetVehicle(weapon.vehicleName);
+        var type = loader.GetActorType(weapon.vehicleName);
         var goAmmo = type.Spawn(Consts.SortingLayer.AMMO, true);
 
         goAmmo.transform.parent = Main.Instance.AmmoParent.transform;
@@ -203,7 +215,7 @@ public sealed class GameController : IGame
     public GameObject SpawnHotspot(Actor launcher, ActorType.Weapon weapon, float damageMultiplier, Consts.CollisionLayer layer)
     {
         ///THIS IS COPY PASTA FROM SpawnAmmo
-        var type = loader.GetVehicle(weapon.vehicleName);
+        var type = loader.GetActorType(weapon.vehicleName);
         var go = type.Spawn(Consts.SortingLayer.AMMO_TOP, false);
 
         go.transform.parent = Main.Instance.AmmoParent.transform;
@@ -402,7 +414,7 @@ public sealed class GameController : IGame
         }
 
         var actor = go.GetComponent<Actor>();
-        var heroType = Main.Instance.game.loader.GetVehicle("HERO");
+        var heroType = Main.Instance.game.loader.GetActorType("HERO");
         var isHero = vehicle == heroType;
 
         if (isHopper)
@@ -503,7 +515,7 @@ public sealed class GameController : IGame
     {
         var bf = ActorBehaviorFactory.Instance;
 
-        var herolingFire = Main.Instance.game.loader.GetVehicle("HERO").weapons;
+        var herolingFire = Main.Instance.game.loader.GetActorType("HERO").weapons;
 
         // captured ship, add herolings to secondary fire
         var secondaryFire = bf.CreateAutofire(Consts.CollisionLayer.HEROLINGS, herolingFire);

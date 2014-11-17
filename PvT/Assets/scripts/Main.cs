@@ -33,6 +33,8 @@ public class Main : MonoBehaviour
         public GameObject OverwhelmProgressBar;
         public GameObject TrackingArrow;
         public GameObject OverwhelmedIndicator;
+
+        public GameObject flareAnimation;
     }
     public Assets assets;
     [Serializable]

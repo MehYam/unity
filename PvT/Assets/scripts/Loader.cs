@@ -107,7 +107,7 @@ public class Loader
         _miscLookup.TryGetValue(type, out retval);
         return retval;
     }
-    public ActorType GetVehicle(string type)  // planes, ammo
+    public ActorType GetActorType(string type)  // planes, ammo
     {
         ActorType retval = null;
         _actorTypeLookup.TryGetValue(type, out retval);

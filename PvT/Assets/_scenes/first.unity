@@ -150,6 +150,7 @@ MonoBehaviour:
     TrackingArrow: {fileID: 100000, guid: 34b98b45d023102448965a76fc4c0428, type: 2}
     OverwhelmedIndicator: {fileID: 100000, guid: 380976d23fd379c479f5b149520909e6,
       type: 2}
+    flareAnimation: {fileID: 100004, guid: a128310b1f0669043ad7e3f1c4da2fcf, type: 2}
   sounds:
     HerolingBump: {fileID: 8300000, guid: bd8c8699e40b26a43b461a397a11806a, type: 3}
     HerolingCapture: {fileID: 8300000, guid: 4d3fcb40b76db6f4ba0f2df6ea1eb851, type: 3}
@@ -169,7 +170,7 @@ MonoBehaviour:
   EffectParent: {fileID: 653143524}
   AmmoParent: {fileID: 291939734}
   MobParent: {fileID: 1453635488}
-  defaultVehicle: 
+  defaultVehicle: greenk
 --- !u!114 &3432517
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -181,7 +182,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 597ae4a43a018e741acec37b97132aa4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mobs: 1
+  mobs: 0
   startLevel: 1
   spawnDistanceFromEdge: -2
   map: {fileID: 100004, guid: a79bb10566c417243a18065740b954fe, type: 2}

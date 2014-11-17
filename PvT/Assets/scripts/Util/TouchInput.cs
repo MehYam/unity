@@ -10,12 +10,17 @@ using PvT.Util;
 
 public sealed class TouchInput : IInput
 {
+#if TILT_MOVEMENT
+    public TouchInput()
+    {
+    }
+#else
     readonly float maxMovementInPixels;
     public TouchInput()
     {
         maxMovementInPixels = Camera.main.pixelRect.size.x / 5;
     }
-
+#endif
     public bool Primary()
     {
 #if TILT_MOVEMENT
