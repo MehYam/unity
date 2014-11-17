@@ -167,6 +167,8 @@ public class Loader
         var accel = csv.GetFloat();
         var inertia = csv.GetFloat();
         var dropShadow = csv.GetBool();
+        var level = csv.GetInt();
+        var upgrade = csv.GetString();
 
         var asset = LoadAsset(assetID, assetPath);
 
@@ -205,7 +207,9 @@ public class Loader
             maxSpeed: speed,
             acceleration: accel,
             inertia: inertia,
-            dropShadow: dropShadow
+            dropShadow: dropShadow,
+            level: level,
+            upgradesTo: upgrade
         );
     }
     TankHullType LoadTankHullType(Util.CSVParseHelper csv, Dictionary<string, IList<string>> weaponLookup, string assetPath)
@@ -254,7 +258,9 @@ public class Loader
         var results = new Dictionary<string, ActorType>(StringComparer.OrdinalIgnoreCase);
         foreach (var line in Util.SplitLines(csv, true))
         {
+            Debug.Log("line " + line);
             var csvHelper = new Util.CSVParseHelper(line);
+            Debug.Log("fields " + csvHelper.Count);
             var actorType = LoadActorType(csvHelper, weaponStrings, assetPath);
             results[actorType.name] = actorType;
         }

@@ -295,12 +295,25 @@ namespace PvT.Util
                 yield return SplitCSVLine(line);
             }
         }
+        //  this one doesn't return a field for a trailing ','. I'm not debugging this.
+        //static public string[] SplitCSVLine(string line)
+        //{
+        //    return (from System.Text.RegularExpressions.Match m in System.Text.RegularExpressions.Regex.Matches(line,
+        //    @"(((?<x>(?=[,\r\n]+))|""(?<x>([^""]|"""")+)""|(?<x>[^,\r\n]+)),?)",
+        //    System.Text.RegularExpressions.RegexOptions.ExplicitCapture)
+        //            select m.Groups[1].Value).ToArray();
+        //}
         static public string[] SplitCSVLine(string line)
         {
-            return (from System.Text.RegularExpressions.Match m in System.Text.RegularExpressions.Regex.Matches(line,
-            @"(((?<x>(?=[,\r\n]+))|""(?<x>([^""]|"""")+)""|(?<x>[^,\r\n]+)),?)",
-            System.Text.RegularExpressions.RegexOptions.ExplicitCapture)
-                    select m.Groups[1].Value).ToArray();
+            var fields = line.Split(',');
+            var scrubbedFields = new string[fields.Length];
+
+            var i = 0;
+            foreach (var field in fields)
+            {
+                scrubbedFields[i++] = field.Trim();
+            }
+            return scrubbedFields;
         }
         public sealed class CSVParseHelper
         {
