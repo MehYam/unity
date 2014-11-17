@@ -44,10 +44,13 @@ public class ActorType
     public readonly float inertia;
     public readonly bool dropShadow;
 
+    public readonly int level;
+    public readonly string upgradesTo;
+
     public readonly float health = 1;
     public readonly Weapon[] weapons; // the behavior's in charge of choosing a weapon and firing it
 
-    public ActorType(Asset asset, string name, float mass, Weapon[] weapons, int health, float maxSpeed, float acceleration, float inertia, bool dropShadow)
+    public ActorType(Asset asset, string name, float mass, Weapon[] weapons, int health, float maxSpeed, float acceleration, float inertia, bool dropShadow, int level, string upgradesTo)
     {
         this.name = name;
         this.asset = asset;
@@ -60,6 +63,9 @@ public class ActorType
         this.acceleration = acceleration;
         this.inertia = inertia;
         this.dropShadow = dropShadow;
+
+        this.level = level;
+        this.upgradesTo = upgradesTo;
     }
     public ActorType(ActorType rhs)
     {
@@ -74,6 +80,9 @@ public class ActorType
         this.acceleration = rhs.acceleration;
         this.inertia = rhs.inertia;
         this.dropShadow = rhs.dropShadow;
+
+        this.level = rhs.level;
+        this.upgradesTo = rhs.upgradesTo;
     }
     public bool HasWeapons { get { return weapons != null && weapons.Length > 0; } }
     public virtual GameObject Spawn(Consts.SortingLayer sortingLayer, bool rigidBody)
