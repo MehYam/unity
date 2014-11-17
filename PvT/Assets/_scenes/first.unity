@@ -154,8 +154,8 @@ MonoBehaviour:
   sounds:
     HerolingBump: {fileID: 8300000, guid: bd8c8699e40b26a43b461a397a11806a, type: 3}
     HerolingCapture: {fileID: 8300000, guid: 4d3fcb40b76db6f4ba0f2df6ea1eb851, type: 3}
-    Laser: {fileID: 8300000, guid: 38a4f86e695d5454e81657deb088217f, type: 3}
-    Bullet: {fileID: 8300000, guid: 7be935c801756524e902ebdbe9dbfe1c, type: 3}
+    Laser: {fileID: 8300000, guid: dfb87c5877671aa4aaf8d45149196ab1, type: 3}
+    Bullet: {fileID: 8300000, guid: 3e1372a521c47f249a7e39b3bbbb2a82, type: 3}
     SmallCollision: {fileID: 8300000, guid: 3cad01b4cdd23a24c935a9e355adabc5, type: 3}
     BigCollision: {fileID: 8300000, guid: fd04cca0b8ed6454391e5b23271f175d, type: 3}
     Explosion1: {fileID: 8300000, guid: 2f747f00e6dcb2f4eb316425d69c9383, type: 3}
@@ -170,7 +170,7 @@ MonoBehaviour:
   EffectParent: {fileID: 653143524}
   AmmoParent: {fileID: 291939734}
   MobParent: {fileID: 1453635488}
-  defaultVehicle: greenk
+  defaultVehicle: 
 --- !u!114 &3432517
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -182,7 +182,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 597ae4a43a018e741acec37b97132aa4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mobs: 0
+  mobs: 1
   startLevel: 1
   spawnDistanceFromEdge: -2
   map: {fileID: 100004, guid: a79bb10566c417243a18065740b954fe, type: 2}

@@ -43,6 +43,7 @@ public sealed class HUD : MonoBehaviour
 
         gge.MobDeath += OnMobDeath;
         gge.PossessionStart += OnPossessionStart;
+        gge.PossessionEnd += OnPossessionEnd;
 
         // layout
         //var rect = Util.GetScreenRectInWorldCoords(Camera.main);
@@ -68,6 +69,10 @@ public sealed class HUD : MonoBehaviour
     void OnPossessionStart(Actor host)
     {
         PlayerData.Instance.OnPossessionStart(host);
+    }
+    void OnPossessionEnd()
+    {
+        PlayerData.Instance.OnPossessionEnd();
     }
     void OnHealthChange(Actor actor, float delta)
     {
@@ -98,7 +103,7 @@ public sealed class HUD : MonoBehaviour
     }
     void UpdateCaptures(ActorType type)
     {
-        var stats = PlayerData.Instance.GetActorStats(type.name);
+        var stats = PlayerData.Instance.GetActorStats(type);
         portrait.captures.text = "Captured: " + stats.numCaptured;
     }
 }

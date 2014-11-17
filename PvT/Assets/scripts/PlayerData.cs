@@ -24,13 +24,13 @@ public sealed class PlayerData
     }
     Dictionary<string, ActorStats> _actorStatsLookup = new Dictionary<string, ActorStats>();
 
-    public ActorStats GetActorStats(string actorName)
+    public ActorStats GetActorStats(ActorType type)
     {
         ActorStats retval = null;
-        if (!_actorStatsLookup.TryGetValue(actorName, out retval))
+        if (!_actorStatsLookup.TryGetValue(type.name, out retval))
         {
             retval = new ActorStats();
-            _actorStatsLookup[actorName] = retval;
+            _actorStatsLookup[type.name] = retval;
         }
         return retval;
     }
@@ -38,7 +38,7 @@ public sealed class PlayerData
 
     public int GetXP(ActorType type)
     {
-        var stats = GetActorStats(type.name);
+        var stats = GetActorStats(type);
         var xp = stats.numKillsWithActor * Consts.XP_PER_KILL + stats.numCaptured * Consts.XP_PER_CAPTURE;
         return xp;
     }
@@ -56,12 +56,15 @@ public sealed class PlayerData
         if (!actor.isPlayer && !actor.isAmmo)
         {
             var playerActor = Main.Instance.game.player.GetComponent<Actor>();
-            AddKill(actor.actorType.name, playerActor.actorType.name);
+            AddKill(actor.actorType, playerActor.actorType);
         }
     }
     public void OnPossessionStart(Actor host)
     {
-        AddCapture(host.actorType.name);
+    }
+    public void OnPossessionEnd()
+    {
+        AddCapture(Main.Instance.game.player.GetComponent<Actor>().actorType);
     }
 
     /// <summary>
@@ -97,18 +100,18 @@ public sealed class PlayerData
             playerStats = Base64Serializer.FromBase64<PlayerStats>(base64);
         }
     }
-    void AddKill(string victimTypeName, string playerTypeName)
+    void AddKill(ActorType victimType, ActorType playerType)
     {
-        var stats = GetActorStats(victimTypeName);
+        var stats = GetActorStats(victimType);
         ++stats.numKilled;
         ++playerStats.totalKills;
 
-        stats = GetActorStats(playerTypeName);
+        stats = GetActorStats(playerType);
         ++stats.numKillsWithActor;
     }
-    void AddCapture(string actorTypeName)
+    void AddCapture(ActorType capteeType)
     {
-        var stats = GetActorStats(actorTypeName);
+        var stats = GetActorStats(capteeType);
         ++stats.numCaptured;
         ++playerStats.totalCaptures;
     }
