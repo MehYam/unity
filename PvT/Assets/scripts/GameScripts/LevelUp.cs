@@ -20,11 +20,13 @@ public class LevelUp : MonoBehaviour
         DebugUtil.Assert(!string.IsNullOrEmpty(actor.actorType.upgradesTo), "Trying to level up an actor that can't");
 
         // 1. Attach the animation, wait a moment
-        var flare = (GameObject)Instantiate(Main.Instance.assets.flareAnimation);
+        var flare = (GameObject)Instantiate(main.assets.flareAnimation);
         flare.transform.parent = transform;
         flare.transform.localPosition = Vector2.zero;
 
         yield return new WaitForSeconds(Consts.FLARE_ANIMATION_PEAK_SECONDS);
+
+        main.game.PlaySound(main.sounds.levelUp, transform.position);
 
         // 2. Spawn the new player, inherit the physics and positioning of the previous one
         //KAI: here's a weakness - spawning an actor shouldn't be that different from spawning the player (they shouldn't necessarily have two different calls)

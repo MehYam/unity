@@ -51,6 +51,7 @@ public class Main : MonoBehaviour
 
         public AudioClip fanfare1;
         public AudioClip roar;
+        public AudioClip levelUp;
     }
     public Sounds sounds;
     [Serializable]
