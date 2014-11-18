@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 using PvT.DOM;
 using PvT.Util;
@@ -32,9 +33,10 @@ public sealed class Boss1AI : MonoBehaviour
         {
             var abf = ActorBehaviorFactory.Instance;
             var lasers = new CompositeBehavior();
-            for (var iWeapon = 0; iWeapon < Boss1AI.FIRE_NODES; ++iWeapon)
+            var laserWeapons = boss.actorType.weapons.Where(w => w.actorName == "LASER");
+            foreach (var weapon in laserWeapons)
             {
-                lasers.Add(new WeaponDischargeBehavior(Consts.CollisionLayer.MOB_AMMO, boss.actorType.weapons[iWeapon]));
+                lasers.Add(new WeaponDischargeBehavior(Consts.CollisionLayer.MOB_AMMO, weapon));
             }
             LASER_PHASE = new CompositeBehavior(new PeriodicBehavior(lasers, new RateLimiter(0.3f)), abf.facePlayer);
 

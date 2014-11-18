@@ -56,8 +56,8 @@ public static class Consts
 
     static public readonly float HEALTH_BAR_TIMEOUT = 5;
 
-    static public readonly float PLAYER_SPEED_MULTIPLIER = 1.2f;
-    static public readonly float PLAYER_ACCEL_MULTIPLIER = 1.2f;
+    static public readonly float PLAYER_SPEED_MULTIPLIER = 1f;
+    static public readonly float PLAYER_ACCEL_MULTIPLIER = 1f;
     static public readonly float SHIELD_HEALTH_MULTIPLIER = 1;
     static public readonly float SHIELD_BOOST = 3;
     static public readonly float FUSION_KNOCKBACK_MULTIPLIER = 0.33f;
