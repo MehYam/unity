@@ -45,7 +45,7 @@ public sealed class PlayerData
     public int GetLevel(ActorType type)
     {
         var xp = GetXP(type);
-        int level = Util.FastLog2Floor(xp / Consts.XP_CURVE_MULTIPLIER);
+        int level = Util.FastLog2Floor(xp / Consts.XP_CURVE_MULTIPLIER) + type.level;
         return Mathf.Max(1, level);
     }
     public void OnMobDeath(Actor actor)
