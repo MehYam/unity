@@ -234,11 +234,11 @@ public sealed class GameController : IGame
 
     public void PlaySound(AudioClip clip, Vector2 position, float volume = 1)
     {
-        // play the sound at the Z of the camera
-        var cameraPos = Camera.main.transform.position;
-        var soundPos = new Vector3(position.x, position.y, cameraPos.z);  
+        //// play the sound at the Z of the camera
+        //var cameraPos = Camera.main.transform.position;
+        //var soundPos = new Vector3(position.x, position.y, cameraPos.z);  
 
-        AudioSource.PlayClipAtPoint(clip, soundPos, volume);
+        AudioSource.PlayClipAtPoint(clip, position, volume);
     }
     public void ShakeGround()
     {

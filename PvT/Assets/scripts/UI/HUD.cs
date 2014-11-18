@@ -60,10 +60,7 @@ public sealed class HUD : MonoBehaviour
     {
         var playerType = Main.Instance.game.player.GetComponent<Actor>().actorType;
         PlayerData.Instance.OnMobDeath(mob);
-        if (playerType == mob.actorType)
-        {
-            UpdateXP(mob.actorType);
-        }
+        UpdateXP(playerType);
         UpdateLevel(playerType);
     }
     void OnPossessionStart(Actor host)

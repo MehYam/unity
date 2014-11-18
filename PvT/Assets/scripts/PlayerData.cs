@@ -48,13 +48,6 @@ public sealed class PlayerData
         int level = Util.FastLog2Floor(xp / Consts.XP_CURVE_MULTIPLIER);
         return Mathf.Max(1, level);
     }
-    public void ClearAll()
-    {
-        PlayerPrefs.DeleteAll();
-    }
-
-    //KAI: the only reason OnMobDeath and OnPossessionStart are not subscribed to directly from
-    // GlobalGameEvent is that the UIController needs to get them first
     public void OnMobDeath(Actor actor)
     {
         if (!actor.isPlayer && !actor.isAmmo)
@@ -134,4 +127,10 @@ public sealed class PlayerData
             return s_instance;
         }
     }
+    public void ClearAll()
+    {
+        PlayerPrefs.DeleteAll();
+        s_instance = new PlayerData();
+    }
+
 }

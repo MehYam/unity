@@ -330,6 +330,7 @@ public class Actor : MonoBehaviour
     }
     void LevelWatchdog()
     {
+        //KAI: per-frame, this is weak.
         if (isPlayer)
         {
             if (!string.IsNullOrEmpty(actorType.upgradesTo))

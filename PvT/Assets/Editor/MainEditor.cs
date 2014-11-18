@@ -38,6 +38,10 @@ public class MainEditor : Editor
         {
             main.game.player.GetComponent<Actor>().TakeDamage(10000);
         }
+        if (GUILayout.Button("Clear player data"))
+        {
+            PlayerData.Instance.ClearAll();
+        }
 #if THIS_STUFF_IS_SO_STUPID
         if (GUILayout.Button("Reload"))
         {
