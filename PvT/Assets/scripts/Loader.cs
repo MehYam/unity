@@ -19,6 +19,7 @@ public class Loader
     readonly Dictionary<string, TankHullType> _tankHullLookup;
     readonly Dictionary<string, TankTurretType> _tankTurretLookup;
     readonly Dictionary<string, AI> _ai;
+    readonly Dictionary<string, AudioClip> _ammoSounds;
 
     public readonly ReadOnlyCollection<Level> levels;
 
@@ -43,6 +44,7 @@ public class Loader
         levels = new ReadOnlyCollection<Level>(LoadLevels(config.Levels.text));
         _ai = LoadAI(config.AI.text);
 
+        _ammoSounds = LoadSounds(config.WeaponSounds.text);
         FixupWeaponLevels();
     }
 
@@ -72,11 +74,11 @@ public class Loader
             foreach (var weapon in vehicle.Value.weapons)
             {
                 Pair<float, float> damageRange = null;
-                damageRanges.TryGetValue(weapon.vehicleName, out damageRange);
+                damageRanges.TryGetValue(weapon.actorName, out damageRange);
                 if (damageRange == null)
                 {
                     damageRange = new Pair<float, float>(float.MaxValue, float.MinValue);
-                    damageRanges[weapon.vehicleName] = damageRange;
+                    damageRanges[weapon.actorName] = damageRange;
                 }
 
                 if (weapon.damage < damageRange.first)
@@ -94,7 +96,7 @@ public class Loader
         {
             foreach (var weapon in vehicle.Value.weapons)
             {
-                var damageRange = damageRanges[weapon.vehicleName];
+                var damageRange = damageRanges[weapon.actorName];
                 var magnitude = damageRange.second - damageRange.first;
                 weapon.severity = magnitude == 0 ? 1 : (weapon.damage - damageRange.first) / magnitude;
             }
@@ -135,6 +137,12 @@ public class Loader
     {
         AI retval = null;
         _ai.TryGetValue(key, out retval);
+        return retval;
+    }
+    public AudioClip GetWeaponSound(string weapon)
+    {
+        AudioClip retval = null;
+        _ammoSounds.TryGetValue(weapon, out retval);
         return retval;
     }
 
@@ -258,9 +266,7 @@ public class Loader
         var results = new Dictionary<string, ActorType>(StringComparer.OrdinalIgnoreCase);
         foreach (var line in Util.SplitLines(csv, true))
         {
-            Debug.Log("line " + line);
             var csvHelper = new Util.CSVParseHelper(line);
-            Debug.Log("fields " + csvHelper.Count);
             var actorType = LoadActorType(csvHelper, weaponStrings, assetPath);
             results[actorType.name] = actorType;
         }
@@ -372,6 +378,22 @@ public class Loader
                 MJSON.SafeGetValue(node, "behavior"),
                 MJSON.SafeGetInt(node, "reward")
             );
+        }
+        return retval;
+    }
+
+    static Dictionary<string, AudioClip> LoadSounds(string csv)
+    {
+        var retval = new Dictionary<string, AudioClip>();
+        foreach (var line in Util.SplitLines(csv, true))
+        {
+            var csvHelper = new Util.CSVParseHelper(line);
+
+            var weapon = csvHelper.GetString();
+            var soundFile = csvHelper.GetString();
+
+            var sound = (AudioClip)Resources.Load("sounds/" + soundFile);
+            retval[weapon] = sound;
         }
         return retval;
     }

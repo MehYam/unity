@@ -64,7 +64,7 @@ public class MainLighting : MonoBehaviour
     {
         if (weapon.lit)
         {
-            bool fusion = weapon.vehicleName == "FUSION";
+            bool fusion = weapon.actorName == "FUSION";
             AddLight(actor.gameObject, weapon.color, fusion);
         }
     }

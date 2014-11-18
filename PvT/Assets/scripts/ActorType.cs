@@ -115,7 +115,7 @@ public class ActorType
 
     public sealed class Weapon
     {
-        public readonly string vehicleName;
+        public readonly string actorName;
         public readonly int damage;
         public readonly Vector2 offset;
         public readonly float angle;
@@ -130,7 +130,7 @@ public class ActorType
 
         public Weapon(string type, int dmg, Vector2 offset, float angle, Color32 color, bool lit, float rate, int sequence, float chargeSeconds, float ttl)
         {
-            this.vehicleName = type;
+            this.actorName = type;
             this.damage = dmg;
             this.offset = offset;
             this.angle = angle;
@@ -167,11 +167,11 @@ public class ActorType
 
         public override string ToString()
         {
-            return string.Format("Weapon {0} dmg {1} severity {2}", vehicleName, damage, severity);
+            return string.Format("Weapon {0} dmg {1} severity {2}", actorName, damage, severity);
         }
         public string ToCSV()
         {
-            return string.Format("{0},{1},{2},{3},{4},{5},{6},{7}", vehicleName, damage, offset.x, offset.y, angle, severity, sequence, chargeSeconds);
+            return string.Format("{0},{1},{2},{3},{4},{5},{6},{7}", actorName, damage, offset.x, offset.y, angle, severity, sequence, chargeSeconds);
         }
     }
 }

@@ -48,6 +48,10 @@ public sealed class PlayerData
         int level = Util.FastLog2Floor(xp / Consts.XP_CURVE_MULTIPLIER);
         return Mathf.Max(1, level);
     }
+    public void ClearAll()
+    {
+        PlayerPrefs.DeleteAll();
+    }
 
     //KAI: the only reason OnMobDeath and OnPossessionStart are not subscribed to directly from
     // GlobalGameEvent is that the UIController needs to get them first
@@ -82,8 +86,9 @@ public sealed class PlayerData
     }
 
     // Implementation
-    static readonly string ACTOR_STATS = "actorStats1";
-    static readonly string PLAYER_STATS = "playerStats1";
+    static readonly int VERSION = 1;
+    static readonly string ACTOR_STATS = "actorStats" + VERSION;
+    static readonly string PLAYER_STATS = "playerStats" + VERSION;
     PlayerData()
     {
         playerStats = new PlayerStats();

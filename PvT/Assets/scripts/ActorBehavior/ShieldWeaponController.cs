@@ -26,7 +26,7 @@ public sealed class ShieldWeaponController
         if (_shield == null && _limiter.reached)
         {
             // create the GameObject
-            var vehicle = Main.Instance.game.loader.GetActorType(_weapon.vehicleName);
+            var vehicle = Main.Instance.game.loader.GetActorType(_weapon.actorName);
             _shield = vehicle.Spawn(Consts.SortingLayer.AMMO, false);
             _shield.layer = (int)_layer;
 

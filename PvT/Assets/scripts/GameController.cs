@@ -41,6 +41,7 @@ public sealed class GameController : IGame
         gge.CollisionWithOverwhelmed += OnCollisionWithOverwhelmed;
         gge.ActorDeath += OnActorDeath;
         gge.MapReady += OnMapReady;
+        gge.AmmoSpawned += OnAmmoSpawned;
     }
 
     void OnMapReady(GameObject unused, XRect bounds)
@@ -164,7 +165,7 @@ public sealed class GameController : IGame
 
     public GameObject SpawnAmmo(Actor launcher, ActorType.Weapon weapon, Consts.CollisionLayer layer)
     {
-        var type = loader.GetActorType(weapon.vehicleName);
+        var type = loader.GetActorType(weapon.actorName);
         var goAmmo = type.Spawn(Consts.SortingLayer.AMMO, true);
 
         goAmmo.transform.parent = Main.Instance.AmmoParent.transform;
@@ -206,8 +207,6 @@ public sealed class GameController : IGame
             SpawnMuzzleFlash(launcher.gameObject, goAmmo);
         }
 
-        PlaySound(Main.Instance.sounds.Bullet, launcher.transform.position);
-
         GlobalGameEvent.Instance.FireAmmoSpawned(actorAmmo, weapon);
         return goAmmo;
     }
@@ -215,7 +214,7 @@ public sealed class GameController : IGame
     public GameObject SpawnHotspot(Actor launcher, ActorType.Weapon weapon, float damageMultiplier, Consts.CollisionLayer layer)
     {
         ///THIS IS COPY PASTA FROM SpawnAmmo
-        var type = loader.GetActorType(weapon.vehicleName);
+        var type = loader.GetActorType(weapon.actorName);
         var go = type.Spawn(Consts.SortingLayer.AMMO_TOP, false);
 
         go.transform.parent = Main.Instance.AmmoParent.transform;
@@ -227,7 +226,7 @@ public sealed class GameController : IGame
 
         Util.PrepareLaunch(launcher.transform, actor.transform, weapon.offset, weapon.angle);
 
-        PlaySound(Main.Instance.sounds.Laser, launcher.transform.position, Mathf.Max(0.2f, damageMultiplier));
+        PlaySound(loader.GetWeaponSound(weapon.actorName), launcher.transform.position, Mathf.Max(0.2f, damageMultiplier));
 
         GlobalGameEvent.Instance.FireAmmoSpawned(actor, weapon);
         return go;
@@ -257,6 +256,11 @@ public sealed class GameController : IGame
 
         cameraTransform.parent = null;
         GameObject.Destroy(host);
+    }
+
+    void OnAmmoSpawned(Actor ammo, ActorType.Weapon weapon)
+    {
+        PlaySound(loader.GetWeaponSound(weapon.actorName), ammo.transform.position);
     }
 
     void OnCollisionWithOverwhelmed(Actor host)
@@ -397,7 +401,7 @@ public sealed class GameController : IGame
     }
     static bool HasShieldWeapon(ActorType actorType)
     {
-        return actorType.HasWeapons && actorType.weapons[0].vehicleName == "SHIELD"; // KAI: cheese
+        return actorType.HasWeapons && actorType.weapons[0].actorName == "SHIELD"; // KAI: cheese
     }
     void SetPlayerPlaneBehaviors(GameObject go, ActorType vehicle)
     {

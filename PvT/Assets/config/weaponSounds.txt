@@ -1,0 +1,13 @@
+ACTOR,SOUND
+BULLET,weapon_player
+BULLET1,weapon_player
+BULLET2,weapon_player
+CANNONROUND0,shot1
+CANNONROUND1,gun
+FUSION,fusion
+HEROLING,weapon_enemy
+LASER,laser2
+ROCKET,rocket
+ROCKET2,rocket
+SHIELD,shield
+SHOCKWAVE,stomp

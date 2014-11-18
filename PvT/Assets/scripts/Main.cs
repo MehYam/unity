@@ -19,6 +19,7 @@ public class Main : MonoBehaviour
         public TextAsset Levels;
         public TextAsset AI;
         public TextAsset Misc;
+        public TextAsset WeaponSounds;
     }
     public GameConfig config;
     [Serializable]
@@ -40,11 +41,8 @@ public class Main : MonoBehaviour
     [Serializable]
     public sealed class Sounds
     {
-        public AudioClip HerolingBump;
         public AudioClip HerolingCapture;
 
-        public AudioClip Laser;
-        public AudioClip Bullet;
         public AudioClip SmallCollision;
         public AudioClip BigCollision;
         public AudioClip Explosion1;

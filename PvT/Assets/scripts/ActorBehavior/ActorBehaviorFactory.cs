@@ -575,7 +575,7 @@ sealed class WeaponDischargeBehavior : IActorBehavior
             var game = Main.Instance.game;
 
             //KAI: MAJOR CHEESE, maybe reimplement as an ammo limit
-            if (weapon.vehicleName != "HEROLING" || HerolingActor.ActiveHerolings < Consts.HEROLING_LIMIT)
+            if (weapon.actorName != "HEROLING" || HerolingActor.ActiveHerolings < Consts.HEROLING_LIMIT)
             {
                 game.SpawnAmmo(actor, weapon, layer);
             }
