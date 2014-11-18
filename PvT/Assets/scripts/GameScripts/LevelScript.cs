@@ -111,6 +111,7 @@ public class LevelScript : MonoBehaviour
         yield return null;
     }
 
+    static readonly string[] RANDOM_SPAWNERS = new string[]{"BEE0", "BEE", "GREENK0", "GREENK"};
     HashSet<GameObject> _mobsSpawned = new HashSet<GameObject>();
     IEnumerator RunMobSpawnEvent(Level.MobSpawnEvent evt)
     {
@@ -135,8 +136,11 @@ public class LevelScript : MonoBehaviour
 
             if (_mobsSpawned.Count > 0 && _mobsSpawned.Count < 6 && spawnLimiter.reached)
             {
-                // always keep a mob handy in case the player needs to recapture one
-                SpawnMob(game, "BEE");
+                int iToSpawn = Random.Range(1, 4);
+                for (int i = 0; i < iToSpawn; ++i)
+                {
+                    SpawnMob(game, RANDOM_SPAWNERS[Random.Range(0, RANDOM_SPAWNERS.Length - 1)]);
+                }
             }
         }
     }

@@ -51,14 +51,16 @@ class GlobalGameEvent
     public event Action<Actor> HerolingAttached = delegate { };
     public event Action<Actor> HerolingDetached = delegate { };
     public event Action<Actor> CollisionWithOverwhelmed = delegate { };
-    public event Action<Actor> PossessionStart = delegate { };
-    public event Action PossessionEnd = delegate { };
+    public event Action<Actor> PossessionInitiated = delegate { };
+    public event Action<Actor> PossessionComplete = delegate { };
+    public event Action DepossessionComplete = delegate { };
 
     public event Action<Actor, float> WeaponCharge = delegate { };
 
     // UI and misc
     public event Action TouchInputBegin = delegate { };
     public event Action TouchInputEnd = delegate { };
+    public event Action<PlayerData> PlayerDataUpdated = delegate { };
 
     // C# events require binding directly to the event source.  GlobalGameEvent works around
     // this, but the cost is that for each event we have to implement its counterpart
@@ -67,6 +69,7 @@ class GlobalGameEvent
     public void FireActorSpawned(Actor a) { ActorSpawned(a); }
     public void FireAmmoSpawned(Actor a, ActorType.Weapon w) { AmmoSpawned(a, w); }
     public void FireCollisionWithOverwhelmed(Actor host) { CollisionWithOverwhelmed(host); }
+    public void FireDepossessionComplete() { DepossessionComplete(); }
     public void FireExplosionSpawned(GameObject a) { ExplosionSpawned(a); }
     public void FireGameOver() { GameOver(); }
     public void FireGameReady(IGame game) { GameReady(game); }
@@ -79,9 +82,10 @@ class GlobalGameEvent
     public void FireMapReady(GameObject map, XRect bounds) { MapReady(map, bounds); }
     public void FireMobDeath(Actor a) { MobDeath(a); }
     public void FireMobSpawned(Actor a) { MobSpawned(a); }
+    public void FirePlayerDataUpdated(PlayerData pd) { PlayerDataUpdated(pd); }
     public void FirePlayerSpawned(Actor player) { PlayerSpawned(player); }
-    public void FirePossessionEnd() { PossessionEnd(); }
-    public void FirePossessionStart(Actor host) { PossessionStart(host); }
+    public void FirePossessionComplete(Actor host) { PossessionComplete(host); }
+    public void FirePossessionInitiated(Actor host) { PossessionInitiated(host); }
     public void FireTouchInputBegin() { TouchInputBegin(); }
     public void FireTouchInputEnd() { TouchInputEnd(); }
     public void FireTutorialOver(MonoBehaviour script) { TutorialOver(script); }

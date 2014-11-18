@@ -24,7 +24,6 @@ public sealed class Boss1AI : MonoBehaviour
         GlobalGameEvent.Instance.ActorDeath -= OnActorDeath;
     }
 
-    const int FIRE_NODES = 6;
     struct Behaviors
     {
         public readonly IActorBehavior LASER_PHASE;
@@ -40,10 +39,11 @@ public sealed class Boss1AI : MonoBehaviour
             }
             LASER_PHASE = new CompositeBehavior(new PeriodicBehavior(lasers, new RateLimiter(0.3f)), abf.facePlayer);
 
+            var fusion = boss.actorType.weapons.First(w => w.actorName == "FUSION");
             CHARGE_FUSION_PHASE = new CompositeBehavior(
                 new PeriodicBehavior(
                     new WeaponDischargeBehavior(
-                        Consts.CollisionLayer.MOB_AMMO, boss.actorType.weapons[FIRE_NODES]), new RateLimiter(0.5f)), 
+                        Consts.CollisionLayer.MOB_AMMO, fusion), new RateLimiter(0.5f)), 
                 abf.facePlayer);
         }
     }
@@ -102,15 +102,15 @@ public sealed class Boss1AI : MonoBehaviour
     void AttachMobs(string type)
     {
         var game = Main.Instance.game;
-        var bossWeapons = GetComponent<Actor>().actorType.weapons;
-        for (int i = 0; i < FIRE_NODES; ++i)
+        var laserWeapons = GetComponent<Actor>().actorType.weapons.Where(w => w.actorName == "LASER");
+        foreach (var weapon in laserWeapons)
         {
             var mob = game.SpawnMob(type);
             mob.tag = Consts.SPAWNED_MOB_TAG;
             mob.AddComponent<AlphaInherit>();
             mob.rigidbody2D.isKinematic = true;
 
-            Util.PrepareLaunch(transform, mob.transform, bossWeapons[i].offset);
+            Util.PrepareLaunch(transform, mob.transform, weapon.offset);
             mob.transform.parent = transform;
 
             var mobActor = mob.GetComponent<Actor>();

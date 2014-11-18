@@ -10,11 +10,11 @@ public class DeathHopperAI : MonoBehaviour
 	void Start()
     {
 	    StartCoroutine(HopSequence());
-        GlobalGameEvent.Instance.PossessionStart += OnPossessionStart;
+        GlobalGameEvent.Instance.PossessionInitiated += OnPossessionStart;
 	}
 	void OnDestroy()
     {
-        GlobalGameEvent.Instance.PossessionStart -= OnPossessionStart;
+        GlobalGameEvent.Instance.PossessionInitiated -= OnPossessionStart;
     }
     void OnPossessionStart(Actor host)
     {

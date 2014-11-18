@@ -42,6 +42,7 @@ public sealed class GameController : IGame
         gge.ActorDeath += OnActorDeath;
         gge.MapReady += OnMapReady;
         gge.AmmoSpawned += OnAmmoSpawned;
+        gge.PlayerDataUpdated += OnPlayerDataUpdated;
     }
 
     void OnMapReady(GameObject unused, XRect bounds)
@@ -255,12 +256,26 @@ public sealed class GameController : IGame
         yield return new WaitForSeconds(Main.Instance.sounds.roar.length /2 );
 
         cameraTransform.parent = null;
-        GameObject.Destroy(host);
+        GameObject.Destroy(host.gameObject);
     }
 
     void OnAmmoSpawned(Actor ammo, ActorType.Weapon weapon)
     {
         PlaySound(loader.GetWeaponSound(weapon.actorName), ammo.transform.position);
+    }
+    void OnPlayerDataUpdated(PlayerData playerData)
+    {
+        var actorType = player.GetComponent<Actor>().actorType;
+        if (!string.IsNullOrEmpty(actorType.upgradesTo))
+        {
+            var upgrade = Main.Instance.game.loader.GetActorType(actorType.upgradesTo);
+            int level = PlayerData.Instance.GetLevel(actorType);
+            if (level >= upgrade.level)
+            {
+                // level up!
+                player.GetOrAddComponent<LevelUp>();
+            }
+        }
     }
 
     void OnCollisionWithOverwhelmed(Actor host)
@@ -289,7 +304,7 @@ public sealed class GameController : IGame
 
     IEnumerator PossessionSequence(Actor host)
     {
-        GlobalGameEvent.Instance.FirePossessionStart(host);
+        GlobalGameEvent.Instance.FirePossessionInitiated(host);
 
         enemyInPossession = true;
 
@@ -345,11 +360,11 @@ public sealed class GameController : IGame
         // 6. Resume all activity
         Time.timeScale = timeScale;
 
-        GlobalGameEvent.Instance.FirePlayerSpawned(playerActor);
-
         host.GrantInvuln(Consts.POST_POSSESSION_INVULN);
+        
+        GlobalGameEvent.Instance.FirePlayerSpawned(playerActor);
+        GlobalGameEvent.Instance.FirePossessionComplete(playerActor);
         GlobalGameEvent.Instance.FireMobDeath(host);
-
         yield return null;
     }
     IEnumerator DepossessionSequence()
@@ -384,7 +399,7 @@ public sealed class GameController : IGame
 
         player.GetComponent<Actor>().GrantInvuln(Consts.POST_DEPOSSESSION_INVULN);
 
-        GlobalGameEvent.Instance.FirePossessionEnd();
+        GlobalGameEvent.Instance.FireDepossessionComplete();
     }
 
     void SpawnMuzzleFlash(GameObject launcher, GameObject firePoint)

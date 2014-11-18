@@ -41,12 +41,7 @@ public sealed class HUD : MonoBehaviour
         gge.PlayerSpawned += OnPlayerSpawned;
         gge.HealthChange += OnHealthChange;
 
-        gge.MobDeath += OnMobDeath;
-        gge.PossessionStart += OnPossessionStart;
-        gge.PossessionEnd += OnPossessionEnd;
-
-        // layout
-        //var rect = Util.GetScreenRectInWorldCoords(Camera.main);
+        gge.PlayerDataUpdated += OnPlayerDataUpdated;
     }
     void OnPlayerSpawned(Actor player)
     {
@@ -56,20 +51,14 @@ public sealed class HUD : MonoBehaviour
         UpdateXP(player.actorType);
         UpdateCaptures(player.actorType);
     }
-    void OnMobDeath(Actor mob)
+    void OnPlayerDataUpdated(PlayerData playerData)
     {
-        var playerType = Main.Instance.game.player.GetComponent<Actor>().actorType;
-        PlayerData.Instance.OnMobDeath(mob);
-        UpdateXP(playerType);
-        UpdateLevel(playerType);
-    }
-    void OnPossessionStart(Actor host)
-    {
-        PlayerData.Instance.OnPossessionStart(host);
-    }
-    void OnPossessionEnd()
-    {
-        PlayerData.Instance.OnPossessionEnd();
+        Debug.Log("OnPlayerUpdated " + Time.frameCount);
+        var player = Main.Instance.game.player.GetComponent<Actor>();
+
+        UpdateLevel(player.actorType);
+        UpdateXP(player.actorType);
+        UpdateCaptures(player.actorType);
     }
     void OnHealthChange(Actor actor, float delta)
     {

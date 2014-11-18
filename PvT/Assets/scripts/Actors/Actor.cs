@@ -326,24 +326,6 @@ public class Actor : MonoBehaviour
         {
             UpdateTrackingArrow();
         }
-        LevelWatchdog();
-    }
-    void LevelWatchdog()
-    {
-        //KAI: per-frame, this is weak.
-        if (isPlayer)
-        {
-            if (!string.IsNullOrEmpty(actorType.upgradesTo))
-            {
-                var upgrade = Main.Instance.game.loader.GetActorType(actorType.upgradesTo);
-                int level = PlayerData.Instance.GetLevel(actorType);
-                if (level >= upgrade.level)
-                {
-                    // level up!
-                    gameObject.GetOrAddComponent<LevelUp>();
-                }
-            }
-        }
     }
 
     void DetectChangeInOverwhelm()

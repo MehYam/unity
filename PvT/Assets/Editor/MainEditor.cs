@@ -36,7 +36,7 @@ public class MainEditor : Editor
         }
         if (GUILayout.Button("Clear player data"))
         {
-            PlayerData.Instance.ClearAll();
+            PlayerData.ClearAll();
         }
 #if THIS_STUFF_IS_SO_STUPID
         if (GUILayout.Button("Reload"))

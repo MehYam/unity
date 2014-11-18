@@ -48,21 +48,6 @@ public sealed class PlayerData
         int level = Util.FastLog2Floor(xp / Consts.XP_CURVE_MULTIPLIER) + type.level;
         return Mathf.Max(1, level);
     }
-    public void OnMobDeath(Actor actor)
-    {
-        if (!actor.isPlayer && !actor.isAmmo)
-        {
-            var playerActor = Main.Instance.game.player.GetComponent<Actor>();
-            AddKill(actor.actorType, playerActor.actorType);
-        }
-    }
-    public void OnPossessionStart(Actor host)
-    {
-    }
-    public void OnPossessionEnd()
-    {
-        AddCapture(Main.Instance.game.player.GetComponent<Actor>().actorType);
-    }
 
     /// <summary>
     /// Should only be called periodically, say when user pauses, when app goes to background, when level's complete, etc
@@ -97,6 +82,29 @@ public sealed class PlayerData
         {
             playerStats = Base64Serializer.FromBase64<PlayerStats>(base64);
         }
+        GlobalGameEvent.Instance.MobDeath += OnMobDeath;
+        GlobalGameEvent.Instance.PossessionComplete += OnPossessionComplete;
+    }
+    void Destroy()
+    {
+        GlobalGameEvent.Instance.MobDeath -= OnMobDeath;
+        GlobalGameEvent.Instance.PossessionComplete -= OnPossessionComplete;
+    }
+    void OnMobDeath(Actor actor)
+    {
+        if (!actor.isPlayer && !actor.isAmmo)
+        {
+            var playerActor = Main.Instance.game.player.GetComponent<Actor>();
+            AddKill(actor.actorType, playerActor.actorType);
+
+            GlobalGameEvent.Instance.FirePlayerDataUpdated(this);
+        }
+    }
+    void OnPossessionComplete(Actor host)
+    {
+        AddCapture(Main.Instance.game.player.GetComponent<Actor>().actorType);
+    
+        GlobalGameEvent.Instance.FirePlayerDataUpdated(this);
     }
     void AddKill(ActorType victimType, ActorType playerType)
     {
@@ -112,6 +120,8 @@ public sealed class PlayerData
         var stats = GetActorStats(capteeType);
         ++stats.numCaptured;
         ++playerStats.totalCaptures;
+
+        Debug.Log("AddCapture " + capteeType.name + " " + stats.numCaptured);
     }
 
     // Instance management
@@ -127,9 +137,13 @@ public sealed class PlayerData
             return s_instance;
         }
     }
-    public void ClearAll()
+    static public void ClearAll()
     {
         PlayerPrefs.DeleteAll();
+        if (s_instance != null)
+        {
+            s_instance.Destroy();
+        }
         s_instance = new PlayerData();
     }
 
