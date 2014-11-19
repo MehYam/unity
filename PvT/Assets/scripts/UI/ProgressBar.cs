@@ -7,6 +7,8 @@ public class ProgressBar : MonoBehaviour
     public GameObject BackgroundSprite;
     public GameObject ForegroundSprite;
     public GameObject BorderSprite;
+    public TextMesh   Text;
+    public TextMesh   TextBackground;
 
     public Color HighColor;
     public Color LowColor;
@@ -26,6 +28,23 @@ public class ProgressBar : MonoBehaviour
 
                 var fg = ForegroundSprite.GetComponent<SpriteRenderer>();
                 fg.color = Color.Lerp(LowColor, HighColor, value);
+            }
+        }
+    }
+    public string text
+    {
+        set
+        {
+            if (!string.IsNullOrEmpty(value))
+            {
+                Text.text = value;
+                TextBackground.text = value;
+
+                Text.gameObject.SetActive(true);
+            }
+            else
+            {
+                Text.gameObject.SetActive(false);
             }
         }
     }

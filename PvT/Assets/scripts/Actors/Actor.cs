@@ -48,9 +48,9 @@ public class Actor : MonoBehaviour
         {
             GameObject.Destroy(_healthBar.gameObject);
         }
-        if (_overwhelmBar != null)
+        if (_overwhelm.bar != null)
         {
-            GameObject.Destroy(_overwhelmBar.gameObject);
+            GameObject.Destroy(_overwhelm.bar.gameObject);
         }
     }
 
@@ -142,7 +142,24 @@ public class Actor : MonoBehaviour
         get { return health == 0 ? 0 : Mathf.Min(attachedHerolings * Consts.HEROLING_HEALTH_OVERWHELM / health, 1); }
     }
 
-    ProgressBar _overwhelmBar;
+    struct OverwhelmBarState
+    {
+        // this allows us to not generate strings every frame
+        public ProgressBar bar;
+        public int lastNumerator;
+        public int lastDenominator;
+        public bool Update(int num, int denom)
+        {
+            if (lastNumerator != num || lastDenominator != denom)
+            {
+                lastNumerator = num;
+                lastDenominator = denom;
+                return true;
+            }
+            return false;
+        }
+    }
+    OverwhelmBarState _overwhelm;
     ProgressBar _healthBar;
     public void TakeDamage(float damage)
     {
@@ -261,21 +278,24 @@ public class Actor : MonoBehaviour
         //KAI: copy pasta +1 w/ health bar, might be worth generalizing
         if (attachedHerolings > 0)
         {
-            if (_overwhelmBar == null)
+            if (_overwhelm.bar == null)
             {
                 var bar = (GameObject)GameObject.Instantiate(Main.Instance.assets.OverwhelmProgressBar);
-                _overwhelmBar = bar.GetComponent<ProgressBar>();
-                //_overwhelmBar.transform.Rotate(0, 0, 90);
+                _overwhelm.bar = bar.GetComponent<ProgressBar>();
 
                 bar.transform.parent = Main.Instance.EffectParent.transform;
             }
-            _overwhelmBar.gameObject.SetActive(true);
-            _overwhelmBar.percent = overwhelmPct;
-            _overwhelmBar.transform.position = transform.position + OVERWHELM_BAR_POSITION;
+            _overwhelm.bar.gameObject.SetActive(true);
+            _overwhelm.bar.percent = overwhelmPct;
+            if (_overwhelm.Update(attachedHerolings, Mathf.CeilToInt(health / Consts.HEROLING_HEALTH_OVERWHELM)))
+            {
+                _overwhelm.bar.text = string.Format("{0}/{1}", _overwhelm.lastNumerator, _overwhelm.lastDenominator);
+            }
+            _overwhelm.bar.transform.position = transform.position + OVERWHELM_BAR_POSITION;
         }
-        else if (_overwhelmBar != null)
+        else if (_overwhelm.bar != null)
         {
-            _overwhelmBar.gameObject.SetActive(false);
+            _overwhelm.bar.gameObject.SetActive(false);
         }
     }
     sealed class DamageSmoke
