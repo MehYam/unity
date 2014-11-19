@@ -172,6 +172,10 @@ public sealed class MobAI
     {
         var bf = ActorBehaviorFactory.Instance;
 
+        _behaviorFactory["GREENK0"] = (vehicle) =>
+        {
+            return Util.CoinFlip() ? bf.followPlayer : AttackAndFlee(4, 1, 1, vehicle.weapons);
+        };
         _behaviorFactory["GREENK"] = (vehicle) =>
         {
             return Util.CoinFlip(0.2f) ? ShieldWeaponAI(vehicle) : bf.followPlayer;

@@ -55,6 +55,25 @@ public sealed class PlayerData
         );
         return (int)(xpPercent * Consts.XP_PER_KILL_PER_LEVEL * (float)victimLevel);
     }
+    /// <summary>
+    /// Returns the upgraded version of the actor, if the actor has the XP.
+    /// </summary>
+    /// <param name="actorType">The actor type to upgrade</param>
+    /// <returns>The actor type's upgrade, or the same actor type no upgrade is available</returns>
+    public ActorType GetTierUpgrade(ActorType actorType)
+    {
+        if (!string.IsNullOrEmpty(actorType.upgradesTo))
+        {
+            var nextTier = Main.Instance.game.loader.GetActorType(actorType.upgradesTo);
+            int level = GetLevel(actorType);
+            if (level >= nextTier.level)
+            {
+                return GetTierUpgrade(nextTier);
+            }
+        }
+        return actorType;
+    }
+
     public int GetLevel(ActorType type)
     {
         return GetLevel(GetActorStats(type), type.level);

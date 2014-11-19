@@ -266,15 +266,12 @@ public sealed class GameController : IGame
     void OnPlayerDataUpdated(PlayerData playerData)
     {
         var actorType = player.GetComponent<Actor>().actorType;
-        if (!string.IsNullOrEmpty(actorType.upgradesTo))
+        var upgradeType = PlayerData.Instance.GetTierUpgrade(actorType);
+
+        if (upgradeType != actorType)
         {
-            var upgrade = Main.Instance.game.loader.GetActorType(actorType.upgradesTo);
-            int level = PlayerData.Instance.GetLevel(actorType);
-            if (level >= upgrade.level)
-            {
-                // level up!
-                player.GetOrAddComponent<LevelUp>();
-            }
+            var levelUp = player.GetOrAddComponent<LevelUp>();
+            levelUp.levelTo = upgradeType;
         }
     }
 

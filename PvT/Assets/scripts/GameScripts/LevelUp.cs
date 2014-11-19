@@ -11,13 +11,14 @@ public class LevelUp : MonoBehaviour
 	    StartCoroutine(LevelUpSequence());
 	}
 
+    public ActorType levelTo { private get; set; }
     IEnumerator LevelUpSequence()
     {
         var main = Main.Instance;
         var actor = GetComponent<Actor>();
         actor.takenDamageMultiplier = 0;  // stop damage - level up completely heals a player
 
-        DebugUtil.Assert(!string.IsNullOrEmpty(actor.actorType.upgradesTo), "Trying to level up an actor that can't");
+        DebugUtil.Assert(levelTo != null, "LevelUp doesn't know what to level to");
 
         // 1. Attach the animation, wait a moment
         var flare = (GameObject)Instantiate(main.assets.flareAnimation);
@@ -30,7 +31,7 @@ public class LevelUp : MonoBehaviour
 
         // 2. Spawn the new player, inherit the physics and positioning of the previous one
         //KAI: here's a weakness - spawning an actor shouldn't be that different from spawning the player (they shouldn't necessarily have two different calls)
-        main.game.SpawnPlayer(transform.position, actor.actorType.upgradesTo);
+        main.game.SpawnPlayer(transform.position, levelTo.name);
 
         var player = main.game.player;
         player.transform.rotation = transform.rotation;
