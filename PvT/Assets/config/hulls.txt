@@ -1,6 +1,6 @@
 name,asset,mass,health,speed,accel,inertia,dropshadow,level,upgrade,pivot Y
-tankhull0,tankhull0,30,200,30,2,0,TRUE,3,1,52
-tankhull1,tankhull1,30,1300,30,1,0,TRUE,4,1,55
-tankhull2,tankhull2,30,2000,30,2.5,0,TRUE,10,1,71
-tankhull3,tankhull3,30,3000,30,3,0,TRUE,12,1,50
-tankhull4,tankhull4,30,4000,30,1.5,0,TRUE,15,1,32
+tankhull0,tankhull0,30,200,30,2,0,TRUE,3,,52
+tankhull1,tankhull1,30,1300,30,1,0,TRUE,4,,55
+tankhull2,tankhull2,30,2000,30,2.5,0,TRUE,10,,71
+tankhull3,tankhull3,30,3000,30,3,0,TRUE,12,,50
+tankhull4,tankhull4,30,4000,30,1.5,0,TRUE,15,,32
