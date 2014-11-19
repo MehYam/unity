@@ -54,7 +54,6 @@ public sealed class HUD : MonoBehaviour
     }
     void OnPlayerDataUpdated(PlayerData playerData)
     {
-        Debug.Log("OnPlayerUpdated " + Time.frameCount);
         var player = Main.Instance.game.player.GetComponent<Actor>();
 
         UpdateLevel(player.actorType);

@@ -113,7 +113,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 3432512}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2fa97bb74cce3964a9587e424b7ab7d2, type: 3}
   m_Name: 
@@ -176,7 +176,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 3432512}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 597ae4a43a018e741acec37b97132aa4, type: 3}
   m_Name: 
@@ -2241,6 +2241,7 @@ GameObject:
   - 223: {fileID: 1873991294}
   - 114: {fileID: 1873991293}
   - 114: {fileID: 1873991296}
+  - 114: {fileID: 1873991297}
   m_Layer: 5
   m_Name: HUD and UI
   m_TagString: Untagged
@@ -2328,6 +2329,27 @@ MonoBehaviour:
   space: {fileID: 11695404}
   joypadFeedback: {fileID: 776660584}
   textPopup: {fileID: 100000, guid: 6c03511fb97b1364fabeaa030fc65c33, type: 2}
+--- !u!114 &1873991297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1873991292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1980459831, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UiScaleMode: 1
+  m_ReferencePixelsPerUnit: 100
+  m_ScaleFactor: 1
+  m_ReferenceResolution: {x: 800, y: 600}
+  m_ScreenMatchMode: 0
+  m_MatchWidthOrHeight: 0
+  m_PhysicalUnit: 3
+  m_FallbackScreenDPI: 96
+  m_DefaultSpriteDPI: 96
+  m_DynamicPixelsPerUnit: 1
 --- !u!1 &2142967622
 GameObject:
   m_ObjectHideFlags: 0
