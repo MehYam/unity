@@ -182,7 +182,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mobs: 1
-  startLevel: 0
+  startLevel: 1
   spawnDistanceFromEdge: -2
   map: {fileID: 100004, guid: a79bb10566c417243a18065740b954fe, type: 2}
   rooms: []
@@ -2327,6 +2327,7 @@ MonoBehaviour:
   curtain: {fileID: 67287699}
   space: {fileID: 11695404}
   joypadFeedback: {fileID: 776660584}
+  textPopup: {fileID: 100000, guid: 6c03511fb97b1364fabeaa030fc65c33, type: 2}
 --- !u!1 &2142967622
 GameObject:
   m_ObjectHideFlags: 0

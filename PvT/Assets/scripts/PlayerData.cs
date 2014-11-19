@@ -97,13 +97,15 @@ public sealed class PlayerData
             var playerActor = Main.Instance.game.player.GetComponent<Actor>();
             AddKill(actor.actorType, playerActor.actorType);
 
+            GlobalGameEvent.Instance.FireXPGain(Consts.XP_PER_KILL, Vector2.zero);
             GlobalGameEvent.Instance.FirePlayerDataUpdated(this);
         }
     }
     void OnPossessionComplete(Actor host)
     {
         AddCapture(Main.Instance.game.player.GetComponent<Actor>().actorType);
-    
+
+        GlobalGameEvent.Instance.FireXPGain(Consts.XP_PER_CAPTURE, Vector2.zero);
         GlobalGameEvent.Instance.FirePlayerDataUpdated(this);
     }
     void AddKill(ActorType victimType, ActorType playerType)
@@ -120,8 +122,6 @@ public sealed class PlayerData
         var stats = GetActorStats(capteeType);
         ++stats.numCaptured;
         ++playerStats.totalCaptures;
-
-        Debug.Log("AddCapture " + capteeType.name + " " + stats.numCaptured);
     }
 
     // Instance management

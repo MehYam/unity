@@ -33,6 +33,7 @@ public sealed class HUD : MonoBehaviour
     public Fader curtain;
     public Fader space;
     public GameObject joypadFeedback;
+    public GameObject textPopup;
 
     void Start()
     {
@@ -40,8 +41,8 @@ public sealed class HUD : MonoBehaviour
         var gge = GlobalGameEvent.Instance; 
         gge.PlayerSpawned += OnPlayerSpawned;
         gge.HealthChange += OnHealthChange;
-
         gge.PlayerDataUpdated += OnPlayerDataUpdated;
+        gge.XPGain += OnXPGain;
     }
     void OnPlayerSpawned(Actor player)
     {
@@ -66,6 +67,13 @@ public sealed class HUD : MonoBehaviour
         {
             UpdateHealth(actor);
         }
+    }
+    void OnXPGain(int xp, Vector2 where)
+    {
+        var textParent = (GameObject)Instantiate(textPopup);
+        var text = textParent.transform.GetChild(0).GetComponent<TextMesh>();
+        text.text = string.Format("+ {0} XP", xp);
+        textParent.transform.position = Main.Instance.game.player.transform.position + Vector3.up;
     }
     void UpdateHealth(Actor player)
     {

@@ -61,6 +61,7 @@ class GlobalGameEvent
     public event Action TouchInputBegin = delegate { };
     public event Action TouchInputEnd = delegate { };
     public event Action<PlayerData> PlayerDataUpdated = delegate { };
+    public event Action<int, Vector2> XPGain = delegate { };
 
     // C# events require binding directly to the event source.  GlobalGameEvent works around
     // this, but the cost is that for each event we have to implement its counterpart
@@ -90,4 +91,5 @@ class GlobalGameEvent
     public void FireTouchInputEnd() { TouchInputEnd(); }
     public void FireTutorialOver(MonoBehaviour script) { TutorialOver(script); }
     public void FireWeaponCharge(Actor actor, float pct) { WeaponCharge(actor, pct); }
+    public void FireXPGain(int xp, Vector2 where) { XPGain(xp, where); }
 }
