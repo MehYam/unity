@@ -743,6 +743,7 @@ MonoBehaviour:
     Levels: {fileID: 4900000, guid: 77022b18d2b218d4eae167bb0696d069, type: 3}
     AI: {fileID: 4900000, guid: f099c617aea0bc3489690336e990cb2b, type: 3}
     Misc: {fileID: 4900000, guid: fe79f9de671e9fb41a1b62a9e434d791, type: 3}
+    WeaponSounds: {fileID: 4900000, guid: eaa4cbd6d84302d4da523b877cdb6139, type: 3}
   assets:
     Bounce: {fileID: 6200000, guid: c4e015d2c312dd944b4a529c783e8795, type: 2}
     collisionParticles: {fileID: 100000, guid: cd6e2569a8e7e8942800f539985e267c, type: 2}
@@ -754,16 +755,15 @@ MonoBehaviour:
     TrackingArrow: {fileID: 100000, guid: 34b98b45d023102448965a76fc4c0428, type: 2}
     OverwhelmedIndicator: {fileID: 100000, guid: 380976d23fd379c479f5b149520909e6,
       type: 2}
+    flareAnimation: {fileID: 0}
   sounds:
-    HerolingBump: {fileID: 8300000, guid: bd8c8699e40b26a43b461a397a11806a, type: 3}
     HerolingCapture: {fileID: 8300000, guid: 4d3fcb40b76db6f4ba0f2df6ea1eb851, type: 3}
-    Laser: {fileID: 8300000, guid: 38a4f86e695d5454e81657deb088217f, type: 3}
-    Bullet: {fileID: 8300000, guid: 7be935c801756524e902ebdbe9dbfe1c, type: 3}
     SmallCollision: {fileID: 8300000, guid: 3cad01b4cdd23a24c935a9e355adabc5, type: 3}
     BigCollision: {fileID: 8300000, guid: fd04cca0b8ed6454391e5b23271f175d, type: 3}
     Explosion1: {fileID: 8300000, guid: 2f747f00e6dcb2f4eb316425d69c9383, type: 3}
     fanfare1: {fileID: 8300000, guid: 13c193cf99d81eb47a4b2d4eee111281, type: 3}
     roar: {fileID: 8300000, guid: 3c1aabbef31e18c459116afd7a3fd8fd, type: 3}
+    levelUp: {fileID: 0}
   music:
     active: 1
     intro: {fileID: 8300000, guid: 4f9d7c017c6e4ec4281cc232f5ee5812, type: 3}
@@ -971,6 +971,7 @@ GameObject:
   - 114: {fileID: 1432114142}
   - 198: {fileID: 1432114144}
   - 199: {fileID: 1432114143}
+  - 114: {fileID: 1432114145}
   m_Layer: 0
   m_Name: flareAnimation
   m_TagString: Untagged
@@ -1040,7 +1041,7 @@ ParticleSystemRenderer:
   m_UseLightProbes: 0
   m_LightProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
-  m_SortingLayerID: 0
+  m_SortingLayerID: 3549090055
   m_SortingOrder: 0
   m_RenderMode: 0
   m_MaxParticleSize: .5
@@ -1062,7 +1063,7 @@ ParticleSystem:
   m_PrefabInternal: {fileID: 1502911081}
   m_GameObject: {fileID: 1432114139}
   lengthInSec: 2
-  startDelay: 0
+  startDelay: .5
   speed: 1
   randomSeed: 0
   looping: 0
@@ -1353,7 +1354,7 @@ ParticleSystem:
     cnt1: 30
     cnt2: 30
     cnt3: 30
-    time0: .5
+    time0: 0
     time1: 0
     time2: 0
     time3: 0
@@ -2107,6 +2108,18 @@ ParticleSystem:
     subEmitterCollision1: {fileID: 0}
     subEmitterDeath: {fileID: 0}
     subEmitterDeath1: {fileID: 0}
+--- !u!114 &1432114145
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 11400002, guid: a128310b1f0669043ad7e3f1c4da2fcf,
+    type: 2}
+  m_PrefabInternal: {fileID: 1502911081}
+  m_GameObject: {fileID: 1432114139}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1874989c5e2da094ea00112c6a895694, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1462291554
 GameObject:
   m_ObjectHideFlags: 0

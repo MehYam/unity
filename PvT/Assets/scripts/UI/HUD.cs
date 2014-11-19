@@ -25,7 +25,7 @@ public sealed class HUD : MonoBehaviour
         public Image image;
         public Text name;
         public Text health;
-        public Text xp;
+        public UIProgressBar xp;
         public Text captures;
         public Text level;
     }
@@ -42,7 +42,7 @@ public sealed class HUD : MonoBehaviour
         gge.PlayerSpawned += OnPlayerSpawned;
         gge.HealthChange += OnHealthChange;
         gge.PlayerDataUpdated += OnPlayerDataUpdated;
-        gge.XPGain += OnXPGain;
+        gge.GainingXP += OnXPGain;
     }
     void OnPlayerSpawned(Actor player)
     {
@@ -81,7 +81,6 @@ public sealed class HUD : MonoBehaviour
     }
     void UpdatePortraitImage(Actor player)
     {
-        //KAI: this won't work for tanks... need to take a 'snapshot' of current player appearance
         var sprite = player.GetComponent<SpriteRenderer>();
         portrait.image.sprite = sprite.sprite;
 
@@ -93,11 +92,12 @@ public sealed class HUD : MonoBehaviour
     }
     void UpdateXP(ActorType type)
     {
-        portrait.xp.text = "XP: " + PlayerData.Instance.GetXP(type);
+        var pct = PlayerData.Instance.GetLevelProgress(type);
+        portrait.xp.percent = pct;
     }
     void UpdateCaptures(ActorType type)
     {
         var stats = PlayerData.Instance.GetActorStats(type);
-        portrait.captures.text = "Captured: " + stats.numCaptured;
+        portrait.captures.text = "Captured: " + stats.captures;
     }
 }

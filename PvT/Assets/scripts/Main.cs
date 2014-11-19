@@ -109,7 +109,7 @@ public class Main : MonoBehaviour
         Debug.Log("Input " + MasterInput.impl);
 
         // load saved player data
-        Debug.Log("PlayerData: totalKills " + PlayerData.Instance.playerStats.totalKills);
+        Debug.Log("PlayerData: totalKills " + PlayerData.Instance.playerStats.kills);
 
         game = new GameController(CreateLoader());
         GlobalGameEvent.Instance.MapReady += OnMapReady;

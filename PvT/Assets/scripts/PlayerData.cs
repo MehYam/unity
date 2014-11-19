@@ -11,16 +11,18 @@ public sealed class PlayerData
     [Serializable]
     public sealed class ActorStats
     {
-        public int numKilled = 0;
-        public int numCaptured = 0;
-        public int numKillsWithActor = 0;
+        public int deaths = 0;
+        public int kills = 0;
+        public int captures = 0;
+        public int xpWith = 0;
     }
     [Serializable]
     public sealed class PlayerStats
     {
-        public int totalKills = 0;
-        public int totalCaptures = 0;
-        public int totalDamageDone = 0;
+        public int kills = 0;
+        public int captures = 0;
+        public int damageDealth = 0;
+        public int xp = 0;
     }
     Dictionary<string, ActorStats> _actorStatsLookup = new Dictionary<string, ActorStats>();
 
@@ -36,17 +38,41 @@ public sealed class PlayerData
     }
     public PlayerStats playerStats { get; private set; }
 
-    public int GetXP(ActorType type)
+    static public int GetXPAtLevel(int level)
     {
-        var stats = GetActorStats(type);
-        var xp = stats.numKillsWithActor * Consts.XP_PER_KILL + stats.numCaptured * Consts.XP_PER_CAPTURE;
-        return xp;
+        --level;
+        return (int)(level > 0 ? (Mathf.Pow(2, level) * Consts.XP_CURVE_MULTIPLIER) : 0);
+    }
+    static public int GetLevelAtXP(int xp)
+    {
+        return Util.FastLog2Floor(xp / Consts.XP_CURVE_MULTIPLIER) + 1;
+    }
+    static public int GetKillXP(int playerLevel, int victimLevel)
+    {
+        int levelGap = playerLevel - victimLevel;
+        float xpPercent = Mathf.Max(0,
+            (float)(Consts.XP_MAX_LEVEL_GAP - levelGap) / (float)Consts.XP_MAX_LEVEL_GAP
+        );
+        return (int)(xpPercent * Consts.XP_PER_KILL_PER_LEVEL * (float)victimLevel);
     }
     public int GetLevel(ActorType type)
     {
-        var xp = GetXP(type);
-        int level = Util.FastLog2Floor(xp / Consts.XP_CURVE_MULTIPLIER) + type.level;
-        return Mathf.Max(1, level);
+        return GetLevel(GetActorStats(type), type.level);
+    }
+    public int GetLevel(ActorStats stats, int baseLevel)
+    {
+        return GetLevelAtXP(GetXPAtLevel(baseLevel) + stats.xpWith);
+    }
+    public float GetLevelProgress(ActorType type)
+    {
+        var intrinsicLevelXP = GetXPAtLevel(type.level);
+        var accumulatedXPWithMob = GetActorStats(type).xpWith;
+        var xp = intrinsicLevelXP + accumulatedXPWithMob;
+
+        var level = GetLevelAtXP(xp);
+        var levelXP = GetXPAtLevel(level);
+
+        return (float)(xp - levelXP) / (float)(GetXPAtLevel(level + 1) - levelXP);
     }
 
     /// <summary>
@@ -54,11 +80,11 @@ public sealed class PlayerData
     /// </summary>
     public void Commit()
     {
-        var actorStatsSerialized = Base64Serializer.ToBase64(_actorStatsLookup);
-        PlayerPrefs.SetString(ACTOR_STATS, actorStatsSerialized);
+        var actorStatsBase64 = Base64Serializer.ToBase64(_actorStatsLookup);
+        PlayerPrefs.SetString(ACTOR_STATS, actorStatsBase64);
 
-        var playerStatsSerialized = Base64Serializer.ToBase64(playerStats);
-        PlayerPrefs.SetString(PLAYER_STATS, playerStatsSerialized);
+        var playerStatsBase64 = Base64Serializer.ToBase64(playerStats);
+        PlayerPrefs.SetString(PLAYER_STATS, playerStatsBase64);
 
         PlayerPrefs.Save();
     }
@@ -94,34 +120,53 @@ public sealed class PlayerData
     {
         if (!actor.isPlayer && !actor.isAmmo)
         {
-            var playerActor = Main.Instance.game.player.GetComponent<Actor>();
-            AddKill(actor.actorType, playerActor.actorType);
+            var playerActorType = Main.Instance.game.player.GetComponent<Actor>().actorType;
+            var playerActorStats = GetActorStats(playerActorType);
+            var prevXP = playerActorStats.xpWith;
 
-            GlobalGameEvent.Instance.FireXPGain(Consts.XP_PER_KILL, actor.gameObject.transform.position);
+            AddKill(actor.actorType, playerActorType, playerActorStats);
+
+            if (playerActorStats.xpWith > prevXP)
+            {
+                GlobalGameEvent.Instance.FireGainingXP(playerActorStats.xpWith - prevXP, actor.gameObject.transform.position);
+            }
             GlobalGameEvent.Instance.FirePlayerDataUpdated(this);
         }
     }
     void OnPossessionComplete(Actor host)
     {
-        AddCapture(Main.Instance.game.player.GetComponent<Actor>().actorType);
+        var playerActor = Main.Instance.game.player.GetComponent<Actor>();
+        var playerActorStats = GetActorStats(playerActor.actorType);
+        var prevXP = playerActorStats.xpWith;
 
-        GlobalGameEvent.Instance.FireXPGain(Consts.XP_PER_CAPTURE, host.gameObject.transform.position);
+        AddCapture(playerActorStats, playerActor.actorType.level);
+
+        if (playerActorStats.xpWith > prevXP)
+        {
+            GlobalGameEvent.Instance.FireGainingXP(playerActorStats.xpWith - prevXP, host.gameObject.transform.position);
+        }
         GlobalGameEvent.Instance.FirePlayerDataUpdated(this);
     }
-    void AddKill(ActorType victimType, ActorType playerType)
+    void AddKill(ActorType victimType, ActorType playerType, ActorStats playerActorStats)
     {
-        var stats = GetActorStats(victimType);
-        ++stats.numKilled;
-        ++playerStats.totalKills;
+        var victimStats = GetActorStats(victimType);
+        ++victimStats.deaths;
+        ++playerStats.kills;
+        ++playerActorStats.kills;
 
-        stats = GetActorStats(playerType);
-        ++stats.numKillsWithActor;
+        var level = GetLevel(playerActorStats, playerType.level);
+        var xp = GetKillXP(level, victimType.level);
+        playerStats.xp += xp;
+        playerActorStats.xpWith += xp;
     }
-    void AddCapture(ActorType capteeType)
+    void AddCapture(ActorStats captee, int level)
     {
-        var stats = GetActorStats(capteeType);
-        ++stats.numCaptured;
-        ++playerStats.totalCaptures;
+        ++captee.captures;
+        ++playerStats.captures;
+
+        var xp = level * Consts.XP_PER_CAPTURE_PER_LEVEL;
+        playerStats.xp += xp;
+        captee.xpWith += xp;
     }
 
     // Instance management

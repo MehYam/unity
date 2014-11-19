@@ -14,8 +14,29 @@ public class test : MonoBehaviour
     public GameObject particles;
 
 	// Use this for initialization
-	void Start () {
-        
+	void Start()
+    {
+        var sb = new System.Text.StringBuilder();
+    
+        for (int i = 1; i < 4; ++i)
+        {
+            var xp = PlayerData.GetXPAtLevel(i);
+            sb.AppendLine(string.Format("level {0}/{1} xp {2}", i, PlayerData.GetLevelAtXP(xp), xp));
+        }
+        Debug.Log("xp report:\n" + sb.ToString());
+        sb.Length = 0;
+
+        for (int i = 1; i < 10; ++i)
+        {
+            sb.AppendLine(string.Format("xp per kill, player level {0}, victim level {1}, xp {2}",
+                i, i, PlayerData.GetKillXP(i, i)));
+            sb.AppendLine(string.Format("xp per kill, player level {0}, victim level {1}, xp {2}",
+                i, 1, PlayerData.GetKillXP(i, 1)));
+            sb.AppendLine(string.Format("xp per kill, player level {0}, victim level {1}, xp {2}",
+                1, i, PlayerData.GetKillXP(1, i)));
+        }
+        Debug.Log("kill xp report:\n" + sb.ToString());
+
         // Test the tween with the lambda completion function
         GetComponent<TweenPosition>().To(Vector3.zero, 1, (go) => { Log("done animation for -> " + go); });
 
