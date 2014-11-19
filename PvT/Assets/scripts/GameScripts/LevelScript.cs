@@ -79,6 +79,7 @@ public class LevelScript : MonoBehaviour
     IEnumerator RunLevel(Level level, int chapterNumber)
     {
         Debug.Log("LevelScript.RunLevel starting chapter " + chapterNumber);
+
         foreach (var evt in level.events)
         {
             if (evt is Level.MobSpawnEvent)
@@ -105,13 +106,17 @@ public class LevelScript : MonoBehaviour
                         break;
                     case "EVENT_COMMENT_1":
                         break;
+                    case "EVENT_RANDOM_SPAWNER1":
+                        randomSpawner = new string[] { "BEE0", "BEE", "GREENK0", "GREENK" };
+                        break;
                 }
             }
-        }        
+        }
+        randomSpawner = null;
         yield return null;
     }
 
-    static readonly string[] RANDOM_SPAWNERS = new string[]{"BEE0", "BEE", "GREENK0", "GREENK"};
+    string[] randomSpawner;
     HashSet<GameObject> _mobsSpawned = new HashSet<GameObject>();
     IEnumerator RunMobSpawnEvent(Level.MobSpawnEvent evt)
     {
@@ -134,12 +139,12 @@ public class LevelScript : MonoBehaviour
                 _mobsSpawned.Count == 0 || spawnLimiter.reached
             ));
 
-            if (_mobsSpawned.Count > 0 && _mobsSpawned.Count < 6 && spawnLimiter.reached)
+            if (_mobsSpawned.Count > 0 && randomSpawner != null && _mobsSpawned.Count < 6 && spawnLimiter.reached)
             {
                 int iToSpawn = Random.Range(1, 4);
                 for (int i = 0; i < iToSpawn; ++i)
                 {
-                    SpawnMob(game, RANDOM_SPAWNERS[Random.Range(0, RANDOM_SPAWNERS.Length - 1)]);
+                    SpawnMob(game, randomSpawner[Random.Range(0, randomSpawner.Length - 1)]);
                 }
             }
         }

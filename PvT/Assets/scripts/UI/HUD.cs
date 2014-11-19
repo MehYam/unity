@@ -67,12 +67,13 @@ public sealed class HUD : MonoBehaviour
             UpdateHealth(actor);
         }
     }
+    static readonly Vector2 xpUpOffset = new Vector2(0, 0.5f);
     void OnXPGain(int xp, Vector2 where)
     {
         var textParent = (GameObject)Instantiate(textPopup);
         var text = textParent.transform.GetChild(0).GetComponent<TextMesh>();
         text.text = string.Format("+ {0} XP", xp);
-        textParent.transform.position = Main.Instance.game.player.transform.position + Vector3.up;
+        textParent.transform.position = where + xpUpOffset;
     }
     void UpdateHealth(Actor player)
     {
