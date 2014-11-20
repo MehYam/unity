@@ -24,9 +24,9 @@ public class TierUp : MonoBehaviour
         var flare = (GameObject)Instantiate(main.assets.flareAnimation);
         flare.transform.parent = transform;
         flare.transform.localPosition = Vector2.zero;
-        flare.particleSystem.Play();
 
         yield return new WaitForSeconds(Consts.FLARE_ANIMATION_PEAK_SECONDS);
+        flare.particleSystem.Play();
 
 
         main.game.PlaySound(main.sounds.levelUp, transform.position);
