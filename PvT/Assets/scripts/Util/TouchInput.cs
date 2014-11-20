@@ -72,7 +72,14 @@ public sealed class TouchInput : IInput
                 //
                 // The fix is establishing a proper event system, and not checking for changed user input
                 // in Update/FixedUpdate()'s all over the place
-                _lastCursor = _touchState.first.position;
+                if (TouchState.Finger.IsDown(_touchState.second))
+                {
+                    _lastCursor = ((_touchState.first.position - _touchState.second.position) * 0.5f) + _touchState.second.position;
+                }
+                else
+                {
+                    _lastCursor = _touchState.first.position;
+                }
             }
             return _lastCursor;
 #else
