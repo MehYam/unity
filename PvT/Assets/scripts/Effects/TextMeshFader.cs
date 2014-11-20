@@ -27,7 +27,6 @@ public class TextMeshFader : MonoBehaviour
         if (_meshBG != null)
         {
             Util.SetAlpha(_meshBG, alpha);
-            Debug.Log("MESH bg " + _meshBG.name + " " + alpha);
         }
 	}
 }
