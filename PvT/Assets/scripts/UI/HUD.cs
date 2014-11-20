@@ -33,7 +33,7 @@ public sealed class HUD : MonoBehaviour
     public Fader curtain;
     public Fader space;
     public GameObject joypadFeedback;
-    public GameObject textPopup;
+    public GameObject bling;
 
     void Start()
     {
@@ -70,10 +70,9 @@ public sealed class HUD : MonoBehaviour
     static readonly Vector2 xpUpOffset = new Vector2(0, 0.5f);
     void OnXPGain(int xp, Vector2 where)
     {
-        var textParent = (GameObject)Instantiate(textPopup);
-        var text = textParent.transform.GetChild(0).GetComponent<TextMesh>();
-        text.text = string.Format("+ {0} XP", xp);
-        textParent.transform.position = where + xpUpOffset;
+        var blingObj = (GameObject)Instantiate(bling);
+        blingObj.GetComponent<DumbTextDropShadow>().text = string.Format("+ {0} XP", xp);
+        blingObj.transform.position = where + xpUpOffset;
     }
     void UpdateHealth(Actor player)
     {
