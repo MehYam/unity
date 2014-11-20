@@ -42,7 +42,7 @@ public sealed class GameController : IGame
         gge.ActorDeath += OnActorDeath;
         gge.MapReady += OnMapReady;
         gge.AmmoSpawned += OnAmmoSpawned;
-        gge.PlayerDataUpdated += OnPlayerDataUpdated;
+        gge.GainingXP += OnGainingXP;
     }
 
     void OnMapReady(GameObject unused, XRect bounds)
@@ -263,15 +263,27 @@ public sealed class GameController : IGame
     {
         PlaySound(loader.GetWeaponSound(weapon.actorName), ammo.transform.position);
     }
-    void OnPlayerDataUpdated(PlayerData playerData)
+    void OnGainingXP(int xpGain, Vector2 where)
     {
         var actorType = player.GetComponent<Actor>().actorType;
         var upgradeType = PlayerData.Instance.GetTierUpgrade(actorType);
 
+        // Check to see if this is a tier up first - if not, check for a regular level up
         if (upgradeType != actorType)
         {
-            var levelUp = player.GetOrAddComponent<LevelUp>();
+            Debug.Log("Upgrading tier to " + upgradeType.ToString());
+
+            var levelUp = player.GetOrAddComponent<TierUp>();
             levelUp.levelTo = upgradeType;
+        }
+        else
+        {
+            var xp = PlayerData.Instance.GetXP(actorType);
+            if (PlayerData.GetLevelAtXP(xp) > PlayerData.GetLevelAtXP(xp - xpGain))
+            {
+                Debug.Log("Level up!");
+                player.GetOrAddComponent<LevelUp>();
+            }
         }
     }
 

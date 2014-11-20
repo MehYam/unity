@@ -73,25 +73,29 @@ public sealed class PlayerData
         }
         return actorType;
     }
-
+    public int GetXP(ActorType type)
+    {
+        return GetXPAtLevel(type.level) + GetActorStats(type).xpWith;
+    }
     public int GetLevel(ActorType type)
     {
-        return GetLevel(GetActorStats(type), type.level);
-    }
-    public int GetLevel(ActorStats stats, int baseLevel)
-    {
-        return GetLevelAtXP(GetXPAtLevel(baseLevel) + stats.xpWith);
+        return GetLevelAtXP(GetXPAtLevel(type.level) + GetActorStats(type).xpWith);
     }
     public float GetLevelProgress(ActorType type)
     {
-        var intrinsicLevelXP = GetXPAtLevel(type.level);
-        var accumulatedXPWithMob = GetActorStats(type).xpWith;
-        var xp = intrinsicLevelXP + accumulatedXPWithMob;
+        var xp = GetXP(type);
 
         var level = GetLevelAtXP(xp);
         var levelXP = GetXPAtLevel(level);
 
         return (float)(xp - levelXP) / (float)(GetXPAtLevel(level + 1) - levelXP);
+    }
+    public void _debug()
+    {
+        var actorStats = GetActorStats(Main.Instance.game.player.GetComponent<Actor>().actorType);
+        actorStats.xpWith += 1000;
+        GlobalGameEvent.Instance.FireGainingXP(1000, Main.Instance.game.player.transform.position);
+        GlobalGameEvent.Instance.FirePlayerDataUpdated(this);
     }
 
     /// <summary>
@@ -173,7 +177,7 @@ public sealed class PlayerData
         ++playerStats.kills;
         ++playerActorStats.kills;
 
-        var level = GetLevel(playerActorStats, playerType.level);
+        var level = GetLevel(playerType);
         var xp = GetKillXP(level, victimType.level);
         playerStats.xp += xp;
         playerActorStats.xpWith += xp;

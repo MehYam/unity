@@ -112,7 +112,10 @@ public class ActorType
         }
         return go;
     }
-
+    public override string ToString()
+    {
+        return string.Format("{0}, asset {1}, health {2}", name, asset.name, health);
+    }
     public sealed class Weapon
     {
         public readonly string actorName;

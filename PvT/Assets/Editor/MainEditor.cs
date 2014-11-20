@@ -38,6 +38,10 @@ public class MainEditor : Editor
         {
             PlayerData.ClearAll();
         }
+        if (GUILayout.Button("Gain XP"))
+        {
+            PlayerData.Instance._debug();
+        }
 #if THIS_STUFF_IS_SO_STUPID
         if (GUILayout.Button("Reload"))
         {
