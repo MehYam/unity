@@ -32,57 +32,65 @@ public class Asset
     }
 }
 
+public class ActorAttrs
+{
+    public readonly float maxSpeed;
+    public readonly float sqrMaxSpeed; // pre-calculated, useful for comparing vector magnitudes
+    public readonly float acceleration;
+    public readonly float maxHealth;
+
+    public ActorAttrs(float maxSpeed, float acceleration, float health)
+    {
+        this.maxSpeed = maxSpeed;
+        this.sqrMaxSpeed = Mathf.Pow(maxSpeed, 2);
+        this.acceleration = acceleration;
+        this.maxHealth = health;
+    }
+}
+
 public class ActorType
 {
     public readonly Asset asset;
     public readonly string name;
+
+    public readonly ActorAttrs attrs;
     public readonly float mass;
-    public readonly float maxSpeed;
-    public readonly float sqrMaxSpeed; // useful for comparing vector magnitudes
-
-    public readonly float acceleration;
     public readonly float inertia;
-    public readonly bool dropShadow;
 
-    public readonly int level;
-    public readonly string upgradesTo;
+    public readonly int baseLevel;
+    public readonly string nextTierUpgrade;
 
-    public readonly float health = 1;
     public readonly Weapon[] weapons; // the behavior's in charge of choosing a weapon and firing it
+    public readonly bool dropShadow;
 
     public ActorType(Asset asset, string name, float mass, Weapon[] weapons, int health, float maxSpeed, float acceleration, float inertia, bool dropShadow, int level, string upgradesTo)
     {
-        this.name = name;
         this.asset = asset;
-        this.maxSpeed = maxSpeed;
-        this.sqrMaxSpeed = (float)System.Math.Pow(maxSpeed, 2);
+        this.name = name;
+        this.attrs = new ActorAttrs(maxSpeed, acceleration, health);
+
         this.mass = mass;
-        this.health = health;
         this.weapons = weapons;
         
-        this.acceleration = acceleration;
         this.inertia = inertia;
         this.dropShadow = dropShadow;
 
-        this.level = level;
-        this.upgradesTo = upgradesTo;
+        this.baseLevel = level;
+        this.nextTierUpgrade = upgradesTo;
     }
     public ActorType(ActorType rhs)
     {
         this.name = rhs.name;
         this.asset = rhs.asset;
-        this.maxSpeed = rhs.maxSpeed;
-        this.sqrMaxSpeed = (float)System.Math.Pow(maxSpeed, 2);
+        this.attrs = rhs.attrs;
         this.mass = rhs.mass;
-        this.health = rhs.health;
         this.weapons = rhs.weapons;
 
-        this.acceleration = rhs.acceleration;
         this.inertia = rhs.inertia;
         this.dropShadow = rhs.dropShadow;
 
-        this.level = rhs.level;
-        this.upgradesTo = rhs.upgradesTo;
+        this.baseLevel = rhs.baseLevel;
+        this.nextTierUpgrade = rhs.nextTierUpgrade;
     }
     public bool HasWeapons { get { return weapons != null && weapons.Length > 0; } }
     public virtual GameObject Spawn(Consts.SortingLayer sortingLayer, bool rigidBody)
@@ -104,7 +112,7 @@ public class ActorType
         //KAI: MAJOR CHEESE
         var actor = this.name == "HEROLING" ? go.AddComponent<HerolingActor>() : go.AddComponent<Actor>();
         actor.actorType = this;
-        actor.collisionDamage = health / 4;
+        actor.collisionDamage = attrs.maxHealth / 4;
 
         if (dropShadow)
         {
@@ -114,7 +122,7 @@ public class ActorType
     }
     public override string ToString()
     {
-        return string.Format("{0}, asset {1}, health {2}", name, asset.name, health);
+        return string.Format("{0}, asset {1}", name, asset.name);
     }
     public sealed class Weapon
     {

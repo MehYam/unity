@@ -62,11 +62,11 @@ public sealed class PlayerData
     /// <returns>The actor type's upgrade, or the same actor type no upgrade is available</returns>
     public ActorType GetTierUpgrade(ActorType actorType)
     {
-        if (!string.IsNullOrEmpty(actorType.upgradesTo))
+        if (!string.IsNullOrEmpty(actorType.nextTierUpgrade))
         {
-            var nextTier = Main.Instance.game.loader.GetActorType(actorType.upgradesTo);
+            var nextTier = Main.Instance.game.loader.GetActorType(actorType.nextTierUpgrade);
             int level = GetLevel(actorType);
-            if (level >= nextTier.level)
+            if (level >= nextTier.baseLevel)
             {
                 return GetTierUpgrade(nextTier);
             }
@@ -75,11 +75,11 @@ public sealed class PlayerData
     }
     public int GetXP(ActorType type)
     {
-        return GetXPAtLevel(type.level) + GetActorStats(type).xpWith;
+        return GetXPAtLevel(type.baseLevel) + GetActorStats(type).xpWith;
     }
     public int GetLevel(ActorType type)
     {
-        return GetLevelAtXP(GetXPAtLevel(type.level) + GetActorStats(type).xpWith);
+        return GetLevelAtXP(GetXPAtLevel(type.baseLevel) + GetActorStats(type).xpWith);
     }
     public float GetLevelProgress(ActorType type)
     {
@@ -162,7 +162,7 @@ public sealed class PlayerData
         var playerActorStats = GetActorStats(playerActor.actorType);
         var prevXP = playerActorStats.xpWith;
 
-        AddCapture(playerActorStats, playerActor.actorType.level);
+        AddCapture(playerActorStats, playerActor.actorType.baseLevel);
 
         if (playerActorStats.xpWith > prevXP)
         {
@@ -178,7 +178,7 @@ public sealed class PlayerData
         ++playerActorStats.kills;
 
         var level = GetLevel(playerType);
-        var xp = GetKillXP(level, victimType.level);
+        var xp = GetKillXP(level, victimType.baseLevel);
         playerStats.xp += xp;
         playerActorStats.xpWith += xp;
     }

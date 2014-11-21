@@ -63,7 +63,7 @@ public class Actor : MonoBehaviour
         set
         {
             _actorType = value;
-            health = value.health;
+            health = value.attrs.maxHealth;
         }
     }
 
@@ -102,7 +102,7 @@ public class Actor : MonoBehaviour
     { 
         get { return _speedModifier; }
         set
-        {
+        {   
             _speedModifier = value == null ? ActorMovementModifier.IDENTITY : value;
         }
     }
@@ -110,7 +110,7 @@ public class Actor : MonoBehaviour
     {
         get
         {
-            var speed = actorType.maxSpeed * speedModifier.speedMultiplier;
+            var speed = actorType.attrs.maxSpeed * speedModifier.speedMultiplier;
             return isPlayer ? speed * Consts.PLAYER_SPEED_MULTIPLIER : speed;
         }
     }
@@ -123,7 +123,7 @@ public class Actor : MonoBehaviour
             // Our config wants acceleration to be absolute, without being slowed by mass.  Therefore,
             // derive the force required by multiplying it by mass.  If we start using drag more, 
             // that will have to compensate for as well.
-            var accel = v.acceleration * speedModifier.accelerationMultiplier * actorType.mass;
+            var accel = v.attrs.acceleration * speedModifier.accelerationMultiplier * actorType.mass;
             return isPlayer ? accel * Consts.PLAYER_ACCEL_MULTIPLIER : accel;
         }
     }
@@ -228,7 +228,7 @@ public class Actor : MonoBehaviour
             }
         }
 
-        if (rigidbody2D != null && maxSpeed > 0 && rigidbody2D.velocity.sqrMagnitude > actorType.sqrMaxSpeed)
+        if (rigidbody2D != null && maxSpeed > 0 && rigidbody2D.velocity.sqrMagnitude > actorType.attrs.sqrMaxSpeed)
         {
             rigidbody2D.velocity = Vector2.ClampMagnitude(rigidbody2D.velocity, maxSpeed);
         }
@@ -248,7 +248,7 @@ public class Actor : MonoBehaviour
     static readonly Vector3 OVERWHELM_BAR_POSITION = new Vector3(0, -0.5f);
     void Update()
     {
-        var showHealth = showsHealthBar && _health > 0 && _health < actorType.health;
+        var showHealth = showsHealthBar && _health > 0 && _health < actorType.attrs.maxHealth;
         if (showHealth)
         {
             if (_healthBar == null)
@@ -268,7 +268,7 @@ public class Actor : MonoBehaviour
 #endif
             }
             _healthBar.gameObject.SetActive(true);
-            _healthBar.percent = health / actorType.health;
+            _healthBar.percent = health / actorType.attrs.maxHealth;
             _healthBar.transform.position = transform.position + HEALTH_BAR_POSITION;
 
             UpdateDamageSmoke();
@@ -326,7 +326,7 @@ public class Actor : MonoBehaviour
     DamageSmoke _damageSmoke;
     void UpdateDamageSmoke()
     {
-        var pct = health / actorType.health;
+        var pct = health / actorType.attrs.maxHealth;
         if (pct < 0.33)
         {
             /////// PARTICLE STUFF
@@ -473,7 +473,7 @@ public class Actor : MonoBehaviour
                     // replace the "realistic" collision with one that looks better - otherwise lasers
                     // look wonky
                     rigidbody2D.angularVelocity = 0;
-                    rigidbody2D.velocity = rigidbody2D.velocity.normalized * actorType.maxSpeed;
+                    rigidbody2D.velocity = rigidbody2D.velocity.normalized * actorType.attrs.maxSpeed;
                     ActorBehaviorFactory.Instance.faceForward.FixedUpdate(this);
                 }
                 else
@@ -505,7 +505,7 @@ public class Actor : MonoBehaviour
 
                 GlobalGameEvent.Instance.FireExplosionSpawned(boom);
 
-                if (otherActor != null && otherActor.actorType.health > 0 && actorType.health > 0)
+                if (otherActor != null)
                 {
                     Main.Instance.game.PlaySound(Main.Instance.sounds.SmallCollision, contact.point);
                 }

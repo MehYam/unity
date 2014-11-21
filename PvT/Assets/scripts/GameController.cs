@@ -189,11 +189,11 @@ public sealed class GameController : IGame
             }
         }
         Util.PrepareLaunch(launcher.transform, actorAmmo.transform, weapon.offset, weapon.angle);
-        if (type.acceleration == 0)
+        if (type.attrs.acceleration == 0)
         {
             // give the ammo instant acceleration
             goAmmo.rigidbody2D.mass = 0;
-            goAmmo.rigidbody2D.velocity = Util.GetLookAtVector(actorAmmo.transform.rotation.eulerAngles.z, type.maxSpeed);
+            goAmmo.rigidbody2D.velocity = Util.GetLookAtVector(actorAmmo.transform.rotation.eulerAngles.z, type.attrs.maxSpeed);
         }
         else
         {
