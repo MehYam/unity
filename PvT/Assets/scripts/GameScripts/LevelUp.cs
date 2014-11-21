@@ -15,7 +15,9 @@ public class LevelUp : MonoBehaviour
     {
         var main = Main.Instance;
         var actor = GetComponent<Actor>();
-        actor.takenDamageMultiplier = 0;  // stop damage - level up completely heals a player
+
+        actor.takenDamageMultiplier = 0;  // stop damage until animation's complete
+        actor.health = actor.actorType.health;
 
         // 1. Attach the animation, wait a moment
         var flare = (GameObject)Instantiate(main.assets.flareAnimation);
@@ -26,6 +28,8 @@ public class LevelUp : MonoBehaviour
         yield return new WaitForSeconds(Consts.FLARE_ANIMATION_PEAK_SECONDS);
 
         main.game.PlaySound(main.sounds.levelUp, transform.position);
+
+        actor.takenDamageMultiplier = 1;
 
         yield return new WaitForSeconds(5);
 
