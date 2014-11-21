@@ -22,6 +22,8 @@ public class Actor : MonoBehaviour
 
         maxRotationalVelocity = Consts.MAX_MOB_ROTATION_DEG_PER_SEC;
         speedModifier = ActorModifier.IDENTITY;
+
+        behaviorEnabled = true;
     }
 
     protected virtual void Start()  // KAI: interesting Unity gotcha - must document somewhere
@@ -116,7 +118,7 @@ public class Actor : MonoBehaviour
     {
         get
         {
-            var v = (ActorType)actorType; //KAI: cheese
+            var v = actorType;
 
             // Our config wants acceleration to be absolute, without being slowed by mass.  Therefore,
             // derive the force required by multiplying it by mass.  If we start using drag more, 
@@ -125,6 +127,9 @@ public class Actor : MonoBehaviour
             return isPlayer ? accel * Consts.PLAYER_ACCEL_MULTIPLIER : accel;
         }
     }
+    public IActorBehavior behavior { get; set; }
+    public bool behaviorEnabled { get; set; }
+    
     public float maxRotationalVelocity { get; set; }
     public bool firingEnabled { get; set; }
     public bool trackingArrowEnabled { get; set; }
@@ -132,9 +137,7 @@ public class Actor : MonoBehaviour
     public bool immortal { get; set; }
 
     public float takenDamageMultiplier { get; set; }
-    public float collisionDamage;
-    public IActorBehavior behavior { get; set; }
-    public bool pauseBehavior { get; set; }
+    public float collisionDamage { get; set; }
 
     public int attachedHerolings { get; set; }
     public float overwhelmPct
@@ -213,7 +216,7 @@ public class Actor : MonoBehaviour
     protected virtual void FixedUpdate()
     {
         DetectChangeInOverwhelm();
-        if (!pauseBehavior)
+        if (behaviorEnabled)
         {
             if (_overwhelmBehavior != null)
             {

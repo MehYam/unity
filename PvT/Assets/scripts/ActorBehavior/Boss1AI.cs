@@ -114,7 +114,7 @@ public sealed class Boss1AI : MonoBehaviour
             mob.transform.parent = transform;
 
             var mobActor = mob.GetComponent<Actor>();
-            mobActor.pauseBehavior = true;
+            mobActor.behaviorEnabled = false;
             mobActor.isCapturable = true;
 
             MobAI.Instance.AttachAI(mobActor);
@@ -136,7 +136,7 @@ public sealed class Boss1AI : MonoBehaviour
         {
             spawn.parent = newParent;
             spawn.rigidbody2D.isKinematic = false;
-            spawn.GetComponent<Actor>().pauseBehavior = false;
+            spawn.GetComponent<Actor>().behaviorEnabled = true;
             spawn.GetComponent<AlphaInherit>().enabled = false;
         }
     }
