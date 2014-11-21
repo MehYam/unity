@@ -469,7 +469,7 @@ sealed class GravitateToTarget : IActorBehavior
     {
         var go = actor.gameObject;
         var lookAt = Util.GetLookAtVector(go.transform.position, target.actor.transform.position);
-        actor.gameObject.rigidbody2D.AddForce(lookAt * actor.acceleration);
+        actor.gameObject.rigidbody2D.AddForce(lookAt * actor.attrs.acceleration);
     }
 }
 /// <summary>
@@ -484,7 +484,7 @@ sealed class HomeToTarget : IActorBehavior
     {
         var go = actor.gameObject;
         var lookAt = Util.GetLookAtVector(go.transform.position, target.actor.transform.position);
-        actor.gameObject.rigidbody2D.velocity = lookAt * actor.maxSpeed;
+        actor.gameObject.rigidbody2D.velocity = lookAt * actor.attrs.maxSpeed;
     }
 }
 
@@ -496,7 +496,7 @@ sealed class ThrustBehavior : IActorBehavior
     {
         if (actor.thrustEnabled)
         {
-            var thrustVector = Util.GetLookAtVector(actor.gameObject.transform.rotation.eulerAngles.z + angle, actor.acceleration);
+            var thrustVector = Util.GetLookAtVector(actor.gameObject.transform.rotation.eulerAngles.z + angle, actor.attrs.acceleration);
             actor.gameObject.rigidbody2D.AddForce(thrustVector);
         }
     }

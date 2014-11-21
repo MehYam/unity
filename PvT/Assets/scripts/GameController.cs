@@ -436,7 +436,7 @@ public sealed class GameController : IGame
     }
     void SetPlayerPlaneBehaviors(GameObject go, ActorType vehicle)
     {
-        var isHopper = go.GetComponent<HopBehavior>() != null;
+        var isHopper = go.GetComponent<HopBehavior>() != null;  //KAI: cheese, this means it only works if possesssing the hopping mob
         var bf = ActorBehaviorFactory.Instance;
         var behaviors = new CompositeBehavior();
         if (isHopper)
@@ -454,7 +454,7 @@ public sealed class GameController : IGame
 
         if (isHopper)
         {
-            actor.speedModifier = new ActorMovementModifier(1000, 1000); // unlock the speed limit
+            actor.AddModifier(new ActorAttrs(1000, 1000, 0)); // unlock the speed limit
         }
         else if (HasShieldWeapon(vehicle))
         {

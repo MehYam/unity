@@ -76,10 +76,24 @@ public class HerolingActor : Actor
                 break;
         }
     }
-    void SetBehavior(IActorBehavior b, ActorMovementModifier m = null)
+
+    static ActorAttrs SPEED_BOOST = null;  // not set at static time because we need to load the ActorAttrs from the config
+    void SetBehavior(IActorBehavior b, bool speedBoost = false)
     {
         behavior = b;
-        speedModifier = m;
+
+        if (speedBoost)
+        {
+            if (SPEED_BOOST == null)
+            {
+                SPEED_BOOST = new ActorAttrs(2 * actorType.attrs.maxSpeed, 0, 0);
+            }
+            AddModifier(SPEED_BOOST);
+        }
+        else if (SPEED_BOOST != null)
+        {
+            RemoveModifier(SPEED_BOOST);
+        }
     }
 
     RateLimiter _attachBoredom;
@@ -126,7 +140,7 @@ public class HerolingActor : Actor
         Util.EnablePhysics(gameObject);
         
         // go back home
-        SetBehavior(RETURN, new ActorMovementModifier(3, 1));
+        SetBehavior(RETURN, true);
     }
 
     protected override void FixedUpdate()

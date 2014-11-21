@@ -18,7 +18,7 @@ public class PlayerInput : IActorBehavior
         {
             if (actor.thrustEnabled)
             {
-                actor.gameObject.rigidbody2D.AddForce(current * actor.acceleration);
+                actor.gameObject.rigidbody2D.AddForce(current * actor.attrs.acceleration);
             }
             if (duringInput != null)
             {

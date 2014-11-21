@@ -46,6 +46,10 @@ public class ActorAttrs
         this.acceleration = acceleration;
         this.maxHealth = health;
     }
+    public override string ToString()
+    {
+        return string.Format("maxSpeed {0}, acceleration {1}, maxHealth {2}", maxSpeed, acceleration, maxHealth);
+    }
 }
 
 public class ActorType
@@ -67,7 +71,14 @@ public class ActorType
     {
         this.asset = asset;
         this.name = name;
-        this.attrs = new ActorAttrs(maxSpeed, acceleration, health);
+
+        // For ease of config, the listed acceleration is absolute, unaffected by mass.  To
+        // make this compatible with the physics engine, we'll pre-multiply our raw acceleration
+        // by mass to get true acceleration.
+        //
+        // We'll have to do something similar with inertia, if we ever start using it.
+        var trueAcceleration = acceleration * mass;
+        this.attrs = new ActorAttrs(maxSpeed, trueAcceleration, health);
 
         this.mass = mass;
         this.weapons = weapons;

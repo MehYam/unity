@@ -2,6 +2,7 @@
 
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 using PvT.DOM;
 using PvT.Util;
@@ -21,7 +22,6 @@ public class Actor : MonoBehaviour
         immortal = false;
 
         maxRotationalVelocity = Consts.MAX_MOB_ROTATION_DEG_PER_SEC;
-        speedModifier = ActorMovementModifier.IDENTITY;
 
         behaviorEnabled = true;
     }
@@ -63,12 +63,76 @@ public class Actor : MonoBehaviour
         set
         {
             _actorType = value;
-            attrs = _actorType.attrs;
-            health = value.attrs.maxHealth;
+
+            health = _actorType.attrs.maxHealth;
+            if (_modifierList != null)
+            {
+                _modifierList = null;
+            }
         }
     }
-    public ActorAttrs attrs { get; private set; }
-    
+    ActorAttrs _attrs; // this is determined lazily
+    public ActorAttrs attrs
+    { 
+        get
+        {
+            if (_attrs == null)
+            {
+                if (_modifierList != null && _modifierList.Count > 0)
+                {
+                    // KAI: this could be a lot cleaner at the expense of creating
+                    // more temporary ActorAttrs objects
+                    float maxSpeed = actorType.attrs.maxSpeed;  
+                    float acceleration = actorType.attrs.acceleration;
+                    float maxHealth = actorType.attrs.maxHealth;
+                    foreach(var mod in _modifierList)
+                    {
+                        maxSpeed += mod.maxSpeed;
+                        acceleration += mod.acceleration;
+                        maxHealth += mod.maxHealth;
+                    }
+                    _attrs = new ActorAttrs(maxSpeed, acceleration, health);
+                }
+                else
+                {
+                    _attrs = _actorType.attrs;
+                }
+            }
+            return _attrs;
+        }
+    }
+
+    IList<ActorAttrs> _modifierList;
+    /// <summary>
+    /// Adds the modifier to the list of attributes exhibited by this actor.  Modifiers instances are unique;  they cannot be added multiple times.
+    /// </summary>
+    /// <param name="modifier">The modifier to add</param>
+    public void AddModifier(ActorAttrs modifier)
+    {
+        DebugUtil.Assert(modifier != null);
+        if (_modifierList == null)
+        {
+            _modifierList = new List<ActorAttrs>();
+        }
+        if (!_modifierList.Contains(modifier))
+        {
+            _modifierList.Add(modifier);
+            _attrs = null;
+        }
+    }
+    /// <summary>
+    /// Removes the modifier from the list of attributes exhibited by this actor.
+    /// </summary>
+    /// <param name="modifier">The modifier to remove</param>
+    public void RemoveModifier(ActorAttrs modifier)
+    {
+        DebugUtil.Assert(modifier != null);
+        if (_modifierList != null && _modifierList.Contains(modifier))
+        {
+            _modifierList.Remove(modifier);
+            _attrs = null;
+        }
+    }
 
     public float expireTime { get; private set; }
 
@@ -98,36 +162,6 @@ public class Actor : MonoBehaviour
             _health = immortal ? Mathf.Max(1, value) : value;
 
             GlobalGameEvent.Instance.FireHealthChange(this, prevHealth - _health);
-        }
-    }
-    ActorMovementModifier _speedModifier;
-    public ActorMovementModifier speedModifier
-    { 
-        get { return _speedModifier; }
-        set
-        {   
-            _speedModifier = value == null ? ActorMovementModifier.IDENTITY : value;
-        }
-    }
-    public float maxSpeed
-    {
-        get
-        {
-            var speed = attrs.maxSpeed * speedModifier.speedMultiplier;
-            return isPlayer ? speed * Consts.PLAYER_SPEED_MULTIPLIER : speed;
-        }
-    }
-    public float acceleration
-    {
-        get
-        {
-            var v = actorType;
-
-            // Our config wants acceleration to be absolute, without being slowed by mass.  Therefore,
-            // derive the force required by multiplying it by mass.  If we start using drag more, 
-            // that will have to compensate for as well.
-            var accel = v.attrs.acceleration * speedModifier.accelerationMultiplier * actorType.mass;
-            return isPlayer ? accel * Consts.PLAYER_ACCEL_MULTIPLIER : accel;
         }
     }
     public IActorBehavior behavior { get; set; }
@@ -231,9 +265,9 @@ public class Actor : MonoBehaviour
             }
         }
 
-        if (rigidbody2D != null && maxSpeed > 0 && rigidbody2D.velocity.sqrMagnitude > attrs.sqrMaxSpeed)
+        if (rigidbody2D != null && attrs.maxSpeed > 0 && rigidbody2D.velocity.sqrMagnitude > attrs.sqrMaxSpeed)
         {
-            rigidbody2D.velocity = Vector2.ClampMagnitude(rigidbody2D.velocity, maxSpeed);
+            rigidbody2D.velocity = Vector2.ClampMagnitude(rigidbody2D.velocity, attrs.maxSpeed);
         }
         if (((expireTime != EXPIRY_INFINITE) && Time.fixedTime >= expireTime) || (health <= 0))
         {
