@@ -76,7 +76,7 @@ public class HerolingActor : Actor
                 break;
         }
     }
-    void SetBehavior(IActorBehavior b, ActorModifier m = null)
+    void SetBehavior(IActorBehavior b, ActorMovementModifier m = null)
     {
         behavior = b;
         speedModifier = m;
@@ -126,7 +126,7 @@ public class HerolingActor : Actor
         Util.EnablePhysics(gameObject);
         
         // go back home
-        SetBehavior(RETURN, new ActorModifier(3, 1));
+        SetBehavior(RETURN, new ActorMovementModifier(3, 1));
     }
 
     protected override void FixedUpdate()

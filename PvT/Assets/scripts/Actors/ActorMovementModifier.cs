@@ -1,14 +1,14 @@
 using UnityEngine;
 using System.Collections;
 
-public sealed class ActorModifier
+public sealed class ActorMovementModifier
 {
-    static public readonly ActorModifier IDENTITY = new ActorModifier(1, 1);
+    static public readonly ActorMovementModifier IDENTITY = new ActorMovementModifier(1, 1);
 
     public readonly float speedMultiplier;
     public readonly float accelerationMultiplier;
 
-    public ActorModifier(float speedMultiplier, float accelerationMultiplier)
+    public ActorMovementModifier(float speedMultiplier, float accelerationMultiplier)
     {
         this.speedMultiplier = speedMultiplier;
         this.accelerationMultiplier = accelerationMultiplier;

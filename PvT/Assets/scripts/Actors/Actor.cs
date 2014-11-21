@@ -21,7 +21,7 @@ public class Actor : MonoBehaviour
         immortal = false;
 
         maxRotationalVelocity = Consts.MAX_MOB_ROTATION_DEG_PER_SEC;
-        speedModifier = ActorModifier.IDENTITY;
+        speedModifier = ActorMovementModifier.IDENTITY;
 
         behaviorEnabled = true;
     }
@@ -97,13 +97,13 @@ public class Actor : MonoBehaviour
             GlobalGameEvent.Instance.FireHealthChange(this, prevHealth - _health);
         }
     }
-    ActorModifier _speedModifier;
-    public ActorModifier speedModifier
+    ActorMovementModifier _speedModifier;
+    public ActorMovementModifier speedModifier
     { 
         get { return _speedModifier; }
         set
         {
-            _speedModifier = value == null ? ActorModifier.IDENTITY : value;
+            _speedModifier = value == null ? ActorMovementModifier.IDENTITY : value;
         }
     }
     public float maxSpeed
