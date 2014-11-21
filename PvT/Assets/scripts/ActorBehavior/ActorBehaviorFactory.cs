@@ -744,10 +744,10 @@ sealed class HealthRegen : IActorBehavior
     }
     public void FixedUpdate(Actor actor)
     {
-        if (actor.health < actor.actorType.attrs.maxHealth)
+        if (actor.health < actor.attrs.maxHealth)
         {
             actor.health += healthPerSecond * Time.fixedDeltaTime;
-            actor.health = Mathf.Min(actor.actorType.attrs.maxHealth, actor.health);
+            actor.health = Mathf.Min(actor.attrs.maxHealth, actor.health);
         }
     }
 }

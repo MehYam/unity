@@ -34,13 +34,13 @@ public sealed class ShieldWeaponController
 
             // init the Actor
             var shieldActor = _shield.GetComponent<Actor>();
-            shieldActor.health = actor.actorType.attrs.maxHealth * Consts.SHIELD_HEALTH_MULTIPLIER;
+            shieldActor.health = actor.attrs.maxHealth * Consts.SHIELD_HEALTH_MULTIPLIER;
             shieldActor.SetExpiry(Actor.EXPIRY_INFINITE);
             shieldActor.explodesOnDeath = false;
             shieldActor.showsHealthBar = false;
             shieldActor.reflectsAmmo = true;
 
-            shieldActor.behavior = ActorBehaviorFactory.Instance.CreateFadeWithHealthAndExpiry(actor.actorType.attrs.maxHealth);
+            shieldActor.behavior = ActorBehaviorFactory.Instance.CreateFadeWithHealthAndExpiry(actor.attrs.maxHealth);
 
             // position the shield
             Util.PrepareLaunch(actor.transform, _shield.transform, _weapon.offset, _weapon.angle);

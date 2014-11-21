@@ -63,9 +63,12 @@ public class Actor : MonoBehaviour
         set
         {
             _actorType = value;
+            attrs = _actorType.attrs;
             health = value.attrs.maxHealth;
         }
     }
+    public ActorAttrs attrs { get; private set; }
+    
 
     public float expireTime { get; private set; }
 
@@ -110,7 +113,7 @@ public class Actor : MonoBehaviour
     {
         get
         {
-            var speed = actorType.attrs.maxSpeed * speedModifier.speedMultiplier;
+            var speed = attrs.maxSpeed * speedModifier.speedMultiplier;
             return isPlayer ? speed * Consts.PLAYER_SPEED_MULTIPLIER : speed;
         }
     }
@@ -228,7 +231,7 @@ public class Actor : MonoBehaviour
             }
         }
 
-        if (rigidbody2D != null && maxSpeed > 0 && rigidbody2D.velocity.sqrMagnitude > actorType.attrs.sqrMaxSpeed)
+        if (rigidbody2D != null && maxSpeed > 0 && rigidbody2D.velocity.sqrMagnitude > attrs.sqrMaxSpeed)
         {
             rigidbody2D.velocity = Vector2.ClampMagnitude(rigidbody2D.velocity, maxSpeed);
         }
@@ -248,7 +251,7 @@ public class Actor : MonoBehaviour
     static readonly Vector3 OVERWHELM_BAR_POSITION = new Vector3(0, -0.5f);
     void Update()
     {
-        var showHealth = showsHealthBar && _health > 0 && _health < actorType.attrs.maxHealth;
+        var showHealth = showsHealthBar && _health > 0 && _health < attrs.maxHealth;
         if (showHealth)
         {
             if (_healthBar == null)
@@ -268,7 +271,7 @@ public class Actor : MonoBehaviour
 #endif
             }
             _healthBar.gameObject.SetActive(true);
-            _healthBar.percent = health / actorType.attrs.maxHealth;
+            _healthBar.percent = health / attrs.maxHealth;
             _healthBar.transform.position = transform.position + HEALTH_BAR_POSITION;
 
             UpdateDamageSmoke();
@@ -326,7 +329,7 @@ public class Actor : MonoBehaviour
     DamageSmoke _damageSmoke;
     void UpdateDamageSmoke()
     {
-        var pct = health / actorType.attrs.maxHealth;
+        var pct = health / attrs.maxHealth;
         if (pct < 0.33)
         {
             /////// PARTICLE STUFF
@@ -473,7 +476,7 @@ public class Actor : MonoBehaviour
                     // replace the "realistic" collision with one that looks better - otherwise lasers
                     // look wonky
                     rigidbody2D.angularVelocity = 0;
-                    rigidbody2D.velocity = rigidbody2D.velocity.normalized * actorType.attrs.maxSpeed;
+                    rigidbody2D.velocity = rigidbody2D.velocity.normalized * attrs.maxSpeed;
                     ActorBehaviorFactory.Instance.faceForward.FixedUpdate(this);
                 }
                 else

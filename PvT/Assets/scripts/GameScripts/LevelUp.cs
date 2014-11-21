@@ -17,7 +17,7 @@ public class LevelUp : MonoBehaviour
         var actor = GetComponent<Actor>();
 
         actor.takenDamageMultiplier = 0;  // stop damage until animation's complete
-        actor.health = actor.actorType.attrs.maxHealth;
+        actor.health = actor.attrs.maxHealth;
 
         // 1. Attach the animation, wait a moment
         var flare = (GameObject)Instantiate(main.assets.flareAnimation);

@@ -111,7 +111,7 @@ public sealed class HUD : MonoBehaviour
     }
     void UpdateHealth(Actor player)
     {
-        portrait.health.text = string.Format("Health: {0:f1}%", 100 * player.health / player.actorType.attrs.maxHealth);
+        portrait.health.text = string.Format("Health: {0}/{1} ({2:f1}%)", (int)player.health, player.attrs.maxHealth, 100 * player.health / player.actorType.attrs.maxHealth);
     }
     void UpdatePortraitImage(Actor player)
     {
