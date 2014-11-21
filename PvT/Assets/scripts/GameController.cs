@@ -275,14 +275,21 @@ public sealed class GameController : IGame
 
             var levelUp = player.GetOrAddComponent<TierUp>();
             levelUp.levelTo = upgradeType;
+
+            //KAI: should be detected and fired from PlayerData
+            GlobalGameEvent.Instance.FireTierUp(upgradeType);
         }
         else
         {
             var xp = PlayerData.Instance.GetXP(actorType);
-            if (PlayerData.GetLevelAtXP(xp) > PlayerData.GetLevelAtXP(xp - xpGain))
+            var newLevel = PlayerData.GetLevelAtXP(xp);
+            if (newLevel > PlayerData.GetLevelAtXP(xp - xpGain))
             {
                 Debug.Log("Level up!");
                 player.GetOrAddComponent<LevelUp>();
+
+                //KAI: should be detected and fired from PlayerData
+                GlobalGameEvent.Instance.FireLevelUp(newLevel);
             }
         }
     }

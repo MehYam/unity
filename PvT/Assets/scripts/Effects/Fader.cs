@@ -21,6 +21,10 @@ public class Fader : MonoBehaviour  // this is almost the same class as Tween
         {
             _alphaSetter = new UnityTextAlphaSetter(GetComponent<Text>());
         }
+        else if (GetComponent<CanvasGroup>() != null)
+        {
+            _alphaSetter = new CanvasGroupAlphaSetter(GetComponent<CanvasGroup>());
+        }
         DebugUtil.Assert(_alphaSetter != null);
     }
 
@@ -56,6 +60,16 @@ public class Fader : MonoBehaviour  // this is almost the same class as Tween
         {
             get { return text.color.a; }
             set { Util.SetAlpha(text, value); }
+        }
+    }
+    sealed class CanvasGroupAlphaSetter : IAlphaSetter
+    {
+        readonly CanvasGroup group;
+        public CanvasGroupAlphaSetter(CanvasGroup target) { this.group = target; }
+        public float alpha
+        {
+            get { return group.alpha; }
+            set { group.alpha = value; }
         }
     }
 

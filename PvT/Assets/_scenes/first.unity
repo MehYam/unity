@@ -181,7 +181,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 597ae4a43a018e741acec37b97132aa4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mobs: 0
+  mobs: 1
   startLevel: 1
   spawnDistanceFromEdge: -2
   map: {fileID: 100004, guid: a79bb10566c417243a18065740b954fe, type: 2}
@@ -2398,7 +2398,7 @@ Canvas:
   m_RenderMode: 0
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
-  m_PixelPerfect: 0
+  m_PixelPerfect: 1
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
@@ -2450,6 +2450,7 @@ MonoBehaviour:
   space: {fileID: 11695404}
   joypadFeedback: {fileID: 776660584}
   bling: {fileID: 100000, guid: 6c03511fb97b1364fabeaa030fc65c33, type: 2}
+  levelUpBadge: {fileID: 100012, guid: c0c9b83e2da0e7b4bbba053bb783dfe4, type: 2}
 --- !u!114 &1873991297
 MonoBehaviour:
   m_ObjectHideFlags: 0

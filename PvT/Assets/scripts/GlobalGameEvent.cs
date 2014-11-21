@@ -62,6 +62,8 @@ class GlobalGameEvent
     public event Action TouchInputEnd = delegate { };
     public event Action<PlayerData> PlayerDataUpdated = delegate { };
     public event Action<int, Vector2> GainingXP = delegate { };
+    public event Action<ActorType> TierUp = delegate { };
+    public event Action<int> LevelUp = delegate { };
 
     // C# events require binding directly to the event source.  GlobalGameEvent works around
     // this, but the cost is that for each event we have to implement its counterpart
@@ -80,6 +82,7 @@ class GlobalGameEvent
     public void FireHerolingDetached(Actor host) { HerolingDetached(host); }
     public void FireHerolingLaunched() { HerolingLaunched(); }
     public void FireIntroOver(MonoBehaviour script) { IntroOver(script); }
+    public void FireLevelUp(int level) { LevelUp(level); }
     public void FireMainReady() { MainReady(); }
     public void FireMapReady(GameObject map, XRect bounds) { MapReady(map, bounds); }
     public void FireMobDeath(Actor a) { MobDeath(a); }
@@ -88,6 +91,7 @@ class GlobalGameEvent
     public void FirePlayerSpawned(Actor player) { PlayerSpawned(player); }
     public void FirePossessionComplete(Actor host) { PossessionComplete(host); }
     public void FirePossessionInitiated(Actor host) { PossessionInitiated(host); }
+    public void FireTierUp(ActorType newType) { TierUp(newType); }
     public void FireTouchInputBegin() { TouchInputBegin(); }
     public void FireTouchInputEnd() { TouchInputEnd(); }
     public void FireTutorialOver(MonoBehaviour script) { TutorialOver(script); }
