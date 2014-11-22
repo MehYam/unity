@@ -16,7 +16,9 @@ public class TierUp : MonoBehaviour
     {
         var main = Main.Instance;
         var actor = GetComponent<Actor>();
+
         actor.takenDamageMultiplier = 0;  // stop damage - level up completely heals a player
+        actor.health = actor.attrs.maxHealth;  // swapping ships fully heals the player, but it looks better to do this before Consts.FLARE_ANIMATION_PEAK_SECONDS
 
         DebugUtil.Assert(levelTo != null, "LevelUp doesn't know what to level to");
 
