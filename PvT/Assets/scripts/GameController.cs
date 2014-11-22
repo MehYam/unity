@@ -175,8 +175,8 @@ public sealed class GameController : IGame
         goAmmo.rigidbody2D.drag = 0;
 
         var actorAmmo = goAmmo.GetComponent<Actor>();
-        actorAmmo.SetExpiry(weapon.ttl);
-        actorAmmo.collisionDamage = weapon.damage;
+        actorAmmo.SetExpiry(weapon.attrs.ttl);
+        actorAmmo.collisionDamage = weapon.attrs.damage;
         actorAmmo.showsHealthBar = false;
         actorAmmo.isAmmo = true;
 
@@ -222,7 +222,7 @@ public sealed class GameController : IGame
         go.layer = (int)layer;
 
         var actor = go.GetComponent<Actor>();
-        actor.collisionDamage = weapon.damage * damageMultiplier;
+        actor.collisionDamage = weapon.attrs.damage * damageMultiplier;
         actor.showsHealthBar = false;
 
         Util.PrepareLaunch(launcher.transform, actor.transform, weapon.offset, weapon.angle);
@@ -428,7 +428,7 @@ public sealed class GameController : IGame
 
     static bool HasChargeWeapon(ActorType actorType)
     {
-        return actorType.HasWeapons && actorType.weapons[0].chargeSeconds > 0;
+        return actorType.HasWeapons && actorType.weapons[0].attrs.chargeSeconds > 0;
     }
     static bool HasShieldWeapon(ActorType actorType)
     {

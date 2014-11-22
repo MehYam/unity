@@ -15,7 +15,7 @@ public sealed class ShieldWeaponController
     {
         _layer = layer;
         _weapon = weapon;
-        _limiter = new RateLimiter(weapon.rate);
+        _limiter = new RateLimiter(weapon.attrs.rate);
         _limiter.End();
     }
 
@@ -30,7 +30,7 @@ public sealed class ShieldWeaponController
             _shield = vehicle.Spawn(Consts.SortingLayer.AMMO, false);
             _shield.layer = (int)_layer;
 
-            _shield.GetComponent<Actor>().collisionDamage = _weapon.damage;
+            _shield.GetComponent<Actor>().collisionDamage = _weapon.attrs.damage;
 
             // init the Actor
             var shieldActor = _shield.GetComponent<Actor>();
@@ -70,7 +70,7 @@ public sealed class ShieldWeaponController
         {
             // release shield
             var shieldActor = _shield.GetComponent<Actor>();
-            shieldActor.SetExpiry(actor.actorType.weapons[0].ttl);
+            shieldActor.SetExpiry(actor.actorType.weapons[0].attrs.ttl);
 
             _shield.transform.parent = null;
             _shield.AddComponent<Rigidbody2D>();

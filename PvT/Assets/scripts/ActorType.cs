@@ -135,33 +135,44 @@ public class ActorType
     {
         return string.Format("{0}, asset {1}", name, asset.name);
     }
+    public sealed class WeaponAttrs
+    {
+        public readonly float damage;
+        public readonly float rate;
+        public readonly float ttl;
+        public readonly float chargeSeconds;
+
+        public WeaponAttrs(float damage, float rate, float ttl, float chargeSeconds)
+        {
+            this.damage = damage;
+            this.rate = rate;
+            this.ttl = ttl;
+            this.chargeSeconds = chargeSeconds;
+        }
+    }
     public sealed class Weapon
     {
         public readonly string actorName;
-        public readonly int damage;
+        public readonly WeaponAttrs attrs;
+
         public readonly Vector2 offset;
+        public readonly int sequence;
         public readonly float angle;
         public readonly Color32 color;
         public readonly bool lit;
-        public readonly float rate;
-        public readonly int sequence;
-        public readonly float chargeSeconds;
-        public readonly float ttl;
 
         public float severity { get; set; } // calculated later, once we know all the weapons
 
         public Weapon(string type, int dmg, Vector2 offset, float angle, Color32 color, bool lit, float rate, int sequence, float chargeSeconds, float ttl)
         {
             this.actorName = type;
-            this.damage = dmg;
+            this.attrs = new WeaponAttrs(dmg, rate, ttl, chargeSeconds);
+
             this.offset = offset;
+            this.sequence = sequence;
             this.angle = angle;
             this.color = color;
             this.lit = lit;
-            this.rate = rate;
-            this.sequence = sequence;
-            this.chargeSeconds = chargeSeconds;
-            this.ttl = ttl;
 
             this.severity = 0;
         }
@@ -189,11 +200,11 @@ public class ActorType
 
         public override string ToString()
         {
-            return string.Format("Weapon {0} dmg {1} severity {2}", actorName, damage, severity);
+            return string.Format("Weapon {0} dmg {1} severity {2}", actorName, attrs.damage, severity);
         }
         public string ToCSV()
         {
-            return string.Format("{0},{1},{2},{3},{4},{5},{6},{7}", actorName, damage, offset.x, offset.y, angle, severity, sequence, chargeSeconds);
+            return string.Format("{0},{1},{2},{3},{4},{5},{6},{7}", actorName, attrs.damage, offset.x, offset.y, angle, severity, sequence, attrs.chargeSeconds);
         }
     }
 }

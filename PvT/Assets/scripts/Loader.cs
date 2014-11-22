@@ -81,13 +81,13 @@ public class Loader
                     damageRanges[weapon.actorName] = damageRange;
                 }
 
-                if (weapon.damage < damageRange.first)
+                if (weapon.attrs.damage < damageRange.first)
                 {
-                    damageRange.first = weapon.damage;
+                    damageRange.first = weapon.attrs.damage;
                 }
-                if (weapon.damage > damageRange.second)
+                if (weapon.attrs.damage > damageRange.second)
                 {
-                    damageRange.second = weapon.damage;
+                    damageRange.second = weapon.attrs.damage;
                 }
             }
         }
@@ -98,7 +98,7 @@ public class Loader
             {
                 var damageRange = damageRanges[weapon.actorName];
                 var magnitude = damageRange.second - damageRange.first;
-                weapon.severity = magnitude == 0 ? 1 : (weapon.damage - damageRange.first) / magnitude;
+                weapon.severity = magnitude == 0 ? 1 : (weapon.attrs.damage - damageRange.first) / magnitude;
             }
         }
     }

@@ -130,7 +130,7 @@ public sealed class MobAI
 
         // stop and charge
         retval.Add(new CompositeBehavior(bf.facePlayer, new GoHomeYouAreDrunkBehavior(), (Action<Actor>)charge.Charge), 
-            new RateLimiter(weapon.chargeSeconds, 0.75f));
+            new RateLimiter(weapon.attrs.chargeSeconds, 0.75f));
 
         // discarge
         retval.Add(charge.Discharge, new RateLimiter(1));

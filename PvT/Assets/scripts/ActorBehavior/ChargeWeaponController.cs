@@ -10,7 +10,7 @@ public sealed class ChargeWeaponController
     {
         _layer = layer;
         _weapon = weapon;
-        _limiter = new RateLimiter(weapon.rate);
+        _limiter = new RateLimiter(weapon.attrs.rate);
         _limiter.End();
     }
 
@@ -30,7 +30,7 @@ public sealed class ChargeWeaponController
                 StartCharge(actor);
             }
 
-            _currentCharge = Mathf.Min(1, (Time.fixedTime - _startTime) / _weapon.chargeSeconds);
+            _currentCharge = Mathf.Min(1, (Time.fixedTime - _startTime) / _weapon.attrs.chargeSeconds);
 
             if (_currentCharge == 1)
             {

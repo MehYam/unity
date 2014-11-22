@@ -343,7 +343,7 @@ public sealed class ActorBehaviorFactory
     }
     IActorBehavior CreateOneAutofire(Consts.CollisionLayer layer, ActorType.Weapon weapon)
     {
-        return new PeriodicBehavior(new WeaponDischargeBehavior(layer, weapon), new RateLimiter(weapon.rate));
+        return new PeriodicBehavior(new WeaponDischargeBehavior(layer, weapon), new RateLimiter(weapon.attrs.rate));
     }
     public IActorBehavior CreateAutofire(Consts.CollisionLayer layer, ActorType.Weapon[] weapons)
     {
@@ -360,7 +360,7 @@ public sealed class ActorBehaviorFactory
             var retval = new TimedSequenceBehavior();
             foreach (var w in weapons)
             {
-                float rate = w.sequence != iLastSequence ? w.rate : 0;
+                float rate = w.sequence != iLastSequence ? w.attrs.rate : 0;
                 retval.Add(CreateOneAutofire(layer, w), new RateLimiter(rate));
 
                 iLastSequence = w.sequence;
