@@ -64,8 +64,8 @@ public sealed class CompositeBehavior : IActorBehavior
 public sealed class PeriodicBehavior : IActorBehavior
 {
     readonly IActorBehavior behavior;
-    readonly RateLimiter rate;
-    public PeriodicBehavior(IActorBehavior behavior, RateLimiter rate)
+    readonly Rate rate;
+    public PeriodicBehavior(IActorBehavior behavior, Rate rate)
     {
         this.behavior = behavior;
         this.rate = rate;
@@ -88,9 +88,9 @@ public sealed class TimedSequenceBehavior: IActorBehavior
     struct Phase
     {
         public readonly Action<Actor> action;
-        public readonly RateLimiter duration;
+        public readonly Rate duration;
 
-        public Phase(Action<Actor> action, RateLimiter duration) { this.action = action; this.duration = duration; }
+        public Phase(Action<Actor> action, Rate duration) { this.action = action; this.duration = duration; }
     }
 
     readonly IList<Phase> phases = new List<Phase>();
@@ -101,11 +101,11 @@ public sealed class TimedSequenceBehavior: IActorBehavior
     /// </summary>
     /// <param name="b">The behavior to add</param>
     /// <param name="duration">The duration over which to run the behavior</param>
-    public void Add(IActorBehavior b, RateLimiter rate)
+    public void Add(IActorBehavior b, Rate rate)
     {
         Add(b == null ? (Action<Actor>)null : b.FixedUpdate, rate);
     }
-    public void Add(Action<Actor> a, RateLimiter rate)
+    public void Add(Action<Actor> a, Rate rate)
     {
         phases.Add(new Phase(a, rate));
     }
@@ -343,7 +343,7 @@ public sealed class ActorBehaviorFactory
     }
     IActorBehavior CreateOneAutofire(Consts.CollisionLayer layer, ActorType.Weapon weapon)
     {
-        return new PeriodicBehavior(new WeaponDischargeBehavior(layer, weapon), new RateLimiter(weapon.attrs.rate));
+        return new PeriodicBehavior(new WeaponDischargeBehavior(layer, weapon), new Rate(weapon.attrs.rate));
     }
     public IActorBehavior CreateAutofire(Consts.CollisionLayer layer, ActorType.Weapon[] weapons)
     {
@@ -361,7 +361,7 @@ public sealed class ActorBehaviorFactory
             foreach (var w in weapons)
             {
                 float rate = w.sequence != iLastSequence ? w.attrs.rate : 0;
-                retval.Add(CreateOneAutofire(layer, w), new RateLimiter(rate));
+                retval.Add(CreateOneAutofire(layer, w), new Rate(rate));
 
                 iLastSequence = w.sequence;
             }
@@ -704,7 +704,7 @@ sealed class Drift : IActorBehavior
 
 sealed class GoHomeYouAreDrunkBehavior : IActorBehavior
 {
-    RateLimiter spinRate = new RateLimiter(1, 0.5f);
+    Rate spinRate = new Rate(1, 0.5f);
     float spinSpeed = 0;
 
     public GoHomeYouAreDrunkBehavior()

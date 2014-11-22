@@ -279,7 +279,7 @@ public class Actor : MonoBehaviour
         takenDamageMultiplier = 0;
 
         const float PULSE_SECONDS = 0.1f;
-        var rate = new RateLimiter(duration);
+        var rate = new Rate(duration);
         var fader = gameObject.GetOrAddComponent<Fader>();
         while (!rate.reached)
         {

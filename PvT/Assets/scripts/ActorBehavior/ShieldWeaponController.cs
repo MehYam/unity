@@ -10,12 +10,12 @@ public sealed class ShieldWeaponController
 {
     readonly Consts.CollisionLayer _layer;
     readonly ActorType.Weapon _weapon;
-    readonly RateLimiter _limiter;
+    readonly Rate _limiter;
     public ShieldWeaponController(Consts.CollisionLayer layer, ActorType.Weapon weapon)
     {
         _layer = layer;
         _weapon = weapon;
-        _limiter = new RateLimiter(weapon.attrs.rate);
+        _limiter = new Rate(weapon.attrs.rate);
         _limiter.Stop();
     }
 

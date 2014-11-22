@@ -131,7 +131,7 @@ public class LevelScript : MonoBehaviour
         }
 
         // wait until all the enemies are dead - but spawn randomly too
-        var spawnLimiter = new RateLimiter(Consts.RESPAWN_RATE, 0.5f);
+        var spawnLimiter = new Rate(Consts.RESPAWN_RATE, 0.5f);
         while (_mobsSpawned.Count > 0)
         {
             spawnLimiter.Start();
