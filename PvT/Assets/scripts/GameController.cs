@@ -166,6 +166,14 @@ public sealed class GameController : IGame
 
     public GameObject SpawnAmmo(Actor launcher, ActorType.Weapon weapon, Consts.CollisionLayer layer)
     {
+        ////// HACK
+        if (weapon.actorName == "HEROLING" && HerolingActor.ActiveHerolings >= Consts.HEROLING_LIMIT)
+        {
+            return null;
+        }
+        ///////END HACK
+
+
         var type = loader.GetActorType(weapon.actorName);
         var goAmmo = type.Spawn(Consts.SortingLayer.AMMO, true);
 

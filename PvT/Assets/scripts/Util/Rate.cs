@@ -11,7 +11,7 @@ public sealed class Rate
     /// </summary>
     /// <param name="baseRate">The number of seconds after which Now returns true</param>
     /// <param name="randomnessPct">Gives each quantum some randomness.  Passing in 0.5 makes gives rate a range of baseRate/2 to baseRase*3/2</param>
-    public Rate(float baseRate, float randomnessPct = 0)
+    public Rate(float baseRate = 0, float randomnessPct = 0)
     {
         _baseRate = baseRate;
         _randomness = randomnessPct;

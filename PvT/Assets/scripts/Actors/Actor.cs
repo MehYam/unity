@@ -101,27 +101,37 @@ public class Actor : MonoBehaviour
             return _lazyAttrs;
         }
     }
-    ActorType.WeaponAttrs _lazyWeaponAttrs;
-    ActorType.WeaponAttrs weaponAttrs
+
+    static readonly ActorType.WeaponAttrs IDENTITY = new ActorType.WeaponAttrs(1, 1, 1, 1);
+
+    ActorType.WeaponAttrs _lazyWeaponMods;
+    public ActorType.WeaponAttrs weaponMods
     {
         get
         {
-            if (_lazyWeaponAttrs == null)
+            if (_lazyWeaponMods == null)
             {
-                float damage = 1;
-                float rate = 1;
-                float ttl = 1;
-                float chargeSeconds = 1;
-                foreach (var mod in _weaponModifiers)
+                if (_weaponModifiers != null && _weaponModifiers.Count > 0)
                 {
-                    damage *= mod.damage;
-                    rate *= mod.rate;
-                    ttl *= mod.ttl;
-                    chargeSeconds *= mod.chargeSeconds;
+                    float damage = 1;
+                    float rate = 1;
+                    float ttl = 1;
+                    float chargeSeconds = 1;
+                    foreach (var mod in _weaponModifiers)
+                    {
+                        damage *= mod.damage;
+                        rate *= mod.rate;
+                        ttl *= mod.ttl;
+                        chargeSeconds *= mod.chargeSeconds;
+                    }
+                    _lazyWeaponMods = new ActorType.WeaponAttrs(damage, rate, ttl, chargeSeconds);
                 }
-                _lazyWeaponAttrs = new ActorType.WeaponAttrs(damage, rate, ttl, chargeSeconds);
+                else
+                {
+                    _lazyWeaponMods = IDENTITY;
+                }
             }
-            return _lazyWeaponAttrs;
+            return _lazyWeaponMods;
         }
     }
 
@@ -169,7 +179,7 @@ public class Actor : MonoBehaviour
         if (!_weaponModifiers.Contains(modifier))
         {
             _weaponModifiers.Add(modifier);
-            _lazyWeaponAttrs = null;
+            _lazyWeaponMods = null;
         }
     }
     public void RemoveWeaponModifier(ActorType.WeaponAttrs modifier)
@@ -177,7 +187,7 @@ public class Actor : MonoBehaviour
         DebugUtil.Assert(modifier != null);
         if (_weaponModifiers != null && _weaponModifiers.Contains(modifier))
         {
-            _lazyWeaponAttrs = null;
+            _lazyWeaponMods = null;
         }
     }
 

@@ -343,7 +343,7 @@ public sealed class ActorBehaviorFactory
     }
     IActorBehavior CreateOneAutofire(Consts.CollisionLayer layer, ActorType.Weapon weapon)
     {
-        return new PeriodicBehavior(new WeaponDischargeBehavior(layer, weapon), new Rate(weapon.attrs.rate));
+        return new PeriodicWeaponDischargeBehavior(layer, weapon);
     }
     public IActorBehavior CreateAutofire(Consts.CollisionLayer layer, ActorType.Weapon[] weapons)
     {
@@ -558,28 +558,36 @@ sealed class RoamBehavior : IActorBehavior
     }
 }
 
-sealed class WeaponDischargeBehavior : IActorBehavior
+class WeaponDischargeBehavior : IActorBehavior
 {
     readonly Consts.CollisionLayer layer;
-    readonly ActorType.Weapon weapon;
+    protected readonly ActorType.Weapon weapon;
 
     public WeaponDischargeBehavior(Consts.CollisionLayer layer, ActorType.Weapon weapon)
     {
         this.layer = layer;
         this.weapon = weapon;
     }
-    public void FixedUpdate(Actor actor)
+    public virtual void FixedUpdate(Actor actor)
     {
         if (actor.firingEnabled)
         {
-            var game = Main.Instance.game;
+            Main.Instance.game.SpawnAmmo(actor, weapon, layer);
+        }
+    }
+}
 
-            //KAI: hack.... would either have to implement a general ammo limit (hard), implement heroling firing separately,
-            //or pass in an Action that checks to see if we can fire
-            if (weapon.actorName != "HEROLING" || HerolingActor.ActiveHerolings < Consts.HEROLING_LIMIT)
-            {
-                game.SpawnAmmo(actor, weapon, layer);
-            }
+sealed class PeriodicWeaponDischargeBehavior : WeaponDischargeBehavior
+{
+    readonly Rate rate = new Rate();
+    public PeriodicWeaponDischargeBehavior(Consts.CollisionLayer layer, ActorType.Weapon weapon) : base(layer, weapon) {}
+
+    public override void FixedUpdate(Actor actor)
+    {
+        if (rate.reached)
+        {
+            base.FixedUpdate(actor);
+            rate.Start(actor.weaponMods.rate * weapon.attrs.rate);
         }
     }
 }
