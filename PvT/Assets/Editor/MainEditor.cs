@@ -38,7 +38,7 @@ public class MainEditor : Editor
         {
             PlayerData.ClearAll();
         }
-        if (GUILayout.Button("Gain XP"))
+        if (GUILayout.Button("Gain 50% XP"))
         {
             PlayerData.Instance._debug();
         }

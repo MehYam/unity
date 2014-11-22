@@ -88,11 +88,11 @@ public class HerolingActor : Actor
             {
                 SPEED_BOOST = new ActorAttrs(2 * actorType.attrs.maxSpeed, 0, 0);
             }
-            AddModifier(SPEED_BOOST);
+            AddActorModifier(SPEED_BOOST);
         }
         else if (SPEED_BOOST != null)
         {
-            RemoveModifier(SPEED_BOOST);
+            RemoveActorModifier(SPEED_BOOST);
         }
     }
 

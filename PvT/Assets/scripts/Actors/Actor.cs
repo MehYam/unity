@@ -65,72 +65,119 @@ public class Actor : MonoBehaviour
             _actorType = value;
 
             health = _actorType.attrs.maxHealth;
-            if (_modifierList != null)
+            if (_actorModifiers != null)
             {
-                _modifierList = null;
+                _actorModifiers = null;
             }
         }
     }
-    ActorAttrs _attrs; // this is determined lazily
+    ActorAttrs _lazyAttrs; // this is determined lazily
     public ActorAttrs attrs
     { 
         get
         {
-            if (_attrs == null)
+            if (_lazyAttrs == null)
             {
-                if (_modifierList != null && _modifierList.Count > 0)
+                if (_actorModifiers != null && _actorModifiers.Count > 0)
                 {
                     // KAI: this could be a lot cleaner at the expense of creating
                     // more temporary ActorAttrs objects
                     float maxSpeed = actorType.attrs.maxSpeed;  
                     float acceleration = actorType.attrs.acceleration;
                     float maxHealth = actorType.attrs.maxHealth;
-                    foreach(var mod in _modifierList)
+                    foreach(var mod in _actorModifiers)
                     {
                         maxSpeed += mod.maxSpeed;
                         acceleration += mod.acceleration;
                         maxHealth += mod.maxHealth;
                     }
-                    _attrs = new ActorAttrs(maxSpeed, acceleration, health);
+                    _lazyAttrs = new ActorAttrs(maxSpeed, acceleration, health);
                 }
                 else
                 {
-                    _attrs = _actorType.attrs;
+                    _lazyAttrs = _actorType.attrs;
                 }
             }
-            return _attrs;
+            return _lazyAttrs;
+        }
+    }
+    ActorType.WeaponAttrs _lazyWeaponAttrs;
+    ActorType.WeaponAttrs weaponAttrs
+    {
+        get
+        {
+            if (_lazyWeaponAttrs == null)
+            {
+                float damage = 1;
+                float rate = 1;
+                float ttl = 1;
+                float chargeSeconds = 1;
+                foreach (var mod in _weaponModifiers)
+                {
+                    damage *= mod.damage;
+                    rate *= mod.rate;
+                    ttl *= mod.ttl;
+                    chargeSeconds *= mod.chargeSeconds;
+                }
+                _lazyWeaponAttrs = new ActorType.WeaponAttrs(damage, rate, ttl, chargeSeconds);
+            }
+            return _lazyWeaponAttrs;
         }
     }
 
-    IList<ActorAttrs> _modifierList;
+    IList<ActorAttrs> _actorModifiers;
     /// <summary>
     /// Adds the modifier to the list of attributes exhibited by this actor.  Modifiers instances are unique;  they cannot be added multiple times.
     /// </summary>
     /// <param name="modifier">The modifier to add</param>
-    public void AddModifier(ActorAttrs modifier)
+    public void AddActorModifier(ActorAttrs modifier)
     {
         DebugUtil.Assert(modifier != null);
-        if (_modifierList == null)
+        if (_actorModifiers == null)
         {
-            _modifierList = new List<ActorAttrs>();
+            _actorModifiers = new List<ActorAttrs>();
         }
-        if (!_modifierList.Contains(modifier))
+        if (!_actorModifiers.Contains(modifier))
         {
-            _modifierList.Add(modifier);
-            _attrs = null;
+            _actorModifiers.Add(modifier);
+            _lazyAttrs = null;
         }
     }
     /// <summary>
     /// Removes the modifier from the list of attributes exhibited by this actor.
     /// </summary>
     /// <param name="modifier">The modifier to remove</param>
-    public void RemoveModifier(ActorAttrs modifier)
+    public void RemoveActorModifier(ActorAttrs modifier)
     {
         DebugUtil.Assert(modifier != null);
-        if (_modifierList != null && _modifierList.Contains(modifier))
+        if (_actorModifiers != null && _actorModifiers.Contains(modifier))
         {
-            _modifierList.Remove(modifier);
-            _attrs = null;
+            _actorModifiers.Remove(modifier);
+            _lazyAttrs = null;
+        }
+    }
+
+    //KAI: so much copy pasta with regular modifiers.  Let this brew for a while, consolidate it when it seems ready.
+    IList<ActorType.WeaponAttrs> _weaponModifiers;
+    public void AddWeaponModifier(ActorType.WeaponAttrs modifier)
+    {
+        DebugUtil.Assert(modifier != null);
+        if (_weaponModifiers != null)
+        {
+            _weaponModifiers = new List<ActorType.WeaponAttrs>();
+        }
+        if (!_weaponModifiers.Contains(modifier))
+        {
+            _weaponModifiers.Add(modifier);
+            _lazyWeaponAttrs = null;
+        }
+    }
+    public void RemoveWeaponModifier(ActorType.WeaponAttrs modifier)
+    {
+        DebugUtil.Assert(modifier != null);
+        if (_weaponModifiers != null && _weaponModifiers.Contains(modifier))
+        {
+            _lazyWeaponAttrs = null;
         }
     }
 

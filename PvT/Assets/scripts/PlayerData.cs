@@ -92,9 +92,13 @@ public sealed class PlayerData
     }
     public void _debug()
     {
-        var actorStats = GetActorStats(Main.Instance.game.player.GetComponent<Actor>().actorType);
-        actorStats.xpWith += 1000;
-        GlobalGameEvent.Instance.FireGainingXP(1000, Main.Instance.game.player.transform.position);
+        var player = Main.Instance.game.player.GetComponent<Actor>();
+        var level = GetLevel(player.actorType);
+        var xpGain = (GetXPAtLevel(level + 1) - GetXPAtLevel(level)) / 2;
+
+        var actorStats = GetActorStats(player.actorType);
+        actorStats.xpWith += xpGain;
+        GlobalGameEvent.Instance.FireGainingXP(xpGain, player.gameObject.transform.position);
         GlobalGameEvent.Instance.FirePlayerDataUpdated(this);
     }
 

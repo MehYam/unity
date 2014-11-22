@@ -34,7 +34,7 @@ public sealed class ShieldWeaponController
 
             // init the Actor
             var shieldActor = _shield.GetComponent<Actor>();
-            shieldActor.health = actor.attrs.maxHealth * Consts.SHIELD_HEALTH_MULTIPLIER;
+            shieldActor.health = actor.attrs.maxHealth;
             shieldActor.SetExpiry(Actor.EXPIRY_INFINITE);
             shieldActor.explodesOnDeath = false;
             shieldActor.showsHealthBar = false;

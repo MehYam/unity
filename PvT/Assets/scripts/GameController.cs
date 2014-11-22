@@ -454,7 +454,7 @@ public sealed class GameController : IGame
 
         if (isHopper)
         {
-            actor.AddModifier(new ActorAttrs(1000, 1000, 0)); // unlock the speed limit
+            actor.AddActorModifier(new ActorAttrs(1000, 1000, 0)); // unlock the speed limit
         }
         else if (HasShieldWeapon(vehicle))
         {
