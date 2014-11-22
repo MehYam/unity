@@ -59,7 +59,7 @@ public sealed class CompositeBehavior : IActorBehavior
 }
 
 /// <summary>
-///  Wraps a behavior in a timer, so that it occurs only so often
+/// Binds a RateLimiter and IActorBehavior together
 /// </summary>
 public sealed class PeriodicBehavior : IActorBehavior
 {
@@ -574,7 +574,8 @@ sealed class WeaponDischargeBehavior : IActorBehavior
         {
             var game = Main.Instance.game;
 
-            //KAI: MAJOR CHEESE, maybe reimplement as an ammo limit
+            //KAI: hack.... would either have to implement a general ammo limit (hard), implement heroling firing separately,
+            //or pass in an Action that checks to see if we can fire
             if (weapon.actorName != "HEROLING" || HerolingActor.ActiveHerolings < Consts.HEROLING_LIMIT)
             {
                 game.SpawnAmmo(actor, weapon, layer);

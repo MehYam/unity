@@ -11,7 +11,7 @@ public sealed class ChargeWeaponController
         _layer = layer;
         _weapon = weapon;
         _limiter = new RateLimiter(weapon.attrs.rate);
-        _limiter.End();
+        _limiter.Stop();
     }
 
     float _startTime = 0;

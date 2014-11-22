@@ -16,7 +16,7 @@ public sealed class ShieldWeaponController
         _layer = layer;
         _weapon = weapon;
         _limiter = new RateLimiter(weapon.attrs.rate);
-        _limiter.End();
+        _limiter.Stop();
     }
 
     GameObject _shield;
