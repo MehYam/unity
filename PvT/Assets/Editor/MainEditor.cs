@@ -26,14 +26,7 @@ public class MainEditor : Editor
         DrawDefaultInspector();
 
         var main = (Main) target;
-        if (GUILayout.Button("Respawn"))
-        {
-            main.Debug_Respawn();
-        }
-        if (GUILayout.Button("Suicide"))
-        {
-            main.game.player.GetComponent<Actor>().TakeDamage(10000);
-        }
+        GUILayout.BeginHorizontal();
         if (GUILayout.Button("Clear player data"))
         {
             PlayerData.ClearAll();
@@ -41,6 +34,25 @@ public class MainEditor : Editor
         if (GUILayout.Button("Gain 50% XP"))
         {
             PlayerData.Instance._debug();
+        }
+        GUILayout.EndHorizontal();
+        if (Application.isPlaying)
+        {
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Respawn"))
+            {
+                main.Debug_Respawn();
+            }
+            if (GUILayout.Button("Suicide"))
+            {
+                main.game.player.GetComponent<Actor>().TakeDamage(10000);
+            }
+            GUILayout.EndHorizontal();
+            if (GUILayout.Button("Add Weapon Mod"))
+            {
+                var actor = Main.Instance.game.player.GetComponent<Actor>();
+                actor.AddWeaponModifier(new ActorType.WeaponAttrs(0.5f, 0.5f, 0.5f, 0.5f));
+            }
         }
 #if THIS_STUFF_IS_SO_STUPID
         if (GUILayout.Button("Reload"))

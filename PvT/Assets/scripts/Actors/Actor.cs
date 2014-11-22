@@ -172,7 +172,7 @@ public class Actor : MonoBehaviour
     public void AddWeaponModifier(ActorType.WeaponAttrs modifier)
     {
         DebugUtil.Assert(modifier != null);
-        if (_weaponModifiers != null)
+        if (_weaponModifiers == null)
         {
             _weaponModifiers = new List<ActorType.WeaponAttrs>();
         }
