@@ -27,7 +27,7 @@ public class LevelUp : MonoBehaviour
 
         yield return new WaitForSeconds(Consts.FLARE_ANIMATION_PEAK_SECONDS);
 
-        main.game.PlaySound(main.sounds.levelUp, transform.position);
+        main.game.PlaySound(Sounds.GlobalEvent.LEVELUP, transform.position);
 
         actor.takenDamageMultiplier = 1;
 

@@ -35,6 +35,20 @@ namespace PvT.Util
         {
             return Random.value <= oddsOfTrue;
         }
+        static public T RandomArrayPick<T>(T[] t)
+        {
+            int count = t.Length;
+
+            DebugUtil.Assert(count > 0);
+            return t[Random.Range(0, count - 1)];
+        }
+        static public T RandomArrayPick<T>(IList<T> t)
+        {
+            int count = t.Count;
+
+            DebugUtil.Assert(count > 0);
+            return t[Random.Range(0, count - 1)];
+        }
 
         static public float SPRITE_FORWARD_ANGLE { get; set; }
         static public float GetLookAtAngle(Vector2 point)

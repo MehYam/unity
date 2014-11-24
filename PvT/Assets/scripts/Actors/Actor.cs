@@ -470,7 +470,7 @@ public class Actor : MonoBehaviour
             blinker.transform.localPosition = Vector3.zero;
             blinker.name = Consts.BLINKER_TAG;
 
-            Main.Instance.game.PlaySound(Main.Instance.sounds.HerolingCapture, transform.position);
+            Main.Instance.game.PlaySound(Sounds.GlobalEvent.OVERWHELM, transform.position);
         }
     }
 
@@ -601,7 +601,7 @@ public class Actor : MonoBehaviour
 
                 if (otherActor != null)
                 {
-                    Main.Instance.game.PlaySound(Main.Instance.sounds.SmallCollision, contact.point);
+                    Main.Instance.game.PlaySound(Sounds.GlobalEvent.MOBCOLLISION, contact.point);
                 }
             }
             //Debug.Log(string.Format("{0} (health {3}) taking {1} damage from {2}", name, damage, other.name, health));

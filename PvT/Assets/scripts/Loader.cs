@@ -19,9 +19,9 @@ public class Loader
     readonly Dictionary<string, TankHullType> _tankHullLookup;
     readonly Dictionary<string, TankTurretType> _tankTurretLookup;
     readonly Dictionary<string, AI> _ai;
-    readonly Dictionary<string, AudioClip> _ammoSounds;
 
     public readonly ReadOnlyCollection<Level> levels;
+    public readonly Sounds sounds;
 
     public Loader(Main.GameConfig config)
     {
@@ -44,7 +44,7 @@ public class Loader
         levels = new ReadOnlyCollection<Level>(LoadLevels(config.Levels.text));
         _ai = LoadAI(config.AI.text);
 
-        _ammoSounds = LoadSounds(config.WeaponSounds.text);
+        sounds = LoadSounds(config.Sounds.text);
         FixupWeaponLevels();
     }
 
@@ -137,12 +137,6 @@ public class Loader
     {
         AI retval = null;
         _ai.TryGetValue(key, out retval);
-        return retval;
-    }
-    public AudioClip GetWeaponSound(string weapon)
-    {
-        AudioClip retval = null;
-        _ammoSounds.TryGetValue(weapon, out retval);
         return retval;
     }
 
@@ -382,18 +376,31 @@ public class Loader
         return retval;
     }
 
-    static Dictionary<string, AudioClip> LoadSounds(string csv)
+    Sounds LoadSounds(string csv)
     {
-        var retval = new Dictionary<string, AudioClip>();
+        var retval = new Sounds();
         foreach (var line in Util.SplitLines(csv, true))
         {
             var csvHelper = new Util.CSVParseHelper(line);
 
-            var weapon = csvHelper.GetString();
-            var soundFile = csvHelper.GetString();
+            var eventStr = csvHelper.GetString();
+            ActorType actor = null;
+            _actorTypeLookup.TryGetValue(csvHelper.GetString(), out actor);
 
-            var sound = (AudioClip)Resources.Load("sounds/" + soundFile);
-            retval[weapon] = sound;
+            var sound = (AudioClip)Resources.Load("sounds/" + csvHelper.GetString());
+
+            if (actor == null)
+            {
+                // is a global event
+                Sounds.GlobalEvent evt = (Sounds.GlobalEvent)Enum.Parse(typeof(Sounds.GlobalEvent), eventStr);
+                retval.Add(evt, sound);
+            }
+            else
+            {
+                // is an actor-specific event
+                Sounds.ActorEvent evt = (Sounds.ActorEvent)Enum.Parse(typeof(Sounds.ActorEvent), eventStr);
+                retval.Add(actor, evt, sound);
+            }
         }
         return retval;
     }

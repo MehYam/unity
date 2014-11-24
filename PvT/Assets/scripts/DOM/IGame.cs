@@ -19,7 +19,8 @@ public interface IGame
     GameObject SpawnHotspot(Actor launcher, ActorType.Weapon weapon, float damageMultiplier, Consts.CollisionLayer layer);
 
     void ShakeGround();
-    void PlaySound(AudioClip clip, Vector2 position, float volume = 1);
+    void PlaySound(Actor actor, Sounds.ActorEvent evt, float volume = 1);
+    void PlaySound(Sounds.GlobalEvent evt, Vector2 pos, float volume = 1);
 
     void Debug_Respawn(Loader loader);
 }

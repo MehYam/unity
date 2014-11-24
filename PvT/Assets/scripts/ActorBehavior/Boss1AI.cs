@@ -79,7 +79,7 @@ public sealed class Boss1AI : MonoBehaviour
 
             fader.Fade(1, 5, false);
 
-            main.game.PlaySound(main.sounds.roar, Camera.main.transform.position);
+            main.game.PlaySound(Sounds.GlobalEvent.ROAR, Camera.main.transform.position);
             main.game.ShakeGround();
 
             // start shooting

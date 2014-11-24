@@ -19,7 +19,7 @@ public class Main : MonoBehaviour
         public TextAsset Levels;
         public TextAsset AI;
         public TextAsset Misc;
-        public TextAsset WeaponSounds;
+        public TextAsset Sounds;
     }
     public GameConfig config;
     [Serializable]
@@ -38,20 +38,6 @@ public class Main : MonoBehaviour
         public GameObject flareAnimation;
     }
     public Assets assets;
-    [Serializable]
-    public sealed class Sounds
-    {
-        public AudioClip HerolingCapture;
-
-        public AudioClip SmallCollision;
-        public AudioClip BigCollision;
-        public AudioClip Explosion1;
-
-        public AudioClip fanfare1;
-        public AudioClip roar;
-        public AudioClip levelUp;
-    }
-    public Sounds sounds;
     [Serializable]
     public sealed class Music
     {
@@ -106,7 +92,7 @@ public class Main : MonoBehaviour
             MasterInput.impl = new MouseAndKeyboardInput();
         }
 
-        Debug.Log("Input " + MasterInput.impl);
+        Debug.Log("Input: " + MasterInput.impl);
 
         // load saved player data
         Debug.Log("PlayerData: totalKills " + PlayerData.Instance.playerStats.kills);

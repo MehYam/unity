@@ -30,8 +30,7 @@ public class TierUp : MonoBehaviour
         yield return new WaitForSeconds(Consts.FLARE_ANIMATION_PEAK_SECONDS);
         flare.particleSystem.Play();
 
-
-        main.game.PlaySound(main.sounds.levelUp, transform.position);
+        main.game.PlaySound(Sounds.GlobalEvent.LEVELUP, transform.position);
 
         // 2. Spawn the new player, inherit the physics and positioning of the previous one
         //KAI: here's a weakness - spawning an actor shouldn't be that different from spawning the player (they shouldn't necessarily have two different calls)
