@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Tiled2Unity generated xml data-->
 <!--Do not modify by hand-->
-<!--Last exported: 10/31/2014 12:12:06 PM-->
+<!--Last exported: 11/30/2014 6:02:22 PM-->
 <Tiled2Unity version="0.9.4.2">
   <AssignMaterial mesh="ground_00+tiled" material="tiled" sortingLayerName="ground" sortingOrder="0" />
   <Prefab name="level1" scale="0.02">

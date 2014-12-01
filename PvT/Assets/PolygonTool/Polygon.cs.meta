@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 0ea8e6149cc7ea44bb26134407f8e07b
+labels:
+- polygon
+- extrude
+- 2d
+- shape
+- points
+- line
+- leveleditor
+- david
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
