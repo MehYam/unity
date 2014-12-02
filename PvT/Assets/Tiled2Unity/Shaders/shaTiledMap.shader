@@ -60,16 +60,26 @@
                 OUT.vertex = UnityPixelSnap (OUT.vertex);
                 #endif
 
+                // Supports animations through z-component of tile
+                if (IN.vertex.z < 0)
+                {
+                    // "Hide" frames of a tile animation that are not active
+                    OUT.vertex.w = 0;
+                }
+                else
+                {
+                    OUT.vertex.z = 0;
+                }
+
                 return OUT;
             }
 
             sampler2D _MainTex;
             float4 _AlphaColorKey;
-            uniform float _EffectAmount;
 
             fixed4 frag(v2f IN) : COLOR
             {
-                half4 texcol = tex2D (_MainTex, IN.texcoord);
+                half4 texcol = tex2D(_MainTex, IN.texcoord);
 
                 // The alpha color key is 'enabled' if it has solid alpha
                 if (_AlphaColorKey.a == 1 &&

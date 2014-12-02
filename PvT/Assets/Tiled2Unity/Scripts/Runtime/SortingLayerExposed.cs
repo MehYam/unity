@@ -3,7 +3,10 @@
 
 using UnityEngine;
 
-// Component does nothing; editor script does all the magic
-public class SortingLayerExposed : MonoBehaviour
+namespace Tiled2Unity
 {
+    // Component does nothing; editor script does all the magic
+    public class SortingLayerExposed : MonoBehaviour
+    {
+    }
 }

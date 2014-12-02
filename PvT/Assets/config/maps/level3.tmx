@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="14" height="14" tilewidth="128" tileheight="128">
+ <properties>
+  <property name="unity:scale" value="0.02"/>
+ </properties>
+ <tileset firstgid="1" name="MetalTiles" tilewidth="128" tileheight="128">
+  <image source="../../../../../assets/MetalTiles.png" width="512" height="1024"/>
+  <tile id="2">
+   <objectgroup draworder="index">
+    <object x="1" y="3" width="125" height="123"/>
+   </objectgroup>
+  </tile>
+  <tile id="4">
+   <objectgroup draworder="index">
+    <object x="3" y="4">
+     <polygon points="0,0 119,-1 0,117"/>
+    </object>
+   </objectgroup>
+  </tile>
+ </tileset>
+ <layer name="Floor" width="14" height="14">
+  <properties>
+   <property name="unity:sortingLayerName" value="ground"/>
+   <property name="unity:sortingOrder" value="0"/>
+  </properties>
+  <data encoding="base64" compression="zlib">
+   eJxjYmBgYBrFo3gUgzEAXn4BiQ==
+  </data>
+ </layer>
+ <layer name="WallShadow" width="14" height="14">
+  <properties>
+   <property name="unity:sortingLayerName" value="ammoHigh"/>
+   <property name="unity:sortingOrder" value="0"/>
+  </properties>
+  <data encoding="base64" compression="zlib">
+   eJxjYCAfcAIxBwkYBoDsBHLso7c+bICNgUEBG5uAOgZ2LGwc+hIocR8O+xWwqUEPF2LdOZTjjxAAACqlBJI=
+  </data>
+ </layer>
+ <layer name="Walls" width="14" height="14">
+  <properties>
+   <property name="unity:layer" value="environment"/>
+   <property name="unity:sortingLayerName" value="clouds"/>
+   <property name="unity:sortingOrder" value="0"/>
+  </properties>
+  <data encoding="base64" compression="zlib">
+   eJxjZmBgYCYTszAQD4BqF8D0kQoGSh8rA0MCujg2NgNE7QHksCHVLkr0sWKRw+POIRcPLGjxgA+woMUDqRgADFoEWQ==
+  </data>
+ </layer>
+</map>
