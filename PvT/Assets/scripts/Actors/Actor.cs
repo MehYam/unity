@@ -1,4 +1,5 @@
 //#define SHOW_STRANGE_PARENTING_BUG
+//#define DEBUG_FACEPLANTS
 
 using UnityEngine;
 using System.Collections;
@@ -20,6 +21,8 @@ public class Actor : MonoBehaviour
         firingEnabled = true;
         thrustEnabled = true;
         immortal = false;
+
+        lastFaceplantTime = float.MinValue;
 
         maxRotationalVelocity = Consts.MAX_MOB_ROTATION_DEG_PER_SEC;
 
@@ -226,6 +229,14 @@ public class Actor : MonoBehaviour
     public bool showsHealthBar{ get; set; }
     public bool explodesOnDeath { get; set; }
     public bool isCapturable { get; set; }
+    public float lastFaceplantTime { get; set; }
+    public Vector2 lastThrust { get; private set; }
+
+    public void AddThrust(Vector2 force)
+    {
+        rigidbody2D.AddForce(force);
+        lastThrust = force;
+    }
 
     float _health;
     public float health
@@ -327,9 +338,24 @@ public class Actor : MonoBehaviour
         _currentInvulnerability = null;
     }
 
+#if DEBUG_FACEPLANTS
+    float _last = 0;
+#endif
+
     IActorBehavior _overwhelmBehavior;  // currently used for overwhelming
     protected virtual void FixedUpdate()
     {
+#if DEBUG_FACEPLANTS
+        if (Time.fixedTime - _last > 0.25f)
+        {
+            var lookAt = Util.GetLookAtVector(transform.rotation.eulerAngles.z);
+            bool intersect = Physics2D.Raycast(transform.position, lookAt, 1, Consts.ENVIRONMENT_LAYER_MASK);
+            Debug.DrawLine(transform.position, transform.position + (Vector3)lookAt, intersect ? Color.red : Color.white, 2);
+
+            _last = Time.fixedTime;
+        }
+#endif
+
         DetectChangeInOverwhelm();
         if (behaviorEnabled)
         {
@@ -544,16 +570,29 @@ public class Actor : MonoBehaviour
             var other = contact.collider.gameObject;
             if (gameObject == collidee && gameObject.layer != other.layer)
             {
-                HandleCollision(other, contact.point);
+                HandleCollision(other, contact.point, contact.normal, collision.relativeVelocity);
                 break;
             }
         }
     }
 
-    protected virtual void HandleCollision(GameObject other, Vector2 point)
+    protected virtual void HandleCollision(GameObject other, Vector2 point, Vector2 normal, Vector2 relativeVelocity)
     {
         var otherActor = other.GetComponent<Actor>();
-        if (otherActor != null)
+        if (otherActor == null)
+        {
+            // might be a wall collision, do our faceplant detection
+            if (other.name == "Collision")
+            {
+                var lookAt = Util.GetLookAtVector(transform.rotation.eulerAngles.z);
+                if (Physics2D.Raycast(transform.position, lookAt, Consts.FACEPLANT_CHECK_DISTANCE))
+                {
+                    Debug.Log(name + " faceplanted " + Time.frameCount);
+                    lastFaceplantTime = Time.fixedTime;
+                }
+            }
+        }
+        else
         {
             // give out collision damage, except when capturing a mob.
             var thisIsPlayerCapturing = isPlayer && otherActor.overwhelmPct == 1;

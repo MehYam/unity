@@ -22,7 +22,7 @@ public sealed class DamagingHotspot : MonoBehaviour
 
             if (other.rigidbody2D != null)
             {
-                other.rigidbody2D.AddForce(Util.GetLookAtVector(transform.rotation.eulerAngles.z, damage * Consts.FUSION_KNOCKBACK_MULTIPLIER));
+                other.rigidbody2D.AddForce(Util.GetLookAtVector(transform.rotation.eulerAngles.z) * damage * Consts.FUSION_KNOCKBACK_MULTIPLIER);
             }
         }
     }

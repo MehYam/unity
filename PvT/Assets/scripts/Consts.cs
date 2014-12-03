@@ -20,6 +20,7 @@ public static class Consts
         HEROLINGS_RETURNING = 14,
         BOSS_NO_MOB_COLLISION = 15  // so that the boss can contain and parent mobs
     };
+    static public readonly int ENVIRONMENT_LAYER_MASK = 1 << (int) CollisionLayer.ENVIRONMENT;
 
     public enum SortingLayer : int
     {
@@ -68,6 +69,8 @@ public static class Consts
     static public readonly float MAX_MOB_TURRET_ROTATION_DEG_PER_SEC = 45;
     static public readonly float MAX_MOB_HULL_ROTATION_DEG_PER_SEC = 1;
     static public readonly float MOB_SPAWN_DELAY = 0.5f;
+    static public readonly float FACEPLANT_MITIGATION_DURATION = 0.5f;
+    static public readonly float FACEPLANT_CHECK_DISTANCE = 1;
 
     static public readonly float FLARE_ANIMATION_PEAK_SECONDS = 0.5f;
 

@@ -469,7 +469,7 @@ sealed class GravitateToTarget : IActorBehavior
     {
         var go = actor.gameObject;
         var lookAt = Util.GetLookAtVector(go.transform.position, target.actor.transform.position);
-        actor.gameObject.rigidbody2D.AddForce(lookAt * actor.attrs.acceleration);
+        actor.AddThrust(lookAt * actor.attrs.acceleration);
     }
 }
 /// <summary>
@@ -496,8 +496,8 @@ sealed class ThrustBehavior : IActorBehavior
     {
         if (actor.thrustEnabled)
         {
-            var thrustVector = Util.GetLookAtVector(actor.gameObject.transform.rotation.eulerAngles.z + angle, actor.attrs.acceleration);
-            actor.gameObject.rigidbody2D.AddForce(thrustVector);
+            var thrustVector = Util.GetLookAtVector(actor.gameObject.transform.rotation.eulerAngles.z + angle) * actor.attrs.acceleration;
+            actor.AddThrust(thrustVector);
         }
     }
 }
@@ -542,7 +542,7 @@ sealed class RoamBehavior : IActorBehavior
                 Util.LookAt2D(actor.transform, target, actor.maxRotationalVelocity * Time.fixedDeltaTime);
                 ActorBehaviorFactory.Instance.thrust.FixedUpdate(actor);
 
-                if (Util.Sub(actor.transform.position, target).sqrMagnitude < 1)
+                if ((actor.transform.position - (Vector3)target).sqrMagnitude < 1)
                 {
                     state = State.BRAKING;
                 }

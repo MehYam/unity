@@ -69,9 +69,9 @@ public sealed class Boss1AI : MonoBehaviour
             yield return StartCoroutine(Util.YieldUntil(() => _spawnedMobs == 0));
 
             // teleport close to player in + earthquake
-            var closeToPlayer = Util.GetLookAtVector(UnityEngine.Random.Range(0, 360), 7);
+            var closeToPlayer = Util.GetLookAtVector(UnityEngine.Random.Range(0, 360)) * 7;
 
-            transform.position = Util.Add(main.game.player.transform.position, closeToPlayer);
+            transform.position = main.game.player.transform.position +  (Vector3)closeToPlayer;
             Util.LookAt2D(actor.transform, main.game.player.transform);
 
             // spawn a bunch of new child mobs

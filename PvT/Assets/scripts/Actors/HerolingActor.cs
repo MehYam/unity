@@ -61,7 +61,7 @@ public class HerolingActor : Actor
         GlobalGameEvent.Instance.ActorDeath -= OnActorDeath;
     }
 
-    protected override void HandleCollision(GameObject other, Vector2 point)
+    protected override void HandleCollision(GameObject other, Vector2 point, Vector2 normal_unused, Vector2 relativeVelocity_unused)
     {
         switch ((Consts.CollisionLayer)other.layer)
         {

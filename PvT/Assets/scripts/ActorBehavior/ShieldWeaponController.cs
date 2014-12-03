@@ -79,7 +79,7 @@ public sealed class ShieldWeaponController
 
             var shieldVelocity = actor.rigidbody2D.velocity;
 
-            shieldVelocity += Util.GetLookAtVector(_shield.transform.rotation.eulerAngles.z, Consts.SHIELD_BOOST);
+            shieldVelocity += Util.GetLookAtVector(_shield.transform.rotation.eulerAngles.z) * Consts.SHIELD_BOOST;
 
             _shield.rigidbody2D.velocity = shieldVelocity;
             _shield = null;

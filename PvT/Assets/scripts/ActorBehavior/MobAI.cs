@@ -70,7 +70,7 @@ public sealed class MobAI
     {
         Func<ActorType, IActorBehavior> retval = null;
         _behaviorFactory.TryGetValue(vehicle.name, out retval);
-        return retval == null ? null : retval(vehicle);
+        return retval == null ? null : new FaceplantMitigation(retval(vehicle));
     }
     bool AttachMonoBehavior(Actor actor)
     {
@@ -227,6 +227,26 @@ public sealed class MobAI
             sequence.Add(bf.facePlayer, new Rate(2));
             return sequence;
         };
+    }
+
+    sealed class FaceplantMitigation : IActorBehavior
+    {
+        readonly IActorBehavior _containedBehavior;
+        public FaceplantMitigation(IActorBehavior behavior)
+        {
+            _containedBehavior = behavior;
+        }
+        public void FixedUpdate(Actor actor)
+        {
+            if ((Time.fixedTime - actor.lastFaceplantTime) < Consts.FACEPLANT_MITIGATION_DURATION)
+            {
+                ActorBehaviorFactory.Instance.thrustAway.FixedUpdate(actor);
+            }
+            else
+            {
+                _containedBehavior.FixedUpdate(actor);
+            }
+        }
     }
 }
 

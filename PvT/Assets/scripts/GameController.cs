@@ -202,7 +202,7 @@ public sealed class GameController : IGame
         {
             // give the ammo instant acceleration
             goAmmo.rigidbody2D.mass = 0;
-            goAmmo.rigidbody2D.velocity = Util.GetLookAtVector(actorAmmo.transform.rotation.eulerAngles.z, type.attrs.maxSpeed);
+            goAmmo.rigidbody2D.velocity = Util.GetLookAtVector(actorAmmo.transform.rotation.eulerAngles.z) * type.attrs.maxSpeed;
         }
         else
         {

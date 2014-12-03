@@ -59,10 +59,9 @@ namespace PvT.Util
         {
             return DegreesRotation(target - looker) + SPRITE_FORWARD_ANGLE;
         }
-        static public Vector2 GetLookAtVector(float angle, float magnitude)
+        static public Vector2 GetLookAtVector(float angle)
         {
-            var vector = new Vector2(0, magnitude);
-            return RotatePoint(vector, -SPRITE_FORWARD_ANGLE - angle);
+            return RotatePoint(Vector2.up, -SPRITE_FORWARD_ANGLE - angle);
         }
         //KAI: look at replacing more calls with the following
         static public Vector2 GetLookAtVector(Vector2 looker, Vector2 target)
@@ -139,22 +138,6 @@ namespace PvT.Util
         //    var raw = target - source;
         //    return Mathf.Atan2(Mathf.Sin(raw), Mathf.Cos(raw));
         //}
-        static public Vector3 Add(Vector2 a, Vector3 b)
-        {
-            return new Vector3(a.x + b.x, a.y + b.y, b.z);
-        }
-        static public Vector2 Add(Vector3 a, Vector2 b)
-        {
-            return new Vector2(a.x + b.x, a.y + b.y);
-        }
-        static public Vector2 Sub(Vector3 a, Vector2 b)
-        {
-            return new Vector2(a.x - b.x, a.y - b.y);
-        }
-        static public Vector2 Sub(Vector2 a, Vector3 b)
-        {
-            return new Vector2(a.x - b.x, a.y - b.y);
-        }
         static public Vector3 ScatterRandomly(float radius)
         {
             return new Vector3(Random.Range(-radius, radius), Random.Range(-radius, radius));
@@ -171,11 +154,10 @@ namespace PvT.Util
             scaledOffset.Scale(scale);
             scaledOffset.y = offset.y;  //KAI: not sure why....
 
-            launchee.localPosition = Add(launcher.transform.position, scaledOffset);
+            launchee.localPosition = launcher.transform.position + (Vector3)scaledOffset;
             launchee.RotateAround(launcher.transform.position, Vector3.forward, launcher.transform.rotation.eulerAngles.z);
 
             launchee.Rotate(0, 0, -angle);
-
         }
 
         static float _lastCalcedScreenRectTime = -1;
