@@ -379,7 +379,10 @@ public class Actor : MonoBehaviour
             _healthBar.percent = health / attrs.maxHealth;
             _healthBar.transform.position = transform.position + HEALTH_BAR_POSITION;
 
-            UpdateDamageSmoke();
+            if (!isHero)
+            {
+                UpdateDamageSmoke();
+            }
         }
         else if (_healthBar != null)
         {
