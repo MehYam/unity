@@ -145,7 +145,7 @@ public class LevelScript : MonoBehaviour
                 int iToSpawn = Random.Range(1, 4);
                 for (int i = 0; i < iToSpawn; ++i)
                 {
-                    SpawnMob(game, randomSpawner[Random.Range(0, randomSpawner.Length - 1)]);
+                    SpawnMob(game, Util.RandomArrayPick(randomSpawner));
                 }
             }
         }

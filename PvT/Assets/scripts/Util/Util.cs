@@ -40,14 +40,14 @@ namespace PvT.Util
             int count = t.Length;
 
             DebugUtil.Assert(count > 0);
-            return t[Random.Range(0, count - 1)];
+            return t[Random.Range(0, count)];
         }
         static public T RandomArrayPick<T>(IList<T> t)
         {
             int count = t.Count;
 
             DebugUtil.Assert(count > 0);
-            return t[Random.Range(0, count - 1)];
+            return t[Random.Range(0, count)];
         }
 
         static public float SPRITE_FORWARD_ANGLE { get; set; }

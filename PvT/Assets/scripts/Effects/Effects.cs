@@ -1,6 +1,8 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+
+using PvT.Util;
 
 public sealed class Effects
 {
@@ -34,26 +36,21 @@ public sealed class Effects
         }
         return new ReadOnlyCollection<Asset>(list);
     }
-
-    static Asset Rand(IList<Asset> container)
-    {
-        return container[Random.Range(0, container.Count)];
-    }
     public Asset GetRandomExplosion()
     {
-        return Rand(_explosions);
+        return Util.RandomArrayPick(_explosions);
     }
     public Asset GetRandomSmallExplosion()
     {
-        return Rand(_smallExplosions);
+        return Util.RandomArrayPick(_smallExplosions);
     }
     public Asset GetRandomMuzzleFlash()
     {
-        return Rand(_muzzleFlashes);
+        return Util.RandomArrayPick(_muzzleFlashes);
     }
     public Asset GetRandomSmoke()
     {
-        return Rand(_smoke);
+        return Util.RandomArrayPick(_smoke);
     }
     public Asset GetVehicleExplosion()
     {
