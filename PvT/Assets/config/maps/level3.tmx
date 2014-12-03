@@ -46,5 +46,12 @@
    eJzt1VEKgCAQhOEB6alLdrSO0tESejMV50HU+hc+iBDZId2CpPARm9orrj1H91viVuu+e8WqOdL3K+Uo9dwrRzzzR9pn7lnP2mvWHM43cfddLYdzpzueq1evuWepPHedWTTzPf9bjp7/ELdqd2FkjnTu1sqduwAAAAAAAAAAAACAvBuC1CDt
   </data>
  </layer>
- <objectgroup name="Markers"/>
+ <objectgroup name="Markers">
+  <object x="896" y="896">
+   <ellipse/>
+  </object>
+  <object name="playerSpawn" x="896" y="896">
+   <ellipse/>
+  </object>
+ </objectgroup>
 </map>
