@@ -535,7 +535,7 @@ public class Actor : MonoBehaviour
     {
         foreach (ContactPoint2D contact in collision.contacts)
         {
-            //Debug.Log(string.Format("{0}.OnCollisionEnter2D : contact.otherCollider {1}, contact.collider {2}", name, contact.otherCollider.name, contact.collider.name));
+            //Debug.Log(string.Format("{0}.OnCollisionEnter2D : {1}, {2}", name, contact.otherCollider.name, contact.collider.name));
 
             var collidee = contact.otherCollider.gameObject;
             var other = contact.collider.gameObject;
@@ -561,6 +561,7 @@ public class Actor : MonoBehaviour
             }
             else if (!thisIsMobBeingCaptured)
             {
+                //Debug.Log(string.Format("giving {0} damage to {1}", collisionDamage, other.name));
                 otherActor.TakeDamage(collisionDamage);
             }
 

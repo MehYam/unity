@@ -20,6 +20,7 @@ public class HerolingActor : Actor
     protected override void Start()
     {
         base.Start();
+        takenDamageMultiplier = 0;
 
         GlobalGameEvent.Instance.ActorDeath += OnActorDeath;
 
