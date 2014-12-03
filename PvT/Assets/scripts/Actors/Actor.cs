@@ -563,6 +563,10 @@ public class Actor : MonoBehaviour
             {
                 //Debug.Log(string.Format("giving {0} damage to {1}", collisionDamage, other.name));
                 otherActor.TakeDamage(collisionDamage);
+                if (otherActor.isPlayer)
+                {
+                    otherActor.GrantInvuln(Consts.POST_DAMAGE_INVULN);
+                }
             }
 
             // prevent mutual collision sparks and thumps
@@ -608,96 +612,4 @@ public class Actor : MonoBehaviour
             TakeDamage(1);
         }
     }
-
-    //GameObject _collisionParticles;
-    //protected virtual void HandleCollision(ContactPoint2D contact)
-    //{
-    //    var self = contact.otherCollider;
-    //    var other = contact.collider;
-        
-    //    DebugUtil.Assert(self.gameObject == gameObject, "Confusion of self != self in HandleCollision");
-        
-    //    //Debug.Log(string.Format("Collision {0} to {1}, me {2}", collider.name, other.name, name));
-
-    //    var otherActor = other.GetComponent<Actor>();
-    //    var thisIsHeroCapturingOverwhelmedMob = otherActor != null && otherActor.overwhelmPct == 1 && isPlayer;
-    //    var thisIsOverwhelmedMobBeingCaptured = otherActor != null && overwhelmPct            == 1 && otherActor.isPlayer;
-
-    //    if (thisIsHeroCapturingOverwhelmedMob)
-    //    {
-    //        // fire an event signalling that capture should take place
-    //        GlobalGameEvent.Instance.FireCollisionWithOverwhelmed(other.gameObject.GetComponent<Actor>());
-    //    }
-    //    else if (!thisIsOverwhelmedMobBeingCaptured)
-    //    {
-    //        // take collision damage from the other
-    //        if (otherActor != null)
-    //        {
-    //            if (isAmmo && otherActor.reflectsAmmo)
-    //            {
-    //                // we're ammo being bounced by a shield - switch allegiance
-    //                gameObject.layer = gameObject.layer == (int)Consts.CollisionLayer.MOB_AMMO ? 
-    //                    (int)Consts.CollisionLayer.FRIENDLY_AMMO :
-    //                    (int)Consts.CollisionLayer.MOB_AMMO;
-
-    //                // replace the "realistic" collision with one that looks better - otherwise lasers
-    //                // look wonky
-    //                rigidbody2D.angularVelocity = 0;
-    //                rigidbody2D.velocity = rigidbody2D.velocity.normalized * attrs.maxSpeed;
-    //                ActorBehaviorFactory.Instance.faceForward.FixedUpdate(this);
-    //            }
-    //            else
-    //            {
-    //                TakeCollisionDamage(contact);
-    //            }
-    //        }
-    //    }
-    //}
-    //void TakeCollisionDamage(ContactPoint2D contact)
-    //{
-    //    var self = contact.otherCollider;
-    //    var other = contact.collider;
-    //    var otherActor = other.GetComponent<Actor>();
-
-    //    var damage = otherActor.collisionDamage * Random.Range(0.9f, 1.1f);
-    //    if (isAmmo && damage == 0)
-    //    {
-    //        // if we're ammo, ensure that we take at least one point of collision damage (this is a hack to prevent
-    //        // the hero from reflecting ammo like lasers, since the hero imparts no collision damage)
-    //        damage = 1;
-    //    }
-    //    if (damage > 0)
-    //    {
-    //        if (other.gameObject.layer > self.gameObject.layer) // prevent duplicate collision sparks and damage sounds
-    //        {
-    //            var boom = Main.Instance.game.effects.GetRandomSmallExplosion().ToRawGameObject(Consts.SortingLayer.EXPLOSIONS);
-    //            boom.transform.localPosition = contact.point;
-
-    //            GlobalGameEvent.Instance.FireExplosionSpawned(boom);
-
-    //            if (otherActor != null)
-    //            {
-    //                Main.Instance.game.PlaySound(Sounds.GlobalEvent.MOBCOLLISION, contact.point);
-    //            }
-    //        }
-    //        //Debug.Log(string.Format("{0} (health {3}) taking {1} damage from {2}", name, damage, other.name, health));
-
-    //        /////// PARTICLE STUFF
-    //        //KAI: move this to a MainParticles class like MainLighting
-    //        if (_collisionParticles == null)
-    //        {
-    //            _collisionParticles = ((GameObject)GameObject.Instantiate(Main.Instance.assets.collisionParticles));
-    //            _collisionParticles.transform.parent = transform;
-    //        }
-    //        _collisionParticles.transform.position = contact.point;
-    //        _collisionParticles.particleSystem.Play();
-    //        /////// END PARTICLE STUFF
-
-    //        TakeDamage(damage);
-    //        if (isPlayer)
-    //        {
-    //            GrantInvuln(Consts.POST_DAMAGE_INVULN);
-    //        }
-    //    }
-    //}
 }
