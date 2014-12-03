@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,14 +14,14 @@ namespace Tiled2Unity
         public int TileWidth = 0;
         public int TileHeight = 0;
 
-        public int GetMapWidthInPixels()
+        float GetMapWidthInPixels()
         {
-            return this.NumTilesWide * this.TileWidth;
+            return this.NumTilesWide * this.TileWidth * transform.localScale.x;
         }
 
-        public int GetMapHeightInPixels()
+        float GetMapHeightInPixels()
         {
-            return this.NumTilesHigh * this.TileHeight;
+            return this.NumTilesHigh * this.TileHeight * transform.localScale.y;
         }
 
         private void OnDrawGizmosSelected()
