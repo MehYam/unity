@@ -22,6 +22,7 @@ public class Actor : MonoBehaviour
         thrustEnabled = true;
         immortal = false;
 
+        detectFaceplants = false;
         lastFaceplantTime = float.MinValue;
 
         maxRotationalVelocity = Consts.MAX_MOB_ROTATION_DEG_PER_SEC;
@@ -230,6 +231,7 @@ public class Actor : MonoBehaviour
     public bool explodesOnDeath { get; set; }
     public bool isCapturable { get; set; }
     public float lastFaceplantTime { get; set; }
+    public bool detectFaceplants { get; set; }
     public Vector2 lastThrust { get; private set; }
 
     public void AddThrust(Vector2 force)
@@ -582,12 +584,11 @@ public class Actor : MonoBehaviour
         if (otherActor == null)
         {
             // might be a wall collision, do our faceplant detection
-            if (other.name == "Collision")
+            if (detectFaceplants && other.name == "Collision")
             {
                 var lookAt = Util.GetLookAtVector(transform.rotation.eulerAngles.z);
                 if (Physics2D.Raycast(transform.position, lookAt, Consts.FACEPLANT_CHECK_DISTANCE))
                 {
-                    Debug.Log(name + " faceplanted " + Time.frameCount);
                     lastFaceplantTime = Time.fixedTime;
                 }
             }

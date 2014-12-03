@@ -156,6 +156,7 @@ public class LevelScript : MonoBehaviour
         var mob = game.SpawnMob(id);
         var mobActor = mob.GetComponent<Actor>();
         mobActor.isCapturable = true;
+        mobActor.detectFaceplants = true;
 
         MobAI.Instance.AttachAI(mobActor);
 
