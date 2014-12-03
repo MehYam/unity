@@ -77,6 +77,7 @@ public static class Consts
 
     static public readonly string BLINKER_TAG = "blinker";
     static public readonly string SPAWNED_MOB_TAG = "spawnedMobTag";
+    static public readonly string PLAYER_SPAWN_TAG = "playerSpawn";
 
     static public readonly float XP_PER_KILL_PER_LEVEL = 10;
     static public readonly int XP_PER_CAPTURE_PER_LEVEL = 10;

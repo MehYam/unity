@@ -8,12 +8,14 @@ public interface IGame
     void SetMap(GameObject mapPrefab);
 
     GameObject player { get; }
+    Vector2 playerSpawn { get; set; }
+
     bool enemyInPossession { get; }
 
     Loader loader { get; }
     Effects effects { get; }
 
-    void SpawnPlayer(Vector3 location, string actorTypeName = null);
+    void SpawnPlayer(Vector2 location, string actorTypeName = null);
     GameObject SpawnMob(string vehicleKey);
     GameObject SpawnAmmo(Actor launcher, ActorType.Weapon weapon, Consts.CollisionLayer layer);
     GameObject SpawnHotspot(Actor launcher, ActorType.Weapon weapon, float damageMultiplier, Consts.CollisionLayer layer);

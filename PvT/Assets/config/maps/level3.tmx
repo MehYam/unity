@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="14" height="14" tilewidth="128" tileheight="128">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="128" tileheight="128">
  <properties>
   <property name="unity:scale" value="0.02"/>
  </properties>
@@ -18,34 +18,40 @@
    </objectgroup>
   </tile>
  </tileset>
- <layer name="Floor" width="14" height="14">
+ <layer name="Floor" width="50" height="50">
   <properties>
    <property name="unity:sortingLayerName" value="ground"/>
    <property name="unity:sortingOrder" value="0"/>
   </properties>
   <data encoding="base64" compression="zlib">
-   eJxjYmBgYBrFo3gUgzEAXn4BiQ==
+   eJztwwEJAAAMBKHj+4dejoGCq6aqqqqqqqqqqqrPH9yzE4k=
   </data>
  </layer>
- <layer name="WallShadow" width="14" height="14">
+ <layer name="WallShadow" width="50" height="50">
   <properties>
    <property name="unity:sortingLayerName" value="ammoHigh"/>
    <property name="unity:sortingOrder" value="0"/>
   </properties>
   <data encoding="base64" compression="zlib">
-   eJxjYCAfcAIxBwkYBoDsBGRzuJBoLgZUgMxH14esBl0fMsCnDx/Apo+NgUEBG5uAOgZ2LGwc+jDsJATIdSe6PmLdiSs8CQF66yMHAAAhEwWo
+   eJzt1EsKgDAMBcCs/J3Co3n/U+hGkFAFXTUyA6EpdJEHoRH/MR81vaheHbNt1/tyOZf0Nt97knOcWjl69pSjklaOIWJt9b1Lc8fY6CsYbnarkr/sVc5Rda/u/qtq5AAAAAAAAADgqx12/AWo
   </data>
  </layer>
- <layer name="Walls" width="14" height="14">
+ <layer name="Walls" width="50" height="50">
   <properties>
    <property name="unity:layer" value="environment"/>
    <property name="unity:sortingLayerName" value="clouds"/>
    <property name="unity:sortingOrder" value="0"/>
   </properties>
   <data encoding="base64" compression="zlib">
-   eJxjZmBgYCYTszIQD4BqF8D0kQoGSh/QzQno4tjYDBC1B5DDhlS7KNGHHg8E3Dnk4wEfQI8HUjEAEoIEXQ==
+   eJzt1EsKgDAMBcCAeE+P5lE8moIbKX5RSNUJDHTRxXu0pImI5iPaOD/T3T4775ark51Xj3f0mP58V+ZcO8d8d8jO+8SbZOf8Q49y7x78qz477923WHarkR51Kffu3tS+dwEAAAAAAADeYgTXKB9d
   </data>
  </layer>
- <imagelayer name="Image Layer 1" x="183" y="274"/>
- <objectgroup name="Object Layer 1"/>
+ <objectgroup name="Object Layer 1">
+  <object x="896" y="896">
+   <properties>
+    <property name="unity:tag" value="playerSpawn"/>
+   </properties>
+   <ellipse/>
+  </object>
+ </objectgroup>
 </map>

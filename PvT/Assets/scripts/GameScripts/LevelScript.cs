@@ -37,7 +37,8 @@ public class LevelScript : MonoBehaviour
     }
     void StartGame()
     {
-        Main.Instance.game.SpawnPlayer(Vector3.zero);
+        var main = Main.Instance;
+        main.game.SpawnPlayer(main.game.playerSpawn);
 
         if (mobs)
         {
@@ -45,7 +46,7 @@ public class LevelScript : MonoBehaviour
         }
         else
         {
-            Main.Instance.hud.curtain.Fade(0, 0);
+            main.hud.curtain.Fade(0, 0);
         }
     }
     IEnumerator CalibrateTouch()
@@ -168,20 +169,22 @@ public class LevelScript : MonoBehaviour
 
     static void PositionMob(GameObject mob, float offset)
     {
-        // put the actor at the edge
-        Vector3 spawnLocation;
-        var bounds = new XRect(Main.Instance.game.WorldBounds);
-        bounds.Inflate(offset);
+        //// put the actor at the edge
+        //Vector3 spawnLocation;
+        //var bounds = new XRect(Main.Instance.game.WorldBounds);
+        //bounds.Inflate(offset);
 
-        if (Util.CoinFlip())
-        {
-            spawnLocation = new Vector3(Random.Range(bounds.min.x, bounds.max.x), Util.CoinFlip() ? bounds.min.y : bounds.max.y);
-        }
-        else
-        {
-            spawnLocation = new Vector3(Util.CoinFlip() ? bounds.min.x : bounds.max.x, Random.Range(bounds.min.y, bounds.max.y));
-        }
-        mob.transform.localPosition = spawnLocation;
+        //if (Util.CoinFlip())
+        //{
+        //    spawnLocation = new Vector3(Random.Range(bounds.min.x, bounds.max.x), Util.CoinFlip() ? bounds.min.y : bounds.max.y);
+        //}
+        //else
+        //{
+        //    spawnLocation = new Vector3(Util.CoinFlip() ? bounds.min.x : bounds.max.x, Random.Range(bounds.min.y, bounds.max.y));
+        //}
+        //mob.transform.localPosition = spawnLocation;
+
+        mob.transform.position = Main.Instance.game.playerSpawn;
 
         mob.GetComponent<Actor>().trackingArrowEnabled = true;
     }

@@ -26,6 +26,7 @@ public sealed class GameController : IGame
         }
         private set { _player = value; }
     }
+    public Vector2 playerSpawn { get; set; }
     public bool enemyInPossession { get; private set; }
     public Loader loader { get; private set; }
     public Effects effects { get; private set; }
@@ -89,7 +90,7 @@ public sealed class GameController : IGame
         private set; 
     }
 
-    public void SpawnPlayer(Vector3 location, string actorTypeName = null)
+    public void SpawnPlayer(Vector2 location, string actorTypeName = null)
     {
         var main = Main.Instance;
 
