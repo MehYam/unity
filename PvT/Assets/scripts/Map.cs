@@ -3,6 +3,8 @@ using System.Collections;
 
 public sealed class Map : MonoBehaviour
 {
+    static readonly string MARKERS_PARENT = "Markers";
+    static readonly string PLAYER_SPAWN = "playerSpawn";
 	void Start()
     {
         var mesh = GetComponentInChildren<MeshRenderer>();
@@ -13,11 +15,15 @@ public sealed class Map : MonoBehaviour
         bounds = mesh.bounds;
 
         // find the player spawn marker
-        var spawn = GameObject.FindWithTag(Consts.PLAYER_SPAWN_TAG);
-        if (spawn != null)
+        var markers = transform.FindChild(MARKERS_PARENT);
+        if (markers != null)
         {
-            Main.Instance.game.playerSpawn = spawn.transform.position;
-            GameObject.Destroy(spawn);
+            var spawn = markers.FindChild(PLAYER_SPAWN);
+            if (spawn != null)
+            {
+                Main.Instance.game.playerSpawn = spawn.transform.position;
+            }
+            GameObject.Destroy(markers.gameObject);
         }
 
         GlobalGameEvent.Instance.FireMapReady(gameObject, new XRect(bounds.min, bounds.max));

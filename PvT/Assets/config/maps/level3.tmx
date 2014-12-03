@@ -33,7 +33,7 @@
    <property name="unity:sortingOrder" value="0"/>
   </properties>
   <data encoding="base64" compression="zlib">
-   eJzt1EsKgDAMBcCs/J3Co3n/U+hGkFAFXTUyA6EpdJEHoRH/MR81vaheHbNt1/tyOZf0Nt97knOcWjl69pSjklaOIWJt9b1Lc8fY6CsYbnarkr/sVc5Rda/u/qtq5AAAAAAAAADgqx12/AWo
+   eJzt02EKgCAMhuH9svIUHa37n6L6IYjMyOZK4n1AKohvm6jIfyzHmhvWqI7etvw7Zs9Y/Ft+X7naHw/lHIk2R4/cILIaYpvrWWZItJ5r9ay03Ly+Zf+0bK85TkXfMinvT3wwhym7dqe1PRj5XLX09tYcT87ViHN4Zpznz3LfevSQBLl3D3rUauGZDQAAAAAAAAAAAADQ7TsbC+o=
   </data>
  </layer>
  <layer name="Walls" width="50" height="50">
@@ -43,11 +43,11 @@
    <property name="unity:sortingOrder" value="0"/>
   </properties>
   <data encoding="base64" compression="zlib">
-   eJzt1EsKgDAMBcCAeE+P5lE8moIbKX5RSNUJDHTRxXu0pImI5iPaOD/T3T4775ark51Xj3f0mP58V+ZcO8d8d8jO+8SbZOf8Q49y7x78qz477923WHarkR51Kffu3tS+dwEAAAAAAADeYgTXKB9d
+   eJzt1VEKgCAQhOEB6alLdrSO0tESejMV50HU+hc+iBDZId2CpPARm9orrj1H91viVuu+e8WqOdL3K+Uo9dwrRzzzR9pn7lnP2mvWHM43cfddLYdzpzueq1evuWepPHedWTTzPf9bjp7/ELdqd2FkjnTu1sqduwAAAAAAAAAAAACAvBuC1CDt
   </data>
  </layer>
- <objectgroup name="Object Layer 1">
-  <object x="896" y="896">
+ <objectgroup name="Markers">
+  <object name="playerSpawn" x="896" y="896">
    <properties>
     <property name="unity:tag" value="playerSpawn"/>
    </properties>
