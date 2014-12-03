@@ -3,14 +3,14 @@ using System.Collections;
 
 public class Expire : MonoBehaviour
 {
-    public float expireTime { get; private set; }
+    float _expireTime = 0;
     public void SetExpiry(float secondsFromNow)
     {
-        expireTime = Time.fixedTime + secondsFromNow;
+        _expireTime = Time.fixedTime + secondsFromNow;
     }
 	void FixedUpdate()
     {
-	    if (Time.fixedTime >= expireTime)
+	    if (Time.fixedTime >= _expireTime)
         {
             GameObject.Destroy(gameObject);
         }

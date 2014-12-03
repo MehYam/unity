@@ -60,15 +60,14 @@ public class HerolingActor : Actor
         GlobalGameEvent.Instance.ActorDeath -= OnActorDeath;
     }
 
-    protected override void HandleCollision(ContactPoint2D contact)
+    protected override void HandleCollision(GameObject other, Vector2 point)
     {
-        var collidingPartner = contact.collider.gameObject;
-        switch ((Consts.CollisionLayer)collidingPartner.layer)
+        switch ((Consts.CollisionLayer)other.layer)
         {
             case Consts.CollisionLayer.MOB:
                 if (behavior == ROAM)
                 {
-                    AttachToMob(collidingPartner.transform);
+                    AttachToMob(other.transform);
                 }
                 break;
             case Consts.CollisionLayer.FRIENDLY:

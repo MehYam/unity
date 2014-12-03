@@ -71,7 +71,7 @@ class GlobalGameEvent
     public void FireActorDeath(Actor actor) { ActorDeath(actor); }
     public void FireActorSpawned(Actor a) { ActorSpawned(a); }
     public void FireAmmoSpawned(Actor a, ActorType.Weapon w) { AmmoSpawned(a, w); }
-    public void FireCollisionWithOverwhelmed(Actor host) { CollisionWithOverwhelmed(host); }
+    public void FirePlayerCollisionWithOverwhelmed(Actor host) { CollisionWithOverwhelmed(host); }
     public void FireDepossessionComplete() { DepossessionComplete(); }
     public void FireExplosionSpawned(GameObject a) { ExplosionSpawned(a); }
     public void FireGainingXP(int xp, Vector2 where) { GainingXP(xp, where); }
