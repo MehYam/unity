@@ -4,7 +4,7 @@ using UnityEngine;
 using PvT.Util;
 
 /// <summary>
-/// Constants and basic utilities
+/// Global Constants
 /// </summary>
 public static class Consts
 {
@@ -41,7 +41,7 @@ public static class Consts
         UI_OVERLAY1 = 18,
         UI_OVERLAY2 = 19
     }
-    static public readonly int PixelsToUnits = 100;
+    static public readonly int DEFAULT_PIXELS_PER_UNIT = 100;
 
     static public readonly Color TRACKING_ARROW_COLOR_NORMAL = new Color32(0xff, 0x50, 0x00, 0x96);
     static public readonly Color TRACKING_ARROW_COLOR_OVERWHELMED = new Color32(0x00, 0x99, 0xff, 0x96);

@@ -24,7 +24,7 @@
    <property name="unity:sortingOrder" value="0"/>
   </properties>
   <data encoding="base64" compression="zlib">
-   eJztwwEJAAAMBKHj+4dejoGCq6aqqqqqqqqqqqrPH9yzE4k=
+   eJzt1UsKgDAQBNHg/Q/taiBIQEftYWzrgRtJ1DJ+xvCxJbeuVB3V96Ki47hfQflcrcbTce18f+q4M381VuGN5yqzXnScH7eqQ/kPyXY8+Q506pjnOejW4bIeqneh2pevfebQEBwagkNDcGgAAAAAAAAAAKDaDpFvAhM=
   </data>
  </layer>
  <layer name="WallShadow" width="50" height="50">
@@ -50,7 +50,7 @@
   <object name="playerSpawn" x="832.503" y="835.631" width="128" height="128" rotation="359.466">
    <ellipse/>
   </object>
-  <object name="door.vertical.metal" x="1704" y="1464" width="54" height="46"/>
-  <object name="door.horizontal.metal" x="1959" y="1581" width="54" height="46"/>
+  <object name="door.vertical.1" x="1707.03" y="1442.79" width="54" height="46"/>
+  <object name="door.horizontal.1" x="1959" y="1596.15" width="54" height="46"/>
  </objectgroup>
 </map>

@@ -184,8 +184,8 @@ public class ActorType
 
             var vehicle = parts.GetString();
             var dmg = parts.GetInt();
-            var x = parts.GetFloat() / Consts.PixelsToUnits;
-            var y = offsetY + parts.GetFloat() / Consts.PixelsToUnits;
+            var x = parts.GetFloat() / Consts.DEFAULT_PIXELS_PER_UNIT;
+            var y = offsetY + parts.GetFloat() / Consts.DEFAULT_PIXELS_PER_UNIT;
             var angle = parts.GetFloat();
             var color = parts.GetHexColor();
             var lit = parts.GetBool();
@@ -270,7 +270,7 @@ public sealed class TankSpawnHelper
 
         var hullSprite = hullGO.GetComponent<SpriteRenderer>();
         var hullBounds = hullSprite.sprite.bounds;
-        var pivotY = hullBounds.min.y + hull.turretPivotY / Consts.PixelsToUnits;
+        var pivotY = hullBounds.min.y + hull.turretPivotY / Consts.DEFAULT_PIXELS_PER_UNIT;
         turretGO.gameObject.transform.localPosition = new Vector3(0, pivotY);
 
         treadLeft.gameObject.transform.Rotate(0, 0, 180);

@@ -36,6 +36,8 @@ public class Main : MonoBehaviour
         public GameObject OverwhelmedIndicator;
 
         public GameObject flareAnimation;
+
+        public GameObject laserGateAqua;
     }
     public Assets assets;
     [Serializable]
