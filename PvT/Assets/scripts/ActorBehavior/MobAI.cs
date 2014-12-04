@@ -38,6 +38,9 @@ public sealed class MobAI
             Debug.LogWarning(string.Format("no AI found for {0}, substituting a default one", mob.actorType.name));
             mob.behavior = AttackAndFlee(3, 2, 2, mob.actorType.weapons);
         }
+
+        // For now, everything reacts to faceplants
+        mob.behavior = new FaceplantMitigation(mob.behavior);
     }
     void AttachTankAI(Actor tank)
     {
@@ -70,7 +73,7 @@ public sealed class MobAI
     {
         Func<ActorType, IActorBehavior> retval = null;
         _behaviorFactory.TryGetValue(vehicle.name, out retval);
-        return retval == null ? null : new FaceplantMitigation(retval(vehicle));
+        return retval == null ? null : retval(vehicle);
     }
     bool AttachMonoBehavior(Actor actor)
     {
@@ -242,7 +245,7 @@ public sealed class MobAI
             {
                 ActorBehaviorFactory.Instance.thrustAway.FixedUpdate(actor);
             }
-            else
+            else if (_containedBehavior != null)
             {
                 _containedBehavior.FixedUpdate(actor);
             }
