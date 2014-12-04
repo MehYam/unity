@@ -3,8 +3,11 @@ using System.Collections;
 
 public sealed class Map : MonoBehaviour
 {
-    static readonly string MARKERS_PARENT = "Markers";
-    static readonly string PLAYER_SPAWN = "playerSpawn";
+    const string MARKERS_PARENT = "Markers";
+    const string PLAYER_SPAWN = "playerSpawn";
+    const string HDOOR = "door.horizontal.metal";
+    const string VDOOR = "door.vertical.metal";
+
 	void Start()
     {
         var mesh = GetComponentInChildren<MeshRenderer>();
@@ -14,18 +17,23 @@ public sealed class Map : MonoBehaviour
         gameObject.transform.position = -bounds.center;
         bounds = mesh.bounds;
 
-        // find the player spawn marker
+        // find the level objects and process them
         var markers = transform.FindChild(MARKERS_PARENT);
         if (markers != null)
         {
-            var spawn = markers.FindChild(PLAYER_SPAWN);
-            if (spawn != null)
+            foreach (Transform marker in markers.transform)
             {
-                Main.Instance.game.playerSpawn = spawn.transform.position;
+                switch(marker.name) {
+                    case PLAYER_SPAWN:
+                        Main.Instance.game.playerSpawn = marker.position;
+                        break;
+                    case HDOOR:
+                    case VDOOR:
+                        break;
+                }
             }
             GameObject.Destroy(markers.gameObject);
         }
-
         GlobalGameEvent.Instance.FireMapReady(gameObject, new XRect(bounds.min, bounds.max));
 	}
 }

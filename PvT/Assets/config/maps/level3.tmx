@@ -29,30 +29,28 @@
  </layer>
  <layer name="WallShadow" width="50" height="50">
   <properties>
-   <property name="unity:sortingLayerName" value="ammoHigh"/>
-   <property name="unity:sortingOrder" value="0"/>
+   <property name="unity:sortingLayerName" value="clouds"/>
+   <property name="unity:sortingOrder" value="1"/>
   </properties>
   <data encoding="base64" compression="zlib">
-   eJzt1t0KgCAMhuEd9XcVXVr3fxXVgSCyojVXFu8DUkLMfaKQyH+M2xgMo1Vbb0s+n7LnVHxbzs+c7U+EMkei5ahRtxOZHWXN63kyJFrPR+t5aXXz9T37p9WOyrEr+pZeeb/jhRyu2kd3WtuDls+Vpbenctw5Vy3miKyxnz/PfavRQ9LJtXtQYy2LyNqw++t/4leRAwAAAAAAAAAAAFFWMzwNgw==
+   eJzt1ksOgCAMRdGO/K3Cpbn/VQgDEwdopNDakHsSEkaFvtCoyDjWtJaKFVW622FR9y0fC1Z9PNWdRHbP83oo3dkzt/v5LfmVanvllvYyF/YaP/TRVPtppksZRH5XNXfz6kPzriL2YVkjv7+Weetxh8sk3+agx1k1amvnTDex+555yn1YZquh+U+M2Id2PqzmVStarlqj9AEAAAAAAAAAADCSExIEDm8=
   </data>
  </layer>
  <layer name="Walls" width="50" height="50">
   <properties>
    <property name="unity:layer" value="environment"/>
    <property name="unity:sortingLayerName" value="clouds"/>
-   <property name="unity:sortingOrder" value="0"/>
+   <property name="unity:sortingOrder" value="2"/>
   </properties>
   <data encoding="base64" compression="zlib">
-   eJztlmEKgCAMRgfSn7xkR+soHa2ggrA0R5iu3uCBhMj3aK6ciLiP0El+LXvH2nljaCv3XJ/Aqkf43JJHLHMpj6XnhzDn1VrWvVOrHpp3oj3XmofmThfsq1PWq7VIfO5qZlHL9/xvHiW/IdpK3YWaHuHcTdU+d/sCOWrQoke35cphn1cteuQ6hNTO/cRD+1/ycl8N1h2OLt64w52LJYdYj1l0AAAAAAAAAAAAAAB4mxkJhSiX
+   eJztllEKgCAMQAfRT13So3WUjpbQj1irJmiu3uCBhMgebstBRIaPMMrziHuXt/PVsMbTc+cLvHrk3z15aDnX8og1H/I8z9ay71179bDcifVcbx6Wnq5YV4dcz9Yi+ty1zKKe+/xvHjX/IdaYxNYPrTzyuXsV6dytOXda0ptH6TuxN4/S8OxhfZc0rqvg3SF1mZ073Ll4ctBqzKMDAAAAAAAAAAAAAEBrNoIDJmc=
   </data>
  </layer>
  <objectgroup name="Markers">
-  <object x="896" y="896">
+  <object name="playerSpawn" x="832.503" y="835.631" width="128" height="128" rotation="359.466">
    <ellipse/>
   </object>
-  <object name="playerSpawn" x="896" y="896">
-   <ellipse/>
-  </object>
-  <object x="1920" y="1280"/>
+  <object name="door.vertical.metal" x="1704" y="1464" width="54" height="46"/>
+  <object name="door.horizontal.metal" x="1959" y="1581" width="54" height="46"/>
  </objectgroup>
 </map>

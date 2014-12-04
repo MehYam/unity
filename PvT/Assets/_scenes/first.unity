@@ -272,7 +272,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mobs: 1
-  startLevel: 0
+  startLevel: 1
   spawnDistanceFromEdge: -5
   map: {fileID: 100008, guid: 62738d5b4b7cd244dae73d357301b2b6, type: 2}
   rooms: []

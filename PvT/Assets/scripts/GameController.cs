@@ -220,7 +220,6 @@ public sealed class GameController : IGame
         GlobalGameEvent.Instance.FireAmmoSpawned(actorAmmo, weapon);
         return goAmmo;
     }
-
     public GameObject SpawnHotspot(Actor launcher, ActorType.Weapon weapon, float damageMultiplier, Consts.CollisionLayer layer)
     {
         ///THIS IS COPY PASTA FROM SpawnAmmo
@@ -238,6 +237,10 @@ public sealed class GameController : IGame
 
         GlobalGameEvent.Instance.FireAmmoSpawned(actor, weapon);
         return go;
+    }
+    public GameObject SpawnObject(Vector2 point)
+    {
+        return null;
     }
     public void PlaySound(Actor actor, Sounds.ActorEvent evt, float volume = 1)
     {

@@ -71,6 +71,22 @@
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":128,"h":128},
 	"sourceSize": {"w":128,"h":128}
+},
+"z000_LaserGate off.png":
+{
+	"frame": {"x":128,"y":256,"w":110,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":110,"h":128},
+	"sourceSize": {"w":110,"h":128}
+},
+"z000_LaserGate.png":
+{
+	"frame": {"x":238,"y":256,"w":128,"h":128},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":128,"h":128},
+	"sourceSize": {"w":128,"h":128}
 }},
 "meta": {
 	"app": "http://www.texturepacker.com",
@@ -79,6 +95,6 @@
 	"format": "RGBA8888",
 	"size": {"w":512,"h":1024},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:a293faf32d5b426d13e0e78c061dfa00$"
+	"smartupdate": "$TexturePacker:SmartUpdate:ea643cb6ba756ad2015d339c87121fbd$"
 }
 }
