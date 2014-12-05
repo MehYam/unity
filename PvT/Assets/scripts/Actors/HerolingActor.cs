@@ -114,8 +114,7 @@ public class HerolingActor : Actor
             transform.parent = mob;
 
             // sidle up
-            var gimmeAKiss = transform.localPosition;
-            gimmeAKiss = gimmeAKiss + Util.ScatterRandomly(0.25f);
+            var gimmeAKiss = transform.localPosition  + Util.ScatterRandomly(0.25f);
             gimmeAKiss.Scale(new Vector3(0.4f, 0.4f));
             transform.localPosition = gimmeAKiss;
 
@@ -132,7 +131,22 @@ public class HerolingActor : Actor
     }
     void AttachToLaserGate(LaserGate gate)
     {
-        gate.on = false;
+        gate.Flicker(Consts.HEROLING_ATTACH_BOREDOM);
+    
+        // attach
+        transform.parent = gate.transform;
+
+        // sidle
+        var gimmeAKiss = transform.localPosition + Util.ScatterRandomly(0.25f);
+        gimmeAKiss.Scale(new Vector3(0.2f, 1));
+        transform.localPosition = gimmeAKiss;
+
+        // disable physics
+        Util.DisablePhysics(gameObject);
+
+        SetBehavior(ATTACHED);
+        _roamBoredom = null;
+        _attachBoredom = new Rate(Consts.HEROLING_ATTACH_BOREDOM);
     }
     void Return()
     {
