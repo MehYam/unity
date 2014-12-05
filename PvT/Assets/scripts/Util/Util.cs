@@ -248,6 +248,15 @@ namespace PvT.Util
             }
         }
 
+        static public Vector2 Clamp(Vector2 obj, float min, float max)
+        {
+            return new Vector2(Mathf.Clamp(obj.x, min, max), Mathf.Clamp(obj.y, min, max));
+        }
+        static public Vector2 SwapXY(Vector2 obj)
+        {
+            return new Vector2(obj.y, obj.x);
+        }
+
         /// <summary>
         /// Extension method on GameObject that adds a component of type T, or returns
         /// an existing if a T is already attached.
@@ -263,11 +272,6 @@ namespace PvT.Util
                 retval = obj.AddComponent<T>();
             }
             return retval;
-        }
-        static public void Clamp(this Vector2 obj, float min, float max)
-        {
-            obj.x = Mathf.Clamp(obj.x, min, max);
-            obj.y = Mathf.Clamp(obj.y, min, max);
         }
 
         public static string[] SplitLines(string lines, bool skipHeader = false)
@@ -311,27 +315,30 @@ namespace PvT.Util
             }
             return scrubbedFields;
         }
-        public sealed class CSVParseHelper
+        static public StringArrayParser CSVLineParser(string csvLine)
         {
-            public string GetString() { return items[iItem++]; }
-            public float GetFloat() { return float.Parse(items[iItem++]); }
-            public int GetInt() { return int.Parse(items[iItem++]); }
-            public bool GetBool()
+            return new StringArrayParser(SplitCSVLine(csvLine));
+        }
+        public sealed class StringArrayParser
+        {
+            public string NextString() { return strings[iItem++]; }
+            public float NextFloat() { return float.Parse(strings[iItem++]); }
+            public int NextInt() { return int.Parse(strings[iItem++]); }
+            public bool NextBool()
             {
-                var item = GetString().ToLowerInvariant();
+                var item = NextString().ToLowerInvariant();
                 return item == "yes" || item == "1" || item == "true" || item == "sure" || item == "why not";
             }
-            public Color32 GetHexColor()
+            public Color32 NextHexColor()
             {
-                uint value = Convert.ToUInt32(items[iItem++], 16);
+                uint value = Convert.ToUInt32(strings[iItem++], 16);
                 return UIntToColor(value);
             }
-            public int Count { get { return items.Length; } }
-            public void SkipField(int nFields = 1) { iItem += nFields; }
+            public int Count { get { return strings.Length; } }
 
-            readonly string[] items;
+            readonly string[] strings;
             int iItem = 0;
-            public CSVParseHelper(string csvLine) { items = Util.SplitCSVLine(csvLine); }
+            public StringArrayParser(string[] strings) { this.strings = strings; }
         }
     }
 

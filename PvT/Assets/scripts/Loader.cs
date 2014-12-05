@@ -159,18 +159,18 @@ public class Loader
         return lookup;
     }
 
-    ActorType LoadActorType(Util.CSVParseHelper csv, Dictionary<string, IList<string>> weaponLookup, string assetPath)
+    ActorType LoadActorType(Util.StringArrayParser csv, Dictionary<string, IList<string>> weaponLookup, string assetPath)
     {
-        var name = csv.GetString();
-        var assetID = csv.GetString();
-        var mass = csv.GetFloat();
-        var health = csv.GetInt();
-        var speed = csv.GetFloat();
-        var accel = csv.GetFloat();
-        var inertia = csv.GetFloat();
-        var dropShadow = csv.GetBool();
-        var level = csv.GetInt();
-        var upgrade = csv.GetString();
+        var name = csv.NextString();
+        var assetID = csv.NextString();
+        var mass = csv.NextFloat();
+        var health = csv.NextInt();
+        var speed = csv.NextFloat();
+        var accel = csv.NextFloat();
+        var inertia = csv.NextFloat();
+        var dropShadow = csv.NextBool();
+        var level = csv.NextInt();
+        var upgrade = csv.NextString();
 
         var asset = LoadAsset(assetID, assetPath);
 
@@ -214,16 +214,16 @@ public class Loader
             upgradesTo: upgrade
         );
     }
-    TankHullType LoadTankHullType(Util.CSVParseHelper csv, Dictionary<string, IList<string>> weaponLookup, string assetPath)
+    TankHullType LoadTankHullType(Util.StringArrayParser csv, Dictionary<string, IList<string>> weaponLookup, string assetPath)
     {
         var baseActorType = LoadActorType(csv, weaponLookup, assetPath);
-        var turretPivotY = csv.GetFloat();
+        var turretPivotY = csv.NextFloat();
         return new TankHullType(baseActorType, turretPivotY);
     }
-    TankTurretType LoadTankTurretType(Util.CSVParseHelper csv, Dictionary<string, IList<string>> weaponLookup, string assetPath)
+    TankTurretType LoadTankTurretType(Util.StringArrayParser csv, Dictionary<string, IList<string>> weaponLookup, string assetPath)
     {
         var baseActorType = LoadActorType(csv, weaponLookup, assetPath);
-        var hullPivotY = csv.GetFloat();
+        var hullPivotY = csv.NextFloat();
         return new TankTurretType(baseActorType, hullPivotY);
     }
     Asset LoadAsset(string name, string assetPath)
@@ -260,7 +260,7 @@ public class Loader
         var results = new Dictionary<string, ActorType>(StringComparer.OrdinalIgnoreCase);
         foreach (var line in Util.SplitLines(csv, true))
         {
-            var csvHelper = new Util.CSVParseHelper(line);
+            var csvHelper = Util.CSVLineParser(line);
             var actorType = LoadActorType(csvHelper, weaponStrings, assetPath);
             results[actorType.name] = actorType;
         }
@@ -272,7 +272,7 @@ public class Loader
         var results = new Dictionary<string, TankHullType>(StringComparer.OrdinalIgnoreCase);
         foreach (var line in Util.SplitLines(csv, true))
         {
-            var csvHelper = new Util.CSVParseHelper(line);
+            var csvHelper = Util.CSVLineParser(line);
             var actorType = LoadTankHullType(csvHelper, weaponStrings, assetPath);
             results[actorType.name] = actorType;
         }
@@ -283,7 +283,7 @@ public class Loader
         var results = new Dictionary<string, TankTurretType>(StringComparer.OrdinalIgnoreCase);
         foreach (var line in Util.SplitLines(csv, true))
         {
-            var csvHelper = new Util.CSVParseHelper(line);
+            var csvHelper = Util.CSVLineParser(line);
             var actorType = LoadTankTurretType(csvHelper, weaponStrings, assetPath);
             results[actorType.name] = actorType;
         }
@@ -381,13 +381,13 @@ public class Loader
         var retval = new Sounds();
         foreach (var line in Util.SplitLines(csv, true))
         {
-            var csvHelper = new Util.CSVParseHelper(line);
+            var csvHelper = Util.CSVLineParser(line);
 
-            var eventStr = csvHelper.GetString();
+            var eventStr = csvHelper.NextString();
             ActorType actor = null;
-            _actorTypeLookup.TryGetValue(csvHelper.GetString(), out actor);
+            _actorTypeLookup.TryGetValue(csvHelper.NextString(), out actor);
 
-            var sound = (AudioClip)Resources.Load("sounds/" + csvHelper.GetString());
+            var sound = (AudioClip)Resources.Load("sounds/" + csvHelper.NextString());
 
             if (actor == null)
             {

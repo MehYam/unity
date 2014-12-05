@@ -97,15 +97,15 @@ TagManager:
     userID: 13
     uniqueID: 3332195697
     locked: 0
-  - name: clouds
+  - name: walls
     userID: 14
     uniqueID: 3549090055
     locked: 0
-  - name: '---'
+  - name: wallShadows
     userID: 15
     uniqueID: 4277736523
     locked: 0
-  - name: '---'
+  - name: clouds
     userID: 16
     uniqueID: 149676437
     locked: 0
@@ -120,4 +120,8 @@ TagManager:
   - name: UI Overlay2
     userID: 19
     uniqueID: 658192697
+    locked: 0
+  - name: New Layer 20
+    userID: 20
+    uniqueID: 409698713
     locked: 0

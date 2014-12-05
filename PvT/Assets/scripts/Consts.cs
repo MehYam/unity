@@ -36,7 +36,9 @@ public static class Consts
         AMMO_TOP = 11,
         EXPLOSIONS = 12,
         SMOKE = 13,
-        CLOUDS = 14,
+        WALLS = 14,
+        WALLSHADOWS = 15,
+        CLOUDS = 16,
         UI = 17,
         UI_OVERLAY1 = 18,
         UI_OVERLAY2 = 19

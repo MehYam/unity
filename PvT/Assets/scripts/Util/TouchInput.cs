@@ -121,7 +121,7 @@ public sealed class TouchInput : IInput
                     currentTilt.y = 0;
                 }
                 _lastMovementVector = currentTilt * TILT_SENSITIVITY;
-                _lastMovementVector.Clamp(-1, 1);
+                _lastMovementVector = Util.Clamp(_lastMovementVector, -1, 1);
 
                 //Debug.Log(_lastMovementVector);
 #else

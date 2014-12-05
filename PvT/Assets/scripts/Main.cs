@@ -37,7 +37,7 @@ public class Main : MonoBehaviour
 
         public GameObject flareAnimation;
 
-        public GameObject laserGateAqua;
+        public GameObject laserGate;
     }
     public Assets assets;
     [Serializable]

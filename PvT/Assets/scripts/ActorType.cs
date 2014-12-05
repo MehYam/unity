@@ -179,21 +179,22 @@ public class ActorType
 
         static public Weapon FromString(string str, float offsetY = 0)
         {
-            var parts = new Util.CSVParseHelper(str);
-            parts.SkipField();
+            var parts = Util.CSVLineParser(str);
+            parts.NextString();
 
-            var vehicle = parts.GetString();
-            var dmg = parts.GetInt();
-            var x = parts.GetFloat() / Consts.DEFAULT_PIXELS_PER_UNIT;
-            var y = offsetY + parts.GetFloat() / Consts.DEFAULT_PIXELS_PER_UNIT;
-            var angle = parts.GetFloat();
-            var color = parts.GetHexColor();
-            var lit = parts.GetBool();
-            var rate = parts.GetFloat();
-            var sequence = parts.GetInt();
-            var charge = parts.GetFloat();
-            parts.SkipField();
-            var timeToLive = parts.GetFloat();
+            var vehicle = parts.NextString();
+            var dmg = parts.NextInt();
+            var x = parts.NextFloat() / Consts.DEFAULT_PIXELS_PER_UNIT;
+            var y = offsetY + parts.NextFloat() / Consts.DEFAULT_PIXELS_PER_UNIT;
+            var angle = parts.NextFloat();
+            var color = parts.NextHexColor();
+            var lit = parts.NextBool();
+            var rate = parts.NextFloat();
+            var sequence = parts.NextInt();
+            var charge = parts.NextFloat();
+            parts.NextString();
+
+            var timeToLive = parts.NextFloat();
 
             return new Weapon(vehicle, dmg, new Vector2(x, y), angle, color, lit, rate, sequence, charge, timeToLive);
         }
