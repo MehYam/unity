@@ -64,7 +64,7 @@ public sealed class CompositeBehavior : IActorBehavior
 public sealed class PeriodicBehavior : IActorBehavior
 {
     readonly IActorBehavior behavior;
-    readonly Rate rate;
+    Rate rate;
     public PeriodicBehavior(IActorBehavior behavior, Rate rate)
     {
         this.behavior = behavior;
@@ -88,7 +88,7 @@ public sealed class TimedSequenceBehavior: IActorBehavior
     struct Phase
     {
         public readonly Action<Actor> action;
-        public readonly Rate duration;
+        public Rate duration;
 
         public Phase(Action<Actor> action, Rate duration) { this.action = action; this.duration = duration; }
     }
@@ -579,7 +579,7 @@ class WeaponDischargeBehavior : IActorBehavior
 
 sealed class PeriodicWeaponDischargeBehavior : WeaponDischargeBehavior
 {
-    readonly Rate rate = new Rate();
+    Rate rate;
     public PeriodicWeaponDischargeBehavior(Consts.CollisionLayer layer, ActorType.Weapon weapon) : base(layer, weapon) {}
 
     public override void FixedUpdate(Actor actor)

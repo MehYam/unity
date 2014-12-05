@@ -16,7 +16,7 @@ public class HerolingActor : Actor
         }
     }
 
-    Rate _roamBoredom;
+    Rate? _roamBoredom;
     protected override void Start()
     {
         base.Start();
@@ -65,6 +65,14 @@ public class HerolingActor : Actor
     {
         switch ((Consts.CollisionLayer)other.layer)
         {
+            case Consts.CollisionLayer.ENVIRONMENT:
+                var laserGate = other.transform.parent != null ?
+                    other.transform.parent.GetComponent<LaserGate>() : null;
+                if (laserGate != null)
+                {
+                    AttachToLaserGate(laserGate);
+                }
+                break;
             case Consts.CollisionLayer.MOB:
                 if (behavior == ROAM)
                 {
@@ -96,7 +104,7 @@ public class HerolingActor : Actor
         }
     }
 
-    Rate _attachBoredom;
+    Rate? _attachBoredom;
     void AttachToMob(Transform mob)
     {
         var mobActor = mob.GetComponent<Actor>();
@@ -122,6 +130,10 @@ public class HerolingActor : Actor
             GlobalGameEvent.Instance.FireHerolingAttached(mob.GetComponent<Actor>());
         }
     }
+    void AttachToLaserGate(LaserGate gate)
+    {
+        gate.on = false;
+    }
     void Return()
     {
         gameObject.layer = (int)Consts.CollisionLayer.HEROLINGS_RETURNING;
@@ -146,12 +158,12 @@ public class HerolingActor : Actor
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
-        if (_roamBoredom != null && _roamBoredom.reached)
+        if (_roamBoredom != null && _roamBoredom.Value.reached)
         {
             Return();
             _roamBoredom = null;
         }
-        else if (_attachBoredom != null && _attachBoredom.reached)
+        else if (_attachBoredom != null && _attachBoredom.Value.reached)
         {
             Return();
             _attachBoredom = null;

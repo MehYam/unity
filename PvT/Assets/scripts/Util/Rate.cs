@@ -1,9 +1,10 @@
 using UnityEngine;
 using System.Collections;
 
-public sealed class Rate
+public struct Rate
 {
     float _baseRate;
+    float _deadline;
     readonly float _randomness;
 
     /// <summary>
@@ -11,18 +12,23 @@ public sealed class Rate
     /// </summary>
     /// <param name="baseRate">The number of seconds after which Now returns true</param>
     /// <param name="randomnessPct">Gives each quantum some randomness.  Passing in 0.5 makes gives rate a range of baseRate/2 to baseRase*3/2</param>
-    public Rate(float baseRate = 0, float randomnessPct = 0)
+    public Rate(float baseRate, float randomnessPct)
     {
         _baseRate = baseRate;
+        _deadline = 0;
         _randomness = randomnessPct;
-
         Start();
     }
-    public int numStarts { get; private set; }
+    public Rate(float baseRate)
+    {
+        _baseRate = baseRate;
+        _deadline = 0;
+        _randomness = 0;
+        Start();
+    }
     public bool reached { get { return Time.fixedTime >= _deadline; } }
     public float remaining { get { return Mathf.Max(0, _deadline - Time.fixedTime); } }
 
-    float _deadline;
     public void Start()
     {
         if (_randomness != 0)
@@ -34,7 +40,6 @@ public sealed class Rate
         {
             _deadline = Time.fixedTime + _baseRate;
         }
-        ++numStarts;
     }
     public void Start(float newBaseRate)
     {
@@ -47,6 +52,6 @@ public sealed class Rate
     }
     public override string ToString()
     {
-        return string.Format("RateLimiter base {0} randomness {1}, next in {2}, started {3} times", _baseRate, _randomness, _deadline - Time.fixedTime, numStarts);
+        return string.Format("Rate base {0} randomness {1}, deadline {2}, seconds from now {3}, reached {4}", _baseRate, _randomness, _deadline, _deadline - Time.fixedTime, reached);
     }
 }

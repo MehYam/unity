@@ -97,13 +97,13 @@ TagManager:
     userID: 13
     uniqueID: 3332195697
     locked: 0
-  - name: walls
-    userID: 14
-    uniqueID: 3549090055
-    locked: 0
   - name: wallShadows
     userID: 15
     uniqueID: 4277736523
+    locked: 0
+  - name: walls
+    userID: 14
+    uniqueID: 3549090055
     locked: 0
   - name: clouds
     userID: 16
