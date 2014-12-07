@@ -67,7 +67,9 @@ public class ActorType
     public readonly Weapon[] weapons; // the behavior's in charge of choosing a weapon and firing it
     public readonly bool dropShadow;
 
-    public ActorType(Asset asset, string name, float mass, Weapon[] weapons, int health, float maxSpeed, float acceleration, float inertia, bool dropShadow, int level, string upgradesTo)
+    public readonly float AIrepel;  // belongs somewhere else, later
+
+    public ActorType(Asset asset, string name, float mass, Weapon[] weapons, int health, float maxSpeed, float acceleration, float inertia, bool dropShadow, int level, string upgradesTo, float AIrepel)
     {
         this.asset = asset;
         this.name = name;
@@ -88,6 +90,8 @@ public class ActorType
 
         this.baseLevel = level;
         this.nextTierUpgrade = upgradesTo;
+
+        this.AIrepel = AIrepel;
     }
     public ActorType(ActorType rhs)
     {
@@ -102,6 +106,8 @@ public class ActorType
 
         this.baseLevel = rhs.baseLevel;
         this.nextTierUpgrade = rhs.nextTierUpgrade;
+
+        this.AIrepel = rhs.AIrepel;
     }
     public bool HasWeapons { get { return weapons != null && weapons.Length > 0; } }
     public virtual GameObject Spawn(Consts.SortingLayer sortingLayer, bool rigidBody)
@@ -122,6 +128,7 @@ public class ActorType
 
         //KAI: MAJOR CHEESE
         var actor = this.name == "HEROLING" ? go.AddComponent<HerolingActor>() : go.AddComponent<Actor>();
+        actor.name = this.name;
         actor.actorType = this;
         actor.collisionDamage = attrs.maxHealth / 4;
 

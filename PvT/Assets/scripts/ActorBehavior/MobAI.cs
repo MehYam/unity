@@ -235,7 +235,7 @@ public sealed class MobAI
 
     sealed class FaceplantMitigation : IActorBehavior
     {
-        static readonly RaycastHit2D[] _unused = new RaycastHit2D[1];
+        static readonly RaycastHit2D[] s_collisions = new RaycastHit2D[1];
 
         Timer _mitigationTime;
         Timer _preventativeFaceplantCheck = new Timer(1, 0.3f);
@@ -276,12 +276,12 @@ public sealed class MobAI
                     _preventativeFaceplantCheck.Start();
 
                     var player = Main.Instance.game.player;
-                    int hits = Physics2D.LinecastNonAlloc(actor.transform.position, player.transform.position, _unused,
-                        Consts.ENVIRONMENT_LAYER_MASK | Consts.FRIENDLY_LAYER_MASK);
+                    var layers = actor.actorType.AIrepel > 0 ? Consts.ENVIRONMENT_LAYER_MASK | Consts.FRIENDLY_LAYER_MASK : Consts.ENVIRONMENT_LAYER_MASK;
 
-                    if (hits > 0 && _unused[0].collider.gameObject != player)
+                    int hits = Physics2D.LinecastNonAlloc(actor.transform.position, player.transform.position, s_collisions, layers);
+                    if (hits > 0)
                     {
-                        Debug.Log(string.Format("{0} hits {1},  preventative action!", actor.name, _unused[0].collider.name));
+                        Debug.Log(string.Format("{0} hits {1},  preventative action!", actor.name, s_collisions[0].collider.name));
                         actor.lastFaceplantTime = Time.fixedTime;
                     }
                 }

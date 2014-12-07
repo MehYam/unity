@@ -144,26 +144,23 @@ public sealed class GameController : IGame
         GameObject.Destroy(oldPlayer);
     }
 
-    public GameObject SpawnMob(string vehicleKey)
+    public GameObject SpawnMob(string actorKey)
     {
-        var tank = loader.GetTank(vehicleKey);
+        GameObject retval;
+        var tank = loader.GetTank(actorKey);
         if (tank != null)
         {
             var tankHelper = new TankSpawnHelper(this, tank.hullName, tank.turretName);
-            SpawnMobHelper(tankHelper.hullGO);
-            return tankHelper.hullGO;
+            retval = tankHelper.hullGO;
         }
-        var vehicle = loader.GetActorType(vehicleKey);
-        var go = vehicle.Spawn(Consts.SortingLayer.MOB, true);
-
-        SpawnMobHelper(go);
-        return go;
-    }
-    void SpawnMobHelper(GameObject go)
-    {
-        go.name += " mob";
-        go.layer = (int)Consts.CollisionLayer.MOB;
-        go.transform.parent = Main.Instance.MobParent.transform;
+        else
+        {
+            var actor = loader.GetActorType(actorKey);
+            retval = actor.Spawn(Consts.SortingLayer.MOB, true);
+        }
+        retval.layer = (int)Consts.CollisionLayer.MOB;
+        retval.transform.parent = Main.Instance.MobParent.transform;
+        return retval;
     }
 
     public GameObject SpawnAmmo(Actor launcher, ActorType.Weapon weapon, Consts.CollisionLayer layer)

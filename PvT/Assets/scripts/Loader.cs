@@ -171,6 +171,7 @@ public class Loader
         var dropShadow = csv.NextBool();
         var level = csv.NextInt();
         var upgrade = csv.NextString();
+        var airepel = csv.NextFloat();
 
         var asset = LoadAsset(assetID, assetPath);
 
@@ -211,7 +212,8 @@ public class Loader
             inertia: inertia,
             dropShadow: dropShadow,
             level: level,
-            upgradesTo: upgrade
+            upgradesTo: upgrade,
+            AIrepel: airepel
         );
     }
     TankHullType LoadTankHullType(Util.StringArrayParser csv, Dictionary<string, IList<string>> weaponLookup, string assetPath)
