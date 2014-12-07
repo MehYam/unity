@@ -584,7 +584,7 @@ public class Actor : MonoBehaviour
         var otherActor = other.GetComponent<Actor>();
         if (otherActor == null)
         {
-            // might be a wall collision, do our faceplant detection
+            // might be a head-on wall collision, do our faceplant detection
             if (detectFaceplants && other.name == "Collision")
             {
                 var lookAt = Util.GetLookAtVector(transform.rotation.eulerAngles.z);

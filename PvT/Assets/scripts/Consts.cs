@@ -21,6 +21,7 @@ public static class Consts
         BOSS_NO_MOB_COLLISION = 15  // so that the boss can contain and parent mobs
     };
     static public readonly int ENVIRONMENT_LAYER_MASK = 1 << (int) CollisionLayer.ENVIRONMENT;
+    static public readonly int FRIENDLY_LAYER_MASK = 1 << (int) CollisionLayer.FRIENDLY;
 
     public enum SortingLayer : int
     {

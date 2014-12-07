@@ -235,7 +235,10 @@ public sealed class MobAI
 
     sealed class FaceplantMitigation : IActorBehavior
     {
+        static readonly RaycastHit2D[] _unused = new RaycastHit2D[1];
+
         Timer _mitigationTime;
+        Timer _preventativeFaceplantCheck = new Timer(1, 0.3f);
         readonly IActorBehavior _normalBehavior;
         public FaceplantMitigation(IActorBehavior behavior)
         {
@@ -247,7 +250,7 @@ public sealed class MobAI
         {
             if ((Time.fixedTime - actor.lastFaceplantTime) < Consts.FACEPLANT_MITIGATION_DURATION)
             {
-                _mitigationTime.Start(2);
+                _mitigationTime.Start(1);
 
                 // pick a waypoint
                 actor.target = Util.RandomArrayPick(Main.Instance.game.levelWaypoints);
@@ -266,6 +269,22 @@ public sealed class MobAI
                 actor.target = PlayerTarget.Instance;  //note: if we're setting the target every frame anyway, this maybe indicates that we don't need ITarget at all...
 
                 _normalBehavior.FixedUpdate(actor);
+
+                if (_preventativeFaceplantCheck.reached)
+                {
+                    Debug.Log(actor.name + " testing.....");
+                    _preventativeFaceplantCheck.Start();
+
+                    var player = Main.Instance.game.player;
+                    int hits = Physics2D.LinecastNonAlloc(actor.transform.position, player.transform.position, _unused,
+                        Consts.ENVIRONMENT_LAYER_MASK | Consts.FRIENDLY_LAYER_MASK);
+
+                    if (hits > 0 && _unused[0].collider.gameObject != player)
+                    {
+                        Debug.Log(string.Format("{0} hits {1},  preventative action!", actor.name, _unused[0].collider.name));
+                        actor.lastFaceplantTime = Time.fixedTime;
+                    }
+                }
             }
         }
     }
