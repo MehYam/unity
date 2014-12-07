@@ -10,11 +10,21 @@ public sealed class Map : MonoBehaviour
     const string LASER_GATE = "laserGate";
 	void Start()
     {
-        var mesh = GetComponentInChildren<MeshRenderer>();
-        var bounds = mesh.bounds;
+        // loop all the meshes in the level, take the bounds of the largest as our world bounds
+        var meshes = GetComponentsInChildren<MeshRenderer>();
+        MeshRenderer largestMesh = null;
+        foreach (var mesh in meshes)
+        {
+            if (largestMesh == null || mesh.bounds.size.sqrMagnitude > largestMesh.bounds.size.sqrMagnitude)
+            {
+                largestMesh = mesh;
+            }
+        }
+
+        DebugUtil.Assert(largestMesh != null, "Found no meshes in level");
 
         // center the map in the world
-        gameObject.transform.position = -bounds.center;
+        gameObject.transform.position = -largestMesh.bounds.center;
 
         // find the level objects and process them
         var markers = transform.FindChild(MARKERS_PARENT);
@@ -35,8 +45,7 @@ public sealed class Map : MonoBehaviour
             }
             GameObject.Destroy(markers.gameObject);
         }
-        bounds = mesh.bounds;
-        GlobalGameEvent.Instance.FireMapReady(gameObject, new XRect(bounds.min, bounds.max));
+        GlobalGameEvent.Instance.FireMapReady(gameObject, new XRect(largestMesh.bounds));
 	}
 
     const float TILE_PIXELS = 128;

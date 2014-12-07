@@ -77,6 +77,13 @@ public class XRect
         this.right = max.x;
         this.top = max.y;
     }
+    public XRect(Bounds rhs)
+    {
+        this.left = rhs.min.x;
+        this.bottom = rhs.min.y;
+        this.right = rhs.max.x;
+        this.top = rhs.max.y;
+    }
     public XRect(XRect rhs)
     {
         this.left = rhs.left;
