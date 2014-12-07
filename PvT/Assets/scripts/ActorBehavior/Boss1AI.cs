@@ -37,13 +37,13 @@ public sealed class Boss1AI : MonoBehaviour
             {
                 lasers.Add(new WeaponDischargeBehavior(Consts.CollisionLayer.MOB_AMMO, weapon));
             }
-            LASER_PHASE = new CompositeBehavior(new PeriodicBehavior(lasers, new Rate(0.3f)), abf.faceTarget);
+            LASER_PHASE = new CompositeBehavior(new PeriodicBehavior(lasers, new Timer(0.3f)), abf.faceTarget);
 
             var fusion = boss.actorType.weapons.First(w => w.actorName == "FUSION");
             CHARGE_FUSION_PHASE = new CompositeBehavior(
                 new PeriodicBehavior(
                     new WeaponDischargeBehavior(
-                        Consts.CollisionLayer.MOB_AMMO, fusion), new Rate(0.5f)), 
+                        Consts.CollisionLayer.MOB_AMMO, fusion), new Timer(0.5f)), 
                 abf.faceTarget);
 
             boss.target = PlayerTarget.Instance;

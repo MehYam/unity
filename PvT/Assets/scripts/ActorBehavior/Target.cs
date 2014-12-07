@@ -1,7 +1,18 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 using PvT.DOM;
+
+public sealed class StaticTarget : ITarget
+{
+    readonly Vector2 _position;
+    public StaticTarget(Vector2 position) { _position = position; }
+
+    public Vector2 position
+    {
+        get { return _position; }
+    }
+}
 
 public sealed class PlayerTarget : ITarget
 {
@@ -9,19 +20,8 @@ public sealed class PlayerTarget : ITarget
     PlayerTarget() {}
 
     static public ITarget Instance = new PlayerTarget();
-    public GameObject actor
+    public Vector2 position
     {
-        get { return Main.Instance.game.player; }
-    }
-}
-
-public sealed class Target : ITarget
-{
-    readonly GameObject gameObject;
-    public Target(GameObject go) { gameObject = go; }
-
-    public GameObject actor
-    {
-        get { return gameObject; }
+        get { return Main.Instance.game.player.transform.position; }
     }
 }

@@ -31,7 +31,7 @@ public sealed class LaserGate : MonoBehaviour
         var renderer = _beam.GetComponent<SpriteRenderer>();
         _beam.collider2D.enabled = false;
 
-        Rate rate = new Rate(seconds);
+        Timer rate = new Timer(seconds);
         while (!rate.reached)
         {
             yield return new WaitForSeconds(Random.Range(0.01f, 0.2f));

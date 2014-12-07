@@ -73,16 +73,17 @@ public sealed class GameController : IGame
         SpawnPlayer(pos);
     }
 
-    GameObject _map;
+    Map _map;
     public void SetMap(GameObject mapPrefab)
     {
         if (_map != null)
         {
-            GameObject.Destroy(_map);
+            GameObject.Destroy(_map.gameObject);
         }
-        _map = (GameObject)GameObject.Instantiate(mapPrefab);
-        _map.GetOrAddComponent<Map>();
+        var mapGO = (GameObject)GameObject.Instantiate(mapPrefab);
+        _map = mapGO.GetOrAddComponent<Map>();
     }
+    public IList<ITarget> levelWaypoints { get { return _map.waypoints; } }
 
     public XRect WorldBounds 
     { 

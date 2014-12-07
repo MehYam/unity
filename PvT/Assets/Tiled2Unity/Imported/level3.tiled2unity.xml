@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Tiled2Unity generated xml data-->
 <!--Do not modify by hand-->
-<!--Last exported: 12/5/2014 1:50:11 PM-->
+<!--Last exported: 12/7/2014 11:43:52 AM-->
 <Tiled2Unity version="0.9.7.2">
   <AssignMaterial mesh="mesh_[00]_[00]" material="MetalTiles" sortingLayerName="ground" sortingOrder="0" />
   <AssignMaterial mesh="mesh_[01]_[00]" material="MetalTiles" sortingLayerName="wallShadows" sortingOrder="0" />
@@ -35,6 +35,30 @@
       </GameObject>
       <GameObject name="laserGate.horizontal.ff00ffff.3" x="1959" y="-1596.1500244140625">
         <BoxCollider2D width="54" height="46" />
+      </GameObject>
+      <GameObject name="waypoint" x="480" y="-448">
+        <BoxCollider2D width="60" height="64" />
+      </GameObject>
+      <GameObject name="waypoint" x="880" y="-452">
+        <BoxCollider2D width="60" height="64" />
+      </GameObject>
+      <GameObject name="waypoint" x="1324" y="-460">
+        <BoxCollider2D width="60" height="64" />
+      </GameObject>
+      <GameObject name="waypoint" x="1328" y="-876">
+        <BoxCollider2D width="60" height="64" />
+      </GameObject>
+      <GameObject name="waypoint" x="1336" y="-1404">
+        <BoxCollider2D width="60" height="64" />
+      </GameObject>
+      <GameObject name="waypoint" x="884" y="-1404">
+        <BoxCollider2D width="60" height="64" />
+      </GameObject>
+      <GameObject name="waypoint" x="444" y="-1392">
+        <BoxCollider2D width="60" height="64" />
+      </GameObject>
+      <GameObject name="waypoint" x="448" y="-868">
+        <BoxCollider2D width="60" height="64" />
       </GameObject>
     </GameObject>
   </Prefab>

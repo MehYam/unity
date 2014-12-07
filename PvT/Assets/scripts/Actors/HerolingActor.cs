@@ -16,7 +16,7 @@ public class HerolingActor : Actor
         }
     }
 
-    Rate? _roamBoredom;
+    Timer? _roamBoredom;
     protected override void Start()
     {
         base.Start();
@@ -24,7 +24,7 @@ public class HerolingActor : Actor
 
         GlobalGameEvent.Instance.ActorDeath += OnActorDeath;
 
-        _roamBoredom = new Rate(Consts.HEROLING_ROAM_BOREDOM);
+        _roamBoredom = new Timer(Consts.HEROLING_ROAM_BOREDOM);
 
         SetBehavior(ROAM);
 
@@ -106,7 +106,7 @@ public class HerolingActor : Actor
         }
     }
 
-    Rate? _attachBoredom;
+    Timer? _attachBoredom;
     void AttachToMob(Transform mob)
     {
         var mobActor = mob.GetComponent<Actor>();
@@ -125,7 +125,7 @@ public class HerolingActor : Actor
 
             SetBehavior(ATTACHED);
             _roamBoredom = null;
-            _attachBoredom = new Rate(Consts.HEROLING_ATTACH_BOREDOM);
+            _attachBoredom = new Timer(Consts.HEROLING_ATTACH_BOREDOM);
 
             ++mob.GetComponent<Actor>().attachedHerolings;
             GlobalGameEvent.Instance.FireHerolingAttached(mob.GetComponent<Actor>());
@@ -148,7 +148,7 @@ public class HerolingActor : Actor
 
         SetBehavior(ATTACHED);
         _roamBoredom = null;
-        _attachBoredom = new Rate(Consts.HEROLING_ATTACH_BOREDOM);
+        _attachBoredom = new Timer(Consts.HEROLING_ATTACH_BOREDOM);
     }
     void Return()
     {

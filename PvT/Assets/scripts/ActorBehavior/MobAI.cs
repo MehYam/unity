@@ -55,8 +55,8 @@ public sealed class MobAI
         );
 
         var turretFireBehavior = new TimedSequenceBehavior();
-        turretFireBehavior.Add(bf.CreateAutofire(Consts.CollisionLayer.MOB_AMMO, tankHelper.turret.weapons), new Rate(3, 3));
-        turretFireBehavior.Add(ActorBehaviorFactory.NULL, new Rate(3, 0.75f));
+        turretFireBehavior.Add(bf.CreateAutofire(Consts.CollisionLayer.MOB_AMMO, tankHelper.turret.weapons), new Timer(3, 3));
+        turretFireBehavior.Add(ActorBehaviorFactory.NULL, new Timer(3, 0.75f));
 
         var turretBehavior = new CompositeBehavior();
         turretBehavior.Add(bf.faceTarget);
@@ -99,14 +99,14 @@ public sealed class MobAI
     {
         var bf = ActorBehaviorFactory.Instance;
         var retval = new TimedSequenceBehavior();
-        retval.Add(bf.followPlayer, new Rate(followTime, 0.5f));
+        retval.Add(bf.followPlayer, new Timer(followTime, 0.5f));
         retval.Add(
             new CompositeBehavior(
                 bf.CreateAutofire(Consts.CollisionLayer.MOB_AMMO, weapons),
                 bf.faceTarget),
-            new Rate(attackTime, 1)
+            new Timer(attackTime, 1)
         );
-        retval.Add(bf.CreateRoam(false), new Rate(roamTime, 1));
+        retval.Add(bf.CreateRoam(false), new Timer(roamTime, 1));
         return retval;
     }
     static IActorBehavior TheCount(ActorType.Weapon[] weapons)
@@ -114,13 +114,13 @@ public sealed class MobAI
         var bf = ActorBehaviorFactory.Instance;
         var retval = new TimedSequenceBehavior();
 
-        retval.Add(bf.thrust, new Rate(6, 0.5f));
-        retval.Add(ActorBehaviorFactory.NULL, new Rate(2, 0.5f));
+        retval.Add(bf.thrust, new Timer(6, 0.5f));
+        retval.Add(ActorBehaviorFactory.NULL, new Timer(2, 0.5f));
         retval.Add(
             new CompositeBehavior(
                 bf.CreateAutofire(Consts.CollisionLayer.MOB_AMMO, weapons),
                 bf.thrustAway),
-            new Rate(3, 0.5f));
+            new Timer(3, 0.5f));
         return new CompositeBehavior(bf.faceTarget, retval);
     }
     public IActorBehavior ChargeWeaponAI(ActorType.Weapon weapon)
@@ -130,14 +130,14 @@ public sealed class MobAI
         var charge = new ChargeWeaponController(Consts.CollisionLayer.MOB_AMMO, weapon);
 
         // follow
-        retval.Add(bf.followPlayer, new Rate(4, 0.5f));
+        retval.Add(bf.followPlayer, new Timer(4, 0.5f));
 
         // stop and charge
         retval.Add(new CompositeBehavior(bf.faceTarget, new GoHomeYouAreDrunkBehavior(), (Action<Actor>)charge.Charge), 
-            new Rate(weapon.attrs.chargeSeconds, 0.75f));
+            new Timer(weapon.attrs.chargeSeconds, 0.75f));
 
         // discarge
-        retval.Add(charge.Discharge, new Rate(1));
+        retval.Add(charge.Discharge, new Timer(1));
 
         return retval;
     }
@@ -150,10 +150,10 @@ public sealed class MobAI
         var shield = new ShieldWeaponController(Consts.CollisionLayer.MOB, weapon);
         var sequence = new TimedSequenceBehavior();
 
-        sequence.Add((IActorBehavior)null, new Rate(5, 0.8f));
-        sequence.Add(shield.Start, new Rate(0.25f));
-        sequence.Add(shield.OnFrame, new Rate(3, 0.5f));
-        sequence.Add(shield.Discharge, new Rate(1));
+        sequence.Add((IActorBehavior)null, new Timer(5, 0.8f));
+        sequence.Add(shield.Start, new Timer(0.25f));
+        sequence.Add(shield.OnFrame, new Timer(3, 0.5f));
+        sequence.Add(shield.Discharge, new Timer(1));
 
         retval.Add(sequence);
         return retval;
@@ -163,8 +163,8 @@ public sealed class MobAI
         var bf = ActorBehaviorFactory.Instance;
         var retval = new TimedSequenceBehavior();
 
-        retval.Add(bf.thrust, new Rate(1, 0.5f));
-        retval.Add(bf.followPlayer, new Rate(3, 0.5f));
+        retval.Add(bf.thrust, new Timer(1, 0.5f));
+        retval.Add(bf.followPlayer, new Timer(3, 0.5f));
 
         return retval;
     }
@@ -178,7 +178,7 @@ public sealed class MobAI
 
         _behaviorFactory["GREENK0"] = (vehicle) =>
         {
-            return Util.CoinFlip() ? bf.followPlayer : AttackAndFlee(4, 1, 1, vehicle.weapons);
+            return bf.followPlayer;
         };
         _behaviorFactory["GREENK"] = (vehicle) =>
         {
@@ -199,8 +199,8 @@ public sealed class MobAI
         _behaviorFactory["OSPREY"] = (vehicle) =>
         {
             var retval = new TimedSequenceBehavior();
-            retval.Add(bf.followPlayer, new Rate(2, 0.75f));
-            retval.Add(bf.CreateTurret(Consts.CollisionLayer.MOB_AMMO, vehicle.weapons), new Rate(2, 0.5f));
+            retval.Add(bf.followPlayer, new Timer(2, 0.75f));
+            retval.Add(bf.CreateTurret(Consts.CollisionLayer.MOB_AMMO, vehicle.weapons), new Timer(2, 0.5f));
             return retval;
         };
         _behaviorFactory["BEE"] = (vehicle) =>
@@ -226,29 +226,46 @@ public sealed class MobAI
                 bf.CreateAutofire(Consts.CollisionLayer.MOB_AMMO, vehicle.weapons),
                 bf.faceTarget
                 ),
-                new Rate(2, 0.25f)
+                new Timer(2, 0.25f)
             );
-            sequence.Add(bf.faceTarget, new Rate(2));
+            sequence.Add(bf.faceTarget, new Timer(2));
             return sequence;
         };
     }
 
     sealed class FaceplantMitigation : IActorBehavior
     {
-        readonly IActorBehavior _containedBehavior;
+        Timer _mitigationTime;
+        readonly IActorBehavior _normalBehavior;
         public FaceplantMitigation(IActorBehavior behavior)
         {
-            _containedBehavior = behavior;
+            _normalBehavior = behavior;
+            _mitigationTime.Stop();
         }
+
         public void FixedUpdate(Actor actor)
         {
             if ((Time.fixedTime - actor.lastFaceplantTime) < Consts.FACEPLANT_MITIGATION_DURATION)
             {
-                ActorBehaviorFactory.Instance.thrustAway.FixedUpdate(actor);
+                _mitigationTime.Start(2);
+
+                // pick a waypoint
+                actor.target = Util.RandomArrayPick(Main.Instance.game.levelWaypoints);
+                actor.lastFaceplantTime = float.MinValue;
             }
-            else if (_containedBehavior != null)
+
+            if (!_mitigationTime.reached)
             {
-                _containedBehavior.FixedUpdate(actor);
+                float maxRotation = Time.fixedDeltaTime * actor.maxRotationalVelocity;
+                Util.LookAt2D(actor.transform, PlayerTarget.Instance.position, maxRotation);
+
+                ActorBehaviorFactory.Instance.gravitateToTarget.FixedUpdate(actor);
+            }
+            else if (_normalBehavior != null)
+            {
+                actor.target = PlayerTarget.Instance;  //note: if we're setting the target every frame anyway, this maybe indicates that we don't need ITarget at all...
+
+                _normalBehavior.FixedUpdate(actor);
             }
         }
     }

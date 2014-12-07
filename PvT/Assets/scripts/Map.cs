@@ -1,13 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
+using PvT.DOM;
 using PvT.Util;
 
 public sealed class Map : MonoBehaviour
 {
+    public IList<ITarget> waypoints { get; private set; }
+
     const string MARKERS_PARENT = "Markers";
     const string PLAYER_SPAWN = "playerSpawn";
     const string LASER_GATE = "laserGate";
+    const string WAYPOINT = "waypoint";
 	void Start()
     {
         // loop all the meshes in the level, take the bounds of the largest as our world bounds
@@ -26,6 +31,8 @@ public sealed class Map : MonoBehaviour
         // center the map in the world
         gameObject.transform.position = -largestMesh.bounds.center;
 
+        waypoints = new List<ITarget>();
+
         // find the level objects and process them
         var markers = transform.FindChild(MARKERS_PARENT);
         if (markers != null)
@@ -40,6 +47,9 @@ public sealed class Map : MonoBehaviour
                         break;
                     case LASER_GATE:
                         BuildDoor(marker.gameObject, mapObject);
+                        break;
+                    case WAYPOINT:
+                        waypoints.Add(new StaticTarget(marker.position));
                         break;
                 }
             }

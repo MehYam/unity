@@ -64,8 +64,8 @@ public sealed class CompositeBehavior : IActorBehavior
 public sealed class PeriodicBehavior : IActorBehavior
 {
     readonly IActorBehavior behavior;
-    Rate rate;
-    public PeriodicBehavior(IActorBehavior behavior, Rate rate)
+    Timer rate;
+    public PeriodicBehavior(IActorBehavior behavior, Timer rate)
     {
         this.behavior = behavior;
         this.rate = rate;
@@ -88,9 +88,9 @@ public sealed class TimedSequenceBehavior: IActorBehavior
     struct Phase
     {
         public readonly Action<Actor> action;
-        public Rate duration;
+        public Timer duration;
 
-        public Phase(Action<Actor> action, Rate duration) { this.action = action; this.duration = duration; }
+        public Phase(Action<Actor> action, Timer duration) { this.action = action; this.duration = duration; }
     }
 
     readonly IList<Phase> phases = new List<Phase>();
@@ -101,11 +101,11 @@ public sealed class TimedSequenceBehavior: IActorBehavior
     /// </summary>
     /// <param name="b">The behavior to add</param>
     /// <param name="duration">The duration over which to run the behavior</param>
-    public void Add(IActorBehavior b, Rate rate)
+    public void Add(IActorBehavior b, Timer rate)
     {
         Add(b == null ? (Action<Actor>)null : b.FixedUpdate, rate);
     }
-    public void Add(Action<Actor> a, Rate rate)
+    public void Add(Action<Actor> a, Timer rate)
     {
         phases.Add(new Phase(a, rate));
     }
@@ -361,7 +361,7 @@ public sealed class ActorBehaviorFactory
             foreach (var w in weapons)
             {
                 float rate = w.sequence != iLastSequence ? w.attrs.rate : 0;
-                retval.Add(CreateOneAutofire(layer, w), new Rate(rate));
+                retval.Add(CreateOneAutofire(layer, w), new Timer(rate));
 
                 iLastSequence = w.sequence;
             }
@@ -420,7 +420,7 @@ sealed class FaceTarget : IActorBehavior
     public void FixedUpdate(Actor actor)
     {
         float maxRotation = Time.fixedDeltaTime * actor.maxRotationalVelocity;
-        Util.LookAt2D(actor.transform, actor.target.actor.transform, maxRotation);
+        Util.LookAt2D(actor.transform, actor.target.position, maxRotation);
     }
 }
 sealed class FaceForward : IActorBehavior
@@ -460,7 +460,7 @@ sealed class GravitateToTarget : IActorBehavior
     public void FixedUpdate(Actor actor)
     {
         var go = actor.gameObject;
-        var lookAt = Util.GetLookAtVector(go.transform.position, actor.target.actor.transform.position);
+        var lookAt = Util.GetLookAtVector(go.transform.position, actor.target.position);
         actor.AddThrust(lookAt * actor.attrs.acceleration);
     }
 }
@@ -473,7 +473,7 @@ sealed class HomeToTarget : IActorBehavior
     public void FixedUpdate(Actor actor)
     {
         var go = actor.gameObject;
-        var lookAt = Util.GetLookAtVector(go.transform.position, actor.target.actor.transform.position);
+        var lookAt = Util.GetLookAtVector(go.transform.position, actor.target.position);
         actor.gameObject.rigidbody2D.velocity = lookAt * actor.attrs.maxSpeed;
     }
 }
@@ -569,7 +569,7 @@ class WeaponDischargeBehavior : IActorBehavior
 
 sealed class PeriodicWeaponDischargeBehavior : WeaponDischargeBehavior
 {
-    Rate rate;
+    Timer rate;
     public PeriodicWeaponDischargeBehavior(Consts.CollisionLayer layer, ActorType.Weapon weapon) : base(layer, weapon) {}
 
     public override void FixedUpdate(Actor actor)
@@ -702,7 +702,7 @@ sealed class Drift : IActorBehavior
 
 sealed class GoHomeYouAreDrunkBehavior : IActorBehavior
 {
-    Rate spinRate = new Rate(1, 0.5f);
+    Timer spinRate = new Timer(1, 0.5f);
     float spinSpeed = 0;
 
     public GoHomeYouAreDrunkBehavior()

@@ -52,5 +52,13 @@
   </object>
   <object name="laserGate.vertical.ff00ffff.2" x="1707.03" y="1442.79" width="54" height="46"/>
   <object name="laserGate.horizontal.ff00ffff.3" x="1959" y="1596.15" width="54" height="46"/>
+  <object name="waypoint" x="480" y="448" width="60" height="64"/>
+  <object name="waypoint" x="880" y="452" width="60" height="64"/>
+  <object name="waypoint" x="1324" y="460" width="60" height="64"/>
+  <object name="waypoint" x="1328" y="876" width="60" height="64"/>
+  <object name="waypoint" x="1336" y="1404" width="60" height="64"/>
+  <object name="waypoint" x="884" y="1404" width="60" height="64"/>
+  <object name="waypoint" x="444" y="1392" width="60" height="64"/>
+  <object name="waypoint" x="448" y="868" width="60" height="64"/>
  </objectgroup>
 </map>

@@ -5,6 +5,8 @@ using System.Text;
 
 using UnityEngine;
 
+using PvT.DOM;
+
 // this is a mediator that fires and syncs events between different components.  i.e.
 // something might need to know that a card was played, but to reduce coupling between
 // things that manage cards (Deck, Hero, Hands, etc) and the receiver of the event, they

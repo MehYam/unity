@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+using PvT.DOM;
 using PvT.Util;
 
 public class LevelScript : MonoBehaviour
@@ -132,7 +133,7 @@ public class LevelScript : MonoBehaviour
         }
 
         // wait until all the enemies are dead - but spawn randomly too
-        var spawnLimiter = new Rate(Consts.RESPAWN_RATE, 0.5f);
+        var spawnLimiter = new Timer(Consts.RESPAWN_RATE, 0.5f);
         while (_mobsSpawned.Count > 0)
         {
             spawnLimiter.Start();

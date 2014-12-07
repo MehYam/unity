@@ -4,6 +4,7 @@ using System.Collections;
 
 using Random = UnityEngine.Random;
 
+using PvT.DOM;
 using PvT.Util;
 
 public sealed class TutorialScript : MonoBehaviour
