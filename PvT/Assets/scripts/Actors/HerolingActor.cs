@@ -35,6 +35,8 @@ public class HerolingActor : Actor
         // make it appear on top of mobs and friendlies
         GetComponent<SpriteRenderer>().sortingLayerID = (int)Consts.SortingLayer.AMMO_TOP;
 
+        target = PlayerTarget.Instance;
+
         // give it a push
         //body.velocity =
         //    launcher.rigidbody2D.velocity + 
@@ -199,6 +201,6 @@ public class HerolingActor : Actor
 
     static readonly IActorBehavior RETURN = new CompositeBehavior(
         ActorBehaviorFactory.Instance.faceForward,
-        ActorBehaviorFactory.Instance.homeToPlayer
+        ActorBehaviorFactory.Instance.homeToTarget
     );
 }

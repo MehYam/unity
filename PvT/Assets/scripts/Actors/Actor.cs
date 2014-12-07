@@ -233,6 +233,7 @@ public class Actor : MonoBehaviour
     public float lastFaceplantTime { get; set; }
     public bool detectFaceplants { get; set; }
     public Vector2 lastThrust { get; private set; }
+    public ITarget target { get; set; }
 
     public void AddThrust(Vector2 force)
     {

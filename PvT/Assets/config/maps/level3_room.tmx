@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="14" height="14" tilewidth="128" tileheight="128">
+ <properties>
+  <property name="unity:scale" value="0.02"/>
+ </properties>
+ <tileset firstgid="1" name="MetalTiles" tilewidth="128" tileheight="128">
+  <image source="../../../../../assets/MetalTiles.png" width="512" height="1024"/>
+  <tile id="2">
+   <objectgroup draworder="index">
+    <object x="0" y="0" width="128" height="128"/>
+   </objectgroup>
+  </tile>
+  <tile id="4">
+   <objectgroup draworder="index">
+    <object x="3" y="4">
+     <polygon points="-3,-4 127,-4 -3,127"/>
+    </object>
+   </objectgroup>
+  </tile>
+ </tileset>
+ <layer name="Floor" width="14" height="14">
+  <properties>
+   <property name="unity:sortingLayerName" value="ground"/>
+   <property name="unity:sortingOrder" value="0"/>
+  </properties>
+  <data encoding="base64" compression="zlib">
+   eJxjYCAfMJGIR4o+UvWSo49cu4ZSeDKRqY8SAAC2FwEd
+  </data>
+ </layer>
+ <layer name="WallShadow" width="14" height="14">
+  <properties>
+   <property name="unity:sortingLayerName" value="wallShadows"/>
+   <property name="unity:sortingOrder" value="0"/>
+  </properties>
+  <data encoding="base64" compression="zlib">
+   eJxjYCAfcAIxBwkYBoDsBHLsGwz62BgYFLCxCahjYMfCxqEPw05CgFx3ousj1p30igc2MvVxkqIYDQAAf0gFcQ==
+  </data>
+ </layer>
+ <layer name="Walls" width="14" height="14">
+  <properties>
+   <property name="unity:layer" value="environment"/>
+   <property name="unity:sortingLayerName" value="walls"/>
+   <property name="unity:sortingOrder" value="0"/>
+  </properties>
+  <data encoding="base64" compression="zlib">
+   eJxjZmBgYCYTszIQD4BqF8D0kQoGSh/QzQno4tjYDBC1B5DDhlS7KNGHHg8E3Dlk4oGLAXs84APo8UAqBgAVrgRk
+  </data>
+ </layer>
+ <objectgroup name="Markers">
+  <object name="playerSpawn" x="832.503" y="835.631" width="128" height="128" rotation="359.466">
+   <ellipse/>
+  </object>
+  <object name="laserGate.vertical.ff00ffff.2" x="1707.03" y="1442.79" width="54" height="46"/>
+ </objectgroup>
+</map>

@@ -41,6 +41,7 @@ public sealed class MobAI
 
         // For now, everything reacts to faceplants
         mob.behavior = new FaceplantMitigation(mob.behavior);
+        mob.target = PlayerTarget.Instance;
     }
     void AttachTankAI(Actor tank)
     {
@@ -58,7 +59,7 @@ public sealed class MobAI
         turretFireBehavior.Add(ActorBehaviorFactory.NULL, new Rate(3, 0.75f));
 
         var turretBehavior = new CompositeBehavior();
-        turretBehavior.Add(bf.facePlayer);
+        turretBehavior.Add(bf.faceTarget);
         turretBehavior.Add(turretFireBehavior);
 
         var hullActor = tankHelper.hullGO.GetComponent<Actor>();
@@ -102,7 +103,7 @@ public sealed class MobAI
         retval.Add(
             new CompositeBehavior(
                 bf.CreateAutofire(Consts.CollisionLayer.MOB_AMMO, weapons),
-                bf.facePlayer),
+                bf.faceTarget),
             new Rate(attackTime, 1)
         );
         retval.Add(bf.CreateRoam(false), new Rate(roamTime, 1));
@@ -120,7 +121,7 @@ public sealed class MobAI
                 bf.CreateAutofire(Consts.CollisionLayer.MOB_AMMO, weapons),
                 bf.thrustAway),
             new Rate(3, 0.5f));
-        return new CompositeBehavior(bf.facePlayer, retval);
+        return new CompositeBehavior(bf.faceTarget, retval);
     }
     public IActorBehavior ChargeWeaponAI(ActorType.Weapon weapon)
     {
@@ -132,7 +133,7 @@ public sealed class MobAI
         retval.Add(bf.followPlayer, new Rate(4, 0.5f));
 
         // stop and charge
-        retval.Add(new CompositeBehavior(bf.facePlayer, new GoHomeYouAreDrunkBehavior(), (Action<Actor>)charge.Charge), 
+        retval.Add(new CompositeBehavior(bf.faceTarget, new GoHomeYouAreDrunkBehavior(), (Action<Actor>)charge.Charge), 
             new Rate(weapon.attrs.chargeSeconds, 0.75f));
 
         // discarge
@@ -223,11 +224,11 @@ public sealed class MobAI
             var sequence = new TimedSequenceBehavior();
             sequence.Add(new CompositeBehavior( 
                 bf.CreateAutofire(Consts.CollisionLayer.MOB_AMMO, vehicle.weapons),
-                bf.facePlayer
+                bf.faceTarget
                 ),
                 new Rate(2, 0.25f)
             );
-            sequence.Add(bf.facePlayer, new Rate(2));
+            sequence.Add(bf.faceTarget, new Rate(2));
             return sequence;
         };
     }

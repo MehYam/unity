@@ -227,16 +227,16 @@ public sealed class ActorBehaviorFactory
 
     ActorBehaviorFactory() { }
 
-    IActorBehavior _facePlayer;
-    public IActorBehavior facePlayer
+    IActorBehavior _faceTarget;
+    public IActorBehavior faceTarget
     {
         get
         {
-            if (_facePlayer == null)
+            if (_faceTarget == null)
             {
-                _facePlayer = new FaceTarget(PlayerTarget.Instance);
+                _faceTarget = new FaceTarget();
             }
-            return _facePlayer;
+            return _faceTarget;
         }
     }
     IActorBehavior _followPlayer;
@@ -244,7 +244,7 @@ public sealed class ActorBehaviorFactory
     {
         get
         {
-            if (_followPlayer == null){_followPlayer = new CompositeBehavior(facePlayer, thrust);}
+            if (_followPlayer == null){_followPlayer = new CompositeBehavior(faceTarget, thrust);}
             return _followPlayer;
         }
     }
@@ -293,22 +293,22 @@ public sealed class ActorBehaviorFactory
             return _faceForward;
         }
     }
-    IActorBehavior _gravitateToPlayer;
-    public IActorBehavior gravitateToPlayer
+    IActorBehavior _gravitateToTarget;
+    public IActorBehavior gravitateToTarget
     {
         get
         {
-            if (_gravitateToPlayer == null) { _gravitateToPlayer = new GravitateToTarget(PlayerTarget.Instance); }
-            return _gravitateToPlayer;
+            if (_gravitateToTarget == null) { _gravitateToTarget = new GravitateToTarget(); }
+            return _gravitateToTarget;
         }
     }
-    IActorBehavior _homeToPlayer;
-    public IActorBehavior homeToPlayer
+    IActorBehavior _homeToTarget;
+    public IActorBehavior homeToTarget
     {
         get
         {
-            if (_homeToPlayer == null) { _homeToPlayer = new HomeToTarget(PlayerTarget.Instance); }
-            return _homeToPlayer;
+            if (_homeToTarget == null) { _homeToTarget = new HomeToTarget(); }
+            return _homeToTarget;
         }
     }
     IActorBehavior _drift;
@@ -373,7 +373,7 @@ public sealed class ActorBehaviorFactory
     {
         return new CompositeBehavior(
             CreateAutofire(layer, weapons),
-            facePlayer
+            faceTarget
         );
     }
     public IActorBehavior CreatePlayerButton(Func<bool> buttonCallback, IActorBehavior behavior)
@@ -417,16 +417,10 @@ sealed class FacePoint : IActorBehavior
 }
 sealed class FaceTarget : IActorBehavior
 {
-    readonly ITarget target;
-    public FaceTarget(ITarget target)
-    {
-        this.target = target;
-    }
-
     public void FixedUpdate(Actor actor)
     {
         float maxRotation = Time.fixedDeltaTime * actor.maxRotationalVelocity;
-        Util.LookAt2D(actor.transform, target.actor.transform, maxRotation);
+        Util.LookAt2D(actor.transform, actor.target.actor.transform, maxRotation);
     }
 }
 sealed class FaceForward : IActorBehavior
@@ -463,12 +457,10 @@ sealed class FaceMouse : IActorBehavior
 /// </summary>
 sealed class GravitateToTarget : IActorBehavior
 {
-    readonly ITarget target;
-    public GravitateToTarget(ITarget target) { this.target = target; }
     public void FixedUpdate(Actor actor)
     {
         var go = actor.gameObject;
-        var lookAt = Util.GetLookAtVector(go.transform.position, target.actor.transform.position);
+        var lookAt = Util.GetLookAtVector(go.transform.position, actor.target.actor.transform.position);
         actor.AddThrust(lookAt * actor.attrs.acceleration);
     }
 }
@@ -478,12 +470,10 @@ sealed class GravitateToTarget : IActorBehavior
 /// </summary>
 sealed class HomeToTarget : IActorBehavior
 {
-    readonly ITarget target;
-    public HomeToTarget(ITarget target) { this.target = target; }
     public void FixedUpdate(Actor actor)
     {
         var go = actor.gameObject;
-        var lookAt = Util.GetLookAtVector(go.transform.position, target.actor.transform.position);
+        var lookAt = Util.GetLookAtVector(go.transform.position, actor.target.actor.transform.position);
         actor.gameObject.rigidbody2D.velocity = lookAt * actor.attrs.maxSpeed;
     }
 }
