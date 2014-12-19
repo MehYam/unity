@@ -278,7 +278,14 @@ public sealed class MobAI
                     var player = Main.Instance.game.player;
                     var layers = actor.actorType.AIrepel > 0 ? Consts.ENVIRONMENT_LAYER_MASK | Consts.FRIENDLY_LAYER_MASK : Consts.ENVIRONMENT_LAYER_MASK;
 
-                    int hits = Physics2D.LinecastNonAlloc(actor.transform.position, player.transform.position, s_collisions, layers);
+                    //KAI: it's kind of rubbish to be handling both wall and player collisions this way, but meh
+                    int hits = Physics2D.RaycastNonAlloc(
+                        actor.transform.position,
+                        player.transform.position - actor.transform.position,
+                        s_collisions,
+                        actor.actorType.AIrepel > 0 ? actor.actorType.AIrepel : 4,
+                        layers
+                    );
                     if (hits > 0)
                     {
                         Debug.Log(string.Format("{0} hits {1},  preventative action!", actor.name, s_collisions[0].collider.name));

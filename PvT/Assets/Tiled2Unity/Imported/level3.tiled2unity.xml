@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Tiled2Unity generated xml data-->
 <!--Do not modify by hand-->
-<!--Last exported: 12/7/2014 11:43:52 AM-->
+<!--Last exported: 12/18/2014 10:21:45 PM-->
 <Tiled2Unity version="0.9.7.2">
   <AssignMaterial mesh="mesh_[00]_[00]" material="MetalTiles" sortingLayerName="ground" sortingOrder="0" />
   <AssignMaterial mesh="mesh_[01]_[00]" material="MetalTiles" sortingLayerName="wallShadows" sortingOrder="0" />
@@ -59,6 +59,11 @@
       </GameObject>
       <GameObject name="waypoint" x="448" y="-868">
         <BoxCollider2D width="60" height="64" />
+      </GameObject>
+    </GameObject>
+    <GameObject name="RoomMarkers">
+      <GameObject name="room" x="140" y="-136">
+        <BoxCollider2D width="928" height="960" />
       </GameObject>
     </GameObject>
   </Prefab>

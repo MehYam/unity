@@ -10,9 +10,9 @@ public sealed class Map : MonoBehaviour
     public IList<ITarget> waypoints { get; private set; }
 
     const string MARKERS_PARENT = "Markers";
-    const string PLAYER_SPAWN = "playerSpawn";
-    const string LASER_GATE = "laserGate";
-    const string WAYPOINT = "waypoint";
+    const string ROOM_MARKERS_PARENT = "RoomMarkers";
+
+    readonly IList<XRect> _roomBoundaries = new List<XRect>();
 	void Start()
     {
         // loop all the meshes in the level, take the bounds of the largest as our world bounds
@@ -33,30 +33,45 @@ public sealed class Map : MonoBehaviour
 
         waypoints = new List<ITarget>();
 
+        ProcessMarkers(transform.FindChild(MARKERS_PARENT));
+        ProcessMarkers(transform.FindChild(ROOM_MARKERS_PARENT));
+
+        GlobalGameEvent.Instance.FireMapReady(gameObject, new XRect(largestMesh.bounds));
+
+        StartCoroutine(TestRooms());
+	}
+
+    const string PLAYER_SPAWN_MARKER = "playerSpawn";
+    const string LASER_GATE_MARKER = "laserGate";
+    const string WAYPOINT_MARKER = "waypoint";
+    const string ROOM_MARKER = "room";
+    void ProcessMarkers(Transform markerParent)
+    {
         // find the level objects and process them
-        var markers = transform.FindChild(MARKERS_PARENT);
-        if (markers != null)
+        if (markerParent != null)
         {
-            foreach (Transform marker in markers.transform)
+            foreach (Transform marker in markerParent.transform)
             {
-                var mapObject = new Util.StringArrayParser(marker.name.Split('.'));
-                switch (mapObject.NextString())
+                var markerNameParts = new Util.StringArrayParser(marker.name.Split('.'));
+                switch (markerNameParts.NextString())
                 {
-                    case PLAYER_SPAWN:
+                    case PLAYER_SPAWN_MARKER:
                         Main.Instance.game.playerSpawn = marker.position;
                         break;
-                    case LASER_GATE:
-                        BuildDoor(marker.gameObject, mapObject);
+                    case LASER_GATE_MARKER:
+                        BuildDoor(marker.gameObject, markerNameParts);
                         break;
-                    case WAYPOINT:
+                    case WAYPOINT_MARKER:
                         waypoints.Add(new StaticTarget(marker.position));
+                        break;
+                    case ROOM_MARKER:
+                        AddRoom(marker.gameObject);
                         break;
                 }
             }
-            GameObject.Destroy(markers.gameObject);
+            GameObject.Destroy(markerParent.gameObject);
         }
-        GlobalGameEvent.Instance.FireMapReady(gameObject, new XRect(largestMesh.bounds));
-	}
+    }
 
     const float TILE_PIXELS = 128;
     const float TILE_PIXELS_PER_UNIT = 50;
@@ -98,6 +113,36 @@ public sealed class Map : MonoBehaviour
             {
                 go.transform.Rotate(0, 0, 90);
             }
+        }
+    }
+
+    void AddRoom(GameObject gameObject)
+    {
+        Debug.Log("AddRoom " + gameObject.name);
+        var box = gameObject.GetComponent<BoxCollider2D>();
+        if (box != null)
+        {
+            var scaledSize = box.size / TILE_PIXELS_PER_UNIT;
+            _roomBoundaries.Add(new XRect(
+                gameObject.transform.position.x,
+                gameObject.transform.position.y - scaledSize.y,
+                gameObject.transform.position.x + scaledSize.x,
+                gameObject.transform.position.y
+                )
+            );
+
+            Debug.Log(_roomBoundaries[0]);
+        }
+    }
+
+    IEnumerator TestRooms()
+    {
+        while(true)
+        {
+            var playerPos = Main.Instance.game.player.transform.position;
+
+            Debug.Log(string.Format("player pos {0} in room {1}", playerPos, _roomBoundaries[0].Contains(playerPos)));
+            yield return new WaitForSeconds(1);
         }
     }
 }

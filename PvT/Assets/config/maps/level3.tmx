@@ -61,4 +61,7 @@
   <object name="waypoint" x="444" y="1392" width="60" height="64"/>
   <object name="waypoint" x="448" y="868" width="60" height="64"/>
  </objectgroup>
+ <objectgroup name="RoomMarkers">
+  <object name="room" x="140" y="136" width="928" height="960"/>
+ </objectgroup>
 </map>

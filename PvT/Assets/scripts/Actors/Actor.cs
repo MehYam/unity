@@ -579,16 +579,21 @@ public class Actor : MonoBehaviour
         }
     }
 
+    static RaycastHit2D[] s_raycastResults = new RaycastHit2D[1];
     protected virtual void HandleCollision(GameObject other, Vector2 point, Vector2 normal, Vector2 relativeVelocity)
     {
         var otherActor = other.GetComponent<Actor>();
         if (otherActor == null)
         {
             // might be a head-on wall collision, do our faceplant detection
+            //KAI: still necessary?  MobAI already handles this... the only difference here is that
+            // we're casting out the nose - but maybe it makes sense to centralize how all this is done,
+            // and clean up the code a bit
             if (detectFaceplants && other.name == "Collision")
             {
                 var lookAt = Util.GetLookAtVector(transform.rotation.eulerAngles.z);
-                if (Physics2D.Raycast(transform.position, lookAt, Consts.FACEPLANT_CHECK_DISTANCE))
+                int results = Physics2D.RaycastNonAlloc(transform.position, lookAt, s_raycastResults, Consts.FACEPLANT_CHECK_DISTANCE);
+                if (results > 0)
                 {
                     lastFaceplantTime = Time.fixedTime;
                 }
