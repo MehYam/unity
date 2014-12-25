@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Tiled2Unity generated xml data-->
 <!--Do not modify by hand-->
-<!--Last exported: 12/18/2014 10:21:45 PM-->
+<!--Last exported: 12/25/2014 1:15:52 PM-->
 <Tiled2Unity version="0.9.7.2">
   <AssignMaterial mesh="mesh_[00]_[00]" material="MetalTiles" sortingLayerName="ground" sortingOrder="0" />
   <AssignMaterial mesh="mesh_[01]_[00]" material="MetalTiles" sortingLayerName="wallShadows" sortingOrder="0" />
@@ -62,8 +62,11 @@
       </GameObject>
     </GameObject>
     <GameObject name="RoomMarkers">
-      <GameObject name="room" x="140" y="-136">
-        <BoxCollider2D width="928" height="960" />
+      <GameObject name="room" x="152" y="-160">
+        <BoxCollider2D width="1512" height="1508" />
+      </GameObject>
+      <GameObject name="switch.laserGate" x="1509.760009765625" y="-1420.780029296875">
+        <BoxCollider2D width="126.292" height="132.032" />
       </GameObject>
     </GameObject>
   </Prefab>

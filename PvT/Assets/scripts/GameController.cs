@@ -83,7 +83,8 @@ public sealed class GameController : IGame
         var mapGO = (GameObject)GameObject.Instantiate(mapPrefab);
         _map = mapGO.GetOrAddComponent<Map>();
     }
-    public IList<ITarget> levelWaypoints { get { return _map.waypoints; } }
+    public IList<ITarget> mapWaypoints { get { return _map.waypoints; } }
+    public IList<GameObject> mapDoors { get { return _map.doors; } }
 
     public XRect WorldBounds 
     { 

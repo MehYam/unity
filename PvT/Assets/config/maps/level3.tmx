@@ -3,21 +3,7 @@
  <properties>
   <property name="unity:scale" value="0.02"/>
  </properties>
- <tileset firstgid="1" name="MetalTiles" tilewidth="128" tileheight="128">
-  <image source="../../../../../assets/MetalTiles.png" width="512" height="1024"/>
-  <tile id="2">
-   <objectgroup draworder="index">
-    <object x="0" y="0" width="128" height="128"/>
-   </objectgroup>
-  </tile>
-  <tile id="4">
-   <objectgroup draworder="index">
-    <object x="3" y="4">
-     <polygon points="-3,-4 127,-4 -3,127"/>
-    </object>
-   </objectgroup>
-  </tile>
- </tileset>
+ <tileset firstgid="1" source="MetalTiles.tsx"/>
  <layer name="Floor" width="50" height="50">
   <properties>
    <property name="unity:sortingLayerName" value="ground"/>
@@ -62,6 +48,7 @@
   <object name="waypoint" x="448" y="868" width="60" height="64"/>
  </objectgroup>
  <objectgroup name="RoomMarkers">
-  <object name="room" x="140" y="136" width="928" height="960"/>
+  <object name="room" x="152" y="160" width="1512" height="1508"/>
+  <object name="switch.laserGate" x="1509.76" y="1420.78" width="126.292" height="132.032"/>
  </objectgroup>
 </map>

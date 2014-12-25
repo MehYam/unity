@@ -253,7 +253,7 @@ public sealed class MobAI
                 _mitigationTime.Start(1);
 
                 // pick a waypoint
-                actor.target = Util.RandomArrayPick(Main.Instance.game.levelWaypoints);
+                actor.target = Util.RandomArrayPick(Main.Instance.game.mapWaypoints);
                 actor.lastFaceplantTime = float.MinValue;
             }
 

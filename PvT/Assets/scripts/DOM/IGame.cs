@@ -8,7 +8,8 @@ namespace PvT.DOM
         XRect WorldBounds { get; }
 
         void SetMap(GameObject mapPrefab);
-        IList<ITarget> levelWaypoints { get; }
+        IList<ITarget> mapWaypoints { get; }
+        IList<GameObject> mapDoors { get; }
 
         GameObject player { get; }
         Vector2 playerSpawn { get; set; }

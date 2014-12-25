@@ -7,11 +7,13 @@ using PvT.Util;
 
 public sealed class Map : MonoBehaviour
 {
-    public IList<ITarget> waypoints { get; private set; }
 
     const string MARKERS_PARENT = "Markers";
     const string ROOM_MARKERS_PARENT = "RoomMarkers";
 
+    public IList<ITarget> waypoints { get; private set; }
+    public IList<GameObject> doors { get; private set; }
+    
     readonly IList<XRect> _roomBoundaries = new List<XRect>();
 	void Start()
     {
@@ -32,6 +34,7 @@ public sealed class Map : MonoBehaviour
         gameObject.transform.position = -largestMesh.bounds.center;
 
         waypoints = new List<ITarget>();
+        doors = new List<GameObject>();
 
         ProcessMarkers(transform.FindChild(MARKERS_PARENT));
         ProcessMarkers(transform.FindChild(ROOM_MARKERS_PARENT));
@@ -45,6 +48,7 @@ public sealed class Map : MonoBehaviour
     const string LASER_GATE_MARKER = "laserGate";
     const string WAYPOINT_MARKER = "waypoint";
     const string ROOM_MARKER = "room";
+    const string SWITCH_MARKER = "switch";
     void ProcessMarkers(Transform markerParent)
     {
         // find the level objects and process them
@@ -59,13 +63,16 @@ public sealed class Map : MonoBehaviour
                         Main.Instance.game.playerSpawn = marker.position;
                         break;
                     case LASER_GATE_MARKER:
-                        BuildDoor(marker.gameObject, markerNameParts);
+                        AddDoor(marker.gameObject, markerNameParts);
                         break;
                     case WAYPOINT_MARKER:
                         waypoints.Add(new StaticTarget(marker.position));
                         break;
                     case ROOM_MARKER:
                         AddRoom(marker.gameObject);
+                        break;
+                    case SWITCH_MARKER:
+                        AddSwitch(marker.gameObject);
                         break;
                 }
             }
@@ -81,7 +88,7 @@ public sealed class Map : MonoBehaviour
     const string VERTICAL = "vertical";
     const string HORIZONTAL = "horizontal";
 
-    void BuildDoor(GameObject marker, Util.StringArrayParser arguments)
+    void AddDoor(GameObject marker, Util.StringArrayParser arguments)
     {
         bool horizontal = arguments.NextString() == HORIZONTAL;
         Color32 color = arguments.NextHexColor();
@@ -113,6 +120,7 @@ public sealed class Map : MonoBehaviour
             {
                 go.transform.Rotate(0, 0, 90);
             }
+            doors.Add(go);
         }
     }
 
@@ -133,6 +141,15 @@ public sealed class Map : MonoBehaviour
 
             Debug.Log(_roomBoundaries[0]);
         }
+    }
+
+    void AddSwitch(GameObject gameObject)
+    {
+        gameObject.collider2D.isTrigger = true;
+        gameObject.AddComponent<Switch>();
+
+        gameObject.layer = (int)Consts.CollisionLayer.ENVIRONMENT;
+        gameObject.transform.parent = transform;
     }
 
     IEnumerator TestRooms()
