@@ -4,7 +4,7 @@ using System.Collections;
 public sealed class PlayerAccel : MonoBehaviour
 {
     public float acceleration = 0;
-    public bool useWheels = true;
+    public bool useMotor = true;
 
     WheelJoint2D left;
     WheelJoint2D right;
@@ -33,23 +33,30 @@ public sealed class PlayerAccel : MonoBehaviour
         right.useMotor = false;
 
         float horz = Input.GetAxis("Horizontal");
-        if (horz < 0)
+        if (useMotor)
         {
-            SetAccel(right, acceleration);
+            if (horz < 0)
+            {
+                AccelerateMotor(right, acceleration, useMotor);
+            }
+            else if (horz > 0)
+            {
+                AccelerateMotor(left, -acceleration, useMotor);
+            }
         }
-        else if (horz > 0)
+        else
         {
-            SetAccel(left, -acceleration);
+            rigidbody2D.AddForce(Vector2.right * horz * acceleration / 50);
         }
 
         float vert = Input.GetAxis("Vertical");
         if (vert != 0)
         {
-            rigidbody2D.AddForce(Vector2.up * vert * 1000);
+            rigidbody2D.AddForce(Vector2.up * vert * 100);
         }
 	}
 
-    static void SetAccel(WheelJoint2D joint, float accel)
+    static void AccelerateMotor(WheelJoint2D joint, float accel, bool useMotor)
     {
         var motor = joint.motor;
         motor.motorSpeed = accel;
