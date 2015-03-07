@@ -96,7 +96,7 @@ public sealed class HopBehavior : MonoBehaviour
         var game = Main.Instance.game;
 
         // 4. land with some fanfare, a shockwave, and wait
-        actor.gameObject.rigidbody2D.velocity = Vector2.zero;
+        actor.gameObject.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
 
         //var impact = game.loader.GetMisc("landingImpact").ToRawGameObject(Consts.SortingLayer.TANKBODY);
         //impact.transform.position = actor.gameObject.transform.position;

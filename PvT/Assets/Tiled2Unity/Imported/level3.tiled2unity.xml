@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Tiled2Unity generated xml data-->
 <!--Do not modify by hand-->
-<!--Last exported: 12/25/2014 1:15:52 PM-->
-<Tiled2Unity version="0.9.7.2">
+<!--Last exported: 3/6/2015 4:20:44 PM-->
+<Tiled2Unity version="0.9.9.1">
   <AssignMaterial mesh="mesh_[00]_[00]" material="MetalTiles" sortingLayerName="ground" sortingOrder="0" />
   <AssignMaterial mesh="mesh_[01]_[00]" material="MetalTiles" sortingLayerName="wallShadows" sortingOrder="0" />
   <AssignMaterial mesh="mesh_[02]_[00]" material="MetalTiles" sortingLayerName="walls" sortingOrder="0" />
-  <Prefab name="level3" numTilesWide="50" numTilesHigh="50" tileWidth="128" tileHeight="128" scale="0.02">
+  <Prefab name="level3" numTilesWide="50" numTilesHigh="50" tileWidth="128" tileHeight="128" exportScale="1" scale="0.02">
     <GameObject name="Floor_00">
       <GameObject copy="mesh_[00]_[00]" />
     </GameObject>
@@ -27,45 +27,45 @@
       </GameObject>
     </GameObject>
     <GameObject name="Markers">
-      <GameObject name="playerSpawn" x="832.50299072265625" y="-835.6309814453125">
+      <GameObject name="playerSpawn" x="832.50299072265625" y="-835.6309814453125" rotation="359.466">
         <CircleCollider2D radius="64" />
       </GameObject>
-      <GameObject name="laserGate.vertical.ff00ffff.2" x="1707.030029296875" y="-1442.7900390625">
+      <GameObject name="laserGate.vertical.ff00ffff.2" x="1707.030029296875" y="-1442.7900390625" rotation="0">
         <BoxCollider2D width="54" height="46" />
       </GameObject>
-      <GameObject name="laserGate.horizontal.ff00ffff.3" x="1959" y="-1596.1500244140625">
+      <GameObject name="laserGate.horizontal.ff00ffff.3" x="1959" y="-1596.1500244140625" rotation="0">
         <BoxCollider2D width="54" height="46" />
       </GameObject>
-      <GameObject name="waypoint" x="480" y="-448">
+      <GameObject name="waypoint" x="480" y="-448" rotation="0">
         <BoxCollider2D width="60" height="64" />
       </GameObject>
-      <GameObject name="waypoint" x="880" y="-452">
+      <GameObject name="waypoint" x="880" y="-452" rotation="0">
         <BoxCollider2D width="60" height="64" />
       </GameObject>
-      <GameObject name="waypoint" x="1324" y="-460">
+      <GameObject name="waypoint" x="1324" y="-460" rotation="0">
         <BoxCollider2D width="60" height="64" />
       </GameObject>
-      <GameObject name="waypoint" x="1328" y="-876">
+      <GameObject name="waypoint" x="1328" y="-876" rotation="0">
         <BoxCollider2D width="60" height="64" />
       </GameObject>
-      <GameObject name="waypoint" x="1336" y="-1404">
+      <GameObject name="waypoint" x="1336" y="-1404" rotation="0">
         <BoxCollider2D width="60" height="64" />
       </GameObject>
-      <GameObject name="waypoint" x="884" y="-1404">
+      <GameObject name="waypoint" x="884" y="-1404" rotation="0">
         <BoxCollider2D width="60" height="64" />
       </GameObject>
-      <GameObject name="waypoint" x="444" y="-1392">
+      <GameObject name="waypoint" x="444" y="-1392" rotation="0">
         <BoxCollider2D width="60" height="64" />
       </GameObject>
-      <GameObject name="waypoint" x="448" y="-868">
+      <GameObject name="waypoint" x="448" y="-868" rotation="0">
         <BoxCollider2D width="60" height="64" />
       </GameObject>
     </GameObject>
     <GameObject name="RoomMarkers">
-      <GameObject name="room" x="152" y="-160">
+      <GameObject name="room" x="152" y="-160" rotation="0">
         <BoxCollider2D width="1512" height="1508" />
       </GameObject>
-      <GameObject name="switch.laserGate" x="1509.760009765625" y="-1420.780029296875">
+      <GameObject name="switch.laserGate" x="1509.760009765625" y="-1420.780029296875" rotation="0">
         <BoxCollider2D width="126.292" height="132.032" />
       </GameObject>
     </GameObject>

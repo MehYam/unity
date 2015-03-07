@@ -180,14 +180,14 @@ namespace PvT.Util
 
         static public void DisablePhysics(GameObject go)
         {
-            go.rigidbody2D.velocity = Vector2.zero;
-            go.rigidbody2D.isKinematic = true;
-            go.collider2D.enabled = false;
+            go.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+            go.GetComponent<Rigidbody2D>().isKinematic = true;
+            go.GetComponent<Collider2D>().enabled = false;
         }
         static public void EnablePhysics(GameObject go)
         {
-            go.rigidbody2D.isKinematic = false;
-            go.collider2D.enabled = true;
+            go.GetComponent<Rigidbody2D>().isKinematic = false;
+            go.GetComponent<Collider2D>().enabled = true;
         }
         static public IEnumerator WaitForRealSeconds(float time)
         {

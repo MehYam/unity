@@ -428,9 +428,9 @@ sealed class FaceForward : IActorBehavior
     public void FixedUpdate(Actor actor)
     {
         var go = actor.gameObject;
-        if (go.rigidbody2D.velocity != Vector2.zero)
+        if (go.GetComponent<Rigidbody2D>().velocity != Vector2.zero)
         {
-            go.transform.eulerAngles = new Vector3(0, 0, Util.GetLookAtAngle(go.rigidbody2D.velocity));
+            go.transform.eulerAngles = new Vector3(0, 0, Util.GetLookAtAngle(go.GetComponent<Rigidbody2D>().velocity));
         }
     }
 }
@@ -474,7 +474,7 @@ sealed class HomeToTarget : IActorBehavior
     {
         var go = actor.gameObject;
         var lookAt = Util.GetLookAtVector(go.transform.position, actor.target.position);
-        actor.gameObject.rigidbody2D.velocity = lookAt * actor.attrs.maxSpeed;
+        actor.gameObject.GetComponent<Rigidbody2D>().velocity = lookAt * actor.attrs.maxSpeed;
     }
 }
 
@@ -538,7 +538,7 @@ sealed class RoamBehavior : IActorBehavior
                 }
                 break;
             case State.BRAKING:
-                if (!brake || actor.rigidbody2D.velocity.sqrMagnitude < 0.1f)
+                if (!brake || actor.GetComponent<Rigidbody2D>().velocity.sqrMagnitude < 0.1f)
                 {
                     PickTarget();
                     state = State.ROTATING;
@@ -673,7 +673,7 @@ sealed class TankTreadAnimator : IActorBehavior
     }
     public void FixedUpdate(Actor actor)
     {
-        left.speed = right.speed = actor.rigidbody2D.velocity.sqrMagnitude;
+        left.speed = right.speed = actor.GetComponent<Rigidbody2D>().velocity.sqrMagnitude;
     }
 }
 
@@ -686,7 +686,7 @@ sealed class HeroAnimator : IActorBehavior
     }
     public void FixedUpdate(Actor actor)
     {
-        anim.speed = Mathf.Max(actor.rigidbody2D.velocity.sqrMagnitude/10, 0.1f);
+        anim.speed = Mathf.Max(actor.GetComponent<Rigidbody2D>().velocity.sqrMagnitude/10, 0.1f);
     }
 }
 
@@ -719,7 +719,7 @@ sealed class GoHomeYouAreDrunkBehavior : IActorBehavior
         }
 
         actor.gameObject.transform.Rotate(0, 0, spinSpeed);
-        if (actor.rigidbody2D == null || !actor.rigidbody2D.isKinematic)
+        if (actor.GetComponent<Rigidbody2D>() == null || !actor.GetComponent<Rigidbody2D>().isKinematic)
         {
             actor.gameObject.transform.Translate(
                 UnityEngine.Random.Range(-VIBE, VIBE), 

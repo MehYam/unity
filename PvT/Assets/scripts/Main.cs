@@ -70,9 +70,9 @@ public class Main : MonoBehaviour
     {
         if (music.active)
         {
-            audio.clip = clip;
+            GetComponent<AudioSource>().clip = clip;
             //audio.loop = true;
-            audio.Play();
+            GetComponent<AudioSource>().Play();
         }
     }
 

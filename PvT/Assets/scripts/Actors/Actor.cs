@@ -60,7 +60,7 @@ public class Actor : MonoBehaviour
         if (_collisionParticles != null)
         {
             var expire = _collisionParticles.GetOrAddComponent<Expire>();
-            expire.SetExpiry(_collisionParticles.particleSystem.duration);
+            expire.SetExpiry(_collisionParticles.GetComponent<ParticleSystem>().duration);
         }
         GameObject.Destroy(gameObject);
     }
@@ -237,7 +237,7 @@ public class Actor : MonoBehaviour
 
     public void AddThrust(Vector2 force)
     {
-        rigidbody2D.AddForce(force);
+        GetComponent<Rigidbody2D>().AddForce(force);
         lastThrust = force;
     }
 
@@ -372,9 +372,9 @@ public class Actor : MonoBehaviour
             }
         }
 
-        if (rigidbody2D != null && attrs.maxSpeed > 0 && rigidbody2D.velocity.sqrMagnitude > attrs.sqrMaxSpeed)
+        if (GetComponent<Rigidbody2D>() != null && attrs.maxSpeed > 0 && GetComponent<Rigidbody2D>().velocity.sqrMagnitude > attrs.sqrMaxSpeed)
         {
-            rigidbody2D.velocity = Vector2.ClampMagnitude(rigidbody2D.velocity, attrs.maxSpeed);
+            GetComponent<Rigidbody2D>().velocity = Vector2.ClampMagnitude(GetComponent<Rigidbody2D>().velocity, attrs.maxSpeed);
         }
         if (((expireTime != EXPIRY_INFINITE) && Time.fixedTime >= expireTime) || (health <= 0))
         {
@@ -449,14 +449,14 @@ public class Actor : MonoBehaviour
             go = ((GameObject)GameObject.Instantiate(Main.Instance.assets.damageSmokeParticles));
             go.transform.parent = host.transform;
             go.transform.localPosition = Util.ScatterRandomly(0.4f);
-            go.particleSystem.Play();
+            go.GetComponent<ParticleSystem>().Play();
         }
         public void Detach()
         {
             if (go != null)
             {
                 go.transform.parent = Main.Instance.EffectParent.transform;
-                go.particleSystem.Stop();
+                go.GetComponent<ParticleSystem>().Stop();
 
                 var expiry = go.AddComponent<Expire>();
                 expiry.SetExpiry(5);
@@ -643,8 +643,8 @@ public class Actor : MonoBehaviour
 
             // replace the "realistic" collision with one that looks better - otherwise lasers
             // look wonky
-            rigidbody2D.angularVelocity = 0;
-            rigidbody2D.velocity = rigidbody2D.velocity.normalized * attrs.maxSpeed;
+            GetComponent<Rigidbody2D>().angularVelocity = 0;
+            GetComponent<Rigidbody2D>().velocity = GetComponent<Rigidbody2D>().velocity.normalized * attrs.maxSpeed;
             ActorBehaviorFactory.Instance.faceForward.FixedUpdate(this);
         }
         else
@@ -656,7 +656,7 @@ public class Actor : MonoBehaviour
                 _collisionParticles.transform.parent = Main.Instance.EffectParent.transform;
             }
             _collisionParticles.transform.position = point;
-            _collisionParticles.particleSystem.Play();
+            _collisionParticles.GetComponent<ParticleSystem>().Play();
 
             TakeDamage(1);
         }

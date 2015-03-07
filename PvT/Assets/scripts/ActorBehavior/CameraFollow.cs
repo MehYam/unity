@@ -11,13 +11,13 @@ public sealed class CameraFollow : MonoBehaviour
     float _preserveCameraZ;
     void Start()
     {
-        _preserveCameraZ = camera.transform.localPosition.z;
+        _preserveCameraZ = GetComponent<Camera>().transform.localPosition.z;
     }
 
     XRect limit = new XRect();
     void CalcBounds()
     {
-        var screenInWorld = Util.GetScreenRectInWorldCoords(camera);
+        var screenInWorld = Util.GetScreenRectInWorldCoords(GetComponent<Camera>());
 
         var borderMin = new Vector2(Border.transform.FindChild("left").localPosition.x, Border.transform.FindChild("bottom").localPosition.y);
         var borderMax = new Vector2(Border.transform.FindChild("right").localPosition.x, Border.transform.FindChild("top").localPosition.y);
@@ -41,7 +41,7 @@ public sealed class CameraFollow : MonoBehaviour
                 CalcBounds();
             }
             var clampedPos = limit.Clamp(Target.transform.localPosition);
-            camera.transform.localPosition = new Vector3(clampedPos.x, clampedPos.y, _preserveCameraZ);
+            GetComponent<Camera>().transform.localPosition = new Vector3(clampedPos.x, clampedPos.y, _preserveCameraZ);
         }
 	}
 }

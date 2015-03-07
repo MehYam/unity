@@ -272,7 +272,6 @@ public sealed class MobAI
 
                 if (_preventativeFaceplantCheck.reached)
                 {
-                    Debug.Log(actor.name + " testing.....");
                     _preventativeFaceplantCheck.Start();
 
                     var player = Main.Instance.game.player;

@@ -75,14 +75,14 @@ public sealed class ShieldWeaponController
 
             _shield.transform.parent = null;
             _shield.AddComponent<Rigidbody2D>();
-            _shield.rigidbody2D.drag = 1;
-            _shield.rigidbody2D.mass = 50;
+            _shield.GetComponent<Rigidbody2D>().drag = 1;
+            _shield.GetComponent<Rigidbody2D>().mass = 50;
 
-            var shieldVelocity = actor.rigidbody2D.velocity;
+            var shieldVelocity = actor.GetComponent<Rigidbody2D>().velocity;
 
             shieldVelocity += Util.GetLookAtVector(_shield.transform.rotation.eulerAngles.z) * Consts.SHIELD_BOOST;
 
-            _shield.rigidbody2D.velocity = shieldVelocity;
+            _shield.GetComponent<Rigidbody2D>().velocity = shieldVelocity;
             _shield = null;
 
             _limiter.Start();

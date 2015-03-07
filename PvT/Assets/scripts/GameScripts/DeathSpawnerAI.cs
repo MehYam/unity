@@ -27,7 +27,7 @@ public class DeathSpawnerAI : MonoBehaviour
                     MobAI.Instance.AttachAI(subMob.GetComponent<Actor>());
 
                     subMob.transform.position = transform.position + Util.ScatterRandomly(0.5f);
-                    subMob.rigidbody2D.velocity = Util.ScatterRandomly(0.5f);
+                    subMob.GetComponent<Rigidbody2D>().velocity = Util.ScatterRandomly(0.5f);
                     subMob.transform.eulerAngles = new Vector3(0, 0, Random.Range(0, 360));
                 }
             }

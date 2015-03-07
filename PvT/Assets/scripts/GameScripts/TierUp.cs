@@ -28,7 +28,7 @@ public class TierUp : MonoBehaviour
         flare.transform.localPosition = Vector2.zero;
 
         yield return new WaitForSeconds(Consts.FLARE_ANIMATION_PEAK_SECONDS);
-        flare.particleSystem.Play();
+        flare.GetComponent<ParticleSystem>().Play();
 
         main.game.PlaySound(Sounds.GlobalEvent.LEVELUP, transform.position);
 
@@ -38,7 +38,7 @@ public class TierUp : MonoBehaviour
 
         var player = main.game.player;
         player.transform.rotation = transform.rotation;
-        player.rigidbody2D.velocity = rigidbody2D.velocity;
+        player.GetComponent<Rigidbody2D>().velocity = GetComponent<Rigidbody2D>().velocity;
 
         flare.transform.parent = player.transform;
         flare.transform.localPosition = Vector2.zero;

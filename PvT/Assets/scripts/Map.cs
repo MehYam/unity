@@ -145,7 +145,7 @@ public sealed class Map : MonoBehaviour
 
     void AddSwitch(GameObject gameObject)
     {
-        gameObject.collider2D.isTrigger = true;
+        gameObject.GetComponent<Collider2D>().isTrigger = true;
         gameObject.AddComponent<Switch>();
 
         gameObject.layer = (int)Consts.CollisionLayer.ENVIRONMENT;

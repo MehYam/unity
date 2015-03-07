@@ -37,7 +37,7 @@ public class PlayerHopInput : IActorBehavior
             jumpVector *= HopBehavior.AIRBORNE_TIME * 1.4f ;  //KAI: magic value
 
             var velocity = jumpVector;
-            actor.rigidbody2D.velocity = velocity;
+            actor.GetComponent<Rigidbody2D>().velocity = velocity;
 
             hop.Hop(Consts.CollisionLayer.FRIENDLY_AMMO);
         }

@@ -97,13 +97,13 @@ public class test : MonoBehaviour
 
         while(true)
         {
-            p.particleSystem.startColor = new Color(
+            p.GetComponent<ParticleSystem>().startColor = new Color(
                 UnityEngine.Random.Range(0, 1f),
                 UnityEngine.Random.Range(0, 1f),
                 UnityEngine.Random.Range(0, 1f)
                 );
 
-            p.particleSystem.Play();
+            p.GetComponent<ParticleSystem>().Play();
 
             yield return new WaitForSeconds(2);
         }

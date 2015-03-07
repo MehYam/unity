@@ -2,126 +2,106 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!78 &1
 TagManager:
+  serializedVersion: 2
   tags:
   - player
   - fireNode
   - spawnedMobTag
   - playerSpawn
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
   - 
-  Builtin Layer 0: Default
-  Builtin Layer 1: TransparentFX
-  Builtin Layer 2: Ignore Raycast
-  Builtin Layer 3: 
-  Builtin Layer 4: Water
-  Builtin Layer 5: UI
-  Builtin Layer 6: 
-  Builtin Layer 7: 
-  User Layer 8: mobs
-  User Layer 9: mobAmmo
-  User Layer 10: friendlyAmmo
-  User Layer 11: friendlyMobs
-  User Layer 12: environment
-  User Layer 13: herolings
-  User Layer 14: herolingsReturning
-  User Layer 15: bossNoMobCollision
-  User Layer 16: 
-  User Layer 17: 
-  User Layer 18: 
-  User Layer 19: 
-  User Layer 20: 
-  User Layer 21: 
-  User Layer 22: 
-  User Layer 23: 
-  User Layer 24: 
-  User Layer 25: 
-  User Layer 26: 
-  User Layer 27: 
-  User Layer 28: 
-  User Layer 29: 
-  User Layer 30: 
-  User Layer 31: 
+  - Water
+  - UI
+  - 
+  - 
+  - mobs
+  - mobAmmo
+  - friendlyAmmo
+  - friendlyMobs
+  - environment
+  - herolings
+  - herolingsReturning
+  - bossNoMobCollision
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
   m_SortingLayers:
   - name: Default
-    userID: 0
     uniqueID: 0
     locked: 0
   - name: '---'
-    userID: 1
-    uniqueID: 1652286171
+    uniqueID: 1
     locked: 0
   - name: '---'
-    userID: 2
-    uniqueID: 590410835
+    uniqueID: 2
     locked: 0
   - name: ground
-    userID: 3
-    uniqueID: 3104192739
+    uniqueID: 3
     locked: 0
   - name: tanktread
-    userID: 4
-    uniqueID: 3844244185
+    uniqueID: 4
     locked: 0
   - name: tankbody
-    userID: 5
-    uniqueID: 1835539417
+    uniqueID: 5
     locked: 0
   - name: tankturret
-    userID: 6
-    uniqueID: 1172581653
+    uniqueID: 6
     locked: 0
   - name: ammo
-    userID: 7
-    uniqueID: 418551787
+    uniqueID: 7
     locked: 0
   - name: ammo_unused
-    userID: 8
-    uniqueID: 2785626797
+    uniqueID: 8
     locked: 0
   - name: mobs
-    userID: 9
-    uniqueID: 2004457675
+    uniqueID: 9
     locked: 0
   - name: friendly
-    userID: 10
-    uniqueID: 3116271589
+    uniqueID: 10
     locked: 0
   - name: ammoHigh
-    userID: 11
-    uniqueID: 3839475155
+    uniqueID: 11
     locked: 0
   - name: explosions
-    userID: 12
-    uniqueID: 2268040971
+    uniqueID: 12
     locked: 0
   - name: smoke
-    userID: 13
-    uniqueID: 3332195697
+    uniqueID: 13
     locked: 0
   - name: wallShadows
-    userID: 15
-    uniqueID: 4277736523
+    uniqueID: 14
     locked: 0
   - name: walls
-    userID: 14
-    uniqueID: 3549090055
+    uniqueID: 15
     locked: 0
   - name: clouds
-    userID: 16
-    uniqueID: 149676437
+    uniqueID: 16
     locked: 0
   - name: UI
-    userID: 17
-    uniqueID: 1629100023
+    uniqueID: 17
     locked: 0
   - name: UI Overlay1
-    userID: 18
-    uniqueID: 2674948321
+    uniqueID: 18
     locked: 0
   - name: UI Overlay2
-    userID: 19
-    uniqueID: 658192697
+    uniqueID: 19
     locked: 0
-  - name: New Layer 20
-    userID: 20
-    uniqueID: 409698713
+  - name: unused_x
+    uniqueID: 20
     locked: 0

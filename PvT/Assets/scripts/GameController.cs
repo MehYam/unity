@@ -140,7 +140,7 @@ public sealed class GameController : IGame
         SpawnPlayer(oldPlayer.transform.position);
 
         player.transform.rotation = oldPlayer.transform.rotation;
-        player.rigidbody2D.velocity = oldPlayer.rigidbody2D.velocity;
+        player.GetComponent<Rigidbody2D>().velocity = oldPlayer.GetComponent<Rigidbody2D>().velocity;
 
         GameObject.Destroy(oldPlayer);
     }
@@ -180,7 +180,7 @@ public sealed class GameController : IGame
         goAmmo.transform.parent = Main.Instance.AmmoParent.transform;
         goAmmo.layer = (int)layer;
 
-        goAmmo.rigidbody2D.drag = 0;
+        goAmmo.GetComponent<Rigidbody2D>().drag = 0;
 
         var actorAmmo = goAmmo.GetComponent<Actor>();
         actorAmmo.SetExpiry(weapon.attrs.ttl);
@@ -200,13 +200,13 @@ public sealed class GameController : IGame
         if (type.attrs.acceleration == 0)
         {
             // give the ammo instant acceleration
-            goAmmo.rigidbody2D.mass = 0;
-            goAmmo.rigidbody2D.velocity = Util.GetLookAtVector(actorAmmo.transform.rotation.eulerAngles.z) * type.attrs.maxSpeed;
+            goAmmo.GetComponent<Rigidbody2D>().mass = 0;
+            goAmmo.GetComponent<Rigidbody2D>().velocity = Util.GetLookAtVector(actorAmmo.transform.rotation.eulerAngles.z) * type.attrs.maxSpeed;
         }
         else
         {
             // treat the ammo like a vehicle (i.e. rocket)
-            goAmmo.rigidbody2D.mass = type.mass;
+            goAmmo.GetComponent<Rigidbody2D>().mass = type.mass;
             actorAmmo.behavior = ActorBehaviorFactory.Instance.thrust;
         }
 

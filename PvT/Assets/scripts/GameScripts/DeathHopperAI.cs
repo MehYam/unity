@@ -47,7 +47,7 @@ public class DeathHopperAI : MonoBehaviour
             hop.Hop(Consts.CollisionLayer.MOB_AMMO);
 
             var lookAt = Util.GetLookAtVector(actor.transform.position, game.player.transform.position);
-            actor.rigidbody2D.velocity = lookAt * actor.attrs.maxSpeed;
+            actor.GetComponent<Rigidbody2D>().velocity = lookAt * actor.attrs.maxSpeed;
 
             yield return StartCoroutine(Util.YieldUntil(() => hop.complete ));
 

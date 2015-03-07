@@ -112,7 +112,7 @@ public sealed class Boss1AI : MonoBehaviour
             var mob = game.SpawnMob(type);
             mob.tag = Consts.SPAWNED_MOB_TAG;
             mob.AddComponent<AlphaInherit>();
-            mob.rigidbody2D.isKinematic = true;
+            mob.GetComponent<Rigidbody2D>().isKinematic = true;
 
             Util.PrepareLaunch(transform, mob.transform, weapon.offset);
             mob.transform.parent = transform;
@@ -139,7 +139,7 @@ public sealed class Boss1AI : MonoBehaviour
         foreach (var spawn in toDetach)
         {
             spawn.parent = newParent;
-            spawn.rigidbody2D.isKinematic = false;
+            spawn.GetComponent<Rigidbody2D>().isKinematic = false;
             spawn.GetComponent<Actor>().behaviorEnabled = true;
             spawn.GetComponent<AlphaInherit>().enabled = false;
         }

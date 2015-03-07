@@ -64,7 +64,7 @@ public class PolygonEditor : Editor {
 	// Draws and handles messages in the Unity scene view
 	public void OnSceneGUI()
 	{
-		Renderer renderer = polygon.renderer;
+		Renderer renderer = polygon.GetComponent<Renderer>();
 		if (renderer)
 			EditorUtility.SetSelectedWireframeHidden(renderer, CurrentState != State.Normal && m_hideWireframe);
 

@@ -15,7 +15,7 @@ public class testcollider : MonoBehaviour
     {
         //Debug.Log("OnTriggerStay2D");
 
-        other.rigidbody2D.AddForce(Vector2.right * 5);
+        other.GetComponent<Rigidbody2D>().AddForce(Vector2.right * 5);
     }
     void OnTriggerExit2D(Collider2D other)
     {

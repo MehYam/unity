@@ -20,9 +20,9 @@ public sealed class DamagingHotspot : MonoBehaviour
             var damage = GetComponent<Actor>().collisionDamage;
             otherActor.TakeDamage(damage * Time.fixedDeltaTime);
 
-            if (other.rigidbody2D != null)
+            if (other.GetComponent<Rigidbody2D>() != null)
             {
-                other.rigidbody2D.AddForce(Util.GetLookAtVector(transform.rotation.eulerAngles.z) * damage * Consts.FUSION_KNOCKBACK_MULTIPLIER);
+                other.GetComponent<Rigidbody2D>().AddForce(Util.GetLookAtVector(transform.rotation.eulerAngles.z) * damage * Consts.FUSION_KNOCKBACK_MULTIPLIER);
             }
         }
     }

@@ -20,9 +20,10 @@ public class Asset
     public GameObject ToRawGameObject(Consts.SortingLayer sortingLayer)
     {
         var retval = (GameObject)GameObject.Instantiate(prefab);
-        if (retval.renderer != null)
+        var renderer = retval.GetComponent<SpriteRenderer>();
+        if (renderer != null)
         {
-            retval.renderer.sortingLayerID = (int)sortingLayer;
+            renderer.sortingLayerID = (int)sortingLayer;
         }
         return retval;
     }
@@ -227,8 +228,8 @@ public sealed class TankHullType : ActorType
     public override GameObject Spawn(Consts.SortingLayer sortingLayer, bool rigidBody)
     {
         var go = base.Spawn(sortingLayer, true);
-        go.rigidbody2D.drag = 1;
-        go.rigidbody2D.angularDrag = 5;
+        go.GetComponent<Rigidbody2D>().drag = 1;
+        go.GetComponent<Rigidbody2D>().angularDrag = 5;
         return go;
     }
 }

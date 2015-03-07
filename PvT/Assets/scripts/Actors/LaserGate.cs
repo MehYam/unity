@@ -23,13 +23,14 @@ public sealed class LaserGate : MonoBehaviour
 
     public void Flicker(float seconds)
     {
+        Debug.Log("Flicker");
         StartCoroutine(FlickerScript(seconds));
     }
 
     IEnumerator FlickerScript(float seconds)
     {
         var renderer = _beam.GetComponent<SpriteRenderer>();
-        _beam.collider2D.enabled = false;
+        _beam.GetComponent<Collider2D>().enabled = false;
 
         Timer rate = new Timer(seconds);
         while (!rate.reached)
@@ -40,6 +41,6 @@ public sealed class LaserGate : MonoBehaviour
         }
         Util.SetAlpha(renderer, _originalAlpha);
 
-        _beam.collider2D.enabled = true;
+        _beam.GetComponent<Collider2D>().enabled = true;
     }
 }

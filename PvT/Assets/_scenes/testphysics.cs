@@ -20,7 +20,7 @@ public class testphysics : MonoBehaviour
     {
         if (transform.position.x > 0)
         {
-            rigidbody2D.AddForce(new Vector2(-acceleration, 0));
+            GetComponent<Rigidbody2D>().AddForce(new Vector2(-acceleration, 0));
         }
 	}
 }
