@@ -486,6 +486,7 @@ public class Actor : MonoBehaviour
     }
     void LateUpdate()
     {
+        Debug.Log(GetComponent<Rigidbody2D>().velocity);
         if (trackingArrowEnabled)
         {
             UpdateTrackingArrow();

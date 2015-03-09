@@ -180,7 +180,8 @@ public sealed class GameController : IGame
         goAmmo.transform.parent = Main.Instance.AmmoParent.transform;
         goAmmo.layer = (int)layer;
 
-        goAmmo.GetComponent<Rigidbody2D>().drag = 0;
+        var rigidbody = goAmmo.GetComponent<Rigidbody2D>();
+        rigidbody.drag = 0;
 
         var actorAmmo = goAmmo.GetComponent<Actor>();
         actorAmmo.SetExpiry(weapon.attrs.ttl);
@@ -196,19 +197,22 @@ public sealed class GameController : IGame
                 renderer.color = weapon.color;
             }
         }
+        goAmmo.GetComponent<Collider2D>().enabled = false;
+
         Util.PrepareLaunch(launcher.transform, actorAmmo.transform, weapon.offset, weapon.angle);
         if (type.attrs.acceleration == 0)
         {
             // give the ammo instant acceleration
-            goAmmo.GetComponent<Rigidbody2D>().mass = 0;
-            goAmmo.GetComponent<Rigidbody2D>().velocity = Util.GetLookAtVector(actorAmmo.transform.rotation.eulerAngles.z) * type.attrs.maxSpeed;
+            rigidbody.mass = 0;
+            rigidbody.velocity = Util.GetLookAtVector(actorAmmo.transform.rotation.eulerAngles.z) * type.attrs.maxSpeed;
         }
         else
         {
             // treat the ammo like a vehicle (i.e. rocket)
-            goAmmo.GetComponent<Rigidbody2D>().mass = type.mass;
+            rigidbody.mass = type.mass;
             actorAmmo.behavior = ActorBehaviorFactory.Instance.thrust;
         }
+        Debug.Log("Velocity: " + rigidbody.velocity);
 
         if (launcher.actorType is TankTurretType)
         {

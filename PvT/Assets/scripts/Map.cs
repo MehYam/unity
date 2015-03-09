@@ -157,8 +157,6 @@ public sealed class Map : MonoBehaviour
         while(true)
         {
             var playerPos = Main.Instance.game.player.transform.position;
-
-            Debug.Log(string.Format("player pos {0} in room {1}", playerPos, _roomBoundaries[0].Contains(playerPos)));
             yield return new WaitForSeconds(1);
         }
     }
