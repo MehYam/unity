@@ -12,6 +12,21 @@ using PvT.Util;
 // delineate into subclasses, or find a composition strategy
 public class Actor : MonoBehaviour
 {
+    public bool isAmmo { get; set; }
+    public bool reflectsAmmo { get; set; }
+    public bool showsHealthBar { get; set; }
+    public bool explodesOnDeath { get; set; }
+    public bool isCapturable { get; set; }
+    public float lastFaceplantTime { get; set; }
+    public bool detectFaceplants { get; set; }
+    public Vector2 lastThrust { get; private set; }
+    public ITarget target { get; set; }
+
+    public float expireTime { get; private set; }
+
+    public bool isPlayer { get { return GetComponent<Player>() != null; } }
+    public bool isHero { get { return actorType.name == "HERO"; } }
+
     public Actor()
     {
         expireTime = EXPIRY_INFINITE;
@@ -30,8 +45,56 @@ public class Actor : MonoBehaviour
         behaviorEnabled = true;
     }
 
+    ActorType _actorType;
+    public ActorType actorType
+    {
+        get { return _actorType; }
+        private set
+        {
+            if (value == null)
+            {
+                Debug.LogError(string.Format("No actor type found for actor name {0}", name));
+            }
+            if (_actorType != null)
+            {
+                Debug.LogWarning("Actor.actorType is being overwritten?");
+            }
+            _actorType = value;
+
+            health = _actorType.attrs.maxHealth;
+            collisionDamage = health / 4;
+
+            if (value.dropShadow)
+            {
+                gameObject.AddComponent<DropShadow>();
+            }
+
+            if (_actorModifiers != null)
+            {
+                _actorModifiers = null;
+            }
+        }
+    }
+
     protected virtual void Start()  // KAI: interesting Unity gotcha - must document somewhere
     {
+        Debug.Log("Actor.Start");
+
+        // look up the stats for this actor by name
+        actorType = Main.Instance.game.loader.GetActorType(name);
+
+        // hook up the physics
+        var body = gameObject.AddComponent<Rigidbody2D>();
+        body.mass = float.IsNaN(actorType.mass) ? 0 : actorType.mass;
+        body.drag = 0.5f;
+        body.angularDrag = 5;
+        if (actorType.mass < 0)
+        {
+            body.isKinematic = true;
+        }
+        GetComponent<Collider2D>().sharedMaterial = Main.Instance.assets.Bounce;
+
+        // miscellaneous
         var trail = GetComponentInChildren<TrailRenderer>();
         if (trail != null)
         {
@@ -39,11 +102,9 @@ public class Actor : MonoBehaviour
             trail.sortingLayerID = ourSprite.sortingLayerID;
             trail.sortingOrder = ourSprite.sortingOrder - 1;
         }
+
         GlobalGameEvent.Instance.FireActorSpawned(this);
     }
-
-    public bool isPlayer { get { return Main.Instance.game.player == gameObject; } }
-    public bool isHero { get { return actorType.name == "HERO"; } }
 
     /// <summary>
     /// UNTIL A BETTER DESIGN CAN BE THOUGHT THROUGH, MOB AND PLAYER ACTORS MUST DIE HERE - ELSE,
@@ -51,6 +112,7 @@ public class Actor : MonoBehaviour
     /// </summary>
     void Die()
     {
+        Debug.Log("Actor Die! " + health);
         GlobalGameEvent.Instance.FireActorDeath(this);
         if (_damageSmoke != null)
         {
@@ -81,21 +143,6 @@ public class Actor : MonoBehaviour
         }
     }
 
-    ActorType _actorType;
-    public ActorType actorType 
-    {
-        get { return _actorType; }
-        set
-        {
-            _actorType = value;
-
-            health = _actorType.attrs.maxHealth;
-            if (_actorModifiers != null)
-            {
-                _actorModifiers = null;
-            }
-        }
-    }
     ActorAttrs _lazyAttrs; // this is determined lazily
     public ActorAttrs attrs
     { 
@@ -216,24 +263,12 @@ public class Actor : MonoBehaviour
         }
     }
 
-    public float expireTime { get; private set; }
-
     static public readonly float EXPIRY_IMMEDIATE = -1;
     static public readonly float EXPIRY_INFINITE = 0;
     public void SetExpiry(float secondsFromNow)
     {
         expireTime = secondsFromNow == EXPIRY_INFINITE ? EXPIRY_INFINITE : Time.fixedTime + secondsFromNow;
     }
-
-    public bool isAmmo { get; set; }
-    public bool reflectsAmmo { get; set; }
-    public bool showsHealthBar{ get; set; }
-    public bool explodesOnDeath { get; set; }
-    public bool isCapturable { get; set; }
-    public float lastFaceplantTime { get; set; }
-    public bool detectFaceplants { get; set; }
-    public Vector2 lastThrust { get; private set; }
-    public ITarget target { get; set; }
 
     public void AddThrust(Vector2 force)
     {
@@ -486,7 +521,6 @@ public class Actor : MonoBehaviour
     }
     void LateUpdate()
     {
-        Debug.Log(GetComponent<Rigidbody2D>().velocity);
         if (trackingArrowEnabled)
         {
             UpdateTrackingArrow();

@@ -116,27 +116,12 @@ public class ActorType
         var go = asset.ToRawGameObject(sortingLayer);
         if (rigidBody)
         {
-            var body = go.AddComponent<Rigidbody2D>();
-            body.mass = float.IsNaN(mass) ? 0 : mass;
-            body.drag = 0.5f;
-            body.angularDrag = 5;
-            if (mass < 0)
-            {
-                body.isKinematic = true;
-            }
-            go.GetComponent<Collider2D>().sharedMaterial = Main.Instance.assets.Bounce;
         }
 
         //KAI: MAJOR CHEESE
         var actor = this.name == "HEROLING" ? go.AddComponent<HerolingActor>() : go.AddComponent<Actor>();
         actor.name = this.name;
-        actor.actorType = this;
-        actor.collisionDamage = attrs.maxHealth / 4;
 
-        if (dropShadow)
-        {
-            go.AddComponent<DropShadow>();
-        }
         return go;
     }
     public override string ToString()

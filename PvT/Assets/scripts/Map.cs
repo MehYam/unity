@@ -156,7 +156,7 @@ public sealed class Map : MonoBehaviour
     {
         while(true)
         {
-            var playerPos = Main.Instance.game.player.transform.position;
+            //var playerPos = Main.Instance.game.player.transform.position;
             yield return new WaitForSeconds(1);
         }
     }

@@ -100,14 +100,12 @@ public sealed class GameController : IGame
         {
             actorTypeName = String.IsNullOrEmpty(main.defaultVehicle) ? "hero" : main.defaultVehicle;
         }
-        Debug.Log("Spawning player --- " + actorTypeName);
 
         var tank = loader.GetTank(actorTypeName);
         if (tank == null)
         {
             var playerVehicle = loader.GetActorType(actorTypeName);
             var go = playerVehicle.Spawn(Consts.SortingLayer.FRIENDLY, true);
-            InitPlayerVehicle(go, playerVehicle);
             SetPlayerPlaneBehaviors(go, playerVehicle);
 
             this.player = go;
@@ -115,7 +113,6 @@ public sealed class GameController : IGame
         else
         {
             var tankHelper = new TankSpawnHelper(this, tank.hullName, tank.turretName);
-            InitPlayerVehicle(tankHelper.hullGO, tankHelper.hull);
             SetPlayerTankBehaviors(tankHelper);
 
             this.player = tankHelper.hullGO;
@@ -125,13 +122,13 @@ public sealed class GameController : IGame
 
         this.player.gameObject.transform.position = location;
 
-        enemyInPossession = !playerActor.isHero;
-        if (!enemyInPossession)
-        {
-            // Hero gets no collisionDamage
-            playerActor.collisionDamage = 0;
-        }
-        GlobalGameEvent.Instance.FirePlayerSpawned(playerActor);
+        // KAI: commenting this out in branch "designRevamp"
+        //enemyInPossession = !playerActor.isHero;
+        //if (!enemyInPossession)
+        //{
+        //    // Hero gets no collisionDamage
+        //    playerActor.collisionDamage = 0;
+        //}
     }
     public void SwapPlayer(string key)
     {
@@ -375,7 +372,8 @@ public sealed class GameController : IGame
         player = host.gameObject;
         var vehicle = player.GetComponent<Actor>().actorType as ActorType;
 
-        InitPlayerVehicle(player, vehicle);
+        //KAI: broken
+        //InitPlayerVehicle(player, vehicle);
         if (vehicle is TankHullType)
         {
             var reconstructedHelper = new TankSpawnHelper(player);
@@ -462,10 +460,6 @@ public sealed class GameController : IGame
         {
             behaviors.Add(new PlayerHopInput());
         }
-        else
-        {
-            behaviors.Add(new PlayerInput(bf.faceForward));
-        }
 
         var actor = go.GetComponent<Actor>();
         var heroType = Main.Instance.game.loader.GetActorType("HERO");
@@ -545,7 +539,6 @@ public sealed class GameController : IGame
 
         // hull
         var behaviors = new CompositeBehavior();
-        behaviors.Add(new PlayerInput());
         behaviors.Add(bf.faceForward);
 
         if (tankHelper.hull.HasWeapons)
@@ -574,13 +567,6 @@ public sealed class GameController : IGame
         // captured ship, add herolings to secondary fire
         var secondaryFire = bf.CreateAutofire(Consts.CollisionLayer.HEROLINGS, herolingFire);
         behaviors.Add(bf.CreatePlayerButton(MasterInput.impl.Secondary, secondaryFire));
-    }
-    static void InitPlayerVehicle(GameObject player, ActorType vehicle)
-    {
-        player.name += " player";
-        player.layer = (int)Consts.CollisionLayer.FRIENDLY;
-
-        Camera.main.GetComponent<CameraFollow>().Target = player;
     }
 
     void OnActorDeath(Actor actor)
