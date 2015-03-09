@@ -127,7 +127,7 @@ public class HerolingActor : Actor
             _roamBoredom = null;
             _attachBoredom = new Timer(Consts.HEROLING_ATTACH_BOREDOM);
 
-            ++mob.GetComponent<Actor>().attachedHerolings;
+            //++mob.GetComponent<Actor>().attachedHerolings;
             GlobalGameEvent.Instance.FireHerolingAttached(mob.GetComponent<Actor>());
         }
     }
@@ -160,7 +160,6 @@ public class HerolingActor : Actor
             {
                 transform.parent = null;
                 
-                --parentActor.attachedHerolings;
                 GlobalGameEvent.Instance.FireHerolingDetached(parentActor);
             }
         }

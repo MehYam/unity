@@ -21,6 +21,21 @@ public sealed class Mob : MonoBehaviour
         {
             Debug.LogError(string.Format("Mob {0} has no attached actor", name));
         }
+
+        //KAI: either rethink this, or create a HerolingHost class
+        actor.isCapturable = true;
 	}
 	
+    // heroling handling - might be worth moving this to a separate HerolingHost class
+    int _attachedHerolings;
+    void OnHerolingCollide(Heroling heroling)
+    {
+        ++_attachedHerolings;
+
+        heroling.Attach(gameObject);
+    }
+    void OnHerolingDetach(Heroling heroling)
+    {
+        --_attachedHerolings;
+    }
 }

@@ -60,13 +60,13 @@ public sealed class Heroling : MonoBehaviour
     }
 
     Timer? _attachBoredom;
-    public void AttachToObject(Transform other)
+    public void Attach(GameObject attachTo)
     {
-        var otherActor = other.GetComponent<Actor>();
-        if (otherActor.isCapturable)
+        var actor = attachTo.GetComponent<Actor>();
+        if (actor.isCapturable)
         {
             // attach
-            transform.parent = other;
+            transform.parent = attachTo.transform;
 
             // sidle up
             var gimmeAKiss = transform.localPosition + Util.ScatterRandomly(0.25f);
@@ -80,8 +80,7 @@ public sealed class Heroling : MonoBehaviour
             _roamBoredom = null;
             _attachBoredom = new Timer(Consts.HEROLING_ATTACH_BOREDOM);
 
-            ++other.GetComponent<Actor>().attachedHerolings;
-            GlobalGameEvent.Instance.FireHerolingAttached(other.GetComponent<Actor>());
+            GlobalGameEvent.Instance.FireHerolingAttached(attachTo.GetComponent<Actor>());
         }
     }
 
@@ -90,12 +89,12 @@ public sealed class Heroling : MonoBehaviour
         gameObject.layer = (int)Consts.CollisionLayer.HEROLINGS_RETURNING;
         if (transform.parent != null)  //KAI: dorked, because all ammo's parented initially
         {
+            transform.parent.gameObject.SendMessage("OnHerolingDetach", this);
             var parentActor = transform.parent.GetComponent<Actor>();
             if (parentActor != null)
             {
                 transform.parent = null;
 
-                --parentActor.attachedHerolings;
                 GlobalGameEvent.Instance.FireHerolingDetached(parentActor);
             }
         }
@@ -124,7 +123,7 @@ public sealed class Heroling : MonoBehaviour
     void OnCollisionEnter2D(Collision2D collision)
     {
         //Debug.Log(string.Format("{0} receiving collision from {1}", name, collision.gameObject.name));
-        collision.gameObject.SendMessage("OnHerolingCollide", gameObject);
+        collision.gameObject.SendMessage("OnHerolingCollide", this);
     }
 
     static readonly IActorBehavior ROAM = new CompositeBehavior(

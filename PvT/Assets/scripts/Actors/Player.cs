@@ -56,8 +56,8 @@ public sealed class Player : MonoBehaviour
         }
     }
 
-    void OnHerolingCollide(GameObject heroling)
+    void OnHerolingCollide(Heroling heroling)
     {
-        Destroy(heroling);
+        Destroy(heroling.gameObject);
     }
 }

@@ -303,10 +303,13 @@ public class Actor : MonoBehaviour
     public float takenDamageMultiplier { get; set; }
     public float collisionDamage { get; set; }
 
-    public int attachedHerolings { get; set; }
     public float overwhelmPct
     {
-        get { return health == 0 ? 0 : Mathf.Min(attachedHerolings * Consts.HEROLING_HEALTH_OVERWHELM / health, 1); }
+        get 
+        {
+            return 0;
+            //return health == 0 ? 0 : Mathf.Min(attachedHerolings * Consts.HEROLING_HEALTH_OVERWHELM / health, 1); 
+        }
     }
 
     struct OverwhelmBarState
@@ -454,6 +457,7 @@ public class Actor : MonoBehaviour
         }
 
         //KAI: copy pasta +1 w/ health bar, might be worth generalizing
+        int attachedHerolings = 0;
         if (attachedHerolings > 0)
         {
             if (_overwhelm.bar == null)
