@@ -157,8 +157,7 @@ public sealed class GameController : IGame
             var actor = loader.GetActorType(actorKey);
             retval = actor.Spawn(Consts.SortingLayer.MOB, true);
         }
-        retval.layer = (int)Consts.CollisionLayer.MOB;
-        retval.transform.parent = Main.Instance.MobParent.transform;
+        retval.AddComponent<Mob>();
         return retval;
     }
 

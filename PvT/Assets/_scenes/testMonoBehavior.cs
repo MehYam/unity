@@ -3,8 +3,11 @@ using System.Collections;
 
 public class testMonoBehavior : MonoBehaviour
 {
-    static int iLog;
-    static void Log(string str)
+    public bool LetScriptLive = true;
+    public bool LetObjectLive = true;
+
+    int iLog;
+    void Log(string str)
     {
         Debug.Log(string.Format("++++++++++++ {0}. {1}", iLog++, str));
     }
@@ -27,6 +30,16 @@ public class testMonoBehavior : MonoBehaviour
         {
             Log("Update");
             _firstUpdate = true;
+        }
+        if (!LetScriptLive)
+        {
+            Log("Destroying the monobehavior");
+            Destroy(this);
+        }
+        if (!LetObjectLive)
+        {
+            Log("Destroying the object");
+            Destroy(gameObject);
         }
     }
     bool _firstFixedUpdate = false;
