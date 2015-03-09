@@ -92,6 +92,7 @@ public sealed class GameController : IGame
         private set; 
     }
 
+    //KAI: this needs to trim down to almost nothing
     public void SpawnPlayer(Vector2 location, string actorTypeName = null)
     {
         var main = Main.Instance;

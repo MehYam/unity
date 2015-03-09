@@ -15,6 +15,7 @@ public class Loader
 
     readonly Dictionary<string, Asset> _miscLookup;
     readonly Dictionary<string, ActorType> _actorTypeLookup;
+    readonly Dictionary<string, ActorType> _actorTypeLookupFromAssetId;
     readonly Dictionary<string, Tank> _tankLookup;
     readonly Dictionary<string, TankHullType> _tankHullLookup;
     readonly Dictionary<string, TankTurretType> _tankTurretLookup;
@@ -36,6 +37,7 @@ public class Loader
         var weaponStrings = LoadWeaponStrings(config.Weapons.text);
 
         _actorTypeLookup = LoadActorTypes(config.Actors.text, "actors/", weaponStrings);
+        _actorTypeLookupFromAssetId = MapAssetIdToActorTypes(_actorTypeLookup);
 
         _tankLookup = LoadTanks(config.Tanks.text);
         _tankHullLookup = LoadTankHullTypes(config.TankHulls.text, "actors/", weaponStrings);
@@ -115,6 +117,12 @@ public class Loader
         _actorTypeLookup.TryGetValue(type, out retval);
         return retval;
     }
+    public ActorType GetActorTypeFromAssetId(string objectName)
+    {
+        ActorType retval = null;
+        _actorTypeLookupFromAssetId.TryGetValue(objectName, out retval);
+        return retval;
+    }
     public Tank GetTank(string tankName)
     {
         Tank retval = null;
@@ -173,7 +181,7 @@ public class Loader
         var upgrade = csv.NextString();
         var airepel = csv.NextFloat();
 
-        var asset = LoadAsset(assetID, assetPath);
+        var asset = GetOrLoadAsset(assetID, assetPath);
 
         // parse the weapons, if there are any
         IList<string> weaponStrings = null;
@@ -228,19 +236,19 @@ public class Loader
         var hullPivotY = csv.NextFloat();
         return new TankTurretType(baseActorType, hullPivotY);
     }
-    Asset LoadAsset(string name, string assetPath)
+    Asset GetOrLoadAsset(string assetID, string assetPath)
     {
         Asset retval = null;
-        if (!_assets.TryGetValue(name, out retval))
+        if (!_assets.TryGetValue(assetID, out retval))
         {
-            var fullPath = assetPath + name;
+            var fullPath = assetPath + assetID;
             var prefab = Resources.Load<GameObject>(fullPath);
             if (prefab == null)
             {
                 Debug.LogError("Warning:  no asset found for " + fullPath);
             }
             prefab.transform.localPosition = Vector3.zero;
-            retval = new Asset(name, prefab);
+            retval = new Asset(assetID, prefab);
         }
         return retval;
     }
@@ -253,7 +261,7 @@ public class Loader
         foreach (DictionaryEntry entry in json)
         {
             var name = (string)entry.Key;
-            retval[name] = LoadAsset(name, assetPath);
+            retval[name] = GetOrLoadAsset(name, assetPath);
         }
         return retval;
     }
@@ -267,6 +275,15 @@ public class Loader
             results[actorType.name] = actorType;
         }
 
+        return results;
+    }
+    Dictionary<string, ActorType> MapAssetIdToActorTypes(Dictionary<string, ActorType> actorTypeLookup)
+    {
+        var results = new Dictionary<string, ActorType>(StringComparer.OrdinalIgnoreCase);
+        foreach (var actorType in actorTypeLookup)
+        {
+            results[actorType.Value.asset.id] = actorType.Value;
+        }
         return results;
     }
     Dictionary<string, TankHullType> LoadTankHullTypes(string csv, string assetPath, Dictionary<string, IList<string>> weaponStrings)

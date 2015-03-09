@@ -5,7 +5,7 @@ using PvT.Util;
 
 public sealed class Ammo : MonoBehaviour
 {
-    public ActorType.Weapon weapon { get; set; }
+    public ActorType.Weapon weapon { private get; set; }
 
 	// Use this for initialization
 	void Start()
@@ -22,7 +22,6 @@ public sealed class Ammo : MonoBehaviour
         actor.SetExpiry(weapon.attrs.ttl);
         actor.collisionDamage = weapon.attrs.damage;
         actor.showsHealthBar = false;
-        actor.isAmmo = true;
 
         if (weapon.lit)
         {
@@ -46,8 +45,6 @@ public sealed class Ammo : MonoBehaviour
             rigidbody.mass = type.mass;
             actor.behavior = ActorBehaviorFactory.Instance.thrust;
         }
-        Debug.Log("Velocity: " + rigidbody.velocity);
-
         GlobalGameEvent.Instance.FireAmmoSpawned(actor, weapon);
 	}
 }

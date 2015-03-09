@@ -12,7 +12,6 @@ using PvT.Util;
 // delineate into subclasses, or find a composition strategy
 public class Actor : MonoBehaviour
 {
-    public bool isAmmo { get; set; }
     public bool reflectsAmmo { get; set; }
     public bool showsHealthBar { get; set; }
     public bool explodesOnDeath { get; set; }
@@ -25,6 +24,7 @@ public class Actor : MonoBehaviour
     public float expireTime { get; private set; }
 
     public bool isPlayer { get { return GetComponent<Player>() != null; } }
+    public bool isAmmo { get { return GetComponent<Ammo>() != null; } }
     public bool isHero { get { return actorType.name == "HERO"; } }
 
     public Actor()
@@ -81,7 +81,7 @@ public class Actor : MonoBehaviour
         Debug.Log("Actor.Start");
 
         // look up the stats for this actor by name
-        actorType = Main.Instance.game.loader.GetActorType(name);
+        actorType = Main.Instance.game.loader.GetActorTypeFromAssetId(name);
 
         // hook up the physics
         var body = gameObject.AddComponent<Rigidbody2D>();

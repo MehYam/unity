@@ -7,14 +7,14 @@ using PvT.Util;
 public class Asset
 {
     public readonly int index;
-    public readonly string name;
+    public readonly string id;
     public readonly GameObject prefab;
 
     static int s_instances = 0;
-    public Asset(string name, GameObject prefab)
+    public Asset(string id, GameObject prefab)
     {
         this.index = ++s_instances;
-        this.name = name;
+        this.id = id;
         this.prefab = prefab;
     }
     public GameObject ToRawGameObject(Consts.SortingLayer sortingLayer)
@@ -29,7 +29,7 @@ public class Asset
     }
     public override string ToString()
     {
-        return string.Format("{0} {1}", index, name);
+        return string.Format("{0} {1}", index, id);
     }
 }
 
@@ -126,7 +126,7 @@ public class ActorType
     }
     public override string ToString()
     {
-        return string.Format("{0}, asset {1}", name, asset.name);
+        return string.Format("{0}, asset {1}", name, asset.id);
     }
     public sealed class WeaponAttrs
     {
