@@ -197,7 +197,6 @@ public sealed class GameController : IGame
                 renderer.color = weapon.color;
             }
         }
-        goAmmo.GetComponent<Collider2D>().enabled = false;
 
         Util.PrepareLaunch(launcher.transform, actorAmmo.transform, weapon.offset, weapon.angle);
         if (type.attrs.acceleration == 0)
