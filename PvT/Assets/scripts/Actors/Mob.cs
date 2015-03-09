@@ -11,6 +11,16 @@ public sealed class Mob : MonoBehaviour
         {
             gameObject.transform.parent = Main.Instance.MobParent.transform;
         }
+
+        var actor = GetComponent<Actor>();
+        if (actor != null)
+        {
+            MobAI.Instance.AttachAI(GetComponent<Actor>());
+        }
+        else
+        {
+            Debug.LogError(string.Format("Mob {0} has no attached actor", name));
+        }
 	}
 	
 }

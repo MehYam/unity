@@ -159,8 +159,6 @@ public class LevelScript : MonoBehaviour
         mobActor.isCapturable = true;
         mobActor.detectFaceplants = true;
 
-        MobAI.Instance.AttachAI(mobActor);
-
         PositionMob(mob, spawnDistanceFromEdge);
         _mobsSpawned.Add(mob.gameObject);
     }

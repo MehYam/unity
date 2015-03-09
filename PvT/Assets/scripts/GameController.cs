@@ -39,11 +39,12 @@ public sealed class GameController : IGame
         this.effects = new Effects(loader);
 
         var gge = GlobalGameEvent.Instance;
-        gge.CollisionWithOverwhelmed += OnCollisionWithOverwhelmed;
         gge.ActorDeath += OnActorDeath;
-        gge.MapReady += OnMapReady;
         gge.AmmoSpawned += OnAmmoSpawned;
+        gge.CollisionWithOverwhelmed += OnCollisionWithOverwhelmed;
         gge.GainingXP += OnGainingXP;
+        gge.MapReady += OnMapReady;
+        gge.PlayerSpawned += OnPlayerSpawned;
     }
 
     void OnMapReady(GameObject unused, XRect bounds)
@@ -58,6 +59,11 @@ public sealed class GameController : IGame
         border.transform.FindChild("right").localPosition = new Vector2(bounds.right, 0);
 
         GlobalGameEvent.Instance.FireGameReady(this);
+    }
+
+    void OnPlayerSpawned(Actor playerActor)
+    {
+        player = playerActor.gameObject;
     }
 
     //KAI: some nice way to mark this as dev only?
@@ -108,15 +114,11 @@ public sealed class GameController : IGame
             var playerVehicle = loader.GetActorType(actorTypeName);
             var go = playerVehicle.Spawn(Consts.SortingLayer.FRIENDLY, true);
             SetPlayerPlaneBehaviors(go, playerVehicle);
-
-            this.player = go;
         }
         else
         {
             var tankHelper = new TankSpawnHelper(this, tank.hullName, tank.turretName);
             SetPlayerTankBehaviors(tankHelper);
-
-            this.player = tankHelper.hullGO;
         }
         var playerActor = player.GetComponent<Actor>();
         SetSecondaryHerolingBehavior((CompositeBehavior)playerActor.behavior);
