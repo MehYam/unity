@@ -562,7 +562,7 @@ class WeaponDischargeBehavior : IActorBehavior
     {
         if (actor.firingEnabled)
         {
-            Main.Instance.game.SpawnAmmo(actor, weapon, layer);
+            Main.Instance.game.SpawnProjectile(actor, weapon, layer);
         }
     }
 }

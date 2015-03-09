@@ -45,6 +45,11 @@ public sealed class Ammo : MonoBehaviour
             rigidbody.mass = type.mass;
             actor.behavior = ActorBehaviorFactory.Instance.thrust;
         }
+        
+        Debug.Log(actor);
+        Debug.Log(actor.actorType);
+        Main.Instance.game.PlaySound(actor, Sounds.ActorEvent.SPAWN);
+
         GlobalGameEvent.Instance.FireAmmoSpawned(actor, weapon);
 	}
 }

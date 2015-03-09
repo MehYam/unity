@@ -13,6 +13,8 @@ GameObject:
   - 114: {fileID: 11400000}
   - 68: {fileID: 6800000}
   - 114: {fileID: 11400002}
+  - 114: {fileID: 11460358}
+  - 114: {fileID: 11403948}
   m_Layer: 0
   m_Name: fusionBlast
   m_TagString: Untagged
@@ -87,6 +89,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 167c5b558415fdb4cad36f8d2bbf02a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &11403948
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e03719fed5f4e0c4e99a7b41c6369c2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &11460358
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30bd4d2a1ff087641a4aaf812c83c2d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!212 &21200000

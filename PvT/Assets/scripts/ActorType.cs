@@ -114,14 +114,7 @@ public class ActorType
     public virtual GameObject Spawn(Consts.SortingLayer sortingLayer, bool rigidBody)
     {
         var go = asset.ToRawGameObject(sortingLayer);
-        if (rigidBody)
-        {
-        }
-
-        //KAI: MAJOR CHEESE
-        var actor = this.name == "HEROLING" ? go.AddComponent<HerolingActor>() : go.AddComponent<Actor>();
-        actor.name = this.name;
-
+        go.name = asset.id;
         return go;
     }
     public override string ToString()

@@ -106,7 +106,7 @@ public sealed class HopBehavior : MonoBehaviour
 
         if (actor.actorType.HasWeapons)
         {
-            game.SpawnAmmo(actor, actor.actorType.weapons[0], impactLayer);
+            game.SpawnProjectile(actor, actor.actorType.weapons[0], impactLayer);
         }
         yield return new WaitForSeconds(0.2f);
         vibe.enabled = false;

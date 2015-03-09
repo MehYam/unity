@@ -21,7 +21,7 @@ namespace PvT.DOM
 
         void SpawnPlayer(Vector2 location, string actorTypeName = null);
         GameObject SpawnMob(string vehicleKey);
-        GameObject SpawnAmmo(Actor launcher, ActorType.Weapon weapon, Consts.CollisionLayer layer);
+        GameObject SpawnProjectile(Actor launcher, ActorType.Weapon weapon, Consts.CollisionLayer layer);
         GameObject SpawnHotspot(Actor launcher, ActorType.Weapon weapon, float damageMultiplier, Consts.CollisionLayer layer);
         GameObject SpawnObject(Vector2 location);
 

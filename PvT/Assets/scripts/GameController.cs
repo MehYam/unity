@@ -40,7 +40,6 @@ public sealed class GameController : IGame
 
         var gge = GlobalGameEvent.Instance;
         gge.ActorDeath += OnActorDeath;
-        gge.AmmoSpawned += OnAmmoSpawned;
         gge.CollisionWithOverwhelmed += OnCollisionWithOverwhelmed;
         gge.GainingXP += OnGainingXP;
         gge.MapReady += OnMapReady;
@@ -163,22 +162,18 @@ public sealed class GameController : IGame
         return retval;
     }
 
-    public GameObject SpawnAmmo(Actor launcher, ActorType.Weapon weapon, Consts.CollisionLayer layer)
+    public GameObject SpawnProjectile(Actor launcher, ActorType.Weapon weapon, Consts.CollisionLayer layer)
     {
-        ////// HACK
-        if (weapon.actorName == "HEROLING" && HerolingActor.ActiveHerolings >= Consts.HEROLING_LIMIT)
-        {
-            return null;
-        }
-        ///////END HACK
-
         //KAI: this is not completely sussed out yet
         var type = loader.GetActorType(weapon.actorName);
         var goAmmo = type.Spawn(Consts.SortingLayer.AMMO, true);
         goAmmo.layer = (int)layer;
 
-        var ammo = goAmmo.AddComponent<Ammo>();
-        ammo.weapon= weapon;
+        var ammo = goAmmo.GetComponent<Ammo>();
+        if (ammo != null)
+        {
+            ammo.weapon= weapon;
+        }
 
         Util.PrepareLaunch(launcher.transform, goAmmo.transform, weapon.offset, weapon.angle);
         if (launcher.actorType is TankTurretType)
@@ -245,10 +240,6 @@ public sealed class GameController : IGame
         GameObject.Destroy(host.gameObject);
     }
 
-    void OnAmmoSpawned(Actor ammo, ActorType.Weapon weapon)
-    {
-        PlaySound(ammo, Sounds.ActorEvent.SPAWN);
-    }
     void OnGainingXP(int xpGain, Vector2 where)
     {
         var actorType = player.GetComponent<Actor>().actorType;
