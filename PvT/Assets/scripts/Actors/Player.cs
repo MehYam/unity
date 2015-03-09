@@ -7,10 +7,14 @@ public sealed class Player : MonoBehaviour
     Actor _actor;
 	void Start()
     {
+        Debug.Log("Player.Start");
+
         _actor = GetComponent<Actor>();
         if (_actor != null)
         {
             gameObject.layer = (int)Consts.CollisionLayer.FRIENDLY;
+
+            CreateBehaviors(_actor);
             GlobalGameEvent.Instance.FirePlayerSpawned(_actor);
         }
         else
@@ -18,6 +22,23 @@ public sealed class Player : MonoBehaviour
             Debug.LogError("no Actor for Player");
         }
 	}
+
+    static void CreateBehaviors(Actor actor)
+    {
+        // set up the primary and secondary fire buttons
+        var bf = ActorBehaviorFactory.Instance;
+        var layer = Consts.CollisionLayer.HEROLINGS;
+
+        var behaviors = new CompositeBehavior();
+
+        var fireAhead = bf.CreateAutofire(layer, actor.actorType.weapons);
+        behaviors.Add(bf.CreatePlayerButton(MasterInput.impl.PrimaryAlt, fireAhead));
+
+        // hero doesn't point to the mouse when firing
+        behaviors.Add(bf.CreatePlayerButton(MasterInput.impl.Primary, new CompositeBehavior(bf.faceMouse, fireAhead)));
+
+        actor.behavior = behaviors;
+    }
 
     public void FixedUpdate()
     {
@@ -31,6 +52,7 @@ public sealed class Player : MonoBehaviour
                     _actor.AddThrust(current * _actor.attrs.acceleration);
                 }
             }
+            ActorBehaviorFactory.Instance.faceForward.FixedUpdate(_actor);
         }
     }
 }
