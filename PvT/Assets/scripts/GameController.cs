@@ -170,53 +170,21 @@ public sealed class GameController : IGame
         }
         ///////END HACK
 
-
+        //KAI: this is not completely sussed out yet
         var type = loader.GetActorType(weapon.actorName);
         var goAmmo = type.Spawn(Consts.SortingLayer.AMMO, true);
-
-        goAmmo.transform.parent = Main.Instance.AmmoParent.transform;
         goAmmo.layer = (int)layer;
 
-        var rigidbody = goAmmo.GetComponent<Rigidbody2D>();
-        rigidbody.drag = 0;
+        var ammo = goAmmo.AddComponent<Ammo>();
+        ammo.weapon= weapon;
 
-        var actorAmmo = goAmmo.GetComponent<Actor>();
-        actorAmmo.SetExpiry(weapon.attrs.ttl);
-        actorAmmo.collisionDamage = weapon.attrs.damage;
-        actorAmmo.showsHealthBar = false;
-        actorAmmo.isAmmo = true;
-
-        if (weapon.lit)
-        {
-            var renderer = actorAmmo.GetComponent<SpriteRenderer>();
-            if (renderer != null)
-            {
-                renderer.color = weapon.color;
-            }
-        }
-
-        Util.PrepareLaunch(launcher.transform, actorAmmo.transform, weapon.offset, weapon.angle);
-        if (type.attrs.acceleration == 0)
-        {
-            // give the ammo instant acceleration
-            rigidbody.mass = 0;
-            rigidbody.velocity = Util.GetLookAtVector(actorAmmo.transform.rotation.eulerAngles.z) * type.attrs.maxSpeed;
-        }
-        else
-        {
-            // treat the ammo like a vehicle (i.e. rocket)
-            rigidbody.mass = type.mass;
-            actorAmmo.behavior = ActorBehaviorFactory.Instance.thrust;
-        }
-        Debug.Log("Velocity: " + rigidbody.velocity);
-
+        Util.PrepareLaunch(launcher.transform, goAmmo.transform, weapon.offset, weapon.angle);
         if (launcher.actorType is TankTurretType)
         {
             // it's a turret
             SpawnMuzzleFlash(launcher.gameObject, goAmmo);
         }
 
-        GlobalGameEvent.Instance.FireAmmoSpawned(actorAmmo, weapon);
         return goAmmo;
     }
     public GameObject SpawnHotspot(Actor launcher, ActorType.Weapon weapon, float damageMultiplier, Consts.CollisionLayer layer)
