@@ -55,4 +55,9 @@ public sealed class Player : MonoBehaviour
             ActorBehaviorFactory.Instance.faceForward.FixedUpdate(_actor);
         }
     }
+
+    void OnHerolingCollide(GameObject heroling)
+    {
+        Destroy(heroling);
+    }
 }

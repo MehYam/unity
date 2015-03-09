@@ -598,6 +598,7 @@ public class Actor : MonoBehaviour
             }
         }
     }
+#if FOO
     void OnCollisionEnter2D(Collision2D collision)
     {
         foreach (ContactPoint2D contact in collision.contacts)
@@ -613,6 +614,7 @@ public class Actor : MonoBehaviour
             }
         }
     }
+#endif
 
     static RaycastHit2D[] s_raycastResults = new RaycastHit2D[1];
     protected virtual void HandleCollision(GameObject other, Vector2 point, Vector2 normal, Vector2 relativeVelocity)

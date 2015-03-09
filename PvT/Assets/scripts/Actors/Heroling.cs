@@ -60,7 +60,7 @@ public sealed class Heroling : MonoBehaviour
     }
 
     Timer? _attachBoredom;
-    void AttachToObject(Transform other)
+    public void AttachToObject(Transform other)
     {
         var otherActor = other.GetComponent<Actor>();
         if (otherActor.isCapturable)
@@ -119,6 +119,12 @@ public sealed class Heroling : MonoBehaviour
             Return();
             _attachBoredom = null;
         }
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        //Debug.Log(string.Format("{0} receiving collision from {1}", name, collision.gameObject.name));
+        collision.gameObject.SendMessage("OnHerolingCollide", gameObject);
     }
 
     static readonly IActorBehavior ROAM = new CompositeBehavior(

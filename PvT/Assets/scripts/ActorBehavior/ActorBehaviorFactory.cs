@@ -562,7 +562,11 @@ class WeaponDischargeBehavior : IActorBehavior
     {
         if (actor.firingEnabled)
         {
-            Main.Instance.game.SpawnProjectile(actor, weapon, layer);
+            //KAI: HACK
+            if (weapon.actorName != "HEROLING" || Heroling.ActiveHerolings < Consts.HEROLING_LIMIT)
+            {
+                Main.Instance.game.SpawnProjectile(actor, weapon, layer);
+            }
         }
     }
 }
