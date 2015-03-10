@@ -63,6 +63,11 @@ public sealed class Mob : MonoBehaviour
         }
     }
 
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        collision.gameObject.SendMessage("OnDamagingCollision", GetComponent<Actor>());
+    }
+
     // heroling handling - might be worth moving this to a separate HerolingHost class
     int _attachedHerolings;
     void OnHerolingCollide(Heroling heroling)
