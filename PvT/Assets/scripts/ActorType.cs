@@ -17,15 +17,9 @@ public class Asset
         this.id = id;
         this.prefab = prefab;
     }
-    public GameObject ToRawGameObject(Consts.SortingLayer sortingLayer)
+    public GameObject CreateInstance()
     {
-        var retval = (GameObject)GameObject.Instantiate(prefab);
-        var renderer = retval.GetComponent<SpriteRenderer>();
-        if (renderer != null)
-        {
-            renderer.sortingLayerID = (int)sortingLayer;
-        }
-        return retval;
+        return (GameObject)GameObject.Instantiate(prefab);
     }
     public override string ToString()
     {
@@ -111,9 +105,9 @@ public class ActorType
         this.AIrepel = rhs.AIrepel;
     }
     public bool HasWeapons { get { return weapons != null && weapons.Length > 0; } }
-    public virtual GameObject Spawn(Consts.SortingLayer sortingLayer, bool rigidBody)
+    public virtual GameObject Spawn()
     {
-        var go = asset.ToRawGameObject(sortingLayer);
+        var go = asset.CreateInstance();
         go.name = asset.id;
         return go;
     }
@@ -203,9 +197,9 @@ public sealed class TankHullType : ActorType
     {
         this.turretPivotY = turretPivotY;
     }
-    public override GameObject Spawn(Consts.SortingLayer sortingLayer, bool rigidBody)
+    public override GameObject Spawn()
     {
-        var go = base.Spawn(sortingLayer, true);
+        var go = base.Spawn();
         go.GetComponent<Rigidbody2D>().drag = 1;
         go.GetComponent<Rigidbody2D>().angularDrag = 5;
         return go;
@@ -240,14 +234,14 @@ public sealed class TankSpawnHelper
         turret = game.loader.GetTankPart(tankTurret);
         var tread = game.loader.GetMisc("tanktreadParent");
 
-        hullGO = hull.Spawn(Consts.SortingLayer.TANKBODY, true);
-        turretGO = turret.Spawn(Consts.SortingLayer.TANKTURRET, false);
+        hullGO = hull.Spawn();
+        turretGO = turret.Spawn();
 
         hullGO.name = HULL_NAME;
         turretGO.name = TURRET_NAME;
 
-        treadLeft = tread.ToRawGameObject(Consts.SortingLayer.TANKTREAD);
-        treadRight = tread.ToRawGameObject(Consts.SortingLayer.TANKTREAD);
+        treadLeft = tread.CreateInstance();
+        treadRight = tread.CreateInstance();
         treadLeft.name = LEFT_TREAD_NAME;
         treadRight.name = RIGHT_TREAD_NAME;
 

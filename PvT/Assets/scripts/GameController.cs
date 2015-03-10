@@ -64,7 +64,7 @@ public sealed class GameController : IGame
         player = playerActor.gameObject;
     }
 
-    //KAI: some nice way to mark this as dev only?
+    //KAI: some nice way to tag this as dev only?
     public void Debug_Respawn(Loader loader)
     {
         Vector3 pos = Vector3.zero;
@@ -106,22 +106,29 @@ public sealed class GameController : IGame
             actorTypeName = String.IsNullOrEmpty(main.defaultVehicle) ? "hero" : main.defaultVehicle;
         }
 
-        var tank = loader.GetTank(actorTypeName);
-        if (tank == null)
-        {
-            var playerVehicle = loader.GetActorType(actorTypeName);
-            var go = playerVehicle.Spawn(Consts.SortingLayer.FRIENDLY, true);
-            SetPlayerPlaneBehaviors(go, playerVehicle);
-        }
-        else
-        {
-            var tankHelper = new TankSpawnHelper(this, tank.hullName, tank.turretName);
-            SetPlayerTankBehaviors(tankHelper);
-        }
-        var playerActor = player.GetComponent<Actor>();
-        SetSecondaryHerolingBehavior((CompositeBehavior)playerActor.behavior);
+        var playerType = loader.GetActorType(actorTypeName);
+        var playerObj = playerType.Spawn();
+        
+        playerObj.AddComponent<Player>();
 
-        this.player.gameObject.transform.position = location;
+        // that's *it*. The rest should happen automatically
+
+        //var tank = loader.GetTank(actorTypeName);
+        //if (tank == null)
+        //{
+        //    var playerVehicle = loader.GetActorType(actorTypeName);
+        //    var go = playerVehicle.Spawn(Consts.SortingLayer.FRIENDLY, true);
+        //    SetPlayerPlaneBehaviors(go, playerVehicle);
+        //}
+        //else
+        //{
+        //    var tankHelper = new TankSpawnHelper(this, tank.hullName, tank.turretName);
+        //    SetPlayerTankBehaviors(tankHelper);
+        //}
+        //var playerActor = player.GetComponent<Actor>();
+        //SetSecondaryHerolingBehavior((CompositeBehavior)playerActor.behavior);
+
+        //this.player.gameObject.transform.position = location;
 
         // KAI: commenting this out in branch "designRevamp"
         //enemyInPossession = !playerActor.isHero;
@@ -155,7 +162,7 @@ public sealed class GameController : IGame
         else
         {
             var actor = loader.GetActorType(actorKey);
-            retval = actor.Spawn(Consts.SortingLayer.MOB, true);
+            retval = actor.Spawn();
         }
         retval.AddComponent<Mob>();
         return retval;
@@ -165,7 +172,7 @@ public sealed class GameController : IGame
     {
         //KAI: this is not completely sussed out yet
         var type = loader.GetActorType(weapon.actorName);
-        var goAmmo = type.Spawn(Consts.SortingLayer.AMMO, true);
+        var goAmmo = type.Spawn();
         goAmmo.layer = (int)layer;
 
         var ammo = goAmmo.GetComponent<Ammo>();
@@ -187,7 +194,7 @@ public sealed class GameController : IGame
     {
         ///THIS IS COPY PASTA FROM SpawnAmmo
         var type = loader.GetActorType(weapon.actorName);
-        var go = type.Spawn(Consts.SortingLayer.AMMO_TOP, false);
+        var go = type.Spawn();
 
         Main.Instance.ParentAmmo(go.transform);
         go.layer = (int)layer;
@@ -272,7 +279,7 @@ public sealed class GameController : IGame
 
     void SpawnMuzzleFlash(GameObject launcher, GameObject firePoint)
     {
-        var flash = effects.GetRandomMuzzleFlash().ToRawGameObject(Consts.SortingLayer.EXPLOSIONS);
+        var flash = effects.GetRandomMuzzleFlash().CreateInstance();
         flash.transform.position = firePoint.transform.position;
         flash.transform.rotation = firePoint.transform.rotation;
         flash.transform.parent = launcher.transform;
@@ -411,7 +418,7 @@ public sealed class GameController : IGame
         var enemy = actor.gameObject.layer == (int)Consts.CollisionLayer.MOB;
         if (actor.explodesOnDeath && (enemy || actor.gameObject.layer == (int)Consts.CollisionLayer.FRIENDLY))
         {
-            var asplode = effects.GetVehicleExplosion().ToRawGameObject(Consts.SortingLayer.EXPLOSIONS);
+            var asplode = effects.GetVehicleExplosion().CreateInstance();
             asplode.transform.position = actor.transform.position;
 
             PlaySound(Sounds.GlobalEvent.EXPLOSION, asplode.transform.position);

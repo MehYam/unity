@@ -43,7 +43,7 @@ public class MainEditor : Editor
             {
                 main.Debug_Respawn();
             }
-            if (GUILayout.Button("Suicide"))
+            if (GUILayout.Button("Die"))
             {
                 main.game.player.GetComponent<Actor>().TakeDamage(10000);
             }
