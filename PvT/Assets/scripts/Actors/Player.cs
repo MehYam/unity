@@ -25,6 +25,22 @@ public sealed class Player : MonoBehaviour
         }
 	}
 
+    void PreActorDie(Actor actor)
+    {
+        //assert(actor == GetComponent<Actor>());
+        if (!actor.isHero)
+        {
+            Debug.Log("Player respawning as HERO");
+
+            // if we're possessing a mob and dying, we need to implement ejection of the hero
+            // by respawning it as the player
+            var game = Main.Instance.game;
+
+            var newPlayer = game.SpawnPlayer(transform.position);
+            newPlayer.AddComponent<PossessionUndoSequence>();
+        }
+    }
+
     static void CreateBehaviors(Actor actor)
     {
         // set up the primary and secondary fire buttons
@@ -32,12 +48,11 @@ public sealed class Player : MonoBehaviour
         var layer = Consts.CollisionLayer.HEROLINGS;
 
         var behaviors = new CompositeBehavior();
+        behaviors.Add(bf.faceForward);
 
         var fireAhead = bf.CreateAutofire(layer, actor.actorType.weapons);
-        behaviors.Add(bf.CreatePlayerButton(MasterInput.impl.PrimaryAlt, fireAhead));
-
-        // hero doesn't point to the mouse when firing
         behaviors.Add(bf.CreatePlayerButton(MasterInput.impl.Primary, new CompositeBehavior(bf.faceMouse, fireAhead)));
+        behaviors.Add(bf.CreatePlayerButton(MasterInput.impl.PrimaryAlt, fireAhead));
 
         actor.behavior = behaviors;
     }
@@ -54,7 +69,6 @@ public sealed class Player : MonoBehaviour
                     _actor.AddThrust(current * _actor.attrs.acceleration);
                 }
             }
-            ActorBehaviorFactory.Instance.faceForward.FixedUpdate(_actor);
         }
     }
 

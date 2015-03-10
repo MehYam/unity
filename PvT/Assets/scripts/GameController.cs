@@ -97,7 +97,7 @@ public sealed class GameController : IGame
     }
 
     //KAI: this needs to trim down to almost nothing
-    public void SpawnPlayer(Vector2 location, string actorTypeName = null)
+    public GameObject SpawnPlayer(Vector2 location, string actorTypeName = null)
     {
         var main = Main.Instance;
 
@@ -110,6 +110,7 @@ public sealed class GameController : IGame
         var playerObj = playerType.Spawn();
         
         playerObj.AddComponent<Player>();
+        playerObj.transform.position = location;
 
         // that's *it*. The rest should happen automatically
 
@@ -137,6 +138,8 @@ public sealed class GameController : IGame
         //    // Hero gets no collisionDamage
         //    playerActor.collisionDamage = 0;
         //}
+
+        return playerObj;
     }
     public void SwapPlayer(string key)
     {
@@ -415,6 +418,7 @@ public sealed class GameController : IGame
 
     void OnActorDeath(Actor actor)
     {
+        //KAI: this has to go away
         var enemy = actor.gameObject.layer == (int)Consts.CollisionLayer.MOB;
         if (actor.explodesOnDeath && (enemy || actor.gameObject.layer == (int)Consts.CollisionLayer.FRIENDLY))
         {
@@ -422,24 +426,6 @@ public sealed class GameController : IGame
             asplode.transform.position = actor.transform.position;
 
             PlaySound(Sounds.GlobalEvent.EXPLOSION, asplode.transform.position);
-        }
-        if (enemy)
-        {
-            GlobalGameEvent.Instance.FireMobDeath(actor);
-        }
-
-        var wasPlayer = actor.gameObject == player;
-        var wasHero = actor.isHero;
-        var deathPos = actor.gameObject.transform.position;
-
-        if (wasPlayer && ! wasHero)
-        {
-            SpawnPlayer(deathPos);
-
-            var playerActor = player.GetComponent<Actor>();
-
-            //KAI: broken
-            //playerActor.StartCoroutine(DepossessionSequence());
         }
     }
 }

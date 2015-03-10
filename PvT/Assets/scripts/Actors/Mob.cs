@@ -32,13 +32,17 @@ public sealed class Mob : MonoBehaviour
 	}
 	void OnDestroy()
     {
+        var actor = GetComponent<Actor>();
+
         RemoveBlinker();
-        UndoOverwhelm(GetComponent<Actor>());
+        UndoOverwhelm(actor);
 
         if (_overwhelm.bar != null)
         {
             GameObject.Destroy(_overwhelm.bar.gameObject);
         }
+
+        GlobalGameEvent.Instance.FireMobDeath(actor);
     }
     void FixedUpdate()
     {

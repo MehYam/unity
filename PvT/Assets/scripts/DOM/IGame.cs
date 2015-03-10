@@ -19,7 +19,7 @@ namespace PvT.DOM
         Loader loader { get; }
         Effects effects { get; }
 
-        void SpawnPlayer(Vector2 location, string actorTypeName = null);
+        GameObject SpawnPlayer(Vector2 location, string actorTypeName = null);
         GameObject SpawnMob(string vehicleKey);
         GameObject SpawnProjectile(Actor launcher, ActorType.Weapon weapon, Consts.CollisionLayer layer);
         GameObject SpawnHotspot(Actor launcher, ActorType.Weapon weapon, float damageMultiplier, Consts.CollisionLayer layer);

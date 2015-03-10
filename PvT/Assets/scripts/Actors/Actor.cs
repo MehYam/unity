@@ -115,6 +115,9 @@ public class Actor : MonoBehaviour
     void Die()
     {
         Debug.Log("Actor Die! " + health);
+
+        SendMessage("PreActorDie", this, SendMessageOptions.DontRequireReceiver);
+
         GlobalGameEvent.Instance.FireActorDeath(this);
         if (_damageSmoke != null)
         {
