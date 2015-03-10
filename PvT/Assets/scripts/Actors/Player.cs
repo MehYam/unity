@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
+using PvT.Util;
+
 public sealed class Player : MonoBehaviour
 {
 	// Use this for initialization
@@ -59,5 +61,28 @@ public sealed class Player : MonoBehaviour
     void OnHerolingCollide(Heroling heroling)
     {
         Destroy(heroling.gameObject);
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        var otherActor = collision.gameObject.GetComponent<Actor>();
+
+        if (otherActor != null)
+        {
+            var mob = otherActor.GetComponent<Mob>();
+            if (mob != null && mob.overwhelmPct >= 1)
+            {
+                // add the possession sequence script and let it run the possession
+                if (gameObject.GetComponent<PossessionSequence>() == null)
+                {
+                    var sequence = gameObject.AddComponent<PossessionSequence>();
+                    sequence.hostToPossess = otherActor;
+                }
+            }
+            else
+            {
+                collision.gameObject.SendMessage("OnDamagingCollision", GetComponent<Actor>());
+            }
+        }
     }
 }

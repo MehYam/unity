@@ -40,7 +40,6 @@ public sealed class GameController : IGame
 
         var gge = GlobalGameEvent.Instance;
         gge.ActorDeath += OnActorDeath;
-        gge.CollisionWithOverwhelmed += OnCollisionWithOverwhelmed;
         gge.GainingXP += OnGainingXP;
         gge.MapReady += OnMapReady;
         gge.PlayerSpawned += OnPlayerSpawned;
@@ -271,131 +270,6 @@ public sealed class GameController : IGame
         }
     }
 
-    void OnCollisionWithOverwhelmed(Actor host)
-    {
-        Debug.Log("Collision with overwhelmed " + host.name);
-
-        var playerActor = player.GetComponent<Actor>();
-        if (playerActor.isHero)
-        {
-            host.StartCoroutine(PossessionSequence(host));
-        }
-        else
-        {
-            // eject from the previous possessee
-            var prevHost = playerActor;
-
-            SpawnPlayer(playerActor.transform.position);
-
-            prevHost.behavior = null;
-            prevHost.gameObject.layer = (int)Consts.CollisionLayer.MOB;
-
-            DebugUtil.Assert(player.GetComponent<Actor>().isHero, "Player must be hero after ejecting from previous possessee");
-            OnCollisionWithOverwhelmed(host);
-        }
-    }
-
-    IEnumerator PossessionSequence(Actor host)
-    {
-        GlobalGameEvent.Instance.FirePossessionInitiated(host);
-
-        enemyInPossession = true;
-
-        PlaySound(Sounds.GlobalEvent.POSSESSION, player.transform.position);
-
-        // 1. Stop all activity and pause
-        var timeScale = Time.timeScale;
-        Time.timeScale = 0;
-
-        // 2. Remove physics from the hero, pause for a minute
-        Util.DisablePhysics(player);
-
-        // 3. Tween it to the host
-        const float clipLength = 2f;
-        var start = player.transform.position;
-        var endTime = Time.realtimeSinceStartup + clipLength;
-        var sprite = player.GetComponent<SpriteRenderer>();
-        while (Time.realtimeSinceStartup < endTime)
-        {
-            var progress = 1 - (endTime - Time.realtimeSinceStartup) / clipLength;
-            var lerped = Vector3.Lerp(start, host.transform.position, progress);
-            player.transform.position = lerped;
-
-            var color = sprite.color;
-            color.a = 1 - progress;
-            sprite.color = color;
-
-            yield return new WaitForEndOfFrame();
-        }
-
-        // 4. Host becomes the new player
-        var oldHero = player;
-        player = host.gameObject;
-        var vehicle = player.GetComponent<Actor>().actorType as ActorType;
-
-        //KAI: broken
-        //InitPlayerVehicle(player, vehicle);
-        if (vehicle is TankHullType)
-        {
-            var reconstructedHelper = new TankSpawnHelper(player);
-            SetPlayerTankBehaviors(reconstructedHelper);
-        }
-        else
-        {
-            SetPlayerPlaneBehaviors(player, vehicle);
-        }
-        var playerActor = player.GetComponent<Actor>();
-        SetSecondaryHerolingBehavior((CompositeBehavior)playerActor.behavior);
-
-        // 5. Destroy the old hero and return the herolings
-        GameObject.Destroy(oldHero);
-        Heroling.ReturnAll();
-
-        // 6. Resume all activity
-        Time.timeScale = timeScale;
-
-        host.GrantInvuln(Consts.POST_POSSESSION_INVULN);
-        
-        GlobalGameEvent.Instance.FirePlayerSpawned(playerActor);
-        GlobalGameEvent.Instance.FirePossessionComplete(playerActor);
-        GlobalGameEvent.Instance.FireMobDeath(host);
-        yield return null;
-    }
-    IEnumerator DepossessionSequence()
-    {
-        yield return new WaitForSeconds(0.3f);
-
-        // 1. Stop all activity and pause
-        var timeScale = Time.timeScale;
-        Time.timeScale = 0;
-
-        // 2. Spin hero fast to a stop
-        var start = Time.realtimeSinceStartup;
-        var lastSpin = start;
-        float elapsed = 0;
-        do
-        {
-            var now = Time.realtimeSinceStartup;
-            elapsed = now - start;
-
-            var pctDone = elapsed / Consts.HEROLING_OVERWHELM_DURATION;
-            var rotationsPerSec = Consts.HEROLING_OVERWHELM_ROTATIONS_PER_SEC * (1 - pctDone);
-
-            player.transform.Rotate(0, 0, (now - lastSpin) * 360 * rotationsPerSec);
-            lastSpin = now;
-
-            yield return new WaitForEndOfFrame();
-        }
-        while (elapsed < Consts.HEROLING_OVERWHELM_DURATION);
-
-        // 3. Resume all activity
-        Time.timeScale = timeScale;
-
-        player.GetComponent<Actor>().GrantInvuln(Consts.POST_DEPOSSESSION_INVULN);
-
-        GlobalGameEvent.Instance.FireDepossessionComplete();
-    }
-
     void SpawnMuzzleFlash(GameObject launcher, GameObject firePoint)
     {
         var flash = effects.GetRandomMuzzleFlash().ToRawGameObject(Consts.SortingLayer.EXPLOSIONS);
@@ -414,6 +288,8 @@ public sealed class GameController : IGame
     }
     void SetPlayerPlaneBehaviors(GameObject go, ActorType vehicle)
     {
+        Debug.LogError("should no longer be run");
+
         var isHopper = go.GetComponent<HopBehavior>() != null;  //KAI: cheese, this means it only works if possesssing the hopping mob
         var bf = ActorBehaviorFactory.Instance;
         var behaviors = new CompositeBehavior();
@@ -554,7 +430,9 @@ public sealed class GameController : IGame
             SpawnPlayer(deathPos);
 
             var playerActor = player.GetComponent<Actor>();
-            playerActor.StartCoroutine(DepossessionSequence());
+
+            //KAI: broken
+            //playerActor.StartCoroutine(DepossessionSequence());
         }
     }
 }

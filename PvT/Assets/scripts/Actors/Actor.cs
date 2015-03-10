@@ -32,7 +32,6 @@ public class Actor : MonoBehaviour
         expireTime = EXPIRY_INFINITE;
         explodesOnDeath = true;
         showsHealthBar = true;
-        takenDamageMultiplier = 1;
         firingEnabled = true;
         thrustEnabled = true;
         immortal = false;
@@ -41,6 +40,9 @@ public class Actor : MonoBehaviour
         lastFaceplantTime = float.MinValue;
 
         maxRotationalVelocity = Consts.MAX_MOB_ROTATION_DEG_PER_SEC;
+
+        takenDamageMultiplier = 1;
+        health = 1;
 
         behaviorEnabled = true;
     }
