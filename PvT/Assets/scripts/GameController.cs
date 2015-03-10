@@ -190,7 +190,7 @@ public sealed class GameController : IGame
         var type = loader.GetActorType(weapon.actorName);
         var go = type.Spawn(Consts.SortingLayer.AMMO_TOP, false);
 
-        go.transform.parent = Main.Instance.AmmoParent.transform;
+        Main.Instance.ParentAmmo(go.transform);
         go.layer = (int)layer;
 
         var actor = go.GetComponent<Actor>();
@@ -349,7 +349,7 @@ public sealed class GameController : IGame
 
         // 5. Destroy the old hero and return the herolings
         GameObject.Destroy(oldHero);
-        HerolingActor.ReturnAll();
+        Heroling.ReturnAll();
 
         // 6. Resume all activity
         Time.timeScale = timeScale;

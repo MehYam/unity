@@ -135,10 +135,9 @@ public sealed class Boss1AI : MonoBehaviour
                 toDetach.Add(child);
             }
         }
-        var newParent = Main.Instance.MobParent.transform;
         foreach (var spawn in toDetach)
         {
-            spawn.parent = newParent;
+            Main.Instance.ParentMob(spawn);
             spawn.GetComponent<Rigidbody2D>().isKinematic = false;
             spawn.GetComponent<Actor>().behaviorEnabled = true;
             spawn.GetComponent<AlphaInherit>().enabled = false;

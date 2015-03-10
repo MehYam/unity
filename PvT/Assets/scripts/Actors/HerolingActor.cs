@@ -170,9 +170,8 @@ public class HerolingActor : Actor
         SetBehavior(RETURN, true);
     }
 
-    protected override void FixedUpdate()
+    void FixedUpdate()
     {
-        base.FixedUpdate();
         if (_roamBoredom != null && _roamBoredom.Value.reached)
         {
             Return();

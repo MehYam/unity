@@ -146,12 +146,14 @@ public sealed class TutorialScript : MonoBehaviour
             playerActor.firingEnabled = true;
 
             // wait until the other ship is subdued
-            yield return StartCoroutine(Util.YieldUntil(() => mobActor.overwhelmPct == 1.0f));
+            Debug.LogError("Tutorial broken by revamp here");
+            //yield return StartCoroutine(Util.YieldUntil(() => mobActor.overwhelmPct == 1.0f));
 
             AnimatedText.FadeIn(hud.centerPrints.bottom, "(QUICKLY! Collide with it!)", Consts.TEXT_FADE_SECONDS);
 
             // wait until the player has either passed or failed the task of possessing the ship
-            yield return StartCoroutine(Util.YieldUntil(() => (mobActor.overwhelmPct < 1) || game.enemyInPossession));
+            Debug.LogError("Tutorial broken by revamp here");
+            //yield return StartCoroutine(Util.YieldUntil(() => (mobActor.overwhelmPct < 1) || game.enemyInPossession));
         }
         while (!game.enemyInPossession);
 

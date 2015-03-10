@@ -10,10 +10,7 @@ public sealed class Ammo : MonoBehaviour
 	// Use this for initialization
 	void Start()
     {
-        if (Main.Instance.AmmoParent != null)
-        {
-            gameObject.transform.parent = Main.Instance.AmmoParent.transform;
-        }
+        Main.Instance.ParentAmmo(transform);
 
         var rigidbody = gameObject.GetOrAddComponent<Rigidbody2D>();
         rigidbody.drag = 0;

@@ -137,10 +137,6 @@ public class Actor : MonoBehaviour
         {
             GameObject.Destroy(_healthBar.gameObject);
         }
-        if (_overwhelm.bar != null)
-        {
-            GameObject.Destroy(_overwhelm.bar.gameObject);
-        }
     }
 
     ActorAttrs _lazyAttrs; // this is determined lazily
@@ -292,6 +288,7 @@ public class Actor : MonoBehaviour
         }
     }
     public IActorBehavior behavior { get; set; }
+    public IActorBehavior behaviorOverride { get; set; }  // currently used for overwhelming
     public bool behaviorEnabled { get; set; }
     
     public float maxRotationalVelocity { get; set; }
@@ -303,33 +300,6 @@ public class Actor : MonoBehaviour
     public float takenDamageMultiplier { get; set; }
     public float collisionDamage { get; set; }
 
-    public float overwhelmPct
-    {
-        get 
-        {
-            return 0;
-            //return health == 0 ? 0 : Mathf.Min(attachedHerolings * Consts.HEROLING_HEALTH_OVERWHELM / health, 1); 
-        }
-    }
-
-    struct OverwhelmBarState
-    {
-        // this allows us to not generate strings every frame
-        public ProgressBar bar;
-        public int lastNumerator;
-        public int lastDenominator;
-        public bool Update(int num, int denom)
-        {
-            if (lastNumerator != num || lastDenominator != denom)
-            {
-                lastNumerator = num;
-                lastDenominator = denom;
-                return true;
-            }
-            return false;
-        }
-    }
-    OverwhelmBarState _overwhelm;
     ProgressBar _healthBar;
     public void TakeDamage(float damage)
     {
@@ -383,8 +353,7 @@ public class Actor : MonoBehaviour
     float _last = 0;
 #endif
 
-    IActorBehavior _overwhelmBehavior;  // currently used for overwhelming
-    protected virtual void FixedUpdate()
+    void FixedUpdate()
     {
 #if DEBUG_FACEPLANTS
         if (Time.fixedTime - _last > 0.25f)
@@ -396,13 +365,11 @@ public class Actor : MonoBehaviour
             _last = Time.fixedTime;
         }
 #endif
-
-        DetectChangeInOverwhelm();
         if (behaviorEnabled)
         {
-            if (_overwhelmBehavior != null)
+            if (behaviorOverride != null)
             {
-                _overwhelmBehavior.FixedUpdate(this);
+                behaviorOverride.FixedUpdate(this);
             }
             else if (behavior != null)
             {
@@ -420,7 +387,6 @@ public class Actor : MonoBehaviour
         }
     }
     static readonly Vector3 HEALTH_BAR_POSITION = new Vector3(0, 0.5f);
-    static readonly Vector3 OVERWHELM_BAR_POSITION = new Vector3(0, -0.5f);
     void Update()
     {
         var showHealth = showsHealthBar && _health > 0 && _health < attrs.maxHealth;
@@ -439,7 +405,7 @@ public class Actor : MonoBehaviour
 #if SHOW_STRANGE_PARENTING_BUG
                     bar.transform   .parent = transform;
 #else
-                bar.transform.parent = Main.Instance.EffectParent.transform;
+                Main.Instance.ParentEffect(bar.transform.parent);
 #endif
             }
             _healthBar.gameObject.SetActive(true);
@@ -454,30 +420,6 @@ public class Actor : MonoBehaviour
         else if (_healthBar != null)
         {
             _healthBar.gameObject.SetActive(false);
-        }
-
-        //KAI: copy pasta +1 w/ health bar, might be worth generalizing
-        int attachedHerolings = 0;
-        if (attachedHerolings > 0)
-        {
-            if (_overwhelm.bar == null)
-            {
-                var bar = (GameObject)GameObject.Instantiate(Main.Instance.assets.OverwhelmProgressBar);
-                _overwhelm.bar = bar.GetComponent<ProgressBar>();
-
-                bar.transform.parent = Main.Instance.EffectParent.transform;
-            }
-            _overwhelm.bar.gameObject.SetActive(true);
-            _overwhelm.bar.percent = overwhelmPct;
-            if (_overwhelm.Update(attachedHerolings, Mathf.CeilToInt(health / Consts.HEROLING_HEALTH_OVERWHELM)))
-            {
-                _overwhelm.bar.text = string.Format("{0}/{1}", _overwhelm.lastNumerator, _overwhelm.lastDenominator);
-            }
-            _overwhelm.bar.transform.position = transform.position + OVERWHELM_BAR_POSITION;
-        }
-        else if (_overwhelm.bar != null)
-        {
-            _overwhelm.bar.gameObject.SetActive(false);
         }
     }
     sealed class DamageSmoke
@@ -494,7 +436,7 @@ public class Actor : MonoBehaviour
         {
             if (go != null)
             {
-                go.transform.parent = Main.Instance.EffectParent.transform;
+                Main.Instance.ParentEffect(go.transform);
                 go.GetComponent<ParticleSystem>().Stop();
 
                 var expiry = go.AddComponent<Expire>();
@@ -531,44 +473,6 @@ public class Actor : MonoBehaviour
         }
     }
 
-    void DetectChangeInOverwhelm()
-    {
-        var wasOverwhelmed = _overwhelmBehavior != null;
-        if (wasOverwhelmed && overwhelmPct < 1)
-        {
-            // un-overwhelm
-            _overwhelmBehavior = null;
-
-            RemoveBlinker(transform);
-            var blinker = transform.FindChild(Consts.BLINKER_TAG);
-            if (blinker != null)
-            {
-                GameObject.Destroy(blinker.gameObject);
-            }
-        }
-        else if (!wasOverwhelmed && overwhelmPct == 1f)
-        {
-            // act overwhelmed
-            _overwhelmBehavior = ActorBehaviorFactory.Instance.CreateHerolingOverwhelmBehavior();
-
-            var blinker = (GameObject)GameObject.Instantiate(Main.Instance.assets.OverwhelmedIndicator);
-            blinker.transform.parent = transform;
-            blinker.transform.localPosition = Vector3.zero;
-            blinker.name = Consts.BLINKER_TAG;
-
-            Main.Instance.game.PlaySound(Sounds.GlobalEvent.OVERWHELM, transform.position);
-        }
-    }
-
-    static void RemoveBlinker(Transform host)
-    {
-        var blinker = host.FindChild(Consts.BLINKER_TAG);
-        if (blinker != null)
-        {
-            GameObject.Destroy(blinker.gameObject);
-        }
-    }
-
     const float INDICATOR_MARGIN = 0.06f;
     GameObject _trackingArrow;
     void UpdateTrackingArrow()
@@ -586,9 +490,12 @@ public class Actor : MonoBehaviour
             indPos.x = Mathf.Max(rect.left + INDICATOR_MARGIN, Mathf.Min(rect.right - INDICATOR_MARGIN, pos.x));
             indPos.y = Mathf.Max(rect.bottom + INDICATOR_MARGIN, Mathf.Min(rect.top - INDICATOR_MARGIN, pos.y));
 
-            _trackingArrow.GetComponent<SpriteRenderer>().color = overwhelmPct > 0 ?
-                Consts.TRACKING_ARROW_COLOR_OVERWHELMED :
-                Consts.TRACKING_ARROW_COLOR_NORMAL;
+            //KAI: need to add back this functionality somehow
+            //_trackingArrow.GetComponent<SpriteRenderer>().color = overwhelmPct > 0 ?
+            //    Consts.TRACKING_ARROW_COLOR_OVERWHELMED :
+            //    Consts.TRACKING_ARROW_COLOR_NORMAL;
+
+            _trackingArrow.GetComponent<SpriteRenderer>().color = Consts.TRACKING_ARROW_COLOR_NORMAL;
 
             _trackingArrow.transform.position = indPos;
             Util.LookAt2D(_trackingArrow.transform, transform);
@@ -643,8 +550,8 @@ public class Actor : MonoBehaviour
         else
         {
             // give out collision damage, except when capturing a mob.
-            var thisIsPlayerCapturing = isPlayer && otherActor.overwhelmPct == 1;
-            var thisIsMobBeingCaptured = otherActor.isPlayer && overwhelmPct == 1;
+            var thisIsPlayerCapturing = isPlayer;// && otherActor.overwhelmPct == 1;
+            var thisIsMobBeingCaptured = otherActor.isPlayer;// && overwhelmPct == 1;
             if (thisIsPlayerCapturing)
             {
                 GlobalGameEvent.Instance.FirePlayerCollisionWithOverwhelmed(other.gameObject.GetComponent<Actor>());
@@ -694,7 +601,7 @@ public class Actor : MonoBehaviour
             if (_collisionParticles == null)
             {
                 _collisionParticles = ((GameObject)GameObject.Instantiate(Main.Instance.assets.collisionParticles));
-                _collisionParticles.transform.parent = Main.Instance.EffectParent.transform;
+                Main.Instance.ParentEffect(_collisionParticles.transform);
             }
             _collisionParticles.transform.position = point;
             _collisionParticles.GetComponent<ParticleSystem>().Play();

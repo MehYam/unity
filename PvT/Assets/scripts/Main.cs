@@ -56,6 +56,29 @@ public class Main : MonoBehaviour
     public GameObject AmmoParent;
     public GameObject MobParent;
 
+    // KAI: could catch the global events instead, parent in response to that
+    public void ParentEffect(Transform effect)
+    {
+        if (EffectParent != null)
+        {
+            effect.parent = EffectParent.transform;
+        }
+    }
+    public void ParentAmmo(Transform ammo)
+    {
+        if (AmmoParent != null)
+        {
+            ammo.parent = AmmoParent.transform;
+        }
+    }
+    public void ParentMob(Transform mob)
+    {
+        if (MobParent != null)
+        {
+            mob.parent = MobParent.transform;
+        }
+    }
+
     public string defaultVehicle = "";
 
     static Main _instance;
