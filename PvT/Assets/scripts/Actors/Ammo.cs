@@ -49,4 +49,49 @@ public sealed class Ammo : MonoBehaviour
 
         GlobalGameEvent.Instance.FireAmmoSpawned(actor, weapon);
 	}
+
+    void OnDestroy()
+    {
+        if (_collisionParticles != null)
+        {
+            var expire = _collisionParticles.GetOrAddComponent<Expire>();
+            expire.SetExpiry(_collisionParticles.GetComponent<ParticleSystem>().duration);
+        }
+    }
+
+    GameObject _collisionParticles;
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        var otherActor = collision.gameObject.GetComponent<Actor>();
+        if (otherActor != null)
+        {
+            if (otherActor.reflectsAmmo)
+            {
+                // bounce off a shield => switch allegiance and damage the other side
+                gameObject.layer = gameObject.layer == (int)Consts.CollisionLayer.MOB_AMMO ?
+                    (int)Consts.CollisionLayer.FRIENDLY_AMMO :
+                    (int)Consts.CollisionLayer.MOB_AMMO;
+
+                // replace the "realistic" collision with one that looks better - otherwise lasers
+                // look wonky
+                var actor = GetComponent<Actor>();
+                GetComponent<Rigidbody2D>().angularVelocity = 0;
+                GetComponent<Rigidbody2D>().velocity = GetComponent<Rigidbody2D>().velocity.normalized * actor.actorType.attrs.maxSpeed;
+                ActorBehaviorFactory.Instance.faceForward.FixedUpdate(actor);
+            }
+            else
+            {
+                collision.gameObject.SendMessage("OnDamagingCollision", GetComponent<Actor>());
+
+                // show sparks and die
+                if (_collisionParticles == null)
+                {
+                    _collisionParticles = ((GameObject)GameObject.Instantiate(Main.Instance.assets.collisionParticles));
+                    Main.Instance.ParentEffect(_collisionParticles.transform);
+                }
+                _collisionParticles.transform.position = collision.contacts[0].point;
+                _collisionParticles.GetComponent<ParticleSystem>().Play();
+            }
+        }
+    }
 }

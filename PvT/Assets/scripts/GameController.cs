@@ -172,7 +172,7 @@ public sealed class GameController : IGame
         var ammo = goAmmo.GetComponent<Ammo>();
         if (ammo != null)
         {
-            ammo.weapon= weapon;
+            ammo.weapon = weapon;
         }
 
         Util.PrepareLaunch(launcher.transform, goAmmo.transform, weapon.offset, weapon.angle);

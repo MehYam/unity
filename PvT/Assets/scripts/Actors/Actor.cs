@@ -119,11 +119,6 @@ public class Actor : MonoBehaviour
             // need to do this here, else the smoke game object will get destroyed before we can detach it
             _damageSmoke.Detach();
         }
-        if (_collisionParticles != null)
-        {
-            var expire = _collisionParticles.GetOrAddComponent<Expire>();
-            expire.SetExpiry(_collisionParticles.GetComponent<ParticleSystem>().duration);
-        }
         GameObject.Destroy(gameObject);
     }
     void OnDestroy()
@@ -572,41 +567,10 @@ public class Actor : MonoBehaviour
                 Main.Instance.game.PlaySound(Sounds.GlobalEvent.MOBCOLLISION, point);
             }
         }
-        if (isAmmo)
-        {
-            HandleCollisionAsAmmo(other, point);
-        }
     }
 
-    GameObject _collisionParticles;
-    void HandleCollisionAsAmmo(GameObject other, Vector2 point)
+    void OnDamagingCollision(Actor other)
     {
-        var otherActor = other.GetComponent<Actor>();
-        if (otherActor != null && otherActor.reflectsAmmo)
-        {
-            // bounce off a shield => switch allegiance and damage the other side
-            gameObject.layer = gameObject.layer == (int)Consts.CollisionLayer.MOB_AMMO ?
-                (int)Consts.CollisionLayer.FRIENDLY_AMMO :
-                (int)Consts.CollisionLayer.MOB_AMMO;
-
-            // replace the "realistic" collision with one that looks better - otherwise lasers
-            // look wonky
-            GetComponent<Rigidbody2D>().angularVelocity = 0;
-            GetComponent<Rigidbody2D>().velocity = GetComponent<Rigidbody2D>().velocity.normalized * attrs.maxSpeed;
-            ActorBehaviorFactory.Instance.faceForward.FixedUpdate(this);
-        }
-        else
-        {
-            // show sparks and die
-            if (_collisionParticles == null)
-            {
-                _collisionParticles = ((GameObject)GameObject.Instantiate(Main.Instance.assets.collisionParticles));
-                Main.Instance.ParentEffect(_collisionParticles.transform);
-            }
-            _collisionParticles.transform.position = point;
-            _collisionParticles.GetComponent<ParticleSystem>().Play();
-
-            TakeDamage(1);
-        }
+        TakeDamage(other.collisionDamage);
     }
 }
