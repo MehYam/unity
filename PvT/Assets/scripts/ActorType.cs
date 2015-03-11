@@ -230,8 +230,8 @@ public sealed class TankSpawnHelper
     public readonly GameObject treadRight;
     public TankSpawnHelper(GameController game, string tankHull, string tankTurret)
     {
-        hull = game.loader.GetTankHull(tankHull);
-        turret = game.loader.GetTankPart(tankTurret);
+        //hull = game.loader.GetTankHull(tankHull);
+        //turret = game.loader.GetTankPart(tankTurret);
         var tread = game.loader.GetMisc("tanktreadParent");
 
         hullGO = hull.Spawn();

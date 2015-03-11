@@ -16,9 +16,6 @@ public class Loader
     readonly Dictionary<string, Asset> _miscLookup;
     readonly Dictionary<string, ActorType> _actorTypeLookup;
     readonly Dictionary<string, ActorType> _actorTypeLookupFromAssetId;
-    readonly Dictionary<string, Tank> _tankLookup;
-    readonly Dictionary<string, TankHullType> _tankHullLookup;
-    readonly Dictionary<string, TankTurretType> _tankTurretLookup;
     readonly Dictionary<string, AI> _ai;
 
     public readonly ReadOnlyCollection<Level> levels;
@@ -37,11 +34,11 @@ public class Loader
         var weaponStrings = LoadWeaponStrings(config.Weapons.text);
 
         _actorTypeLookup = LoadActorTypes(config.Actors.text, "actors/", weaponStrings);
-        _actorTypeLookupFromAssetId = MapAssetIdToActorTypes(_actorTypeLookup);
 
-        _tankLookup = LoadTanks(config.Tanks.text);
-        _tankHullLookup = LoadTankHullTypes(config.TankHulls.text, "actors/", weaponStrings);
-        _tankTurretLookup = LoadTankTurretTypes(config.TankTurrets.text, "actors/", weaponStrings);
+        LoadTankHullTypes(config.TankHulls.text, "actors/", weaponStrings, _actorTypeLookup);
+        LoadTankTurretTypes(config.TankTurrets.text, "actors/", weaponStrings, _actorTypeLookup);
+
+        _actorTypeLookupFromAssetId = MapAssetIdToActorTypes(_actorTypeLookup);
 
         levels = new ReadOnlyCollection<Level>(LoadLevels(config.Levels.text));
         _ai = LoadAI(config.AI.text);
@@ -53,14 +50,6 @@ public class Loader
     public void ForEachActorType(Action<ActorType> action)
     {
         foreach (var entry in _actorTypeLookup)
-        {
-            action(entry.Value);
-        }
-        foreach (var entry in _tankHullLookup)
-        {
-            action(entry.Value);
-        }
-        foreach (var entry in _tankTurretLookup)
         {
             action(entry.Value);
         }
@@ -121,24 +110,6 @@ public class Loader
     {
         ActorType retval = null;
         _actorTypeLookupFromAssetId.TryGetValue(objectName, out retval);
-        return retval;
-    }
-    public Tank GetTank(string tankName)
-    {
-        Tank retval = null;
-        _tankLookup.TryGetValue(tankName, out retval);
-        return retval;
-    }
-    public TankHullType GetTankHull(string type)
-    {
-        TankHullType retval = null;
-        _tankHullLookup.TryGetValue(type, out retval);
-        return retval;
-    }
-    public TankTurretType GetTankPart(string type)
-    {
-        TankTurretType retval = null;
-        _tankTurretLookup.TryGetValue(type, out retval);
         return retval;
     }
     public AI GetAI(string key)
@@ -286,39 +257,25 @@ public class Loader
         }
         return results;
     }
-    Dictionary<string, TankHullType> LoadTankHullTypes(string csv, string assetPath, Dictionary<string, IList<string>> weaponStrings)
+    void LoadTankHullTypes(string csv, string assetPath, Dictionary<string, IList<string>> weaponStrings, Dictionary<string, ActorType> lookup)
     {
-        var results = new Dictionary<string, TankHullType>(StringComparer.OrdinalIgnoreCase);
         foreach (var line in Util.SplitLines(csv, true))
         {
             var csvHelper = Util.CSVLineParser(line);
             var actorType = LoadTankHullType(csvHelper, weaponStrings, assetPath);
-            results[actorType.name] = actorType;
+
+            Debug.Log("tank hull name" + actorType.name);
+            lookup[actorType.name] = actorType;
         }
-        return results;
     }
-    Dictionary<string, TankTurretType> LoadTankTurretTypes(string csv, string assetPath, Dictionary<string, IList<string>> weaponStrings)
+    void LoadTankTurretTypes(string csv, string assetPath, Dictionary<string, IList<string>> weaponStrings, Dictionary<string, ActorType> lookup)
     {
-        var results = new Dictionary<string, TankTurretType>(StringComparer.OrdinalIgnoreCase);
         foreach (var line in Util.SplitLines(csv, true))
         {
             var csvHelper = Util.CSVLineParser(line);
             var actorType = LoadTankTurretType(csvHelper, weaponStrings, assetPath);
-            results[actorType.name] = actorType;
+            lookup[actorType.name] = actorType;
         }
-        return results;
-    }
-    static Dictionary<string, Tank> LoadTanks(string strJSON)
-    {
-        var tanks = new Dictionary<string, Tank>(StringComparer.OrdinalIgnoreCase);
-        var json = MJSON.hashtableFromJson(strJSON);
-        foreach (DictionaryEntry entry in json)
-        {
-            var node = (Hashtable)entry.Value;
-            var name = (string)entry.Key;
-            tanks[name] = new Tank(name, MJSON.SafeGetValue(node, "hull"), MJSON.SafeGetValue(node, "turret"));
-        }
-        return tanks;
     }
 
     static IList<Level> LoadLevels(string strLevels)
@@ -439,15 +396,6 @@ public sealed class AI
         this.behavior = behavior;
         this.reward = reward;
     }
-}
-
-public sealed class Tank
-{
-    public readonly string name;
-    public readonly string hullName;
-    public readonly string turretName;
-
-    public Tank(string name, string hull, string turret) { this.name = name; hullName = hull; turretName = turret; }
 }
 
 public sealed class Level

@@ -60,6 +60,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e03719fed5f4e0c4e99a7b41c6369c2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  FaceMouseOnFire: 1
+  AddRigidbody: 0
 --- !u!212 &21200000
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -8,10 +8,13 @@ using System.Collections.Generic;
 using PvT.DOM;
 using PvT.Util;
 
-//KAI: this class is starting to get bloated into a MobActor.  Should probably
-// delineate into subclasses, or find a composition strategy
 public class Actor : MonoBehaviour
 {
+    //KAI: these items are evidence of holes in the design.  Separate Tank, Turret, and Plane classes would remove the
+    // need for these, as well as using real hinges for the turrets
+    public bool FaceMouseOnFire = true;
+    public bool AddRigidbody = true;
+
     public bool reflectsAmmo { get; set; }
     public bool showsHealthBar { get; set; }
     public bool explodesOnDeath { get; set; }
@@ -80,19 +83,20 @@ public class Actor : MonoBehaviour
 
     protected virtual void Start()  // KAI: interesting Unity gotcha - must document somewhere
     {
-        Debug.Log("Actor.Start");
-
         // look up the stats for this actor by name
         actorType = Main.Instance.game.loader.GetActorTypeFromAssetId(name);
 
         // hook up the physics
-        var body = gameObject.AddComponent<Rigidbody2D>();
-        body.mass = float.IsNaN(actorType.mass) ? 0 : actorType.mass;
-        body.drag = 0.5f;
-        body.angularDrag = 5;
-        if (actorType.mass < 0)
+        if (AddRigidbody)
         {
-            body.isKinematic = true;
+            var body = gameObject.AddComponent<Rigidbody2D>();
+            body.mass = float.IsNaN(actorType.mass) ? 0 : actorType.mass;
+            body.drag = 0.5f;
+            body.angularDrag = 5;
+            if (actorType.mass < 0)
+            {
+                body.isKinematic = true;
+            }
         }
         GetComponent<Collider2D>().sharedMaterial = Main.Instance.assets.Bounce;
 

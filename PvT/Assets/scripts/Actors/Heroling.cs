@@ -4,6 +4,29 @@ using System.Collections;
 using PvT.DOM;
 using PvT.Util;
 
+
+// NOT YET PORTED OVER
+    //void AttachToLaserGate(LaserGate gate)
+    //{
+    //    gate.Flicker(Consts.HEROLING_ATTACH_BOREDOM);
+    
+    //    // attach
+    //    transform.parent = gate.transform;
+
+    //    // sidle
+    //    var gimmeAKiss = transform.localPosition + Util.ScatterRandomly(0.25f);
+    //    gimmeAKiss.Scale(new Vector3(0.2f, 1));
+    //    transform.localPosition = gimmeAKiss;
+
+    //    // disable physics
+    //    Util.DisablePhysics(gameObject);
+
+    //    SetBehavior(ATTACHED);
+    //    _roamBoredom = null;
+    //    _attachBoredom = new Timer(Consts.HEROLING_ATTACH_BOREDOM);
+    //}
+
+
 public sealed class Heroling : MonoBehaviour
 {
     static public int ActiveHerolings { get; private set; }

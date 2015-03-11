@@ -51,7 +51,15 @@ public sealed class Player : MonoBehaviour
         behaviors.Add(bf.faceForward);
 
         var fireAhead = bf.CreateAutofire(layer, actor.actorType.weapons);
-        behaviors.Add(bf.CreatePlayerButton(MasterInput.impl.Primary, new CompositeBehavior(bf.faceMouse, fireAhead)));
+
+        if (actor.FaceMouseOnFire)
+        {
+            behaviors.Add(bf.CreatePlayerButton(MasterInput.impl.Primary, new CompositeBehavior(bf.faceMouse, fireAhead)));
+        }
+        else
+        {
+            behaviors.Add(bf.CreatePlayerButton(MasterInput.impl.Primary, fireAhead));
+        }
         behaviors.Add(bf.CreatePlayerButton(MasterInput.impl.PrimaryAlt, fireAhead));
 
         actor.behavior = behaviors;

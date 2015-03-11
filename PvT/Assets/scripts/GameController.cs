@@ -112,33 +112,6 @@ public sealed class GameController : IGame
         playerObj.AddComponent<Player>();
         playerObj.transform.position = location;
 
-        // that's *it*. The rest should happen automatically
-
-        //var tank = loader.GetTank(actorTypeName);
-        //if (tank == null)
-        //{
-        //    var playerVehicle = loader.GetActorType(actorTypeName);
-        //    var go = playerVehicle.Spawn(Consts.SortingLayer.FRIENDLY, true);
-        //    SetPlayerPlaneBehaviors(go, playerVehicle);
-        //}
-        //else
-        //{
-        //    var tankHelper = new TankSpawnHelper(this, tank.hullName, tank.turretName);
-        //    SetPlayerTankBehaviors(tankHelper);
-        //}
-        //var playerActor = player.GetComponent<Actor>();
-        //SetSecondaryHerolingBehavior((CompositeBehavior)playerActor.behavior);
-
-        //this.player.gameObject.transform.position = location;
-
-        // KAI: commenting this out in branch "designRevamp"
-        //enemyInPossession = !playerActor.isHero;
-        //if (!enemyInPossession)
-        //{
-        //    // Hero gets no collisionDamage
-        //    playerActor.collisionDamage = 0;
-        //}
-
         return playerObj;
     }
     public void SwapPlayer(string key)
@@ -156,17 +129,9 @@ public sealed class GameController : IGame
     public GameObject SpawnMob(string actorKey)
     {
         GameObject retval;
-        var tank = loader.GetTank(actorKey);
-        if (tank != null)
-        {
-            var tankHelper = new TankSpawnHelper(this, tank.hullName, tank.turretName);
-            retval = tankHelper.hullGO;
-        }
-        else
-        {
-            var actor = loader.GetActorType(actorKey);
-            retval = actor.Spawn();
-        }
+        var actor = loader.GetActorType(actorKey);
+        retval = actor.Spawn();
+
         retval.AddComponent<Mob>();
         return retval;
     }
