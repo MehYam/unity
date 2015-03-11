@@ -30,6 +30,10 @@ public sealed class Mob : MonoBehaviour
         //KAI: either rethink this, or create a HerolingHost class
         actor.isCapturable = true;
 	}
+    void PreActorDie(Actor actor)
+    {
+        GlobalGameEvent.Instance.FireMobDeath(actor);
+    }
 	void OnDestroy()
     {
         var actor = GetComponent<Actor>();
@@ -41,8 +45,6 @@ public sealed class Mob : MonoBehaviour
         {
             GameObject.Destroy(_overwhelm.bar.gameObject);
         }
-
-        GlobalGameEvent.Instance.FireMobDeath(actor);
     }
     void FixedUpdate()
     {
