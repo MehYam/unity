@@ -6,8 +6,8 @@ AnimationClip:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: tanktread
-  serializedVersion: 4
-  m_AnimationType: 2
+  serializedVersion: 6
+  m_Legacy: 0
   m_Compressed: 0
   m_UseHighQualityCurve: 1
   m_RotationCurves: []
@@ -17,15 +17,15 @@ AnimationClip:
       serializedVersion: 2
       m_Curve:
       - time: 0
-        value: {x: 0, y: .0399999991, z: 0}
-        inSlope: {x: 0, y: -.216000021, z: 0}
-        outSlope: {x: 0, y: -.216000021, z: 0}
-        tangentMode: 117304320
-      - time: .416666657
         value: {x: 0, y: -.0500000007, z: 0}
-        inSlope: {x: 0, y: -.216000021, z: 0}
-        outSlope: {x: 0, y: -.216000021, z: 0}
-        tangentMode: 117304320
+        inSlope: {x: 0, y: .216000021, z: 0}
+        outSlope: {x: 0, y: .216000021, z: 0}
+        tangentMode: 0
+      - time: .416666657
+        value: {x: 0, y: .0399999991, z: 0}
+        inSlope: {x: 0, y: .216000021, z: 0}
+        outSlope: {x: 0, y: .216000021, z: 0}
+        tangentMode: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
     path: 
@@ -82,14 +82,14 @@ AnimationClip:
       serializedVersion: 2
       m_Curve:
       - time: 0
-        value: .0399999991
-        inSlope: -.216000021
-        outSlope: -.216000021
+        value: -.0500000007
+        inSlope: .216000021
+        outSlope: .216000021
         tangentMode: 10
       - time: .416666657
-        value: -.0500000007
-        inSlope: -.216000021
-        outSlope: -.216000021
+        value: .0399999991
+        inSlope: .216000021
+        outSlope: .216000021
         tangentMode: 10
       m_PreInfinity: 2
       m_PostInfinity: 2
@@ -98,4 +98,7 @@ AnimationClip:
     classID: 4
     script: {fileID: 0}
   m_EulerEditorCurves: []
+  m_HasGenericRootTransform: 1
+  m_HasMotionFloatCurves: 0
+  m_GenerateMotionCurves: 0
   m_Events: []
