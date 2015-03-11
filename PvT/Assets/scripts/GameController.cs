@@ -62,6 +62,8 @@ public sealed class GameController : IGame
     void OnPlayerSpawned(Actor playerActor)
     {
         player = playerActor.gameObject;
+
+        Camera.main.GetComponent<CameraFollow>().Target = player;
     }
 
     //KAI: some nice way to tag this as dev only?
