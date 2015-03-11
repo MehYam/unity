@@ -45,7 +45,7 @@ public class Actor : MonoBehaviour
         maxRotationalVelocity = Consts.MAX_MOB_ROTATION_DEG_PER_SEC;
 
         takenDamageMultiplier = 1;
-        health = 1;
+        _health = 1;  //KAI: unity crashes if we call the setter here, because it fires off a bunch of events out of the constructor, which is bad
 
         behaviorEnabled = true;
     }
@@ -67,7 +67,11 @@ public class Actor : MonoBehaviour
             _actorType = value;
 
             health = _actorType.attrs.maxHealth;
-            collisionDamage = health / 4;
+
+            if (!isHero)
+            {
+                collisionDamage = health / 4;
+            }
 
             if (value.dropShadow)
             {
@@ -118,8 +122,6 @@ public class Actor : MonoBehaviour
     /// </summary>
     void Die()
     {
-        Debug.Log("Actor Die! " + health);
-
         SendMessage("PreActorDie", this, SendMessageOptions.DontRequireReceiver);
 
         GlobalGameEvent.Instance.FireActorDeath(this);
