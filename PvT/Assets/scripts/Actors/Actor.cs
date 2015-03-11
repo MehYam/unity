@@ -411,7 +411,7 @@ public class Actor : MonoBehaviour
 #if SHOW_STRANGE_PARENTING_BUG
                     bar.transform   .parent = transform;
 #else
-                Main.Instance.ParentEffect(bar.transform.parent);
+                Main.Instance.ParentEffect(bar.transform);
 #endif
             }
             _healthBar.gameObject.SetActive(true);
