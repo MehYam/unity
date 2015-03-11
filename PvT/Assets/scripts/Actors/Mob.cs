@@ -123,6 +123,8 @@ public sealed class Mob : MonoBehaviour
     bool _overwhelmed = false;
     void CheckOverwhelm()
     {
+        //KAI: instead of this every frame, we could check overwhelm status every time the number of
+        // herolings or health amount change.
         var actor = GetComponent<Actor>();
 
         if (!_overwhelmed && overwhelmPct == 1f)
