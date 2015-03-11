@@ -81,7 +81,7 @@ public sealed class Mob : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (overwhelmPct < 1)
+        if (collision.gameObject.layer != gameObject.layer && overwhelmPct < 1)
         {
             collision.gameObject.SendMessage("OnDamagingCollision", GetComponent<Actor>(), SendMessageOptions.DontRequireReceiver);
         }
