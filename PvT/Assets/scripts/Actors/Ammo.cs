@@ -16,6 +16,8 @@ public sealed class Ammo : MonoBehaviour
         rigidbody.drag = 0;
 
         var actor = gameObject.GetComponent<Actor>();
+
+        Debug.Log("Ammo.start " + name);
         actor.SetExpiry(weapon.attrs.ttl);
         actor.collisionDamage = weapon.attrs.damage;
         actor.showsHealthBar = false;
@@ -81,7 +83,7 @@ public sealed class Ammo : MonoBehaviour
             }
             else
             {
-                collision.gameObject.SendMessage("OnDamagingCollision", GetComponent<Actor>());
+                collision.gameObject.SendMessage("OnDamagingCollision", GetComponent<Actor>(), SendMessageOptions.DontRequireReceiver);
 
                 // show sparks and die
                 if (_collisionParticles == null)

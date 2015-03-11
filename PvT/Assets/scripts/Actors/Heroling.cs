@@ -146,7 +146,7 @@ public sealed class Heroling : MonoBehaviour
     void OnCollisionEnter2D(Collision2D collision)
     {
         //Debug.Log(string.Format("{0} receiving collision from {1}", name, collision.gameObject.name));
-        collision.gameObject.SendMessage("OnHerolingCollide", this);
+        collision.gameObject.SendMessage("OnHerolingCollide", this, SendMessageOptions.DontRequireReceiver);
     }
 
     static readonly IActorBehavior ROAM = new CompositeBehavior(
