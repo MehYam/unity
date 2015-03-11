@@ -95,6 +95,7 @@ GameObject:
   - 212: {fileID: 21259660}
   - 60: {fileID: 6044220}
   - 114: {fileID: 11431062}
+  - 114: {fileID: 11439372}
   m_Layer: 0
   m_Name: tankturret0
   m_TagString: Untagged
@@ -339,6 +340,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FaceMouseOnFire: 1
   AddRigidbody: 0
+--- !u!114 &11439372
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 159318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d39c7c5a43263ae42ae306549614593a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!212 &21200000
 SpriteRenderer:
   m_ObjectHideFlags: 1

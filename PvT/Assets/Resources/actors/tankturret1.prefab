@@ -11,6 +11,7 @@ GameObject:
   - 212: {fileID: 21200000}
   - 60: {fileID: 6000000}
   - 114: {fileID: 11440362}
+  - 114: {fileID: 11433834}
   m_Layer: 0
   m_Name: tankturret1
   m_TagString: Untagged
@@ -49,6 +50,17 @@ PolygonCollider2D:
       - {x: .348155975, y: -.100984812}
       - {x: .37256813, y: .442119479}
       - {x: .0109882355, y: 1.22982526}
+--- !u!114 &11433834
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d39c7c5a43263ae42ae306549614593a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11440362
 MonoBehaviour:
   m_ObjectHideFlags: 1
