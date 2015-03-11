@@ -264,7 +264,6 @@ public class Loader
             var csvHelper = Util.CSVLineParser(line);
             var actorType = LoadTankHullType(csvHelper, weaponStrings, assetPath);
 
-            Debug.Log("tank hull name" + actorType.name);
             lookup[actorType.name] = actorType;
         }
     }
