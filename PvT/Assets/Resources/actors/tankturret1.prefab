@@ -12,6 +12,8 @@ GameObject:
   - 60: {fileID: 6000000}
   - 114: {fileID: 11440362}
   - 114: {fileID: 11433834}
+  - 114: {fileID: 11420566}
+  - 114: {fileID: 11459312}
   m_Layer: 0
   m_Name: tankturret1
   m_TagString: Untagged
@@ -50,6 +52,18 @@ PolygonCollider2D:
       - {x: .348155975, y: -.100984812}
       - {x: .37256813, y: .442119479}
       - {x: .0109882355, y: 1.22982526}
+--- !u!114 &11420566
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9035c517708bd974a853e164920f3b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Facing: 1
 --- !u!114 &11433834
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -72,8 +86,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e03719fed5f4e0c4e99a7b41c6369c2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FaceMouseOnFire: 1
   AddRigidbody: 0
+--- !u!114 &11459312
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f858cf3155248c428831f30dcfc2df1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!212 &21200000
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -12,6 +12,8 @@ GameObject:
   - 68: {fileID: 6800000}
   - 114: {fileID: 11447678}
   - 114: {fileID: 11455002}
+  - 114: {fileID: 11430972}
+  - 114: {fileID: 11445300}
   m_Layer: 0
   m_Name: tankturret2
   m_TagString: Untagged
@@ -52,6 +54,29 @@ EdgeCollider2D:
   - {x: .163571358, y: .282933235}
   - {x: .324311256, y: 1.11641288}
   - {x: -.367904663, y: 1.1031034}
+--- !u!114 &11430972
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9035c517708bd974a853e164920f3b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Facing: 1
+--- !u!114 &11445300
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f858cf3155248c428831f30dcfc2df1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11447678
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -63,7 +88,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e03719fed5f4e0c4e99a7b41c6369c2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FaceMouseOnFire: 1
   AddRigidbody: 0
 --- !u!114 &11455002
 MonoBehaviour:

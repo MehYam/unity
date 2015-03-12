@@ -5,7 +5,7 @@ public sealed class Turret : MonoBehaviour
 {
 	void Start()
     {
-        //KAI: not quite correct...
+        //KAI: player logic doesn't belong here
         var player = transform.parent.GetComponent<Player>();
         if (player != null)
         {

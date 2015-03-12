@@ -11,6 +11,8 @@ GameObject:
   - 212: {fileID: 21200000}
   - 60: {fileID: 6000000}
   - 114: {fileID: 11458942}
+  - 114: {fileID: 11441962}
+  - 114: {fileID: 11481238}
   m_Layer: 0
   m_Name: ship2_2_1
   m_TagString: Untagged
@@ -48,6 +50,17 @@ PolygonCollider2D:
       - {x: -.783284187, y: -.436803818}
       - {x: .819999993, y: -.485000014}
       - {x: .723280191, y: .418092728}
+--- !u!114 &11441962
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9035c517708bd974a853e164920f3b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11458942
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -59,8 +72,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e03719fed5f4e0c4e99a7b41c6369c2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FaceMouseOnFire: 1
+  FacingBehavior: 2
   AddRigidbody: 1
+--- !u!114 &11481238
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f858cf3155248c428831f30dcfc2df1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!212 &21200000
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -9,12 +9,14 @@ GameObject:
   m_Component:
   - 4: {fileID: 400000}
   - 212: {fileID: 21200000}
-  - 58: {fileID: 5800000}
   - 95: {fileID: 9500000}
-  - 114: {fileID: 11494482}
-  - 114: {fileID: 11441956}
+  - 114: {fileID: 11400000}
+  - 68: {fileID: 6800000}
+  - 114: {fileID: 11400002}
+  - 114: {fileID: 11460358}
+  - 114: {fileID: 11403948}
   m_Layer: 0
-  m_Name: shockwave
+  m_Name: fusionBlast
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -32,19 +34,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!58 &5800000
-CircleCollider2D:
+--- !u!68 &6800000
+EdgeCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_Enabled: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: .689999998
+  m_Points:
+  - {x: .085895732, y: .373287469}
+  - {x: .0974264145, y: .0907598287}
+  - {x: .00076135993, y: .00217150897}
+  - {x: -.100652456, y: .0877769664}
+  - {x: -.0847365633, y: .372651547}
 --- !u!95 &9500000
 Animator:
   serializedVersion: 3
@@ -54,15 +60,38 @@ Animator:
   m_GameObject: {fileID: 100000}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: d5f52347981233143a9bdf670986f607, type: 2}
+  m_Controller: {fileID: 9100000, guid: bee02941952e1354e85ccf71c71532e6, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
---- !u!114 &11441956
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da8b61eab243c8b47928d8a770b95111, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TargetToRemove: {fileID: 100000}
+--- !u!114 &11400002
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 167c5b558415fdb4cad36f8d2bbf02a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &11403948
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -73,9 +102,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e03719fed5f4e0c4e99a7b41c6369c2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FaceMouseOnFire: 1
   AddRigidbody: 1
---- !u!114 &11494482
+--- !u!114 &11460358
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -108,10 +136,10 @@ SpriteRenderer:
   m_AutoUVMaxDistance: .5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 3
-  m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: cdad75299d613e14d98b2dda99b8f19d, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_SortingLayerID: 7
+  m_SortingOrder: 0
+  m_Sprite: {fileID: 21300000, guid: e08ec5d389382e448bcf717152ca3124, type: 3}
+  m_Color: {r: .814502895, g: .566176474, b: 1, a: 1}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

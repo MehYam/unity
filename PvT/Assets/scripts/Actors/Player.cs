@@ -15,7 +15,9 @@ public sealed class Player : MonoBehaviour
         {
             gameObject.layer = (int)Consts.CollisionLayer.FRIENDLY;
 
-            CreateBehaviors(_actor);
+            var behaviors = new CompositeBehavior();
+            AddWeaponBehaviors(_actor, behaviors);
+
             GlobalGameEvent.Instance.FirePlayerSpawned(_actor);
         }
         else
@@ -40,16 +42,16 @@ public sealed class Player : MonoBehaviour
         }
     }
 
-    static void CreateBehaviors(Actor actor)
+    static void AddWeaponBehaviors(Actor actor, CompositeBehavior behaviors)
     {
         // set up the primary and secondary fire buttons
         var bf = ActorBehaviorFactory.Instance;
         var layer = Consts.CollisionLayer.FRIENDLY_AMMO;
 
-        var behaviors = new CompositeBehavior();
         behaviors.Add(bf.faceForward);
 
-        if (actor.FaceMouseOnFire)
+        var playerControllable = actor.GetComponent<PlayerControllable>();
+        if (playerControllable.Facing == PlayerControllable.FacingBehavior.FACE_MOUSE_ON_FIRE)
         {
             behaviors.Add(bf.faceMouseOnFire);
         }

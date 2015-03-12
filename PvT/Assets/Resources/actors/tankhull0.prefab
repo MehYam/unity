@@ -12,6 +12,8 @@ GameObject:
   - 61: {fileID: 6100000}
   - 114: {fileID: 11418700}
   - 114: {fileID: 11411344}
+  - 114: {fileID: 11408822}
+  - 114: {fileID: 11464920}
   m_Layer: 0
   m_Name: tankhull0
   m_TagString: Untagged
@@ -303,6 +305,18 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &11408822
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9035c517708bd974a853e164920f3b65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Facing: 0
 --- !u!114 &11411344
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -325,7 +339,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e03719fed5f4e0c4e99a7b41c6369c2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FaceMouseOnFire: 0
   AddRigidbody: 1
 --- !u!114 &11431062
 MonoBehaviour:
@@ -338,7 +351,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e03719fed5f4e0c4e99a7b41c6369c2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FaceMouseOnFire: 1
   AddRigidbody: 0
 --- !u!114 &11439372
 MonoBehaviour:
@@ -349,6 +361,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d39c7c5a43263ae42ae306549614593a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &11464920
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f858cf3155248c428831f30dcfc2df1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!212 &21200000

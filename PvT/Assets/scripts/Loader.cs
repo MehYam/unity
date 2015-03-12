@@ -216,7 +216,12 @@ public class Loader
             var prefab = Resources.Load<GameObject>(fullPath);
             if (prefab == null)
             {
-                Debug.LogError("Warning:  no asset found for " + fullPath);
+                // Hack - try another directory for now
+                prefab = Resources.Load<GameObject>(assetPath + "ammo/" + assetID);
+                if (prefab == null)
+                {
+                    Debug.LogError("Warning:  no asset found for " + fullPath);
+                }
             }
             prefab.transform.localPosition = Vector3.zero;
             retval = new Asset(assetID, prefab);

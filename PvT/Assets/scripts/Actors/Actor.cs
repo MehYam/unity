@@ -10,10 +10,8 @@ using PvT.Util;
 
 public class Actor : MonoBehaviour
 {
-    //KAI: these items are evidence of holes in the design.  Separate Tank, Turret, and Plane classes would remove the
-    // need for these, as well as using real hinges for the turrets
-    public bool FaceMouseOnFire = true;
     public bool AddRigidbody = true;
+
 
     public bool reflectsAmmo { get; set; }
     public bool showsHealthBar { get; set; }
