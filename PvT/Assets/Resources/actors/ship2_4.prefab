@@ -11,6 +11,7 @@ GameObject:
   - 212: {fileID: 21200000}
   - 60: {fileID: 6000000}
   - 114: {fileID: 11445124}
+  - 114: {fileID: 11424458}
   m_Layer: 0
   m_Name: ship2_4
   m_TagString: Untagged
@@ -47,6 +48,17 @@ PolygonCollider2D:
       - {x: -.444928646, y: -.432707787}
       - {x: -.127835274, y: .43064785}
       - {x: .147098541, y: .432157516}
+--- !u!114 &11424458
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b629b60506988ee478a1295317b6debc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11445124
 MonoBehaviour:
   m_ObjectHideFlags: 1
