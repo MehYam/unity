@@ -17,19 +17,22 @@ public sealed class CameraFollow : MonoBehaviour
     XRect limit = new XRect();
     void CalcBounds()
     {
-        var screenInWorld = Util.GetScreenRectInWorldCoords(GetComponent<Camera>());
+        if (Border != null)
+        {
+            var screenInWorld = Util.GetScreenRectInWorldCoords(GetComponent<Camera>());
 
-        var borderMin = new Vector2(Border.transform.FindChild("left").localPosition.x, Border.transform.FindChild("bottom").localPosition.y);
-        var borderMax = new Vector2(Border.transform.FindChild("right").localPosition.x, Border.transform.FindChild("top").localPosition.y);
-        var borderSize = borderMax - borderMin;
+            var borderMin = new Vector2(Border.transform.FindChild("left").localPosition.x, Border.transform.FindChild("bottom").localPosition.y);
+            var borderMax = new Vector2(Border.transform.FindChild("right").localPosition.x, Border.transform.FindChild("top").localPosition.y);
+            var borderSize = borderMax - borderMin;
 
-        limit = new XRect(0, 0, 
-            borderSize.x - screenInWorld.width, 
-            borderSize.y - screenInWorld.height);
+            limit = new XRect(0, 0, 
+                borderSize.x - screenInWorld.width, 
+                borderSize.y - screenInWorld.height);
 
-        limit.Move(-limit.width/2, -limit.height/2);
+            limit.Move(-limit.width/2, -limit.height/2);
 
-        Util.Log("Border: {0},{1}, camera limit: {2}", borderMin, borderMax, limit);
+            Util.Log("Border: {0},{1}, camera limit: {2}", borderMin, borderMax, limit);
+        }
     }
 
 	void LateUpdate()

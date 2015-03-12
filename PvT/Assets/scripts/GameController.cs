@@ -289,16 +289,16 @@ public sealed class GameController : IGame
 
             var shieldBehavior = new PlayerButton(
                 MasterInput.impl.Primary,
-                controller.Start,
+                controller.OnStart,
                 new CompositeBehavior(bf.faceMouse, (Action<Actor>)controller.OnFrame).FixedUpdate,
-                new CompositeBehavior(bf.faceMouse, (Action<Actor>)controller.Discharge).FixedUpdate
+                new CompositeBehavior(bf.faceMouse, (Action<Actor>)controller.OnEnd).FixedUpdate
             );
             behaviors.Add(shieldBehavior);
             shieldBehavior = new PlayerButton(
                 MasterInput.impl.PrimaryAlt,
-                controller.Start,
+                controller.OnStart,
                 controller.OnFrame,
-                controller.Discharge
+                controller.OnEnd
             );
             behaviors.Add(shieldBehavior);
         }
@@ -308,16 +308,16 @@ public sealed class GameController : IGame
 
             var chargeBehavior = new PlayerButton(
                 MasterInput.impl.Primary,
-                controller.StartCharge,
-                new CompositeBehavior(bf.faceMouse, new GoHomeYouAreDrunkBehavior(), (Action<Actor>)controller.Charge).FixedUpdate,
-                new CompositeBehavior(bf.faceMouse, (Action<Actor>)controller.Discharge).FixedUpdate
+                controller.OnStart,
+                new CompositeBehavior(bf.faceMouse, new GoHomeYouAreDrunkBehavior(), (Action<Actor>)controller.OnFrame).FixedUpdate,
+                new CompositeBehavior(bf.faceMouse, (Action<Actor>)controller.OnEnd).FixedUpdate
             );
             behaviors.Add(chargeBehavior);
             chargeBehavior = new PlayerButton(
                 MasterInput.impl.PrimaryAlt,
-                controller.StartCharge,
-                new CompositeBehavior(new GoHomeYouAreDrunkBehavior(), (Action<Actor>)controller.Charge).FixedUpdate,
-                controller.Discharge
+                controller.OnStart,
+                new CompositeBehavior(new GoHomeYouAreDrunkBehavior(), (Action<Actor>)controller.OnFrame).FixedUpdate,
+                controller.OnEnd
             );
             behaviors.Add(chargeBehavior);
         }

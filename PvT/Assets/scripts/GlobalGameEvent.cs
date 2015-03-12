@@ -60,6 +60,8 @@ class GlobalGameEvent
     public event Action<Actor, float> WeaponCharge = delegate { };
 
     // UI and misc
+    public event Action MouseDown = delegate { };
+    public event Action MouseUp = delegate { };
     public event Action TouchInputBegin = delegate { };
     public event Action TouchInputEnd = delegate { };
     public event Action<PlayerData> PlayerDataUpdated = delegate { };
@@ -89,6 +91,8 @@ class GlobalGameEvent
     public void FireMapReady(GameObject map, XRect bounds) { MapReady(map, bounds); }
     public void FireMobDeath(Actor a) { MobDeath(a); }
     public void FireMobSpawned(Actor a) { MobSpawned(a); }
+    public void FireMouseDown() { }
+    public void FireMouseUp() { }
     public void FirePlayerDataUpdated(PlayerData pd) { PlayerDataUpdated(pd); }
     public void FirePlayerSpawned(Actor player) { PlayerSpawned(player); }
     public void FirePossessionComplete(Actor host) { PossessionComplete(host); }

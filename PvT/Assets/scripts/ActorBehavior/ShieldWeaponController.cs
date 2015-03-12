@@ -22,7 +22,7 @@ public sealed class ShieldWeaponController
 
     GameObject _shield;
     Vector2 _localShieldPos;
-    public void Start(Actor actor)
+    public void OnStart(Actor actor)
     {
         if (_shield == null && _limiter.reached)
         {
@@ -56,7 +56,7 @@ public sealed class ShieldWeaponController
     {
         if (_shield == null && _limiter.reached)
         {
-            Start(actor);
+            OnStart(actor);
         }
         if (_shield != null)
         {
@@ -65,7 +65,7 @@ public sealed class ShieldWeaponController
         }
     }
 
-    public void Discharge(Actor actor)
+    public void OnEnd(Actor actor)
     {
         if (_shield != null)
         {

@@ -3,7 +3,7 @@ using System.Collections;
 
 using PvT.Util;
 
-public sealed class ChargeWeaponController
+public sealed class ChargeWeaponController : IWeaponController
 {
     readonly Consts.CollisionLayer _layer;
     readonly ActorType.Weapon _weapon;
@@ -18,19 +18,19 @@ public sealed class ChargeWeaponController
     }
 
     float _startTime = 0;
-    public void StartCharge(Actor actor)
+    public void OnStart(Actor actor)
     {
         _startTime = Time.fixedTime;
     }
 
     float _currentCharge = 0;
-    public void Charge(Actor actor)
+    public void OnFrame(Actor actor)
     {
         if (_limiter.reached)
         {
             if (_startTime == 0)
             {
-                StartCharge(actor);
+                OnStart(actor);
             }
 
             _currentCharge = Mathf.Min(1, (Time.fixedTime - _startTime) / _weapon.attrs.chargeSeconds);
@@ -48,7 +48,7 @@ public sealed class ChargeWeaponController
         }
     }
 
-    public void Discharge(Actor actor)
+    public void OnEnd(Actor actor)
     {
         if (_currentCharge > 0)
         {

@@ -133,11 +133,11 @@ public sealed class MobAI
         retval.Add(bf.followPlayer, new Timer(4, 0.5f));
 
         // stop and charge
-        retval.Add(new CompositeBehavior(bf.faceTarget, new GoHomeYouAreDrunkBehavior(), (Action<Actor>)charge.Charge), 
+        retval.Add(new CompositeBehavior(bf.faceTarget, new GoHomeYouAreDrunkBehavior(), (Action<Actor>)charge.OnFrame), 
             new Timer(weapon.attrs.chargeSeconds, 0.75f));
 
         // discarge
-        retval.Add(charge.Discharge, new Timer(1));
+        retval.Add(charge.OnEnd, new Timer(1));
 
         return retval;
     }
@@ -151,9 +151,9 @@ public sealed class MobAI
         var sequence = new TimedSequenceBehavior();
 
         sequence.Add((IActorBehavior)null, new Timer(5, 0.8f));
-        sequence.Add(shield.Start, new Timer(0.25f));
+        sequence.Add(shield.OnStart, new Timer(0.25f));
         sequence.Add(shield.OnFrame, new Timer(3, 0.5f));
-        sequence.Add(shield.Discharge, new Timer(1));
+        sequence.Add(shield.OnEnd, new Timer(1));
 
         retval.Add(sequence);
         return retval;

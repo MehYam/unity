@@ -5,7 +5,6 @@ using PvT.Util;
 
 public sealed class Player : MonoBehaviour
 {
-	// Use this for initialization
     Actor _actor;
 	void Start()
     {
@@ -50,16 +49,15 @@ public sealed class Player : MonoBehaviour
         var behaviors = new CompositeBehavior();
         behaviors.Add(bf.faceForward);
 
+        Debug.Log(actor.actorType);
         var fireAhead = bf.CreateAutofire(layer, actor.actorType.weapons);
 
         if (actor.FaceMouseOnFire)
         {
-            behaviors.Add(bf.CreatePlayerButton(MasterInput.impl.Primary, new CompositeBehavior(bf.faceMouse, fireAhead)));
+            behaviors.Add(bf.faceMouseOnFire);
         }
-        else
-        {
-            behaviors.Add(bf.CreatePlayerButton(MasterInput.impl.Primary, fireAhead));
-        }
+
+        behaviors.Add(bf.CreatePlayerButton(MasterInput.impl.Primary, fireAhead));
         behaviors.Add(bf.CreatePlayerButton(MasterInput.impl.PrimaryAlt, fireAhead));
 
         actor.behavior = behaviors;
