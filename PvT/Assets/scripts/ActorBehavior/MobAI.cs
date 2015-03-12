@@ -45,30 +45,31 @@ public sealed class MobAI
     }
     void AttachTankAI(Actor tank)
     {
-        var tankHelper = new TankSpawnHelper(tank.gameObject);
 
-        var bf = ActorBehaviorFactory.Instance;
-        var hullBehavior = new CompositeBehavior(
-            bf.CreateTankTreadAnimator(tankHelper.treadLeft, tankHelper.treadRight),
-            bf.CreateRoam(true),
-            bf.CreateAutofire(Consts.CollisionLayer.MOB_AMMO, tankHelper.hull.weapons)
-        );
+        //var tankHelper = new TankSpawnHelper(tank.gameObject);
 
-        var turretFireBehavior = new TimedSequenceBehavior();
-        turretFireBehavior.Add(bf.CreateAutofire(Consts.CollisionLayer.MOB_AMMO, tankHelper.turret.weapons), new Timer(3, 3));
-        turretFireBehavior.Add(ActorBehaviorFactory.NULL, new Timer(3, 0.75f));
+        //var bf = ActorBehaviorFactory.Instance;
+        //var hullBehavior = new CompositeBehavior(
+        //    bf.CreateTankTreadAnimator(tankHelper.treadLeft, tankHelper.treadRight),
+        //    bf.CreateRoam(true),
+        //    bf.CreateAutofire(Consts.CollisionLayer.MOB_AMMO, tankHelper.hull.weapons)
+        //);
 
-        var turretBehavior = new CompositeBehavior();
-        turretBehavior.Add(bf.faceTarget);
-        turretBehavior.Add(turretFireBehavior);
+        //var turretFireBehavior = new TimedSequenceBehavior();
+        //turretFireBehavior.Add(bf.CreateAutofire(Consts.CollisionLayer.MOB_AMMO, tankHelper.turret.weapons), new Timer(3, 3));
+        //turretFireBehavior.Add(ActorBehaviorFactory.NULL, new Timer(3, 0.75f));
 
-        var hullActor = tankHelper.hullGO.GetComponent<Actor>();
-        var turretActor = tankHelper.turretGO.GetComponent<Actor>();
-        hullActor.behavior = hullBehavior;
-        turretActor.behavior = turretBehavior;
+        //var turretBehavior = new CompositeBehavior();
+        //turretBehavior.Add(bf.faceTarget);
+        //turretBehavior.Add(turretFireBehavior);
 
-        hullActor.maxRotationalVelocity = Consts.MAX_MOB_HULL_ROTATION_DEG_PER_SEC;
-        turretActor.maxRotationalVelocity = Consts.MAX_MOB_TURRET_ROTATION_DEG_PER_SEC;
+        //var hullActor = tankHelper.hullGO.GetComponent<Actor>();
+        //var turretActor = tankHelper.turretGO.GetComponent<Actor>();
+        //hullActor.behavior = hullBehavior;
+        //turretActor.behavior = turretBehavior;
+
+        //hullActor.maxRotationalVelocity = Consts.MAX_MOB_HULL_ROTATION_DEG_PER_SEC;
+        //turretActor.maxRotationalVelocity = Consts.MAX_MOB_TURRET_ROTATION_DEG_PER_SEC;
     }
     IActorBehavior Get(ActorType vehicle)
     {

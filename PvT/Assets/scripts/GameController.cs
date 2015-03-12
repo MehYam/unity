@@ -342,36 +342,6 @@ public sealed class GameController : IGame
 
         actor.behavior = behaviors;
     }
-    void SetPlayerTankBehaviors(TankSpawnHelper tankHelper)
-    {
-        var bf =ActorBehaviorFactory.Instance;
-
-        if (HasChargeWeapon(tankHelper.hull) || HasChargeWeapon(tankHelper.turret))
-        {
-            Debug.LogWarning("Charge weapons not currently supported on tanks");
-        }
-
-        // hull
-        var behaviors = new CompositeBehavior();
-        behaviors.Add(bf.faceForward);
-
-        if (tankHelper.hull.HasWeapons)
-        {
-            var hullFire = bf.CreateAutofire(Consts.CollisionLayer.FRIENDLY_AMMO, tankHelper.hull.weapons);
-            behaviors.Add(bf.CreatePlayerButton(MasterInput.impl.Primary, hullFire));
-            behaviors.Add(bf.CreatePlayerButton(MasterInput.impl.PrimaryAlt, hullFire));
-        }
-        behaviors.Add(bf.CreateTankTreadAnimator(tankHelper.treadLeft, tankHelper.treadRight));
-        tankHelper.hullGO.GetComponent<Actor>().behavior = behaviors;
-
-        // turret
-        var turretFire = bf.CreateAutofire(Consts.CollisionLayer.FRIENDLY_AMMO, tankHelper.turret.weapons);
-        tankHelper.turretGO.GetComponent<Actor>().behavior = new CompositeBehavior(
-            bf.faceMouse,
-            bf.CreatePlayerButton(MasterInput.impl.Primary, turretFire),
-            bf.CreatePlayerButton(MasterInput.impl.PrimaryAlt, turretFire)
-        );
-    }
     void SetSecondaryHerolingBehavior(CompositeBehavior behaviors)
     {
         var bf = ActorBehaviorFactory.Instance;

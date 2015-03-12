@@ -15,6 +15,8 @@ public sealed class Tank : MonoBehaviour
         right.applyRootMotion = false;
 
         body = GetComponent<Rigidbody2D>();
+        body.drag = 1;
+        body.angularDrag = 5;
     }
 
     void FixedUpdate()

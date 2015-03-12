@@ -44,21 +44,16 @@ public sealed class Player : MonoBehaviour
     {
         // set up the primary and secondary fire buttons
         var bf = ActorBehaviorFactory.Instance;
-        var layer = Consts.CollisionLayer.HEROLINGS;
+        var layer = Consts.CollisionLayer.FRIENDLY_AMMO;
 
         var behaviors = new CompositeBehavior();
         behaviors.Add(bf.faceForward);
-
-        Debug.Log(actor.actorType);
-        var fireAhead = bf.CreateAutofire(layer, actor.actorType.weapons);
 
         if (actor.FaceMouseOnFire)
         {
             behaviors.Add(bf.faceMouseOnFire);
         }
-
-        behaviors.Add(bf.CreatePlayerButton(MasterInput.impl.Primary, fireAhead));
-        behaviors.Add(bf.CreatePlayerButton(MasterInput.impl.PrimaryAlt, fireAhead));
+        behaviors.Add(bf.CreatePlayerButton(MasterInput.impl.Primary, bf.CreateAutofire(layer, actor.actorType.weapons)));
 
         actor.behavior = behaviors;
     }
