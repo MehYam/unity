@@ -652,7 +652,7 @@ sealed class FadeWithHealthAndExpiry : IActorBehavior
         // use the percentage of health remaining OR the percentage of the final second of life remaining,
         // whichever is less.  This way the object fades during its last second, even at full health.
         float pct = actor.health / maxHealth;
-        if (actor.expireTime != Actor.EXPIRY_INFINITE)
+        if (actor.expireTime != Actor.EXPIRE_NEVER)
         {
             float timeRemaining = actor.expireTime - Time.fixedTime;
             float timePct = Mathf.Min(END_FADE_SECONDS, timeRemaining);

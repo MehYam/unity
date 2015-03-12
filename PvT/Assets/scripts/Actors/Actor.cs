@@ -26,13 +26,14 @@ public class Actor : MonoBehaviour
 
     public float expireTime { get; private set; }
 
+    //KAI: these should eventually go away
     public bool isPlayer { get { return GetComponent<Player>() != null; } }
     public bool isAmmo { get { return GetComponent<Ammo>() != null; } }
     public bool isHero { get { return actorType.name == "HERO"; } }
 
     public Actor()
     {
-        expireTime = EXPIRY_INFINITE;
+        expireTime = EXPIRE_NEVER;
         explodesOnDeath = true;
         showsHealthBar = true;
         firingEnabled = true;
@@ -265,11 +266,11 @@ public class Actor : MonoBehaviour
         }
     }
 
-    static public readonly float EXPIRY_IMMEDIATE = -1;
-    static public readonly float EXPIRY_INFINITE = 0;
+    static public readonly float EXPIRE_NOW = 0;
+    static public readonly float EXPIRE_NEVER = -1;
     public void SetExpiry(float secondsFromNow)
     {
-        expireTime = secondsFromNow == EXPIRY_INFINITE ? EXPIRY_INFINITE : Time.fixedTime + secondsFromNow;
+        expireTime = secondsFromNow == EXPIRE_NEVER ? EXPIRE_NEVER : Time.fixedTime + secondsFromNow;
     }
 
     public void AddThrust(Vector2 force)
@@ -387,7 +388,7 @@ public class Actor : MonoBehaviour
         {
             GetComponent<Rigidbody2D>().velocity = Vector2.ClampMagnitude(GetComponent<Rigidbody2D>().velocity, attrs.maxSpeed);
         }
-        if (((expireTime != EXPIRY_INFINITE) && Time.fixedTime >= expireTime) || (health <= 0))
+        if (((expireTime != EXPIRE_NEVER) && Time.fixedTime >= expireTime) || (health <= 0))
         {
             Die();
         }

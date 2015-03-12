@@ -17,7 +17,6 @@ public sealed class Ammo : MonoBehaviour
 
         var actor = gameObject.GetComponent<Actor>();
 
-        Debug.Log("Ammo.start " + name);
         actor.SetExpiry(weapon.attrs.ttl);
         actor.collisionDamage = weapon.attrs.damage;
         actor.showsHealthBar = false;
@@ -49,16 +48,21 @@ public sealed class Ammo : MonoBehaviour
         GlobalGameEvent.Instance.FireAmmoSpawned(actor, weapon);
 	}
 
-    void OnDestroy()
+    GameObject _collisionParticles;
+    void PreActorDie(Actor actor)
     {
-        if (_collisionParticles != null)
+        if (_collisionParticles == null)
         {
-            var expire = _collisionParticles.GetOrAddComponent<Expire>();
-            expire.SetExpiry(_collisionParticles.GetComponent<ParticleSystem>().duration);
+            _collisionParticles = ((GameObject)GameObject.Instantiate(Main.Instance.assets.collisionParticles));
+            Main.Instance.ParentEffect(_collisionParticles.transform);
         }
+        _collisionParticles.transform.position = transform.position;
+        _collisionParticles.GetComponent<ParticleSystem>().Play();
+
+        var expire = _collisionParticles.GetOrAddComponent<Expire>();
+        expire.SetExpiry(_collisionParticles.GetComponent<ParticleSystem>().duration);
     }
 
-    GameObject _collisionParticles;
     void OnCollisionEnter2D(Collision2D collision)
     {
         var otherActor = collision.gameObject.GetComponent<Actor>();
@@ -81,16 +85,11 @@ public sealed class Ammo : MonoBehaviour
             else
             {
                 collision.gameObject.SendMessage("OnDamagingCollision", GetComponent<Actor>(), SendMessageOptions.DontRequireReceiver);
-
-                // show sparks and die
-                if (_collisionParticles == null)
-                {
-                    _collisionParticles = ((GameObject)GameObject.Instantiate(Main.Instance.assets.collisionParticles));
-                    Main.Instance.ParentEffect(_collisionParticles.transform);
-                }
-                _collisionParticles.transform.position = collision.contacts[0].point;
-                _collisionParticles.GetComponent<ParticleSystem>().Play();
             }
+        }
+        else
+        {
+            GetComponent<Actor>().SetExpiry(Actor.EXPIRE_NOW);
         }
     }
 }
