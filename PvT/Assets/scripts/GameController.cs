@@ -166,6 +166,11 @@ public sealed class GameController : IGame
         ///THIS IS COPY PASTA FROM SpawnAmmo
         var type = loader.GetActorType(weapon.actorName);
         var go = type.Spawn();
+        var ammo = go.GetComponent<Ammo>();
+        if (ammo != null)
+        {
+            ammo.weapon = weapon;
+        }
 
         Main.Instance.ParentAmmo(go.transform);
         go.layer = (int)layer;

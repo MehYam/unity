@@ -53,6 +53,7 @@ public sealed class PlayerControl : MonoBehaviour
                 new CompositeBehavior(bf.faceMouse, new GoHomeYouAreDrunkBehavior(), (Action<Actor>)controller.OnFrame).FixedUpdate,
                 new CompositeBehavior(bf.faceMouse, (Action<Actor>)controller.OnEnd).FixedUpdate
             );
+            behaviors.Add(chargeBehavior);
         }
         else
         {
