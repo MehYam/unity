@@ -29,6 +29,11 @@ public sealed class ShieldWeaponController
             // create the GameObject
             var vehicle = Main.Instance.game.loader.GetActorType(_weapon.actorName);
             _shield = vehicle.Spawn();
+            var ammo = _shield.GetComponent<Ammo>();
+            if (ammo != null)
+            {
+                ammo.weapon = _weapon;
+            }
             _shield.layer = (int)_layer;
 
             _shield.GetComponent<Actor>().collisionDamage = _weapon.attrs.damage;

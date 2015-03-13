@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 using PvT.Util;
@@ -10,10 +10,11 @@ public sealed class Ammo : MonoBehaviour
 	// Use this for initialization
 	void Start()
     {
+        if (weapon == null)
+        {
+            Debug.LogError(string.Format("Bad design is biting you - you have to assign an ActorType.Weapon to the instance of {0}", name));
+        }
         Main.Instance.ParentAmmo(transform);
-
-        var rigidbody = gameObject.GetOrAddComponent<Rigidbody2D>();
-        rigidbody.drag = 0;
 
         var actor = gameObject.GetComponent<Actor>();
 
@@ -30,17 +31,29 @@ public sealed class Ammo : MonoBehaviour
             }
         }
 
+        var rigidbody = gameObject.GetComponent<Rigidbody2D>();
+        if (rigidbody != null)
+        {
+            rigidbody.drag = 0;
+        }
+
         var type = Main.Instance.game.loader.GetActorType(weapon.actorName);
         if (type.attrs.acceleration == 0)
         {
             // give the ammo instant acceleration
-            rigidbody.mass = 0;
-            rigidbody.velocity = Util.GetLookAtVector(actor.transform.rotation.eulerAngles.z) * type.attrs.maxSpeed;
+            if (rigidbody != null)
+            {
+                rigidbody.mass = 0;
+                rigidbody.velocity = Util.GetLookAtVector(actor.transform.rotation.eulerAngles.z) * type.attrs.maxSpeed;
+            }
         }
         else
         {
             // treat the ammo like a vehicle (i.e. rocket)
-            rigidbody.mass = type.mass;
+            if (rigidbody != null)
+            {
+                rigidbody.mass = type.mass;
+            }
             actor.behavior = ActorBehaviorFactory.Instance.thrust;
         }
         
@@ -84,6 +97,7 @@ public sealed class Ammo : MonoBehaviour
             }
             else
             {
+                Debug.Log("---------");
                 collision.gameObject.SendMessage("OnDamagingCollision", GetComponent<Actor>(), SendMessageOptions.DontRequireReceiver);
             }
         }

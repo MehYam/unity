@@ -142,6 +142,7 @@ public sealed class GameController : IGame
     {
         //KAI: this is not completely sussed out yet
         var type = loader.GetActorType(weapon.actorName);
+
         var goAmmo = type.Spawn();
         goAmmo.layer = (int)layer;
 
