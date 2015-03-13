@@ -13,7 +13,6 @@ GameObject:
   - 95: {fileID: 9500000}
   - 114: {fileID: 11402482}
   - 114: {fileID: 11483028}
-  - 114: {fileID: 11431760}
   m_Layer: 0
   m_Name: hero
   m_TagString: Untagged
@@ -149,29 +148,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AddRigidbody: 1
---- !u!114 &11431760
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100000}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f858cf3155248c428831f30dcfc2df1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &11483028
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9035c517708bd974a853e164920f3b65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Facing: 0
+  Moves: 1
 --- !u!212 &21200000
 SpriteRenderer:
   m_ObjectHideFlags: 1

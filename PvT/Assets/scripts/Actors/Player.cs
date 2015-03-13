@@ -5,20 +5,37 @@ using PvT.Util;
 
 public sealed class Player : MonoBehaviour
 {
-    Actor _actor;
 	void Start()
     {
         Debug.Log("Player.Start");
 
-        _actor = GetComponent<Actor>();
-        if (_actor != null)
+        var actor = GetComponent<Actor>();
+        if (actor != null)
         {
             gameObject.layer = (int)Consts.CollisionLayer.FRIENDLY;
 
-            var behaviors = new CompositeBehavior();
-            AddWeaponBehaviors(_actor, behaviors);
+            var bf = ActorBehaviorFactory.Instance;
+            var behaviors  = new CompositeBehavior(bf.faceForward);
 
-            GlobalGameEvent.Instance.FirePlayerSpawned(_actor);
+            if (actor.isHero)
+            {
+                behaviors.Add(bf.CreateHeroAnimator(gameObject));
+                behaviors.Add(bf.heroRegen);
+            }
+            actor.behavior = behaviors;
+
+            // enable any nested player controls
+            gameObject.ForEachChildRecursive((go) =>
+                {
+                    var playerControl = go.GetComponent<PlayerControl>();
+                    if (playerControl != null)
+                    {
+                        playerControl.enabled = true;
+                    }
+                }
+            );
+
+            GlobalGameEvent.Instance.FirePlayerSpawned(actor);
         }
         else
         {
@@ -39,39 +56,6 @@ public sealed class Player : MonoBehaviour
 
             var newPlayer = game.SpawnPlayer(transform.position);
             newPlayer.AddComponent<PossessionUndoSequence>();
-        }
-    }
-
-    static void AddWeaponBehaviors(Actor actor, CompositeBehavior behaviors)
-    {
-        // set up the primary and secondary fire buttons
-        var bf = ActorBehaviorFactory.Instance;
-        var layer = Consts.CollisionLayer.FRIENDLY_AMMO;
-
-        behaviors.Add(bf.faceForward);
-
-        var playerControllable = actor.GetComponent<PlayerControllable>();
-        if (playerControllable.Facing == PlayerControllable.FacingBehavior.FACE_MOUSE_ON_FIRE)
-        {
-            behaviors.Add(bf.faceMouseOnFire);
-        }
-        behaviors.Add(bf.CreatePlayerButton(MasterInput.impl.Primary, bf.CreateAutofire(layer, actor.actorType.weapons)));
-
-        actor.behavior = behaviors;
-    }
-
-    public void FixedUpdate()
-    {
-        if (_actor != null)
-        {
-            var current = MasterInput.impl.CurrentMovementVector;
-            if (current != Vector2.zero)
-            {
-                if (_actor.thrustEnabled)
-                {
-                    _actor.AddThrust(current * _actor.attrs.acceleration);
-                }
-            }
         }
     }
 

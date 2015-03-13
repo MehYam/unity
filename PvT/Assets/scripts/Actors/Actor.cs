@@ -10,8 +10,8 @@ using PvT.Util;
 
 public class Actor : MonoBehaviour
 {
+    // for editor
     public bool AddRigidbody = true;
-
 
     public bool reflectsAmmo { get; set; }
     public bool showsHealthBar { get; set; }
@@ -21,6 +21,14 @@ public class Actor : MonoBehaviour
     public bool detectFaceplants { get; set; }
     public Vector2 lastThrust { get; private set; }
     public ITarget target { get; set; }
+    public bool weaponEnabled { get; set; }
+    public float maxRotationalVelocity { get; set; }
+    public bool trackingArrowEnabled { get; set; }
+    public bool thrustEnabled { get; set; }
+    public bool immortal { get; set; }
+
+    public float takenDamageMultiplier { get; set; }
+    public float collisionDamage { get; set; }
 
     public float expireTime { get; private set; }
 
@@ -34,7 +42,7 @@ public class Actor : MonoBehaviour
         expireTime = EXPIRE_NEVER;
         explodesOnDeath = true;
         showsHealthBar = true;
-        firingEnabled = true;
+        weaponEnabled = true;
         thrustEnabled = true;
         immortal = false;
 
@@ -175,6 +183,7 @@ public class Actor : MonoBehaviour
         }
     }
 
+
     static readonly ActorType.WeaponAttrs IDENTITY = new ActorType.WeaponAttrs(1, 1, 1, 1);
 
     ActorType.WeaponAttrs _lazyWeaponMods;
@@ -292,18 +301,10 @@ public class Actor : MonoBehaviour
             GlobalGameEvent.Instance.FireHealthChange(this, prevHealth - _health);
         }
     }
-    public IActorBehavior behavior { get; set; }
     public IActorBehavior behaviorOverride { get; set; }  // currently used for overwhelming
-    public bool behaviorEnabled { get; set; }
-    
-    public float maxRotationalVelocity { get; set; }
-    public bool firingEnabled { get; set; }
-    public bool trackingArrowEnabled { get; set; }
-    public bool thrustEnabled { get; set; }
-    public bool immortal { get; set; }
 
-    public float takenDamageMultiplier { get; set; }
-    public float collisionDamage { get; set; }
+    public IActorBehavior behavior { get; set; }
+    public bool behaviorEnabled { get; set; }
 
     ProgressBar _healthBar;
     public void TakeDamage(float damage)

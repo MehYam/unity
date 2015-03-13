@@ -560,7 +560,7 @@ class WeaponDischargeBehavior : IActorBehavior
     }
     public virtual void FixedUpdate(Actor actor)
     {
-        if (actor.firingEnabled)
+        if (actor.weaponEnabled)
         {
             //KAI: HACK
             if (weapon.actorName != "HEROLING" || Heroling.ActiveHerolings < Consts.HEROLING_LIMIT)

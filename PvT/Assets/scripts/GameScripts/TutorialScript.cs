@@ -51,7 +51,7 @@ public sealed class TutorialScript : MonoBehaviour
         game.SpawnPlayer(Vector3.zero);
 
         var playerActor = main.game.player.GetComponent<Actor>();
-        playerActor.firingEnabled = false;
+        playerActor.weaponEnabled = false;
         playerActor.thrustEnabled = false;
         playerActor.immortal = true;
         yield return new WaitForSeconds(Consts.TEXT_FADE_SECONDS);
@@ -81,7 +81,7 @@ public sealed class TutorialScript : MonoBehaviour
 
         MobAI.Instance.AttachAI(mobActor);
 
-        mobActor.firingEnabled = false;
+        mobActor.weaponEnabled = false;
         mobActor.thrustEnabled = false;
         mobActor.transform.position = -playerActor.transform.position;
         mobActor.trackingArrowEnabled = true;
@@ -143,7 +143,7 @@ public sealed class TutorialScript : MonoBehaviour
         do
         {
             AnimatedText.FadeIn(hud.centerPrints.bottom, "(Aim with the mouse, left button shoots)", Consts.TEXT_FADE_SECONDS);
-            playerActor.firingEnabled = true;
+            playerActor.weaponEnabled = true;
 
             // wait until the other ship is subdued
             Debug.LogError("Tutorial broken by revamp here");

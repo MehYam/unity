@@ -3,7 +3,7 @@ using System.Collections;
 
 using PvT.Util;
 
-public sealed class ChargeWeaponController : IWeaponController
+public sealed class ChargeWeaponController
 {
     readonly Consts.CollisionLayer _layer;
     readonly ActorType.Weapon _weapon;

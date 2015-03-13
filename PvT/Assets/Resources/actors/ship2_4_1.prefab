@@ -13,7 +13,6 @@ GameObject:
   - 114: {fileID: 11424452}
   - 114: {fileID: 11474160}
   - 114: {fileID: 11424190}
-  - 114: {fileID: 11495998}
   m_Layer: 0
   m_Name: ship2_4_1
   m_TagString: Untagged
@@ -61,7 +60,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9035c517708bd974a853e164920f3b65, type: 3}
   m_Name: 
@@ -77,7 +76,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e03719fed5f4e0c4e99a7b41c6369c2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FacingBehavior: 2
   AddRigidbody: 1
 --- !u!114 &11474160
 MonoBehaviour:
@@ -88,17 +86,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b629b60506988ee478a1295317b6debc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &11495998
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100000}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f858cf3155248c428831f30dcfc2df1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!212 &21200000

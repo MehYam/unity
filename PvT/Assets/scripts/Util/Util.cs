@@ -273,6 +273,14 @@ namespace PvT.Util
             }
             return retval;
         }
+        static public void ForEachChildRecursive(this GameObject obj, Action<GameObject> action)
+        {
+            foreach (Transform t in obj.transform)
+            {
+                ForEachChildRecursive(t.gameObject, action);
+            }
+            action(obj);
+        }
 
         public static string[] SplitLines(string lines, bool skipHeader = false)
         {

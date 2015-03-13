@@ -104,7 +104,6 @@ public class ActorType
 
         this.AIrepel = rhs.AIrepel;
     }
-    public bool HasWeapons { get { return weapons != null && weapons.Length > 0; } }
     public virtual GameObject Spawn()
     {
         var go = asset.CreateInstance();
@@ -115,6 +114,17 @@ public class ActorType
     {
         return string.Format("{0}, asset {1}", name, asset.id);
     }
+
+    public bool HasWeapons { get { return weapons != null && weapons.Length > 0; } }
+    public bool HasChargeWeapon
+    {
+        get { return HasWeapons && weapons[0].attrs.chargeSeconds > 0; }
+    }
+    public bool HasShieldWeapon
+    {
+        get { return HasWeapons && weapons[0].actorName == "SHIELD"; }
+    }
+
     public sealed class WeaponAttrs
     {
         public readonly float damage;
