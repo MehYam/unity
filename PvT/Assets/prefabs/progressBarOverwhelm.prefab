@@ -223,7 +223,7 @@ MeshRenderer:
   m_AutoUVMaxDistance: .5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 1629100023
+  m_SortingLayerID: 17
   m_SortingOrder: 5
 --- !u!102 &10200000
 TextMesh:

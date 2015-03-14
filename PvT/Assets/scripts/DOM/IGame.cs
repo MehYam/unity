@@ -23,7 +23,6 @@ namespace PvT.DOM
         GameObject SpawnMob(string vehicleKey);
         GameObject SpawnProjectile(Actor launcher, ActorType.Weapon weapon, Consts.CollisionLayer layer);
         GameObject SpawnHotspot(Actor launcher, ActorType.Weapon weapon, float damageMultiplier, Consts.CollisionLayer layer);
-        GameObject SpawnObject(Vector2 location);
 
         void ShakeGround();
         void PlaySound(Actor actor, Sounds.ActorEvent evt, float volume = 1);

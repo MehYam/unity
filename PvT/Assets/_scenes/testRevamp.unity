@@ -692,7 +692,7 @@ MonoBehaviour:
   EffectParent: {fileID: 0}
   AmmoParent: {fileID: 0}
   MobParent: {fileID: 0}
-  defaultVehicle: greenk
+  defaultVehicle: bluek
 --- !u!82 &1382707348
 AudioSource:
   m_ObjectHideFlags: 0

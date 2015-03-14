@@ -175,7 +175,7 @@ MonoBehaviour:
   EffectParent: {fileID: 653143524}
   AmmoParent: {fileID: 291939734}
   MobParent: {fileID: 1453635488}
-  defaultVehicle: bee
+  defaultVehicle: 
 --- !u!114 &3432517
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -846,7 +846,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22400010, guid: 9596fefb3fe02ca418f6fbed5edc3f0e, type: 2}
       propertyPath: m_SizeDelta.y
-      value: 15.9521437
+      value: 15.9362555
       objectReference: {fileID: 0}
     - target: {fileID: 22400008, guid: 9596fefb3fe02ca418f6fbed5edc3f0e, type: 2}
       propertyPath: m_AnchorMin.y
@@ -862,7 +862,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22400008, guid: 9596fefb3fe02ca418f6fbed5edc3f0e, type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -18.9521446
+      value: -18.9362564
       objectReference: {fileID: 0}
     - target: {fileID: 22400008, guid: 9596fefb3fe02ca418f6fbed5edc3f0e, type: 2}
       propertyPath: m_SizeDelta.x
@@ -870,7 +870,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22400008, guid: 9596fefb3fe02ca418f6fbed5edc3f0e, type: 2}
       propertyPath: m_SizeDelta.y
-      value: 15.9521437
+      value: 15.9362555
       objectReference: {fileID: 0}
     - target: {fileID: 22400004, guid: 9596fefb3fe02ca418f6fbed5edc3f0e, type: 2}
       propertyPath: m_AnchorMin.y
@@ -886,7 +886,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22400004, guid: 9596fefb3fe02ca418f6fbed5edc3f0e, type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -35.9042892
+      value: -35.8725128
       objectReference: {fileID: 0}
     - target: {fileID: 22400004, guid: 9596fefb3fe02ca418f6fbed5edc3f0e, type: 2}
       propertyPath: m_SizeDelta.x
@@ -894,7 +894,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22400004, guid: 9596fefb3fe02ca418f6fbed5edc3f0e, type: 2}
       propertyPath: m_SizeDelta.y
-      value: 15.9521437
+      value: 15.9362555
       objectReference: {fileID: 0}
     - target: {fileID: 22400006, guid: 9596fefb3fe02ca418f6fbed5edc3f0e, type: 2}
       propertyPath: m_AnchorMin.y
@@ -910,7 +910,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22400006, guid: 9596fefb3fe02ca418f6fbed5edc3f0e, type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -52.8564339
+      value: -52.8087692
       objectReference: {fileID: 0}
     - target: {fileID: 22400006, guid: 9596fefb3fe02ca418f6fbed5edc3f0e, type: 2}
       propertyPath: m_SizeDelta.x
@@ -918,7 +918,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22400006, guid: 9596fefb3fe02ca418f6fbed5edc3f0e, type: 2}
       propertyPath: m_SizeDelta.y
-      value: 15.9521437
+      value: 15.9362555
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9596fefb3fe02ca418f6fbed5edc3f0e, type: 2}
