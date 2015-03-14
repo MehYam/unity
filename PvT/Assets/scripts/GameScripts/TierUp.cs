@@ -24,8 +24,7 @@ public class TierUp : MonoBehaviour
 
         // 1. Attach the animation, wait a moment
         var flare = (GameObject)Instantiate(main.assets.flareAnimation);
-        flare.transform.parent = transform;
-        flare.transform.localPosition = Vector2.zero;
+        flare.transform.position = transform.position;
 
         yield return new WaitForSeconds(Consts.FLARE_ANIMATION_PEAK_SECONDS);
         flare.GetComponent<ParticleSystem>().Play();
@@ -39,9 +38,6 @@ public class TierUp : MonoBehaviour
         var player = main.game.player;
         player.transform.rotation = transform.rotation;
         player.GetComponent<Rigidbody2D>().velocity = GetComponent<Rigidbody2D>().velocity;
-
-        flare.transform.parent = player.transform;
-        flare.transform.localPosition = Vector2.zero;
 
         // 3. nuke old player
         Destroy(gameObject);

@@ -21,8 +21,7 @@ public class LevelUp : MonoBehaviour
 
         // 1. Attach the animation, wait a moment
         var flare = (GameObject)Instantiate(main.assets.flareAnimation);
-        flare.transform.parent = transform;
-        flare.transform.localPosition = Vector2.zero;
+        flare.transform.position = transform.position;
         flare.transform.localScale = new Vector3(0.5f, 0.5f, 1);
 
         yield return new WaitForSeconds(Consts.FLARE_ANIMATION_PEAK_SECONDS);
