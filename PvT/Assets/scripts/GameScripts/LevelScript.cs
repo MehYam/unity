@@ -152,6 +152,11 @@ public class LevelScript : MonoBehaviour
         }
     }
 
+    public void SpawnOne()
+    {
+        SpawnMob(Main.Instance.game, "greenk");
+    }
+
     void SpawnMob(IGame game, string id)
     {
         var mob = game.SpawnMob(id);
