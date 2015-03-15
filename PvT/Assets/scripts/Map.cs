@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -39,6 +39,8 @@ public sealed class Map : MonoBehaviour
         ProcessMarkers(transform.FindChild(MARKERS_PARENT));
         ProcessMarkers(transform.FindChild(ROOM_MARKERS_PARENT));
 
+        FixupPhysicsMaterial();
+
         GlobalGameEvent.Instance.FireMapReady(gameObject, new XRect(largestMesh.bounds));
 
         StartCoroutine(TestRooms());
@@ -77,6 +79,18 @@ public sealed class Map : MonoBehaviour
                 }
             }
             GameObject.Destroy(markerParent.gameObject);
+        }
+    }
+    void FixupPhysicsMaterial()
+    {
+        var colliders = GetComponentsInChildren<Collider2D>();
+        foreach (var collider in colliders)
+        {
+            collider.sharedMaterial = Main.Instance.assets.Bounce;
+
+            // Unity 5 bug - setting the sharedMaterial alone produces no effect
+            collider.enabled = false;
+            collider.enabled = true;
         }
     }
 

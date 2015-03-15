@@ -78,6 +78,8 @@ public sealed class Ammo : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
+        Debug.Log(string.Format("{0} colliding with {1}", name, collision.gameObject.name));
+
         var otherActor = collision.gameObject.GetComponent<Actor>();
         if (otherActor != null)
         {
@@ -100,10 +102,6 @@ public sealed class Ammo : MonoBehaviour
                 Debug.Log("---------");
                 collision.gameObject.SendMessage("OnDamagingCollision", GetComponent<Actor>(), SendMessageOptions.DontRequireReceiver);
             }
-        }
-        else
-        {
-            GetComponent<Actor>().SetExpiry(Actor.EXPIRE_NOW);
         }
     }
 }
