@@ -5,7 +5,7 @@ public sealed class MouseAndKeyboardInput : IInput
 {
     public bool Primary()
     {
-        return Input.GetButton("Fire1");
+        return Input.GetButton("Fire1") || Input.GetButton("Jump");
     }
     public bool PrimaryAlt()
     {
