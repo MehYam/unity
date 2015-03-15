@@ -20,14 +20,30 @@ public sealed class PossessionSequence : MonoBehaviour
         else
         {
             // already possessing, eject from the previous possessee first, then possess the new one
-            var prevHost = playerActor;
 
-            Main.Instance.game.SpawnPlayer(playerActor.transform.position);
+            // KAI: lame
+            playerActor.SetExpiry(0.5f);
+            playerActor.behaviorEnabled = false;
+            Util.ForEachChildRecursive(gameObject, (go) =>
+                {
+                    var actor = go.GetComponent<Actor>();
+                    if (actor != null)
+                    {
+                        actor.behaviorEnabled = false;
+                    }
+                    var playerControl = go.GetComponent<PlayerControl>();
+                    if (playerControl != null)
+                    {
+                        playerControl.enabled = false;
+                    }
+                }
+            );
+            playerActor.gameObject.layer = (int)Consts.CollisionLayer.MOB;
 
-            prevHost.behavior = null;
-            prevHost.gameObject.layer = (int)Consts.CollisionLayer.MOB;
-
-            StartCoroutine(Sequence(hostToPossess));
+            // spawn player is asynchronous, so just attach a new possession sequence to it that fires up when it's ready
+            var newPlayer = Main.Instance.game.SpawnPlayer(playerActor.transform.position);
+            var newSequence = newPlayer.AddComponent<PossessionSequence>();
+            newSequence.hostToPossess = hostToPossess;
         }
 	}
 
