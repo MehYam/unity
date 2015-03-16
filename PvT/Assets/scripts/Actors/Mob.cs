@@ -83,7 +83,9 @@ public sealed class Mob : MonoBehaviour
     {
         if (collision.gameObject.layer != gameObject.layer && overwhelmPct < 1)
         {
-            collision.gameObject.SendMessage("OnDamagingCollision", GetComponent<Actor>(), SendMessageOptions.DontRequireReceiver);
+            collision.contacts[0].collider.gameObject.SendMessage(
+                "OnDamagingCollision", 
+                GetComponent<Actor>(), SendMessageOptions.DontRequireReceiver);
         }
     }
 

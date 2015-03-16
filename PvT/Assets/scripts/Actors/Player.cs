@@ -82,7 +82,9 @@ public sealed class Player : MonoBehaviour
             }
             else
             {
-                collision.gameObject.SendMessage("OnDamagingCollision", GetComponent<Actor>(), SendMessageOptions.DontRequireReceiver);
+                collision.contacts[0].collider.gameObject.SendMessage(
+                    "OnDamagingCollision", 
+                    GetComponent<Actor>(), SendMessageOptions.DontRequireReceiver);
             }
         }
     }
