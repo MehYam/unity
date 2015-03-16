@@ -39,8 +39,10 @@ public sealed class MobAI
             mob.behavior = AttackAndFlee(3, 2, 2, mob.actorType.weapons);
         }
 
-        // For now, everything reacts to faceplants
-        mob.behavior = new FaceplantMitigation(mob.behavior);
+        if (mob.actorType.attrs.acceleration > 0)
+        {
+            mob.behavior = new FaceplantMitigation(mob.behavior);
+        }
         mob.target = PlayerTarget.Instance;
     }
     void AttachTankAI(Actor tank)
@@ -74,7 +76,9 @@ public sealed class MobAI
     IActorBehavior Get(ActorType vehicle)
     {
         Func<ActorType, IActorBehavior> retval = null;
-        _behaviorFactory.TryGetValue(vehicle.name, out retval);
+
+        var prettyName = Main.Instance.game.loader.GetActorTypeFromAssetId(vehicle.name);
+        //_behaviorFactory.TryGetValue(prettyName, out retval);
         return retval == null ? null : retval(vehicle);
     }
     bool AttachMonoBehavior(Actor actor)
@@ -288,7 +292,7 @@ public sealed class MobAI
                     );
                     if (hits > 0)
                     {
-                        Debug.Log(string.Format("{0} hits {1},  preventative action!", actor.name, s_collisions[0].collider.name));
+                        //Debug.Log(string.Format("{0} hits {1},  preventative action!", actor.name, s_collisions[0].collider.name));
                         actor.lastFaceplantTime = Time.fixedTime;
                     }
                 }

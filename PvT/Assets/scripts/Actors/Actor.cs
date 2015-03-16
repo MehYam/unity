@@ -19,7 +19,6 @@ public class Actor : MonoBehaviour
     public bool isCapturable { get; set; }
     public float lastFaceplantTime { get; set; }
     public bool detectFaceplants { get; set; }
-    public Vector2 lastThrust { get; private set; }
     public ITarget target { get; set; }
     public bool weaponEnabled { get; set; }
     public float maxRotationalVelocity { get; set; }
@@ -278,12 +277,16 @@ public class Actor : MonoBehaviour
     public void SetExpiry(float secondsFromNow)
     {
         expireTime = secondsFromNow == EXPIRE_NEVER ? EXPIRE_NEVER : Time.fixedTime + secondsFromNow;
+        //Debug.Log(string.Format("setting expiry on {0} at {1} to {2}", name, Time.fixedTime, expireTime));
     }
 
     public void AddThrust(Vector2 force)
     {
-        GetComponent<Rigidbody2D>().AddForce(force);
-        lastThrust = force;
+        var rigidbody = GetComponent<Rigidbody2D>();
+        if (rigidbody != null)
+        {
+            rigidbody.AddForce(force);
+        }
     }
 
     float _health;

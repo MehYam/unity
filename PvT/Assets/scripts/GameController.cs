@@ -105,7 +105,7 @@ public sealed class GameController : IGame
 
         if (string.IsNullOrEmpty(actorTypeName))
         {
-            actorTypeName = String.IsNullOrEmpty(main.defaultVehicle) ? "hero" : main.defaultVehicle;
+            actorTypeName = String.IsNullOrEmpty(main.defaultPlayer) ? "hero" : main.defaultPlayer;
         }
 
         var playerType = loader.GetActorType(actorTypeName);

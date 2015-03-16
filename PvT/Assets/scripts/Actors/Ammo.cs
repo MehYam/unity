@@ -99,8 +99,9 @@ public sealed class Ammo : MonoBehaviour
             }
             else
             {
-                Debug.Log("---------");
-                collision.gameObject.SendMessage("OnDamagingCollision", GetComponent<Actor>(), SendMessageOptions.DontRequireReceiver);
+                collision.contacts[0].collider.gameObject.SendMessage(
+                    "OnDamagingCollision", 
+                    GetComponent<Actor>(), SendMessageOptions.DontRequireReceiver);
             }
         }
     }

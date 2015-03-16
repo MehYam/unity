@@ -13,6 +13,7 @@ public sealed class PlayerControl : MonoBehaviour
     Actor _actor;
     void OnEnable()
     {
+        Debug.Log("PlayerControl.OnEnable " + name);
         _actor = GetComponent<Actor>();
 
         // 1. movement control
@@ -64,6 +65,10 @@ public sealed class PlayerControl : MonoBehaviour
         var herolingFire = Main.Instance.game.loader.GetActorType("HERO").weapons;
         var secondaryFire = bf.CreateAutofire(Consts.CollisionLayer.HEROLINGS, herolingFire);
         behaviors.Add(bf.CreatePlayerButton(MasterInput.impl.Secondary, secondaryFire));
+    }
+    public void OnDisable()
+    {
+        Debug.Log("PLAYERCONTROL.ONDISABLE " + name);
     }
 
     public void FixedUpdate()

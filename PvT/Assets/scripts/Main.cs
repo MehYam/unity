@@ -79,7 +79,7 @@ public class Main : MonoBehaviour
         }
     }
 
-    public string defaultVehicle = "";
+    public string defaultPlayer = "";
 
     static Main _instance;
     static public Main Instance

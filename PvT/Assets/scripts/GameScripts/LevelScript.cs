@@ -152,9 +152,9 @@ public class LevelScript : MonoBehaviour
         }
     }
 
-    public void SpawnOne()
+    public void SpawnOne(string mobType)
     {
-        SpawnMob(Main.Instance.game, "greenk");
+        SpawnMob(Main.Instance.game, mobType);
     }
 
     void SpawnMob(IGame game, string id)
