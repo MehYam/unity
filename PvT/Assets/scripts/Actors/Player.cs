@@ -66,8 +66,12 @@ public sealed class Player : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        var otherActor = collision.gameObject.GetComponent<Actor>();
+        if (!gameObject.IsDirectCollision(collision))
+        {
+            return;
+        }
 
+        var otherActor = collision.gameObject.GetComponent<Actor>();
         if (otherActor != null)
         {
             var mob = otherActor.GetComponent<Mob>();
@@ -82,6 +86,9 @@ public sealed class Player : MonoBehaviour
             }
             else
             {
+                var contact = collision.contacts[0];
+                Debug.Log(string.Format("Player contact {0}, other {1}", contact.collider, contact.otherCollider));
+
                 collision.contacts[0].collider.gameObject.SendMessage(
                     "OnDamagingCollision", 
                     GetComponent<Actor>(), SendMessageOptions.DontRequireReceiver);

@@ -78,9 +78,13 @@ public sealed class Ammo : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        //Debug.Log(string.Format("{0} colliding with {1}", name, collision.gameObject.name));
+        if (!gameObject.IsDirectCollision(collision))
+        {
+            return;
+        }
 
-        var otherActor = collision.gameObject.GetComponent<Actor>();
+        //Debug.Log(string.Format("{0} colliding with {1}", name, collision.gameObject.name));
+        var otherActor = collision.contacts[0].collider.gameObject.GetComponent<Actor>();
         if (otherActor != null)
         {
             if (otherActor.reflectsAmmo)
@@ -97,9 +101,9 @@ public sealed class Ammo : MonoBehaviour
                 GetComponent<Rigidbody2D>().velocity = GetComponent<Rigidbody2D>().velocity.normalized * actor.actorType.attrs.maxSpeed;
                 ActorBehaviorFactory.Instance.faceForward.FixedUpdate(actor);
             }
-            else
+            else if (!otherActor.isAmmo)  // ammo doesn't damage ammo?  This is really just to make shields reflect ammo, but maybe it makes sense
             {
-                collision.contacts[0].collider.gameObject.SendMessage(
+                otherActor.SendMessage(
                     "OnDamagingCollision", 
                     GetComponent<Actor>(), SendMessageOptions.DontRequireReceiver);
             }

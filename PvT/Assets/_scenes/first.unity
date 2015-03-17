@@ -187,7 +187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 597ae4a43a018e741acec37b97132aa4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mobs: 0
+  mobs: 1
   startLevel: 1
   spawnDistanceFromEdge: -5
   map: {fileID: 100008, guid: 62738d5b4b7cd244dae73d357301b2b6, type: 2}

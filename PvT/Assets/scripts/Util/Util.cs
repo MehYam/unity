@@ -189,6 +189,7 @@ namespace PvT.Util
             go.GetComponent<Rigidbody2D>().isKinematic = false;
             go.GetComponent<Collider2D>().enabled = true;
         }
+
         static public IEnumerator WaitForRealSeconds(float time)
         {
             float start = Time.realtimeSinceStartup;
@@ -280,6 +281,10 @@ namespace PvT.Util
                 ForEachChildRecursive(t.gameObject, action);
             }
             action(obj);
+        }
+        static public bool IsDirectCollision(this GameObject obj, Collision2D collision)
+        {
+            return obj == collision.contacts[0].otherCollider.gameObject;
         }
 
         public static string[] SplitLines(string lines, bool skipHeader = false)

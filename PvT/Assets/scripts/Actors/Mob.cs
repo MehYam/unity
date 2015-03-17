@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
+using PvT.Util;
+
 public sealed class Mob : MonoBehaviour
 {
     public float overwhelmPct
@@ -81,7 +83,9 @@ public sealed class Mob : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.layer != gameObject.layer && overwhelmPct < 1)
+        if (gameObject.IsDirectCollision(collision) 
+            && collision.gameObject.layer != gameObject.layer 
+            && overwhelmPct < 1)
         {
             collision.contacts[0].collider.gameObject.SendMessage(
                 "OnDamagingCollision", 

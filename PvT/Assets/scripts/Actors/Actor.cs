@@ -128,6 +128,7 @@ public class Actor : MonoBehaviour
     /// </summary>
     void Die()
     {
+        //Debug.Log(string.Format("die! {0}, health {1}", name, health));
         SendMessage("PreActorDie", this, SendMessageOptions.DontRequireReceiver);
 
         GlobalGameEvent.Instance.FireActorDeath(this);
@@ -298,6 +299,7 @@ public class Actor : MonoBehaviour
         }
         set
         {
+            //Debug.Log(string.Format("health setting to {0}", value));
             var prevHealth = health;
             _health = immortal ? Mathf.Max(1, value) : value;
 
