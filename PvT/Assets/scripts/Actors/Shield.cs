@@ -44,14 +44,8 @@ public sealed class Shield : MonoBehaviour
         transform.localPosition = _localShieldPos;
     }
 
-    void OnDamagingCollision(Actor a)
-    {
-        Debug.Log("shield.OnDamagingCollision");
-    }
-
     void OnEndFiring()
     {
-return;
         // release shield
         var shieldActor = GetComponent<Actor>();
         shieldActor.SetExpiry(launcher.actorType.weapons[0].attrs.ttl);

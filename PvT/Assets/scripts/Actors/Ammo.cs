@@ -78,7 +78,7 @@ public sealed class Ammo : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log(string.Format("{0} colliding with {1}", name, collision.gameObject.name));
+        //Debug.Log(string.Format("{0} colliding with {1}", name, collision.gameObject.name));
 
         var otherActor = collision.gameObject.GetComponent<Actor>();
         if (otherActor != null)
