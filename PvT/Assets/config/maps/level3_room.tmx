@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="14" height="14" tilewidth="128" tileheight="128">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="14" height="14" tilewidth="128" tileheight="128" nextobjectid="3">
  <properties>
   <property name="unity:scale" value="0.02"/>
  </properties>
- <tileset firstgid="1" name="MetalTiles" tilewidth="128" tileheight="128">
-  <image source="../../../../../assets/MetalTiles.png" width="512" height="1024"/>
+ <tileset firstgid="1" name="MetalTiles" tilewidth="128" tileheight="128" tilecount="32" columns="4">
+  <image source="../../images/MetalTiles.png" width="512" height="1024"/>
   <tile id="2">
    <objectgroup draworder="index">
-    <object x="0" y="0" width="128" height="128"/>
+    <object id="0" x="0" y="0" width="128" height="128"/>
    </objectgroup>
   </tile>
   <tile id="4">
    <objectgroup draworder="index">
-    <object x="3" y="4">
+    <object id="0" x="3" y="4">
      <polygon points="-3,-4 127,-4 -3,127"/>
     </object>
    </objectgroup>
@@ -47,9 +47,9 @@
   </data>
  </layer>
  <objectgroup name="Markers">
-  <object name="playerSpawn" x="832.503" y="835.631" width="128" height="128" rotation="359.466">
+  <object id="1" name="playerSpawn" x="832.503" y="835.631" width="128" height="128" rotation="359.466">
    <ellipse/>
   </object>
-  <object name="laserGate.vertical.ff00ffff.2" x="1707.03" y="1442.79" width="54" height="46"/>
+  <object id="2" name="laserGate.vertical.ff00ffff.2" x="1707.03" y="1442.79" width="54" height="46"/>
  </objectgroup>
 </map>
