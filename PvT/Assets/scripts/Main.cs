@@ -122,7 +122,7 @@ public class Main : MonoBehaviour
         Debug.Log("Main.OnDestroy");
 
         _instance = null;
-        GlobalGameEvent.ReleaseAll();
+        GlobalGameEvent.ReleaseAllListeners();
 
         PlayerData.Instance.Commit();
     }

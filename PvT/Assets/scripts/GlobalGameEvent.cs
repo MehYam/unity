@@ -27,7 +27,7 @@ class GlobalGameEvent
             return _singleton;
         }
     }
-    static public void ReleaseAll()
+    static public void ReleaseAllListeners()
     {
         _singleton = null;
     }

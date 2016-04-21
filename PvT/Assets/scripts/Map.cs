@@ -8,7 +8,6 @@ using PvT.Util;
 
 public sealed class Map : MonoBehaviour
 {
-
     const string MARKERS_PARENT = "Markers";
     const string ROOM_MARKERS_PARENT = "RoomMarkers";
 
