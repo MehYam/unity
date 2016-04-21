@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Assertions;
 using System.Collections;
 
 using PvT.Util;
@@ -88,7 +89,7 @@ public sealed class HopBehavior : MonoBehaviour
             _state = null;
             enabled = false;
 
-            DebugUtil.Assert(complete);
+            Assert.IsTrue(complete);
         }
     }
     static IEnumerator AnimateLanding(Actor actor, Consts.CollisionLayer impactLayer)

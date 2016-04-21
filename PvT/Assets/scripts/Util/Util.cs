@@ -1,6 +1,7 @@
 #define DEBUG
 
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.UI;
 using System;
 using System.Collections;
@@ -39,14 +40,14 @@ namespace PvT.Util
         {
             int count = t.Length;
 
-            DebugUtil.Assert(count > 0);
+            Assert.IsTrue(count > 0);
             return t[Random.Range(0, count)];
         }
         static public T RandomArrayPick<T>(IList<T> t)
         {
             int count = t.Count;
 
-            DebugUtil.Assert(count > 0);
+            Assert.IsTrue(count > 0);
             return t[Random.Range(0, count)];
         }
 
@@ -174,7 +175,7 @@ namespace PvT.Util
 
                 _lastCalcedScreenRectTime = Time.time;
             }
-            DebugUtil.Assert(_screenRect != null, "_screenRect failed to calculate");
+            Assert.AreNotEqual(_screenRect, null);
             return _screenRect;
         }
 
@@ -344,15 +345,6 @@ namespace PvT.Util
 
     public static class DebugUtil
     {
-        [System.Diagnostics.Conditional("DEBUG")]
-        static public void Assert(bool condition, string msg = "")
-        {
-            if (!condition)
-            {
-                throw new System.ApplicationException(msg);
-            }
-        }
-
         [System.Diagnostics.Conditional("DEBUG")]
         static public void Log(object from, string str)
         {

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.UI;
 using System.Collections;
 
@@ -25,7 +26,7 @@ public class Fader : MonoBehaviour  // this is almost the same class as Tween
         {
             _alphaSetter = new CanvasGroupAlphaSetter(GetComponent<CanvasGroup>());
         }
-        DebugUtil.Assert(_alphaSetter != null);
+        Assert.AreNotEqual(_alphaSetter, null);
     }
 
     interface IAlphaSetter

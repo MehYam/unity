@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Assertions;
 using System.Collections;
 
 using PvT.Util;
@@ -20,7 +21,7 @@ public class TierUp : MonoBehaviour
         actor.takenDamageMultiplier = 0;  // stop damage - level up completely heals a player
         actor.health = actor.attrs.maxHealth;  // swapping ships fully heals the player, but it looks better to do this before Consts.FLARE_ANIMATION_PEAK_SECONDS
 
-        DebugUtil.Assert(levelTo != null, "LevelUp doesn't know what to level to");
+        Assert.AreNotEqual(levelTo, null); // levelTo what?
 
         // 1. Attach the animation, wait a moment
         var flare = (GameObject)Instantiate(main.assets.flareAnimation);

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Assertions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -332,7 +333,8 @@ public sealed class GameController : IGame
             prevHost.behavior = null;
             prevHost.gameObject.layer = (int)Consts.CollisionLayer.MOB;
 
-            DebugUtil.Assert(player.GetComponent<Actor>().isHero, "Player must be hero after ejecting from previous possessee");
+            // Player must be hero after ejecting from previous possessee
+            Assert.IsTrue(player.GetComponent<Actor>().isHero);
             OnCollisionWithOverwhelmed(host);
         }
     }

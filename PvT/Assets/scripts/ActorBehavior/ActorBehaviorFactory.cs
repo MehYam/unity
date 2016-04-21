@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Assertions;
 using System;
 using System.Collections.Generic;
 
@@ -203,7 +204,7 @@ public class BypassedBehavior : IActorBehavior
 
     public void FixedUpdate(Actor actor)
     {
-        DebugUtil.Assert(actor == this.actor, "BypassedBehavior has incorrect actor");
+        Assert.AreEqual(actor, this.actor);
         if (currentBehavior != null)
         {
             currentBehavior.FixedUpdate(actor);

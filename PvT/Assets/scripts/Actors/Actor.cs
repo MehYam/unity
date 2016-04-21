@@ -2,6 +2,7 @@
 //#define DEBUG_FACEPLANTS
 
 using UnityEngine;
+using UnityEngine.Assertions;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -167,7 +168,7 @@ public class Actor : MonoBehaviour
     /// <param name="modifier">The modifier to add</param>
     public void AddActorModifier(ActorAttrs modifier)
     {
-        DebugUtil.Assert(modifier != null);
+        Assert.AreNotEqual(modifier, null);
         if (_actorModifiers == null)
         {
             _actorModifiers = new List<ActorAttrs>();
@@ -184,7 +185,7 @@ public class Actor : MonoBehaviour
     /// <param name="modifier">The modifier to remove</param>
     public void RemoveActorModifier(ActorAttrs modifier)
     {
-        DebugUtil.Assert(modifier != null);
+        Assert.AreNotEqual(modifier, null);
         if (_actorModifiers != null && _actorModifiers.Contains(modifier))
         {
             _actorModifiers.Remove(modifier);
@@ -196,7 +197,7 @@ public class Actor : MonoBehaviour
     IList<ActorType.WeaponAttrs> _weaponModifiers;
     public void AddWeaponModifier(ActorType.WeaponAttrs modifier)
     {
-        DebugUtil.Assert(modifier != null);
+        Assert.AreNotEqual(modifier, null);
         if (_weaponModifiers == null)
         {
             _weaponModifiers = new List<ActorType.WeaponAttrs>();
@@ -209,7 +210,7 @@ public class Actor : MonoBehaviour
     }
     public void RemoveWeaponModifier(ActorType.WeaponAttrs modifier)
     {
-        DebugUtil.Assert(modifier != null);
+        Assert.AreNotEqual(modifier, null);
         if (_weaponModifiers != null && _weaponModifiers.Contains(modifier))
         {
             _lazyWeaponMods = null;

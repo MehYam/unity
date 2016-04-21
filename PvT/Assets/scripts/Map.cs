@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Assertions;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -28,7 +29,7 @@ public sealed class Map : MonoBehaviour
             }
         }
 
-        DebugUtil.Assert(largestMesh != null, "Found no meshes in level");
+        Assert.AreNotEqual(largestMesh, null);
 
         // center the map in the world
         gameObject.transform.position = -largestMesh.bounds.center;

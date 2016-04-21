@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Assertions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -149,8 +150,8 @@ public sealed class Boss1AI : MonoBehaviour
         if (actor.tag == Consts.SPAWNED_MOB_TAG)
         {
             --_spawnedMobs;
-            
-            DebugUtil.Assert(_spawnedMobs >= 0, "Not keeping spawned mob count correctly");
+
+            Assert.IsTrue(_spawnedMobs >= 0);
         }
     }
 }
