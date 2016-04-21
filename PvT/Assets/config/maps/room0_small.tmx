@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="5" height="5" tilewidth="128" tileheight="128" nextobjectid="1">
+ <properties>
+  <property name="unity:scale" value="0.02"/>
+ </properties>
+ <tileset firstgid="1" source="MetalTiles.tsx"/>
+ <layer name="Floor" width="5" height="5">
+  <properties>
+   <property name="unity:sortingLayerName" value="ground"/>
+   <property name="unity:sortingOrder" type="int" value="0"/>
+  </properties>
+  <data encoding="csv">
+2,2,2,2,2,
+2,2,2,2,2,
+2,2,2,2,2,
+2,2,2,2,2,
+2,2,2,2,2
+</data>
+ </layer>
+ <layer name="Walls" width="5" height="5">
+  <properties>
+   <property name="unity:layer" value="environment"/>
+   <property name="unity:sortingLayerName" value="walls"/>
+   <property name="unity:sortingOrder" type="int" value="0"/>
+  </properties>
+  <data encoding="csv">
+3,3,3,3,3,
+3,0,0,0,3,
+3,0,0,0,3,
+3,0,0,0,3,
+3,3,3,3,3
+</data>
+ </layer>
+</map>
