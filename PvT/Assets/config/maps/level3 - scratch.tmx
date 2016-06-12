@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="128" tileheight="128" nextobjectid="14">
+ <properties>
+  <property name="unity:scale" value="0.02"/>
+ </properties>
+ <tileset firstgid="1" source="MetalTiles.tsx"/>
+ <layer name="Floor" width="50" height="50">
+  <properties>
+   <property name="unity:sortingLayerName" value="ground"/>
+   <property name="unity:sortingOrder" value="0"/>
+  </properties>
+  <data encoding="base64" compression="zlib">
+   eJzt0sEJADAMA7HQ/YcuGaF9GSOBBzjwTI/zuFQ6sujI09CwGjpafqUjiw4AAAAAAAAAfl04awEZ
+  </data>
+ </layer>
+ <layer name="WallShadow" width="50" height="50" visible="0">
+  <properties>
+   <property name="unity:sortingLayerName" value="wallShadows"/>
+   <property name="unity:sortingOrder" value="0"/>
+  </properties>
+  <data encoding="base64" compression="zlib">
+   eJzt1ksOgCAMRdGO/K3Cpbn/VQgDEwdopNDakHsSEkaFvtCoyDjWtJaKFVW622FR9y0fC1Z9PNWdRHbP83oo3dkzt/v5LfmVanvllvYyF/YaP/TRVPtppksZRH5XNXfz6kPzriL2YVkjv7+Weetxh8sk3+agx1k1amvnTDex+555yn1YZquh+U+M2Id2PqzmVStarlqj9AEAAAAAAAAAADCSExIEDm8=
+  </data>
+ </layer>
+ <layer name="Walls" width="50" height="50">
+  <properties>
+   <property name="unity:layer" value="environment"/>
+   <property name="unity:sortingLayerName" value="walls"/>
+   <property name="unity:sortingOrder" value="0"/>
+  </properties>
+  <data encoding="base64" compression="zlib">
+   eJzt1EsKgDAMBcCAeE+P5lE8moIbKX5RSNUJDHTRxXu0pImI5iPaOD/T3T4775ark51Xj3f0mP58V+ZcO8d8d8jO+8SbZOf8Q49y7x78qz477923WHarkR51Kffu3tS+dwEAAAAAAADeYgTXKB9d
+  </data>
+ </layer>
+ <objectgroup name="Markers" visible="0">
+  <object id="1" name="playerSpawn" x="832.503" y="835.631" width="128" height="128" rotation="359.466">
+   <ellipse/>
+  </object>
+  <object id="2" name="laserGate.vertical.ff00ffff.2" x="1707.03" y="1442.79" width="54" height="46"/>
+  <object id="3" name="laserGate.horizontal.ff00ffff.3" x="1959" y="1596.15" width="54" height="46"/>
+  <object id="4" name="waypoint" x="480" y="448" width="60" height="64"/>
+  <object id="5" name="waypoint" x="880" y="452" width="60" height="64"/>
+  <object id="6" name="waypoint" x="1324" y="460" width="60" height="64"/>
+  <object id="7" name="waypoint" x="1328" y="876" width="60" height="64"/>
+  <object id="8" name="waypoint" x="1336" y="1404" width="60" height="64"/>
+  <object id="9" name="waypoint" x="884" y="1404" width="60" height="64"/>
+  <object id="10" name="waypoint" x="444" y="1392" width="60" height="64"/>
+  <object id="11" name="waypoint" x="448" y="868" width="60" height="64"/>
+ </objectgroup>
+ <objectgroup name="RoomMarkers" visible="0">
+  <object id="12" name="room" x="152" y="160" width="1512" height="1508"/>
+  <object id="13" name="switch.laserGate" x="1509.76" y="1420.78" width="126.292" height="132.032"/>
+ </objectgroup>
+</map>
