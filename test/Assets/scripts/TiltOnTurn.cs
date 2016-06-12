@@ -3,6 +3,7 @@ using System.Collections;
 
 public sealed class TiltOnTurn : MonoBehaviour
 {
+    public float smoothing = 100;
     public float multiplier = 0.1f;
     public float maxAngle = 60;
 
@@ -16,7 +17,15 @@ public sealed class TiltOnTurn : MonoBehaviour
             var angularVelocity = Mathf.DeltaAngle(_lastAngle, currentAngle) / (Time.fixedTime - _lastTime);
 
             var angles = gameObject.transform.eulerAngles;
-            angles.z = Mathf.Clamp(-angularVelocity * multiplier, -maxAngle, maxAngle);
+            var newTargetZAngle = Mathf.Clamp(-angularVelocity * multiplier, -maxAngle, maxAngle);
+            if (smoothing > 0)
+            {
+                var angleDelta = Mathf.DeltaAngle(angles.z, newTargetZAngle);
+                var smoothingRate = smoothing * Time.fixedDeltaTime;
+
+                newTargetZAngle = angles.z + Mathf.Clamp(angleDelta, -smoothingRate, smoothingRate);
+            }
+            angles.z = newTargetZAngle;
 
             gameObject.transform.eulerAngles = angles;
 

@@ -28,8 +28,6 @@ public sealed class FaceForward : MonoBehaviour
 
         if (Input.GetButton("Fire1"))
         {
-            Debug.Log(Input.mousePosition + ", " + MouseWorldCoordinates);
-
             angles.y = GetLookAtAngle(MouseWorldCoordinates - gameObject.transform.position);
         }
         else if (rb.velocity != Vector3.zero)
