@@ -3,6 +3,8 @@ using System.Collections;
 
 public sealed class FaceForward : MonoBehaviour
 {
+    public float rotationalLimit = 100;
+
     static private float DegreesRotationAboutY(Vector3 point)
     {
         return Mathf.Atan2(point.x, point.z) * Mathf.Rad2Deg;
@@ -26,14 +28,22 @@ public sealed class FaceForward : MonoBehaviour
         var angles = gameObject.transform.eulerAngles;
         var rb = gameObject.GetComponent<Rigidbody>();
 
+        float targetAngleY = angles.y;
         if (Input.GetButton("Fire1"))
         {
-            angles.y = GetLookAtAngle(MouseWorldCoordinates - gameObject.transform.position);
+            targetAngleY = GetLookAtAngle(MouseWorldCoordinates - gameObject.transform.position);
         }
-        else if (rb.velocity != Vector3.zero)
+        else if (rb.velocity != Vector3.zero && PlayerInput.UNDER_FORCE)
         {
-            angles.y = GetLookAtAngle(rb.velocity);
+            targetAngleY = GetLookAtAngle(rb.velocity);
         }
+
+        var angleDelta = Mathf.DeltaAngle(angles.y, targetAngleY);
+        var rotationalLimitThisFrame = rotationalLimit * Time.fixedDeltaTime;
+
+        angleDelta = Mathf.Clamp(angleDelta, -rotationalLimitThisFrame, rotationalLimitThisFrame);
+
+        angles.y = angles.y + angleDelta;
         gameObject.transform.eulerAngles = angles;
     }
 }

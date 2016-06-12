@@ -4,7 +4,7 @@ using System.Collections;
 public sealed class TiltOnTurn : MonoBehaviour
 {
     public float sensitivity = 100;
-    public float multiplier = 0.1f;
+    public float multiplier = 0.1f;  //KAI: this is really "sensitivity".  Give this more thought.
     public float maxTiltAngle = 60;
 
 //KAI:
