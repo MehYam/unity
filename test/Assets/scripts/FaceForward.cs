@@ -16,9 +16,9 @@ public sealed class FaceForward : MonoBehaviour
         var rb = gameObject.GetComponent<Rigidbody>();
         if (rb.velocity != Vector3.zero)
         {
-            gameObject.transform.eulerAngles = new Vector3(0, 
-                GetLookAtAngle(rb.velocity), 
-                0);
+            var angles = gameObject.transform.eulerAngles;
+            angles.y = GetLookAtAngle(rb.velocity);
+            gameObject.transform.eulerAngles = angles;
         }
 	}
 }
