@@ -13,7 +13,7 @@ public sealed class TiltOnTurn : MonoBehaviour
         if (Time.fixedTime > 0)
         {
             var currentAngle = gameObject.transform.eulerAngles.y;
-            var angularVelocity = (currentAngle - _lastAngle) / (Time.fixedTime - _lastTime);
+            var angularVelocity = Mathf.DeltaAngle(_lastAngle, currentAngle) / (Time.fixedTime - _lastTime);
 
             var angles = gameObject.transform.eulerAngles;
             angles.z = Mathf.Clamp(-angularVelocity * multiplier, -maxAngle, maxAngle);
