@@ -5,6 +5,6 @@ public sealed class Main : MonoBehaviour
 {
 	void Start()
     {
-        Physics.gravity = Vector3.zero;	
+        //Physics.gravity = Vector3.zero;	
 	}
 }
