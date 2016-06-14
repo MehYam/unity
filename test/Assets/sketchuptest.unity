@@ -189,7 +189,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 68873563}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0165e1d4162f15541a5239daa5b66dc8, type: 3}
   m_Name: 
@@ -320,7 +320,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7dd57c75099fa2a4ea699a54ac5a414c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 1181311119}
+  target: {fileID: 68873563}
   distance: 0.5
 --- !u!1 &518222196
 GameObject:
@@ -807,7 +807,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400010, guid: 60f9c529916f36846a83e92a8bfefab4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.08
       objectReference: {fileID: 0}
     - target: {fileID: 400010, guid: 60f9c529916f36846a83e92a8bfefab4, type: 3}
       propertyPath: m_LocalPosition.z
