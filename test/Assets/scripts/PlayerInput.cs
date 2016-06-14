@@ -3,7 +3,7 @@ using System.Collections;
 
 public class PlayerInput : MonoBehaviour
 {
-    static public bool UNDER_FORCE = false;  //KAI: use a global event instead
+    static public bool UNDER_FORCE = false;  //KAI: hack, use a global event instead
     public float acceleration = 1;
 	void FixedUpdate()
     {

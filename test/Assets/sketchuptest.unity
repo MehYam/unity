@@ -207,6 +207,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotationalLimit: 500
+  faceMouseWhileFiring: 1
 --- !u!114 &68873568
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -552,12 +553,13 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1181311119}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5a57afc629507544faf5be63b7982c85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rotationalLimit: 100
+  faceMouseWhileFiring: 0
 --- !u!1 &1278154636
 GameObject:
   m_ObjectHideFlags: 0
@@ -662,6 +664,22 @@ Transform:
   - {fileID: 1181311120}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!1 &1585900550 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 100016, guid: 60f9c529916f36846a83e92a8bfefab4, type: 3}
+  m_PrefabInternal: {fileID: 1780832724}
+--- !u!114 &1585900552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1585900550}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 690238f24a2ed884db57b1e10984af42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationalLimit: 250
 --- !u!1 &1599316352
 GameObject:
   m_ObjectHideFlags: 0
