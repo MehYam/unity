@@ -9,7 +9,7 @@ public sealed class FaceMouse : MonoBehaviour
     void FixedUpdate()
     {
         var angles = gameObject.transform.eulerAngles;
-        var targetY = Util.GetLookAtAngleToMouse(gameObject.transform.position);
+        var targetY = Util.DegreesRotationToMouseInY(gameObject.transform.position);
 
         var maxDeltaThisFrame = rotationalLimit * Time.fixedDeltaTime;
         var angleDelta = Mathf.Clamp(Mathf.DeltaAngle(angles.y, targetY), -maxDeltaThisFrame, maxDeltaThisFrame);

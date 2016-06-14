@@ -235,7 +235,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   firepoint: {fileID: 1733552265}
   ammo: {fileID: 128140, guid: 75cbab974f524304a99be4fcd7ac92e8, type: 2}
-  rate: 1
+  rate: 0.5
+  ammoSpeed: 0.2
 --- !u!1 &367814345
 GameObject:
   m_ObjectHideFlags: 0

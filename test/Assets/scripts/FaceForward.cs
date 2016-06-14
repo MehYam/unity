@@ -15,11 +15,11 @@ public sealed class FaceForward : MonoBehaviour
         float targetAngleY = angles.y;
         if (faceMouseWhileFiring && Input.GetButton("Fire1"))
         {
-            targetAngleY = Util.GetLookAtAngleToMouse(gameObject.transform.position);
+            targetAngleY = Util.DegreesRotationToMouseInY(gameObject.transform.position);
         }
         else if (rb.velocity != Vector3.zero && PlayerInput.UNDER_FORCE)
         {
-            targetAngleY = Util.GetLookAtAngle(rb.velocity);
+            targetAngleY = Util.DegreesRotationInY(rb.velocity);
         }
 
         //KAI: copy pasta with FaceMouse and TiltOnTurn, somewhat - not sure how to abstract this yet.  Might be better done with Quaternion.Slerp or similar
