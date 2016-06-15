@@ -19,8 +19,11 @@ public sealed class FireWeapon : MonoBehaviour
 
             // inherit the ship's velocity
             var rb = shot.transform.GetComponent<Rigidbody>();
-            rb.velocity = gameObject.GetComponent<Rigidbody>().velocity;
-
+            if (gameObject.GetComponent<Rigidbody>() != null)
+            {
+                //KAI: a bug, turret ammo needs to pick up launcher velocity as well
+                rb.velocity = gameObject.GetComponent<Rigidbody>().velocity;
+            }
             // impart extra velocity in the direction of the firer
             rb.velocity += gameObject.transform.forward * ammoSpeed;
 
