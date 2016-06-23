@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public sealed class LevelOffAngle : MonoBehaviour
+public sealed class LevelOffPitch : MonoBehaviour
 {
     float velocityX = 0;
     float velocityZ = 0;
-	void FixedUpdate()
+	void Update()
     {
         var angles = gameObject.transform.eulerAngles;
 

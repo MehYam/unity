@@ -206,7 +206,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a57afc629507544faf5be63b7982c85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotationalLimit: 500
+  maxRPS: 1
   faceMouseWhileFiring: 1
 --- !u!114 &68873568
 MonoBehaviour:
@@ -219,9 +219,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 950f7854c43024a49b79bd98cd454154, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sensitivity: 100
-  multiplier: 0.3
-  maxTiltAngle: 60
+  rollTime: 0.2
+  maxRPS: 1
+  maxRollAngle: 60
 --- !u!114 &68873569
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -268,9 +268,20 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 68873563}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 71d2ca518429b8f448209fa3495c8dd9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &68873573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 68873563}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b95946f9bbaa1354280c7bd7a853930d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &192300420 stripped
@@ -714,7 +725,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a57afc629507544faf5be63b7982c85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotationalLimit: 100
+  maxRPS: 1
   faceMouseWhileFiring: 0
 --- !u!1 &1278154636
 GameObject:
@@ -836,7 +847,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 690238f24a2ed884db57b1e10984af42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotationalLimit: 250
+  maxRPS: 1
 --- !u!1 &1599316352
 GameObject:
   m_ObjectHideFlags: 0
@@ -1060,6 +1071,10 @@ Prefab:
     - target: {fileID: 400016, guid: 60f9c529916f36846a83e92a8bfefab4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.0008
+      objectReference: {fileID: 0}
+    - target: {fileID: 100010, guid: 60f9c529916f36846a83e92a8bfefab4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 60f9c529916f36846a83e92a8bfefab4, type: 3}
