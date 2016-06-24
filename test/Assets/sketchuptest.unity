@@ -418,6 +418,45 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   height: 0
   speed: 1
+--- !u!114 &192300426
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 192300420}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62a7ef5035c472f48bf5b455b6f94fef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 68873563}
+  maxRPS: 0.2
+--- !u!114 &192300427
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 192300420}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 950f7854c43024a49b79bd98cd454154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rollTime: 0.5
+  maxRPS: 0.2
+  maxRollAngle: 30
+--- !u!114 &192300428
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 192300420}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62ab2a9dacc024344addcf43f285128f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  acceleration: 0.25
 --- !u!1 &367814345
 GameObject:
   m_ObjectHideFlags: 0
