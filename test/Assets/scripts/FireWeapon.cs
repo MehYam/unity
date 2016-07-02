@@ -11,7 +11,8 @@ public sealed class FireWeapon : MonoBehaviour
     float _lastFire = 0;
 	void FixedUpdate()
     {
-	    if (Input.GetButton("Fire1") && (Time.fixedTime - _lastFire) > rate)
+	    if ((Input.GetButton("Fire1") || Input.GetButton("Jump")) && 
+            (Time.fixedTime - _lastFire) > rate)
         {
             // line the shot up
             var shot = GameObject.Instantiate(ammo);
