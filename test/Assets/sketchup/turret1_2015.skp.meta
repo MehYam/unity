@@ -1,44 +1,41 @@
 fileFormatVersion: 2
-guid: 60f9c529916f36846a83e92a8bfefab4
-timeCreated: 1465838677
+guid: ee4ba1bc6da970341a19270ae7877210
+timeCreated: 1469053288
 licenseType: Free
-ModelImporter:
+SketchUpImporter:
+  generateBackFace: 0
+  mergeCoplanarFaces: 0
+  selectedNodes: 000000000100000002000000
+  assetHash:
+    serializedVersion: 2
+    Hash: 084749a4dd6919b63e3ce3f828cf55d9
+  longitude: -105.242139
+  latitude: 40.018309
+  northCorrection: -0
+  fileUnit: 0
+  sketchUpImportData:
+    defaultCamera:
+      position: {x: 15.367203, y: 15.234394, z: -0.20555162}
+      lookAt: {x: -0.10963975, y: -0.12428095, z: 2.5805333}
+      up: {x: -0.6876578, y: 0.7154041, z: 0.12378965}
+      fov: 35
+      aspectRatio: 0
+      orthoSize: 1
+      isPerspective: 1
+    scenes: []
   serializedVersion: 19
   fileIDToRecycleName:
-    100000: hull1
-    100002: Mesh1
-    100004: Mesh2
-    100006: Mesh3
-    100008: Mesh4
-    100010: //RootNode
-    100012: tread1
-    100014: tread2
-    100016: turret1
-    400000: hull1
-    400002: Mesh1
-    400004: Mesh2
-    400006: Mesh3
-    400008: Mesh4
-    400010: //RootNode
-    400012: tread1
-    400014: tread2
-    400016: turret1
-    2300000: Mesh1
-    2300002: Mesh2
-    2300004: Mesh3
-    2300006: Mesh4
-    3300000: Mesh1
-    3300002: Mesh2
-    3300004: Mesh3
-    3300006: Mesh4
-    4300000: Mesh1
-    4300002: Mesh2
-    4300004: Mesh3
-    4300006: Mesh4
+    100000: turret
+    100002: //RootNode
+    400000: turret
+    400002: //RootNode
+    2300000: turret
+    3300000: turret
+    4300000: Mesh turret
   materials:
     importMaterials: 1
-    materialName: 0
-    materialSearch: 1
+    materialName: 2
+    materialSearch: 0
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
@@ -59,7 +56,7 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: 0.0254
     meshCompression: 0
     addColliders: 0
     importBlendShapes: 1
@@ -78,7 +75,7 @@ ModelImporter:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 3
-  importAnimation: 1
+  importAnimation: 0
   copyAvatar: 0
   humanDescription:
     human: []
