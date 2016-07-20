@@ -5,8 +5,13 @@ public sealed class LevelOffHeight : MonoBehaviour
 {
     static private float EPSILON = 0.0001f;
 
-    public float height = 0;
     public float speed = 1f;
+
+    float height = 0;
+    void Start()
+    {
+        height = gameObject.transform.position.y;
+    }
 	void FixedUpdate()
     {
         var pos = gameObject.transform.position;
