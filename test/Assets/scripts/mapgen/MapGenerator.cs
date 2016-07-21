@@ -15,28 +15,14 @@ public class MapGenerator : MonoBehaviour {
 	public int randomFillPercent;
 
     public bool generate2DCollider = false;
-    public MeshFilter walls;
-    public MeshFilter cave;
-
     public Material wallMaterial;
     public Material caveMaterial;
 
-    void Start() {
-		GenerateMap();
-	}
-
-	void Update() {
-		if (Input.GetMouseButtonDown(0)) {
-			//GenerateMap();
-		}
-	}
-
-    GameObject CreateMeshHost(string name)
-    {
+    static GameObject CreateMeshHost(Transform parent, string name) {
         var newObject = new GameObject();
         newObject.name = name;
 
-        newObject.transform.SetParent(gameObject.transform);
+        newObject.transform.SetParent(parent);
         newObject.AddComponent<MeshFilter>();
         newObject.AddComponent<MeshRenderer>();
         newObject.transform.localPosition = Vector3.zero;
@@ -44,7 +30,10 @@ public class MapGenerator : MonoBehaviour {
   
         return newObject;
     }
+    static readonly string CAVE_NAME = "cave";
+    static readonly string WALL_NAME = "wall";
 	public void GenerateMap() {
+
 		var map = new int[width,height];
 		RandomFillMap(map);
 
@@ -69,31 +58,46 @@ public class MapGenerator : MonoBehaviour {
 		}
 
         MeshGenerator meshGen = new MeshGenerator();
-        var cave = CreateMeshHost("cave_dynamic");
+        var cave = CreateMeshHost(gameObject.transform, CAVE_NAME);
         cave.GetComponent<MeshRenderer>().material = caveMaterial;
         cave.GetComponent<MeshFilter>().mesh = meshGen.GenerateCaveMesh(borderedMap, 1, generate2DCollider);
 
-        //cave.mesh = meshGen.GenerateCaveMesh(borderedMap, 1, generate2DCollider);
-
-        if (generate2DCollider)
-        {
+        if (generate2DCollider) {
             Debug.LogError("This is untested code");
             meshGen.Generate2DColliders(gameObject);
         }
-        else
-        {
-            var walls = CreateMeshHost("walls_dynamic");
+        else {
+            var walls = CreateMeshHost(gameObject.transform, WALL_NAME);
             walls.GetComponent<MeshRenderer>().material = wallMaterial;
-            walls.GetComponent<MeshFilter>().mesh = meshGen.CreateWallMesh();
 
-            //walls.mesh = meshGen.CreateWallMesh();
+            var wallMesh = meshGen.CreateWallMesh();
+            walls.GetComponent<MeshFilter>().mesh = wallMesh;
 
-            MeshCollider wallCollider = gameObject.AddComponent<MeshCollider>();
-            wallCollider.sharedMesh = walls.GetComponent<MeshFilter>().mesh;
-            //wallCollider.sharedMesh = walls.mesh;
+            MeshCollider wallCollider = walls.AddComponent<MeshCollider>();
+            wallCollider.sharedMesh = wallMesh;
         }
     }
-
+    static void SafeDestroy(GameObject obj)
+    {
+#if UNITY_EDITOR
+        DestroyImmediate(obj);
+#else
+        Destroy(obj);
+#endif
+    }
+    public bool IsGenerated {
+        get { return transform.FindChild(CAVE_NAME) != null; }
+    }
+    public void ClearMap() {
+        var cave = transform.FindChild(CAVE_NAME);
+        if (cave != null) {
+            SafeDestroy(cave.gameObject);
+        }
+        var walls = transform.FindChild(WALL_NAME);
+        if (walls != null) {
+            SafeDestroy(walls.gameObject);
+        }
+    }
 	void ProcessMap(int[,] map) {
 		List<List<Coord>> wallRegions = GetRegions(map, 1);
 		int wallThresholdSize = 50;

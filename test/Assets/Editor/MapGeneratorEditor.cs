@@ -11,14 +11,18 @@ public sealed class MapGeneratorEditor : Editor
 
         var mapGenerator = (MapGenerator)target;
         GUILayout.BeginHorizontal();
+
+        GUI.enabled = !mapGenerator.IsGenerated;
         if (GUILayout.Button("Generate"))
         {
             mapGenerator.GenerateMap();
         }
+        GUI.enabled = !GUI.enabled;
         if (GUILayout.Button("Clear"))
         {
-            //mapGenerator.ClearMap();
+            mapGenerator.ClearMap();
         }
+        GUI.enabled = true;
         GUILayout.EndHorizontal();
     }
 }
