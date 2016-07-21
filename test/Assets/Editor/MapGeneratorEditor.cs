@@ -12,12 +12,11 @@ public sealed class MapGeneratorEditor : Editor
         var mapGenerator = (MapGenerator)target;
         GUILayout.BeginHorizontal();
 
-        GUI.enabled = !mapGenerator.IsGenerated;
         if (GUILayout.Button("Generate"))
         {
             mapGenerator.GenerateMap();
         }
-        GUI.enabled = !GUI.enabled;
+        GUI.enabled = mapGenerator.IsGenerated;
         if (GUILayout.Button("Clear"))
         {
             mapGenerator.ClearMap();

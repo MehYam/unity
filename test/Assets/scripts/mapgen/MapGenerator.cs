@@ -34,6 +34,9 @@ public class MapGenerator : MonoBehaviour {
     static readonly string WALL_NAME = "wall";
 	public void GenerateMap() {
 
+        if (IsGenerated) {
+            ClearMap();
+        }
 		var map = new int[width,height];
 		RandomFillMap(map);
 
