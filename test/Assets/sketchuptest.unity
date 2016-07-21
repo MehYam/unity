@@ -911,7 +911,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 6
   m_Type: 1
-  m_Color: {r: 0.20588237, g: 1, b: 0.44313726, a: 1}
+  m_Color: {r: 0.5868296, g: 0.9852941, b: 0.705877, a: 1}
   m_Intensity: 0.5
   m_Range: 10
   m_SpotAngle: 30
@@ -941,7 +941,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 518222196}
-  m_LocalRotation: {x: -0.20865875, y: 0.76270413, z: -0.5350438, w: -0.29744276}
+  m_LocalRotation: {x: -0.24240407, y: 0.7424037, z: -0.5198368, w: -0.3461888}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -2072,7 +2072,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 1875317547}
   - 114: {fileID: 1875317546}
-  - 114: {fileID: 1875317545}
+  - 64: {fileID: 1875317548}
   m_Layer: 0
   m_Name: _environment_meshgenerator
   m_TagString: Untagged
@@ -2080,20 +2080,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1875317545
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1875317544}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae87705feff726d469bc1db2a0ec3a8e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  walls: {fileID: 282189778}
-  cave: {fileID: 1317700394}
-  is2D: 0
 --- !u!114 &1875317546
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2110,6 +2096,9 @@ MonoBehaviour:
   seed: 100
   useRandomSeed: 0
   randomFillPercent: 48
+  generate2DCollider: 0
+  walls: {fileID: 282189778}
+  cave: {fileID: 1317700394}
 --- !u!4 &1875317547
 Transform:
   m_ObjectHideFlags: 0
@@ -2125,6 +2114,18 @@ Transform:
   - {fileID: 1317700396}
   m_Father: {fileID: 81236576}
   m_RootOrder: 2
+--- !u!64 &1875317548
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1875317544}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Convex: 0
+  m_Mesh: {fileID: 0}
 --- !u!1 &1876514237
 GameObject:
   m_ObjectHideFlags: 0
