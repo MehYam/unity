@@ -18,6 +18,9 @@ public class MapGenerator : MonoBehaviour {
     public MeshFilter walls;
     public MeshFilter cave;
 
+    public Material wallMaterial;
+    public Material caveMaterial;
+
     void Start() {
 		GenerateMap();
 	}
@@ -28,6 +31,19 @@ public class MapGenerator : MonoBehaviour {
 		}
 	}
 
+    GameObject CreateMeshHost(string name)
+    {
+        var newObject = new GameObject();
+        newObject.name = name;
+
+        newObject.transform.SetParent(gameObject.transform);
+        newObject.AddComponent<MeshFilter>();
+        newObject.AddComponent<MeshRenderer>();
+        newObject.transform.localPosition = Vector3.zero;
+        newObject.transform.localScale = Vector3.one;
+  
+        return newObject;
+    }
 	public void GenerateMap() {
 		var map = new int[width,height];
 		RandomFillMap(map);
@@ -53,7 +69,11 @@ public class MapGenerator : MonoBehaviour {
 		}
 
         MeshGenerator meshGen = new MeshGenerator();
-        cave.mesh = meshGen.GenerateCaveMesh(borderedMap, 1, generate2DCollider);
+        var cave = CreateMeshHost("cave_dynamic");
+        cave.GetComponent<MeshRenderer>().material = caveMaterial;
+        cave.GetComponent<MeshFilter>().mesh = meshGen.GenerateCaveMesh(borderedMap, 1, generate2DCollider);
+
+        //cave.mesh = meshGen.GenerateCaveMesh(borderedMap, 1, generate2DCollider);
 
         if (generate2DCollider)
         {
@@ -62,10 +82,15 @@ public class MapGenerator : MonoBehaviour {
         }
         else
         {
-            walls.mesh = meshGen.CreateWallMesh();
+            var walls = CreateMeshHost("walls_dynamic");
+            walls.GetComponent<MeshRenderer>().material = wallMaterial;
+            walls.GetComponent<MeshFilter>().mesh = meshGen.CreateWallMesh();
+
+            //walls.mesh = meshGen.CreateWallMesh();
 
             MeshCollider wallCollider = gameObject.AddComponent<MeshCollider>();
-            wallCollider.sharedMesh = walls.mesh;
+            wallCollider.sharedMesh = walls.GetComponent<MeshFilter>().mesh;
+            //wallCollider.sharedMesh = walls.mesh;
         }
     }
 
