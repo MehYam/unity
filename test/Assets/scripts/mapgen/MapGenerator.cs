@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using UnityEditor;
+
 using System.Collections;
 using System.Collections.Generic;
 using System;
@@ -18,7 +20,7 @@ public class MapGenerator : MonoBehaviour {
     public Material wallMaterial;
     public Material caveMaterial;
 
-    static GameObject CreateMeshHost(Transform parent, string name) {
+    static GameObject CreateMeshParent(Transform parent, string name) {
         var newObject = new GameObject();
         newObject.name = name;
 
@@ -61,16 +63,15 @@ public class MapGenerator : MonoBehaviour {
 		}
 
         MeshGenerator meshGen = new MeshGenerator();
-        var cave = CreateMeshHost(gameObject.transform, CAVE_NAME);
+        var cave = CreateMeshParent(gameObject.transform, CAVE_NAME);
         cave.GetComponent<MeshRenderer>().material = caveMaterial;
         cave.GetComponent<MeshFilter>().mesh = meshGen.GenerateCaveMesh(borderedMap, 1, generate2DCollider);
 
         if (generate2DCollider) {
-            Debug.LogError("This is untested code");
-            meshGen.Generate2DColliders(gameObject);
+            meshGen.Generate2DColliders(cave.gameObject);
         }
         else {
-            var walls = CreateMeshHost(gameObject.transform, WALL_NAME);
+            var walls = CreateMeshParent(gameObject.transform, WALL_NAME);
             walls.GetComponent<MeshRenderer>().material = wallMaterial;
 
             var wallMesh = meshGen.CreateWallMesh();
@@ -100,6 +101,18 @@ public class MapGenerator : MonoBehaviour {
         if (walls != null) {
             SafeDestroy(walls.gameObject);
         }
+    }
+    public void SaveMeshes() {
+        if (IsGenerated) {
+            SaveMesh(transform.FindChild(CAVE_NAME).GetComponent<MeshFilter>().sharedMesh, "cave");
+            SaveMesh(transform.FindChild(WALL_NAME).GetComponent<MeshFilter>().sharedMesh, "wall");
+        }
+    }
+    static void SaveMesh(Mesh mesh, string name) {
+        var path = "Assets/" + name + ".asset";
+
+        Debug.Log("Mesh saved to: " + path);
+        AssetDatabase.CreateAsset(mesh, path);
     }
 	void ProcessMap(int[,] map) {
 		List<List<Coord>> wallRegions = GetRegions(map, 1);
