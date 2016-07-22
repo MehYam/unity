@@ -21,6 +21,10 @@ public sealed class MapGeneratorEditor : Editor
         {
             mapGenerator.ClearMap();
         }
+        if (GUILayout.Button("Save Meshes"))
+        {
+            mapGenerator.SaveMeshes();
+        }
         GUI.enabled = true;
         GUILayout.EndHorizontal();
     }
