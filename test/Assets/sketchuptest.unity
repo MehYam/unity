@@ -688,13 +688,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   width: 128
   height: 72
-  seed: 100
-  useRandomSeed: 0
-<<<<<<< HEAD
+  seed: 1349261684
+  useRandomSeed: 1
   randomFillPercent: 45
-=======
-  randomFillPercent: 50
->>>>>>> 115e6e1dc42dd85ca0467249e80d03c9ca65f822
   generate2DCollider: 0
   wallMaterial: {fileID: 2100000, guid: b198576d7c07c6b459cc2420dddf7adb, type: 2}
   caveMaterial: {fileID: 2100000, guid: b198576d7c07c6b459cc2420dddf7adb, type: 2}
