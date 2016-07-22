@@ -10,7 +10,7 @@ public class MapGenerator : MonoBehaviour {
 	public int width;
 	public int height;
 
-	public string seed;
+	public int seed;
 	public bool useRandomSeed;
 
 	[Range(0,100)]
@@ -349,11 +349,8 @@ public class MapGenerator : MonoBehaviour {
 
 
 	void RandomFillMap(int[,] map) {
-		if (useRandomSeed) {
-			seed = Time.time.ToString();
-		}
-
-		System.Random pseudoRandom = new System.Random(seed.GetHashCode());
+        seed = useRandomSeed ? UnityEngine.Random.Range(0, int.MaxValue) : seed;
+        UnityEngine.Random.seed = seed;
 
 		for (int x = 0; x < width; x ++) {
 			for (int y = 0; y < height; y ++) {
@@ -361,7 +358,7 @@ public class MapGenerator : MonoBehaviour {
 					map[x,y] = 1;
 				}
 				else {
-					map[x,y] = (pseudoRandom.Next(0,100) < randomFillPercent)? 1: 0;
+					map[x,y] = (UnityEngine.Random.Range(0,100) < randomFillPercent)? 1: 0;
 				}
 			}
 		}
