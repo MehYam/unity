@@ -84,7 +84,7 @@ NavMeshSettings:
     minRegionArea: 2
     cellSize: 0.16666667
     manualCellSize: 0
-  m_NavMeshData: {fileID: 0}
+  m_NavMeshData: {fileID: 23800000, guid: fc4d5e154ec874b41839d374abb29cf0, type: 2}
 --- !u!1001 &19071317
 Prefab:
   m_ObjectHideFlags: 0
@@ -1468,6 +1468,14 @@ Prefab:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 165545248}
+    - target: {fileID: 158568, guid: 04645a4ad6f84b7439e6b22812cbe58c, type: 2}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 196330, guid: 04645a4ad6f84b7439e6b22812cbe58c, type: 2}
+      propertyPath: m_StaticEditorFlags
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 04645a4ad6f84b7439e6b22812cbe58c, type: 2}
   m_IsPrefabParent: 0
