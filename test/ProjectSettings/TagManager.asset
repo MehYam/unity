@@ -13,11 +13,11 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - environment
+  - friendly
+  - enemy
+  - friendlyAmmo
+  - enemyAmmo
   - 
   - 
   - 
