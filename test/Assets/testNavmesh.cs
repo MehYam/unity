@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class testNavmesh : MonoBehaviour {
@@ -11,6 +11,10 @@ public class testNavmesh : MonoBehaviour {
         var agent = GetComponent<NavMeshAgent>();
 
         //agent.destination = target.transform.position;
+
+        var path = new NavMeshPath();
+        agent.CalculatePath(target.transform.position, path);
+
         
 	}
 }
