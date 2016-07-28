@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public sealed class FireWeapon : MonoBehaviour
@@ -9,6 +9,11 @@ public sealed class FireWeapon : MonoBehaviour
     public float ammoSpeed = 1;
 
     float _lastFire = 0;
+    ParticleSystem _ps;
+    void Start()
+    {
+        _ps = firepoint.GetComponent<ParticleSystem>();
+    }
 	void FixedUpdate()
     {
 	    if ((Input.GetButton("Fire1") || Input.GetButton("Jump")) && 
@@ -30,6 +35,9 @@ public sealed class FireWeapon : MonoBehaviour
 
             // spin it for kicks
             rb.angularVelocity = Vector3.up * 10;
+
+            // particles
+            _ps.Play();
 
             _lastFire = Time.fixedTime;
         }
