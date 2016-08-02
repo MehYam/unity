@@ -24,4 +24,9 @@ public sealed class Actor : MonoBehaviour
             }
         }
     }
+
+    void OnDestroy()
+    {
+        GlobalGameEvent.Instance.FireActorDeath(this);
+    }
 }

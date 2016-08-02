@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class PlayerInput : MonoBehaviour
@@ -14,7 +14,17 @@ public class PlayerInput : MonoBehaviour
         {
             gameObject.GetComponent<Rigidbody>().AddForce(current * acceleration);
         }
-	}
+    }
+
+#if UNITY_EDITOR
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            Debug.Break();
+        }
+    }
+#endif
 
     Vector3 CurrentMovementVector
     {

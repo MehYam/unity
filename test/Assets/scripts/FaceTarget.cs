@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+#define USE_ROTATIONAL_FORCE
+using UnityEngine;
 using System.Collections;
 
 using PvT3D.Util;
@@ -20,11 +21,18 @@ public sealed class FaceTarget : MonoBehaviour
         // tween the rotation
         var angles = gameObject.transform.eulerAngles;
         var angleDelta = Mathf.DeltaAngle(angles.y, targetAngleY);
+
+#if USE_ROTATIONAL_FORCE
+        var rb = gameObject.GetComponent<Rigidbody>();
+
+        rb.AddTorque(0, angleDelta * 0.5f, 0);
+#else
         var maxRotationThisFrame = maxRPS * Time.fixedDeltaTime * 360;
 
         angleDelta = Mathf.Clamp(angleDelta, -maxRotationThisFrame, maxRotationThisFrame);
 
         angles.y = angles.y + angleDelta;
         gameObject.transform.eulerAngles = angles;
+#endif
     }
 }
