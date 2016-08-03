@@ -29,14 +29,15 @@ public sealed class Spawner : MonoBehaviour
         {
             // create an enemy, give it initial heading and velocity.
             var spawn = GameObject.Instantiate(enemy);
-            _liveEnemies.Add(spawn.GetComponent<Actor>());
+            var spawnedActor = spawn.GetComponent<Actor>();
+            _liveEnemies.Add(spawnedActor);
 
             spawn.transform.position = transform.position;
             spawn.transform.eulerAngles = new Vector3(0, Util.DegreesRotationInY(target.transform.position - spawn.transform.position), 0);
             spawn.GetComponent<FaceTarget>().target = target;
 
             var body = spawn.GetComponent<Rigidbody>();
-            body.velocity = spawn.transform.right * 30;
+            body.velocity = spawn.transform.right * spawnedActor.maxSpeed;
 
             yield return new WaitForSeconds(rate);
         }

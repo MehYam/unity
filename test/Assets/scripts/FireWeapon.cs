@@ -6,13 +6,14 @@ public sealed class FireWeapon : MonoBehaviour
     public GameObject firepoint;
     public GameObject ammo;
     public float rate = 1;
-    public float ammoSpeed = 1;
 
     float _lastFire = 0;
+    Actor _actor;
     ParticleSystem _ps;
     void Start()
     {
         _ps = firepoint.GetComponent<ParticleSystem>();
+        _actor = GetComponent<Actor>();
     }
 	void FixedUpdate()
     {
@@ -31,7 +32,7 @@ public sealed class FireWeapon : MonoBehaviour
                 rb.velocity = gameObject.GetComponent<Rigidbody>().velocity;
             }
             // impart extra velocity in the direction of the firer
-            rb.velocity += gameObject.transform.forward * ammoSpeed;
+            rb.velocity += gameObject.transform.forward * _actor.maxSpeed;
 
             // spin it for kicks
             rb.angularVelocity = Vector3.up * 10;
