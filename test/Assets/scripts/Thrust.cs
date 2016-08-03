@@ -1,14 +1,18 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public sealed class Thrust : MonoBehaviour
 {
-    public float acceleration = 1;
+    Actor _actor;
+    void Start()
+    {
+        _actor = GetComponent<Actor>();
+    }
     void FixedUpdate()
     {
         var direction = gameObject.transform.forward;
         direction.y = 0;
 
-        gameObject.GetComponent<Rigidbody>().AddForce(direction * acceleration);
+        gameObject.GetComponent<Rigidbody>().AddForce(direction * _actor.acceleration);
     }
 }

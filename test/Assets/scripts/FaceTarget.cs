@@ -13,6 +13,11 @@ public sealed class FaceTarget : MonoBehaviour
     [Tooltip("Maximum rotation speed in Rotations Per Second")]
     public float maxRPS = 1;
 
+    Actor _actor;
+    void Start()
+    {
+        _actor = GetComponent<Actor>();
+    }
     void FixedUpdate()
     {
         // determine the target angle based on heading or mouse cursor
@@ -25,7 +30,7 @@ public sealed class FaceTarget : MonoBehaviour
 #if USE_ROTATIONAL_FORCE
         var rb = gameObject.GetComponent<Rigidbody>();
 
-        rb.AddTorque(0, angleDelta * 0.5f, 0);
+        rb.AddTorque(0, angleDelta * _actor.rotationalAcceleration, 0);
 #else
         var maxRotationThisFrame = maxRPS * Time.fixedDeltaTime * 360;
 

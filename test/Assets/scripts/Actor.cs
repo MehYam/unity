@@ -6,6 +6,7 @@ public sealed class Actor : MonoBehaviour
     public float health = 0;
     public float collisionDamage = 0;
     public float acceleration = 10;
+    public float rotationalAcceleration = 0.5f;
     public float maxSpeed = 10;
 
     static int _collisions = 0;
@@ -16,7 +17,7 @@ public sealed class Actor : MonoBehaviour
         var otherActor = col.collider.GetComponent<Actor>();
         var doesDamage = otherActor != null && gameObject.layer != otherActor.gameObject.layer;
 
-        Debug.Log(string.Format("{0}. {1} hit by {2}, does damage: {3}", _collisions, name, col.collider.name, doesDamage));
+        //Debug.Log(string.Format("{0}. {1} hit by {2}, does damage: {3}", _collisions, name, col.collider.name, doesDamage));
         if (doesDamage)
         {
             health -= otherActor.collisionDamage;
