@@ -12,10 +12,12 @@ public sealed class Actor : MonoBehaviour
     void OnCollisionEnter(Collision col)
     {
         ++_collisions;
-        //Debug.Log(string.Format("{0}. {1} hit by {2}", _collisions, name, col.collider.name));
 
         var otherActor = col.collider.GetComponent<Actor>();
-        if (otherActor != null)
+        var doesDamage = otherActor != null && gameObject.layer != otherActor.gameObject.layer;
+
+        Debug.Log(string.Format("{0}. {1} hit by {2}, does damage: {3}", _collisions, name, col.collider.name, doesDamage));
+        if (doesDamage)
         {
             health -= otherActor.collisionDamage;
 

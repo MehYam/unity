@@ -17,7 +17,7 @@ GameObject:
   - 65: {fileID: 6555534}
   - 114: {fileID: 11455512}
   - 222: {fileID: 22269684}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: enemy ship
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -34,7 +34,7 @@ GameObject:
   - 4: {fileID: 461858}
   - 33: {fileID: 3347554}
   - 23: {fileID: 2358224}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: ship3_2015
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -153,7 +153,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 100
   collisionDamage: 5
-  maxSpeed: 0
+  acceleration: 75
+  maxSpeed: 20
 --- !u!114 &11459296
 MonoBehaviour:
   m_ObjectHideFlags: 1

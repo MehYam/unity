@@ -84,6 +84,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 1
   collisionDamage: 20
+  acceleration: 0
+  maxSpeed: 100
 --- !u!122 &12202218
 Halo:
   m_ObjectHideFlags: 1
