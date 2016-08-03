@@ -1,22 +1,23 @@
-﻿using System;
+using System;
 using UnityEngine;
 
-// this is a mediator that fires and syncs events between different components.  i.e.
-// something might need to know that a card was played, but to reduce coupling between
-// things that manage cards (Deck, Hero, Hands, etc) and the receiver of the event, they
-// can use GlobalGameEvent as a message passing broker to get the actions across.
-class GlobalGameEvent
+/// <summary>
+/// GlobalGameEvent is a broker that allows events to be attached to and fired from disparate
+/// components.  It allows these events to be subscribed to anonymously, and makes it easy
+/// to clean up all held references with the ReleaseAllListeners() call.
+/// </summary>
+class GlobalEvent
 {
-    static GlobalGameEvent _singleton = null;
-    GlobalGameEvent() { }
+    static GlobalEvent _singleton = null;
+    GlobalEvent() { }
 
-    static public GlobalGameEvent Instance
+    static public GlobalEvent Instance
     {
         get
         {
             if (_singleton == null)
             {
-                _singleton = new GlobalGameEvent();
+                _singleton = new GlobalEvent();
             }
             return _singleton;
         }
@@ -26,7 +27,9 @@ class GlobalGameEvent
         _singleton = null;
     }
 
-    // High-level scene state changes
+    /// <summary>
+    /// Events
+    /// </summary>
     public event Action MainReady = delegate { };
     public void FireMainReady() { MainReady(); }
 
@@ -35,6 +38,9 @@ class GlobalGameEvent
 
     public event Action<Actor> ActorDeath = delegate { };
     public void FireActorDeath(Actor actor) { ActorDeath(actor); }
+
+    public event Action<string> DebugString = delegate { };
+    public void FireDebugString(string text) { DebugString(text); }
 
     //public event Action<GameObject, XRect> MapReady = delegate { };
     //public event Action<IGame> GameReady = delegate { };

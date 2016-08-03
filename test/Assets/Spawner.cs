@@ -14,13 +14,13 @@ public sealed class Spawner : MonoBehaviour
 	// Use this for initialization
 	void Start()
     {
-        GlobalGameEvent.Instance.ActorDeath += OnActorDeath;
+        GlobalEvent.Instance.ActorDeath += OnActorDeath;
 
         StartCoroutine(Spawn());
 	}
     void OnDestroy()
     {
-        GlobalGameEvent.Instance.ActorDeath -= OnActorDeath;
+        GlobalEvent.Instance.ActorDeath -= OnActorDeath;
     }
     HashSet<Actor> _liveEnemies = new HashSet<Actor>();
     IEnumerator Spawn()
