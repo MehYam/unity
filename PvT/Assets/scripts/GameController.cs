@@ -212,8 +212,6 @@ public sealed class GameController : IGame
             rigidbody.mass = type.mass;
             actorAmmo.behavior = ActorBehaviorFactory.Instance.thrust;
         }
-        Debug.Log("Velocity: " + rigidbody.velocity);
-
         if (launcher.actorType is TankTurretType)
         {
             // it's a turret

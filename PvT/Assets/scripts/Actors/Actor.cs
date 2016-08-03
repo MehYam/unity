@@ -603,6 +603,8 @@ public class Actor : MonoBehaviour
         }
         else
         {
+            Debug.Log(string.Format("collision {0} to {1}", name, other.name));
+
             // give out collision damage, except when capturing a mob.
             var thisIsPlayerCapturing = isPlayer && otherActor.overwhelmPct == 1;
             var thisIsMobBeingCaptured = otherActor.isPlayer && overwhelmPct == 1;
