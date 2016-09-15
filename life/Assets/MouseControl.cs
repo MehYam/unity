@@ -18,10 +18,11 @@ public sealed class MouseControl : MonoBehaviour
     }
     void LateUpdate()
     {
+        // scrolling background with middle wheel
         if (Input.GetMouseButton(2))
         {
             offset = (Camera.main.ScreenToWorldPoint(Input.mousePosition)) - Camera.main.transform.position;
-            if (dragging == false)
+            if (!dragging)
             {
                 dragging = true;
                 origin = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -31,14 +32,18 @@ public sealed class MouseControl : MonoBehaviour
         {
             dragging = false;
         }
-        if (dragging == true)
+        if (dragging)
         {
             Camera.main.transform.position = origin - offset;
         }
-        if (Input.GetMouseButton(1))
-        {
-            Camera.main.transform.position = startPosition;
-        }
-        Camera.main.orthographicSize += Input.mouseScrollDelta.y * zoomSensitivity / BASE_ZOOM_SENSITIVITY;
+
+        // reset to origin with right button
+        //if (Input.GetMouseButton(1))
+        //{
+        //    Camera.main.transform.position = startPosition;
+        //}
+
+        // zoom with mousewheel
+        Camera.main.orthographicSize -= Input.mouseScrollDelta.y * zoomSensitivity / BASE_ZOOM_SENSITIVITY;
     }
 }
