@@ -47,12 +47,10 @@ public sealed class MouseControl : MonoBehaviour
 
         // map current mouse position to tile
         //KAI: should only do this when mouse moves, but it's no big deal
-        var coords = new lifeEngine.Point<int>(Mathf.RoundToInt(mouseInWorld.x), Mathf.RoundToInt(mouseInWorld.y));
+        var tile = new lifeEngine.Point<int>(Mathf.RoundToInt(mouseInWorld.x), Mathf.RoundToInt(mouseInWorld.y));
         var world = Main.Instance.world;
-        var center = lifeEngine.Util.Divide(world.map.size, 2);
-        var tile = lifeEngine.Util.Add(coords, center);
 
-        if (lifeEngine.Util.Within(tile, lifeEngine.Util.zero, world.map.size))
+        if (lifeEngine.Util.Within(tile, lifeEngine.Util.zero, lifeEngine.Util.Subtract(world.map.size, 1)))
         {
             if (_lastTile != tile)
             {
@@ -65,7 +63,7 @@ public sealed class MouseControl : MonoBehaviour
             }
             else if (Input.GetMouseButtonUp(0))
             {
-                Debug.LogWarning("KAI: this is wrong, need to call up on the originating tile, not the ending one");
+                Debug.LogWarning("KAI: this is wrong button behavior, need to call up on the originating tile, not the ending one");
                 GlobalEvent.Instance.FireTileMouseup(tile);
             }
             _lastTile = tile;
