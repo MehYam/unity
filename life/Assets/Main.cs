@@ -47,6 +47,7 @@ public class Main : MonoBehaviour
 
             var renderer = gobj.AddComponent<SpriteRenderer>();
             renderer.sprite = sprite;
+            renderer.sortingLayerName = Constants.SortingLayer.GROUND;
 
             gobj.transform.position = new Vector2(x, y) - offset;
 
