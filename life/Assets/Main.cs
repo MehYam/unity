@@ -14,6 +14,9 @@ public class Main : MonoBehaviour
     public World world { private set; get; }
     public Layer<GameObject> tiles { private set; get; }
 
+    //KAI: quick 'n dirty
+    public readonly Dictionary<Actor, GameObject> actorToGameObject = new Dictionary<Actor, GameObject>();
+
     void Start()
     {
         Instance = this;
@@ -77,6 +80,9 @@ public class Main : MonoBehaviour
 
         var goHuman = InitSprite("human", glyphs[2], Constants.SortingLayer.ACTORS);
         var goCritter = InitSprite("critter", glyphs[1], Constants.SortingLayer.ACTORS);
+
+        actorToGameObject[human] = goHuman;
+        actorToGameObject[critter] = goCritter;
 
         goHuman.transform.position = human.pos.ToVector2();
         goCritter.transform.position = critter.pos.ToVector2();

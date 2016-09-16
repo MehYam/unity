@@ -20,6 +20,8 @@ public sealed class Test : MonoBehaviour
         GlobalEvent.Instance.TileMouseout -= OnTileMouseout;
         GlobalEvent.Instance.TileMouseup -= OnTileMouseover;
     }
+
+    Actor _selectedActor;
     void OnTileMousedown(Point<int> tile)
     {
         var main = Main.Instance;
@@ -27,6 +29,24 @@ public sealed class Test : MonoBehaviour
 
         var renderer = gobj.GetComponent<SpriteRenderer>();
         renderer.color = Color.red;
+
+        var actor = main.world.FindActor(a => a.pos.ToInt() == tile);
+        if (actor != null)
+        {
+            var go = main.actorToGameObject[actor];
+            if (go != null)
+            {
+                go.GetComponent<SpriteRenderer>().color = Color.magenta;
+            }
+        }
+        if (actor != _selectedActor)
+        {
+            if (_selectedActor != null)
+            {
+                main.actorToGameObject[_selectedActor].GetComponent<SpriteRenderer>().color = Color.white;
+            }
+            _selectedActor = actor;
+        }
     }
     void OnTileMouseover(Point<int> tile)
     {
