@@ -56,13 +56,17 @@ public sealed class MouseControl : MonoBehaviour
         {
             if (_lastTile != tile)
             {
-                Debug.Log("tile: " + tile);
+                GlobalEvent.Instance.FireTileMouseout(_lastTile);
                 GlobalEvent.Instance.FireTileMouseover(tile);
             }
             if (Input.GetMouseButtonDown(0))
             {
-                Debug.Log("click: " + tile);
-                GlobalEvent.Instance.FireTileClick(tile);
+                GlobalEvent.Instance.FireTileMousedown(tile);
+            }
+            else if (Input.GetMouseButtonUp(0))
+            {
+                Debug.LogWarning("KAI: this is wrong, need to call up on the originating tile, not the ending one");
+                GlobalEvent.Instance.FireTileMouseup(tile);
             }
             _lastTile = tile;
         }

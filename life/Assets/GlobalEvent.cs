@@ -33,9 +33,13 @@ class GlobalEvent
     /// Events
     /// </summary>
     public event Action<Point<int>> TileMouseover = delegate { };
-    public event Action<Point<int>> TileClick = delegate { };
+    public event Action<Point<int>> TileMouseout = delegate { };
+    public event Action<Point<int>> TileMousedown = delegate { };
+    public event Action<Point<int>> TileMouseup = delegate { };
     public void FireTileMouseover(Point<int> tile) { TileMouseover(tile); }
-    public void FireTileClick(Point<int> tile) { TileClick(tile); }
+    public void FireTileMouseout(Point<int> tile) { TileMouseout(tile); }
+    public void FireTileMousedown(Point<int> tile) { TileMousedown(tile); }
+    public void FireTileMouseup(Point<int> tile) { TileMouseup(tile); }
 
     public event Action<Actor> ActorSpawned = delegate { };
     public void FireActorSpawned(Actor a) { ActorSpawned(a); }
