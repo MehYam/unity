@@ -7,22 +7,37 @@ using System.Collections.Generic;
 public class Main : MonoBehaviour
 {
     public Sprite[] glyphs;
+
+    // This is the app's DOM.  Think about hiding this behind interfaces, like in the PvT and PvT3D projects
+    public static Main Instance { get; private set; }
+    public World world { private set; get; }
+    public Layer<GameObject> tiles { private set; get; }
+
     void Start()
     {
-        Debug.Log("System.Environment.Version " + System.Environment.Version);
+        Instance = this;
+        //Debug.Log("System.Environment.Version " + System.Environment.Version);
 
-        var layer = Operations.LoadLayerFile("c:\\source\\cs\\life\\simplerooms1.txt");
+        var layer = Operations.LoadLayerFile("c:\\source\\cs\\life\\simplerooms2.txt");
+
+        world = new World(layer);
         RenderLayer(layer);
     }
-
+    void OnDestroy()
+    {
+        Instance = null;
+        GlobalEvent.ReleaseAllListeners();
+    }
     void RenderLayer(Layer<Tile> layer)
     {
+        tiles = new Layer<GameObject>(layer.size.x, layer.size.y);
+
         var glyphLookup = new Dictionary<char, int>();
         glyphLookup[' '] = 5;
         glyphLookup['#'] = 6;
         glyphLookup['.'] = 3;
 
-        Vector2 offset = new Vector2(layer.width / 2, layer.height / 2);
+        Vector2 offset = new Vector2(layer.size.x / 2, layer.size.y / 2);
         layer.ForEach((x, y, tile) =>
         {
             var sprite = glyphs[glyphLookup[tile.type]];
@@ -34,6 +49,8 @@ public class Main : MonoBehaviour
             renderer.sprite = sprite;
 
             gobj.transform.position = new Vector2(x, y) - offset;
+
+            tiles.Set(x, y, gobj);
         });
     }
 }

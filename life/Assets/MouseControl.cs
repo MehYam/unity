@@ -16,16 +16,21 @@ public sealed class MouseControl : MonoBehaviour
     {
         startPosition = Camera.main.transform.position;
     }
+
+    lifeEngine.Point<int> _lastTile = lifeEngine.Util.zero;
     void LateUpdate()
     {
-        // scrolling background with middle wheel
+        var mouse = Input.mousePosition;
+        var mouseInWorld = Camera.main.ScreenToWorldPoint(mouse);
+
+        // dragging position with middle wheel
         if (Input.GetMouseButton(2))
         {
-            offset = (Camera.main.ScreenToWorldPoint(Input.mousePosition)) - Camera.main.transform.position;
+            offset = mouseInWorld - Camera.main.transform.position;
             if (!dragging)
             {
                 dragging = true;
-                origin = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                origin = mouseInWorld;
             }
         }
         else
@@ -37,13 +42,29 @@ public sealed class MouseControl : MonoBehaviour
             Camera.main.transform.position = origin - offset;
         }
 
-        // reset to origin with right button
-        //if (Input.GetMouseButton(1))
-        //{
-        //    Camera.main.transform.position = startPosition;
-        //}
-
         // zoom with mousewheel
         Camera.main.orthographicSize -= Input.mouseScrollDelta.y * zoomSensitivity / BASE_ZOOM_SENSITIVITY;
+
+        // map current mouse position to tile
+        //KAI: should only do this when mouse moves, but it's no big deal
+        var coords = new lifeEngine.Point<int>(Mathf.RoundToInt(mouseInWorld.x), Mathf.RoundToInt(mouseInWorld.y));
+        var world = Main.Instance.world;
+        var center = lifeEngine.Util.Divide(world.map.size, 2);
+        var tile = lifeEngine.Util.Add(coords, center);
+
+        if (lifeEngine.Util.Within(tile, lifeEngine.Util.zero, world.map.size))
+        {
+            if (_lastTile != tile)
+            {
+                Debug.Log("tile: " + tile);
+                GlobalEvent.Instance.FireTileMouseover(tile);
+            }
+            if (Input.GetMouseButtonDown(0))
+            {
+                Debug.Log("click: " + tile);
+                GlobalEvent.Instance.FireTileClick(tile);
+            }
+            _lastTile = tile;
+        }
     }
 }
