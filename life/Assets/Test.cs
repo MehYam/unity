@@ -18,6 +18,15 @@ public sealed class Test : MonoBehaviour
         ge.TileUnselected += OnTileUnselected;
         ge.ActorSelected += OnActorSelected;
         ge.ActorUnselected += OnActorUnselected;
+
+        AddActors();
+    }
+    void AddActors()
+    {
+        var world = Main.Instance.world;
+
+        Main.Instance.AddActor('h', new Point<float>(0, 0));
+        Main.Instance.AddActor('c', new Point<float>(world.map.size.x - 2, world.map.size.y - 1));
     }
     void OnDestroy()
     {

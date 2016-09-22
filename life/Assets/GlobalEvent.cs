@@ -32,6 +32,7 @@ class GlobalEvent
     /// <summary>
     /// Events
     /// </summary>
+    public event Action<Main> WorldReady = delegate { };
     public event Action<Point<int>> TileMouseover = delegate { };
     public event Action<Point<int>> TileMouseout = delegate { };
     public event Action<Point<int>> TileMousedown = delegate { };
@@ -41,6 +42,7 @@ class GlobalEvent
     public event Action<Actor> ActorSelected = delegate { };
     public event Action<Actor> ActorUnselected = delegate { };
 
+    public void FireWorldReady(Main main) { WorldReady(main); }
     public void FireTileMouseover(Point<int> tile) { TileMouseover(tile); }
     public void FireTileMouseout(Point<int> tile) { TileMouseout(tile); }
     public void FireTileMousedown(Point<int> tile) { TileMousedown(tile); }
