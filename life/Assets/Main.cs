@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 using lifeEngine;
@@ -35,7 +35,6 @@ public class Main : MonoBehaviour
 
         return retval;
     }
-
     static readonly Dictionary<char, int> s_glyphTypeToIndex = new Dictionary<char, int>()
     {
         //KAI: there's probably a way to indicate the character in the inspector panel, and do this all automatically, if it's worth it
@@ -62,6 +61,19 @@ public class Main : MonoBehaviour
             tiles.Set(x, y, go);
         });
     }
+    void FixedUpdate()
+    {
+        world.Tick(Time.time, Time.deltaTime);
+
+        foreach (var actor in world._actors)
+        {
+            var go = actorToGameObject[actor];
+            go.transform.position = actor.pos.ToVector2();
+        }
+    }
+    /// <summary>
+    /// /////////////////////////////////////////////////////////////////////
+    /// </summary>
     //KAI: This is an ad-hoc DOM for the app to control the model, and access GameObjects.  
     public static Main Instance { get; private set; }
     public World world { private set; get; }
@@ -80,4 +92,5 @@ public class Main : MonoBehaviour
 
         actorToGameObject[actor] = gameObj;
     }
+    public Actor selectedActor { get; set; }
 }
