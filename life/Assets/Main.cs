@@ -8,6 +8,7 @@ using life.util;
 public class Main : MonoBehaviour
 {
     public Sprite[] glyphs;
+    public float outdoorTemperature = 0;
 
     void Start()
     {
@@ -17,7 +18,13 @@ public class Main : MonoBehaviour
         var layer = Operations.LoadLayerFile("c:\\source\\cs\\life\\simplerooms2.txt");
 
         world = new World(layer);
+        world.RecalculateRooms();
+
         RenderLayer(layer);
+
+        // set some initial temperatures
+        const float INDOOR_TEMP = 20;
+        world.temps.Fill((x, y, tile) => world.rooms.Get(x, y).IsOutside ? world.outdoorTemperature : INDOOR_TEMP);
 
         Camera.main.transform.position = Camera.main.transform.position + (Vector3)(world.map.size.ToVector2() / 2);
     }
@@ -63,6 +70,7 @@ public class Main : MonoBehaviour
     }
     void FixedUpdate()
     {
+        world.outdoorTemperature = outdoorTemperature;
         world.Tick(Time.time, Time.deltaTime);
 
         foreach (var actor in world._actors)
