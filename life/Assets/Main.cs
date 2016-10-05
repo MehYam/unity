@@ -49,7 +49,8 @@ public class Main : MonoBehaviour
         {'#', 6},
         {'.', 3},
         {'h', 2},
-        {'c', 1}
+        {'c', 1},
+        {'t', 8}
     };
     void RenderLayer(Layer<Tile> layer)
     {
@@ -88,7 +89,7 @@ public class Main : MonoBehaviour
     public Layer<GameObject> tiles { private set; get; }
     public readonly Dictionary<Actor, GameObject> actorToGameObject = new Dictionary<Actor, GameObject>();
 
-    public void AddActor(char type, Point<float> pos)
+    public Actor AddActor(char type, Point<float> pos)
     {
         var actor = new Actor(type);
         actor.pos = pos;
@@ -99,6 +100,7 @@ public class Main : MonoBehaviour
         gameObj.transform.position = pos.ToVector2();
 
         actorToGameObject[actor] = gameObj;
+        return actor;
     }
     public Actor selectedActor { get; set; }
 }
