@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public sealed class Thrust : MonoBehaviour
+public sealed class ThrustForward : MonoBehaviour
 {
     Actor _actor;
     void Start()
