@@ -8,6 +8,9 @@ public sealed class FaceForward : MonoBehaviour
     [Tooltip("Maximum rotation speed in Rotations Per Second")]
     public float maxRPS = 1;
 
+    //KAI: this is really doing two unrelated things, facing forward OR facing the fire direction.  Would be nice to put
+    // some thought into selecting between different scripts
+
     [Tooltip("Rotate towards cursor or thumbstick while firing")]
     public bool faceFiringDirection = true;
 	void FixedUpdate()
@@ -19,15 +22,13 @@ public sealed class FaceForward : MonoBehaviour
         float targetAngleY = angles.y;
         if (faceFiringDirection)
         {
-            var firingDirection = InputHelper.GetFiringVector(transform.position);
-
+            var firingDirection = InputUtil.GetFiringVector(transform.position);
             if (firingDirection != Vector3.zero)
             {
-                Debug.Log(firingDirection);
                 targetAngleY = Util.DegreesRotationInY(firingDirection);
             }
         }
-        if (targetAngleY == angles.y && rb.velocity != Vector3.zero && InputHelper.MovementVector != Vector3.zero)
+        if (targetAngleY == angles.y && rb.velocity != Vector3.zero && InputUtil.MovementVector != Vector3.zero)
         {
             targetAngleY = Util.DegreesRotationInY(rb.velocity);
         }

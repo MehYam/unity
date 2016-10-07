@@ -12,7 +12,7 @@ public sealed class PlayerMovement : MonoBehaviour
     }
     void FixedUpdate()
     {
-        var movement = InputHelper.MovementVector;
+        var movement = InputUtil.MovementVector;
         if (movement != Vector3.zero)
         {
             movement.Normalize();
