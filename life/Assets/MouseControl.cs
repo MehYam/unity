@@ -7,14 +7,13 @@ public sealed class MouseControl : MonoBehaviour
     public float zoomSensitivity = 50;
     const float BASE_ZOOM_SENSITIVITY = 100;
 
-    Vector3 startPosition;
     Vector3 origin;
     Vector3 offset;
     bool dragging = false;
 
     void Start()
     {
-        startPosition = Camera.main.transform.position;
+        //startPosition = Camera.main.transform.position;
     }
 
     lifeEngine.Point<int> _lastTile = lifeEngine.Util.zero;

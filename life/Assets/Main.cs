@@ -19,6 +19,7 @@ public class Main : MonoBehaviour
 
         world = new World(layer);
         world.RecalculateRooms();
+        world.thermodynamicsEnabled = false;
 
         RenderLayer(layer);
 

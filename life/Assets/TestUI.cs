@@ -24,9 +24,7 @@ public class TestUI : MonoBehaviour
     void Update()
     {
         var world = Main.Instance.world;
-
         var temp = world.temps.Get(_lastTile);
-        var room = world.rooms.Get(_lastTile);
 
         debugText.text = string.Format("Tile: {0}\n{1:0.00}C\nIsOutside: {2}\nRoom Id: {4}\nIsRoom: {5} \nWall: {3}",
             _lastTile,
