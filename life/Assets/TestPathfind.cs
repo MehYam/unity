@@ -33,7 +33,7 @@ public sealed class TestPathfind : MonoBehaviour
         {
             _selectedActor.AddPriority(
                 new lifeEngine.behavior.MoveTo(
-                    Main.Instance.world.map,
+                    Main.Instance.world,
                     _selectedActor,
                     tile));
         }

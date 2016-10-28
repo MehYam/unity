@@ -26,7 +26,7 @@ public sealed class Test : MonoBehaviour
         var world = Main.Instance.world;
 
         Main.Instance.AddActor('h', new Point<float>(0, 0));
-        Main.Instance.AddActor('c', new Point<float>(world.map.size.x - 2, world.map.size.y - 1));
+        Main.Instance.AddActor('c', new Point<float>(world.ground.size.x - 2, world.ground.size.y - 1));
         var heatSource = Main.Instance.AddActor('t', new Point<float>(33, 29));
 
         heatSource.AddPriority(new lifeEngine.behavior.TemperatureSource(world, heatSource.pos.ToInt(), 35));

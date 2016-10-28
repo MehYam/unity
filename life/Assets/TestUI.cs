@@ -28,6 +28,13 @@ public class TestUI : MonoBehaviour
         var temp = world.temps.Get(_lastTile);
         var room = world.rooms.Get(_lastTile);
 
-        debugText.text = string.Format("Tile: {0}\n{1:0.00}C\nOutdoors: {2}\nWall: {3}", _lastTile, temp, room.IsOutside, room.IsWall);
+        debugText.text = string.Format("Tile: {0}\n{1:0.00}C\nIsOutside: {2}\nRoom Id: {4}\nIsRoom: {5} \nWall: {3}",
+            _lastTile,
+            temp,
+            world.IsOutside(_lastTile.x, _lastTile.y),
+            world.walls.Get(_lastTile) != null,
+            world.rooms.Get(_lastTile),
+            world.IsRoom(_lastTile.x, _lastTile.y)
+            );
     }
 }

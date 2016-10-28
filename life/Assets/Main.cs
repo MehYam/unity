@@ -24,9 +24,9 @@ public class Main : MonoBehaviour
 
         // set some initial temperatures
         const float INDOOR_TEMP = 20;
-        world.temps.Fill((x, y, tile) => world.rooms.Get(x, y).IsOutside ? world.outdoorTemperature : INDOOR_TEMP);
+        world.temps.Fill((x, y, tile) => world.IsOutside(x, y) ? world.outdoorTemperature : INDOOR_TEMP);
 
-        Camera.main.transform.position = Camera.main.transform.position + (Vector3)(world.map.size.ToVector2() / 2);
+        Camera.main.transform.position = Camera.main.transform.position + (Vector3)(world.ground.size.ToVector2() / 2);
     }
     void OnDestroy()
     {

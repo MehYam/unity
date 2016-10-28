@@ -50,7 +50,7 @@ public sealed class MouseControl : MonoBehaviour
         var tile = new lifeEngine.Point<int>(Mathf.RoundToInt(mouseInWorld.x), Mathf.RoundToInt(mouseInWorld.y));
         var world = Main.Instance.world;
 
-        if (lifeEngine.Util.Within(tile, lifeEngine.Util.zero, lifeEngine.Util.Subtract(world.map.size, 1)))
+        if (lifeEngine.Util.Within(tile, lifeEngine.Util.zero, lifeEngine.Util.Subtract(world.ground.size, 1)))
         {
             if (_lastTile != tile)
             {
