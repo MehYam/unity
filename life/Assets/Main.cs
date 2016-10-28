@@ -15,7 +15,7 @@ public class Main : MonoBehaviour
         Instance = this;
         //Debug.Log("System.Environment.Version " + System.Environment.Version);
 
-        var layer = Operations.LoadLayerFile("c:\\source\\cs\\life\\simplerooms2.txt");
+        var layer = Operations.LoadLayerFile("c:\\source\\cs\\lifeEngine\\simplerooms2.txt");
 
         world = new World(layer);
         world.RecalculateRooms();
