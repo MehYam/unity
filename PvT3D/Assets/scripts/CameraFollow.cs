@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public sealed class CameraFollow : MonoBehaviour
@@ -8,6 +8,11 @@ public sealed class CameraFollow : MonoBehaviour
 
 	void LateUpdate()
     {
+        if (target == null)
+        {
+            enabled = false;
+            return;
+        }
         var pos = target.transform.position;
 
         pos.y += distance;
