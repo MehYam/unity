@@ -13,7 +13,7 @@ GameObject:
   - 65: {fileID: 6560048}
   - 65: {fileID: 6528900}
   m_Layer: 0
-  m_Name: room_corner_2015
+  m_Name: corner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
