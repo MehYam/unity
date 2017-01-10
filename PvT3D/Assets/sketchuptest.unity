@@ -89,6 +89,10 @@ NavMeshSettings:
 Transform:
   m_PrefabParentObject: {fileID: 400000, guid: 7adfb541db231d14b99faf6d4b6dffeb, type: 3}
   m_PrefabInternal: {fileID: 755279441}
+--- !u!4 &16237672 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 400000, guid: b5c59dc07e0ce464894212547ef9e8af, type: 3}
+  m_PrefabInternal: {fileID: 1009320159}
 --- !u!1001 &19071317
 Prefab:
   m_ObjectHideFlags: 0
@@ -3705,6 +3709,22 @@ Prefab:
       propertyPath: m_Layer
       value: 9
       objectReference: {fileID: 0}
+    - target: {fileID: 2300000, guid: 41df7fd4c7f506741a4bb1c1c12e4e18, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 92708b6a9094b4b5ea1c08529f33934a, type: 2}
+    - target: {fileID: 2300000, guid: 41df7fd4c7f506741a4bb1c1c12e4e18, type: 3}
+      propertyPath: m_Materials.Array.data[3]
+      value: 
+      objectReference: {fileID: 2100000, guid: 297e15c9006e44893b5759e90794c031, type: 2}
+    - target: {fileID: 2300000, guid: 41df7fd4c7f506741a4bb1c1c12e4e18, type: 3}
+      propertyPath: m_Materials.Array.data[2]
+      value: 
+      objectReference: {fileID: 2100000, guid: 665e35119b3724fba9b4289661bd205a, type: 2}
+    - target: {fileID: 2300000, guid: 41df7fd4c7f506741a4bb1c1c12e4e18, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 91497e0ab148f4341bf296ca479ce529, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 41df7fd4c7f506741a4bb1c1c12e4e18, type: 3}
   m_IsPrefabParent: 0
@@ -4342,6 +4362,56 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 998794290}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1001 &1009320159
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1354027103}
+    m_Modifications:
+    - target: {fileID: 400000, guid: b5c59dc07e0ce464894212547ef9e8af, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 26.31
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: b5c59dc07e0ce464894212547ef9e8af, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: b5c59dc07e0ce464894212547ef9e8af, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 40.230003
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: b5c59dc07e0ce464894212547ef9e8af, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: b5c59dc07e0ce464894212547ef9e8af, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: b5c59dc07e0ce464894212547ef9e8af, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: b5c59dc07e0ce464894212547ef9e8af, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: b5c59dc07e0ce464894212547ef9e8af, type: 3}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: b5c59dc07e0ce464894212547ef9e8af, type: 3}
+      propertyPath: m_Name
+      value: toonshadetest
+      objectReference: {fileID: 0}
+    - target: {fileID: 2300000, guid: b5c59dc07e0ce464894212547ef9e8af, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 92708b6a9094b4b5ea1c08529f33934a, type: 2}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: b5c59dc07e0ce464894212547ef9e8af, type: 3}
+  m_IsPrefabParent: 0
 --- !u!4 &1010872080 stripped
 Transform:
   m_PrefabParentObject: {fileID: 455782, guid: 1589a65120ec0db4db10e61325bddbbe, type: 2}
@@ -5269,6 +5339,7 @@ Transform:
   - {fileID: 240668404}
   - {fileID: 565704226}
   - {fileID: 612139201}
+  - {fileID: 16237672}
   m_Father: {fileID: 0}
   m_RootOrder: 2
 --- !u!1 &1355933488
