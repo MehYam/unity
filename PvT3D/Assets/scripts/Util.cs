@@ -33,5 +33,10 @@ namespace PvT3D.Util
             direction.y = 0;
             return direction;
         }
+        static public Material GetMaterialInChildren(GameObject obj)
+        {
+            var renderer = obj.GetComponentInChildren<Renderer>();
+            return renderer != null ? renderer.material : null;
+        }
     }
 }

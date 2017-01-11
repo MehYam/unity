@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
+using PvT3D.Util;
+
 public sealed class Actor : MonoBehaviour
 {
     public float health = 0;
@@ -10,6 +12,16 @@ public sealed class Actor : MonoBehaviour
     public float maxSpeed = 10;
 
     static int _collisions = 0;
+
+    Color _startColor;
+    void Start()
+    {
+        var material = Util.GetMaterialInChildren(gameObject);
+        if (material != null)
+        {
+            _startColor = material.color;
+        }
+    }
     void OnCollisionEnter(Collision col)
     {
         ++_collisions;
@@ -21,12 +33,27 @@ public sealed class Actor : MonoBehaviour
         if (doesDamage)
         {
             health -= otherActor.collisionDamage;
-
             if (health <= 0)
             {
                 //Debug.Log("Taken lethal damage DESTROY=====");
+                GlobalEvent.Instance.FireActorDeath(this);
                 GameObject.Destroy(gameObject);
             }
+            else
+            {
+                StartCoroutine(DisplayHit());
+            }
+        }
+    }
+    IEnumerator DisplayHit()
+    {
+        //KAI: seems like this doesn't belong in Actor, but what do I know
+        var renderer = GetComponentInChildren<Renderer>();
+        if (renderer != null && renderer.material != null)
+        {
+            renderer.material.color = new Color(1, .7f, .7f);
+            yield return new WaitForSeconds(0.1f);
+            renderer.material.color = _startColor;
         }
     }
     void FixedUpdate()
@@ -35,9 +62,5 @@ public sealed class Actor : MonoBehaviour
         // roll-your-own composited behaviors from PvT
         var body = GetComponent<Rigidbody>();
         body.velocity = Vector3.ClampMagnitude(body.velocity, maxSpeed);
-    }
-    void OnDestroy()
-    {
-        GlobalEvent.Instance.FireActorDeath(this);
     }
 }
