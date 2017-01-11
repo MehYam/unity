@@ -17,7 +17,7 @@ public sealed class Actor : MonoBehaviour
     void Start()
     {
         var material = Util.GetMaterialInChildren(gameObject);
-        if (material != null)
+        if (material != null && material.HasProperty("_Color"))
         {
             _startColor = material.color;
         }
