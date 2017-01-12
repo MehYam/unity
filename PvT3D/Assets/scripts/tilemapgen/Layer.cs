@@ -72,13 +72,13 @@ namespace lifeEngine
                 }
             }
         }
-        public void Fill(Func<int, int, T, T> callback)
+        public void Fill(Func<int, int, T> callback)
         {
             for (var y = 0; y < size.y; ++y)
             {
                 for (var x = 0; x < size.x; ++x)
                 {
-                    tiles[x, y] = callback(x, y, tiles[x, y]);
+                    tiles[x, y] = callback(x, y);
                 }
             }
         }

@@ -16,6 +16,10 @@ namespace PvT3D.Util
         {
             return Mathf.Atan2(point.x, point.z) * Mathf.Rad2Deg;
         }
+        static public float Angle(Vector2 point)
+        {
+            return Mathf.Atan2(point.y, point.x) * Mathf.Rad2Deg;
+        }
         // To do mouse stuff in world coordinates instead:  http://wiki.unity3d.com/index.php?title=LookAtMouse
         // I find it's more intuitive and natural to transform objects to screen coordinates instead of trying
         // to translate mouse coordinates into world space, since that's generally the intent of using mouse

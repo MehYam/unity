@@ -1,7 +1,10 @@
 using UnityEngine;
 using System.Collections;
 
-using lifeEngine;
+using PvT3D.Util;
+
+using Layer = lifeEngine.Layer<Tile>;
+using Point = lifeEngine.Point<int>;
 
 public class Tile
 {
@@ -28,111 +31,16 @@ public sealed class TileLevelCreator : MonoBehaviour
 
     public void Generate(Vector2 size, float padding)
     {
-        Clear();
-
-        int cols = (int)size.x;
-        int rows = (int)size.y;
-
-        var bounds = floor.GetComponent<Renderer>().bounds;
-        Debug.Log("bounds: " + bounds + ", " + bounds.size);
-
-        var tileMiddle = bounds.size / 2;
-        var topLeft = tileMiddle - new Vector3(
-            ((bounds.size.x * cols) + (padding * (cols - 1))) / 2,
-            0,
-            ((bounds.size.z * rows) + (padding * (rows - 1))) / 2
-        );
-
-        var parent = new GameObject("tiles");
-        parent.transform.parent = transform;
-
-        System.Action<int, int, GameObject> AddTile = (x, y, tile) =>
-        {
-            tile.name = string.Format("tile {0}x{1}", x, y);
-
-            tile.transform.position = topLeft + new Vector3(x * (bounds.size.x + padding), 0, y * (bounds.size.z + padding));
-            tile.transform.parent = parent.transform;
-        };
-
-        // do the interior
-        for (var x = 1; x < (cols-1); ++x)
-        {
-            for (var y = 1; y < (rows-1); ++y)
-            {
-                AddTile(x, y, GameObject.Instantiate(floor));
-            }
-        }
-
-        // corners
-        var corner = GameObject.Instantiate(cornerWall);
-        corner.transform.eulerAngles = new Vector3(0, 90, 0);
-        AddTile(0, 0, corner);
-
-        corner = GameObject.Instantiate(cornerWall);
-        AddTile(rows - 1, 0, corner);
-
-        corner = GameObject.Instantiate(cornerWall);
-        corner.transform.eulerAngles = new Vector3(0, 180, 0);
-        AddTile(0, cols - 1, corner);
-
-        corner = GameObject.Instantiate(cornerWall);
-        corner.transform.eulerAngles = new Vector3(0, 270, 0);
-        AddTile(rows - 1, cols - 1, corner);
-
-        // edges
-        for (var y = 1; y < (cols - 1); ++y)
-        {
-            var edge = GameObject.Instantiate(wall);
-            edge.transform.eulerAngles = new Vector3(0, 90, 0);
-            AddTile(0, y, edge);
-
-            edge = GameObject.Instantiate(wall);
-            edge.transform.eulerAngles = new Vector3(0, 270, 0);
-            AddTile(cols - 1, y, edge);
-        }
-        for (var x = 1; x < (rows - 1); ++x)
-        {
-            var edge = GameObject.Instantiate(wall);
-            edge.transform.eulerAngles = new Vector3(0, 0, 0);
-            AddTile(x, 0, edge);
-
-            edge = GameObject.Instantiate(wall);
-            edge.transform.eulerAngles = new Vector3(0, 180, 0);
-            AddTile(x, rows - 1, edge);
-        }
+        var layer = new Layer((int)size.x, (int)size.y);
+        layer.Fill((x, y) => new Tile('_'));
+        Generate(layer, padding);
     }
-    static int CountNeighbors(Layer<Tile> layer, Point<int> tile)
+    public void Generate(Layer layer, float padding)
     {
-        int retval = 0;
-        foreach (var direction in Util.cardinalDirections)
-        {
-            var neighbor = Util.Add(tile, direction);
-            if (layer.IsValid(neighbor) && !layer.Get(neighbor).Empty)
-            {
-                ++retval;
-            }
-        }
-        return retval;
-    }
-    static Point<int> GetNeighborDirection(Layer<Tile> layer, Point<int> tile, System.Func<Point<int>, bool> matchNeighbor)
-    {
-        foreach (var direction in Util.cardinalDirections)
-        {
-            var neighbor = Util.Add(tile, direction);
-            if (matchNeighbor(neighbor))
-            {
-                return neighbor;
-            }
-        }
-        return Util.zero;
-    }
-    public void Generate(Layer<Tile> layer, float padding)
-    {
-        //KAI: copypasta from above
         Clear();
 
         var bounds = floor.GetComponent<Renderer>().bounds;
-        Debug.Log("bounds: " + bounds + ", " + bounds.size);
+        Debug.Log("Tile bounds: " + bounds + ", " + bounds.size);
 
         var tileMiddle = bounds.size / 2;
         var topLeft = tileMiddle - new Vector3(
@@ -154,33 +62,23 @@ public sealed class TileLevelCreator : MonoBehaviour
 
         layer.ForEach((x, y, tile) =>
         {
-            var pos = new Point<int>(x, y);
-            switch (tile.type)
+            if (tile.type == '_')
             {
-                case '_':
-                    AddTile(x, y, GameObject.Instantiate(floor));
-                    break;
-                case 'X':
-                    var neighbors = CountNeighbors(layer, pos);
-                    GameObject tileGeometry = null;
-                    switch (neighbors)
+                AddTile(x, y, GameObject.Instantiate(floor));
+
+                foreach (var dir in lifeEngine.Util.cardinalDirections)
+                {
+                    var neighbor = lifeEngine.Util.Add(dir, new Point(x, y));
+                    if (!layer.IsValid(neighbor) || layer.Get(neighbor).Empty)
                     {
-                        case 1:
-                            tileGeometry = GameObject.Instantiate(endWall);
-                            break;
-                        case 2:
-                            tileGeometry = GameObject.Instantiate(cornerWall);
-                            break;
-                        case 3:
-                            tileGeometry = GameObject.Instantiate(wall);
-                            var emptyNeighborPos = GetNeighborDirection(layer, pos, p => !layer.IsValid(p) || layer.Get(p).Empty);
-                            break;
+                        // need to put up a wall
+                        var wallGO = GameObject.Instantiate(wall);
+                        var angle = Util.Angle(lifeEngine.Util.down.ToVector2()) - Util.Angle(dir.ToVector2());
+
+                        wallGO.transform.eulerAngles = new Vector3(0, angle, 0);
+                        AddTile(x, y, wallGO);
                     }
-                    if (tileGeometry != null)
-                    {
-                        AddTile(x, y, tileGeometry);
-                    }
-                    break;
+                }
             }
         });
     }
@@ -197,7 +95,7 @@ public sealed class TileLevelCreator : MonoBehaviour
                 ++height;
             }
         }
-        var retval = new Layer<Tile>(width, height);
+        var retval = new Layer(width, height);
 
         for (int y = 0; y < height; ++y)
         {
@@ -206,7 +104,7 @@ public sealed class TileLevelCreator : MonoBehaviour
             {
                 for (int x = 0; x < line.Length; ++x)
                 {
-                    retval.Set(new Point<int>(x, height-y-1), new Tile(line[x]));
+                    retval.Set(new Point(x, height-y-1), new Tile(line[x]));
                 }
             }
         }
