@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
+using lifeEngine;
+
 namespace PvT3D.Util
 {
     public static class Util
@@ -37,6 +39,17 @@ namespace PvT3D.Util
         {
             var renderer = obj.GetComponentInChildren<Renderer>();
             return renderer != null ? renderer.material : null;
+        }
+    }
+    static class PointSpecialization
+    {
+        public static Vector2 ToVector2(this Point<float> point)
+        {
+            return new Vector2(point.x, point.y);
+        }
+        public static Vector2 ToVector2(this Point<int> point)
+        {
+            return new Vector2(point.x, point.y);
         }
     }
 }
