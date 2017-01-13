@@ -29,6 +29,11 @@ public sealed class TileLevelCreator : MonoBehaviour
     public GameObject cornerWall;
     public GameObject endWall;
 
+    // These will be drawn by the custom editor
+    [HideInInspector] public TextAsset levelFile;
+    [HideInInspector] public Vector2 size = new Vector2(5, 5);
+    [HideInInspector] public int padding = 1;
+
     public void Generate(Vector2 size, float padding)
     {
         var layer = new Layer((int)size.x, (int)size.y);

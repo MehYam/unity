@@ -5,37 +5,34 @@ using System.Collections;
 [CustomEditor(typeof(TileLevelCreator))]
 public sealed class TileLevelCreatorEditor : Editor
 {
-    TextAsset levelFile;
-    Vector2 size = new Vector2(5, 5);
-    int padding = 1;
     public override void OnInspectorGUI()
     {
         DrawDefaultInspector();
 
-        var levelCreator = (TileLevelCreator)target;
+        var main = (TileLevelCreator)target;
 
         GUILayout.BeginHorizontal();
-        levelFile = (TextAsset)EditorGUILayout.ObjectField("File", levelFile, typeof(TextAsset), true);
+        main.levelFile = (TextAsset)EditorGUILayout.ObjectField("File", main.levelFile, typeof(TextAsset), true);
         if (GUILayout.Button("Load"))
         {
-            if (levelFile != null)
+            if (main.levelFile != null)
             {
-                levelCreator.ParseAndGenerate(levelFile.text);
+                main.ParseAndGenerate(main.levelFile.text);
             }
         }
         GUILayout.EndHorizontal();
 
-        size = EditorGUILayout.Vector2Field("Size", size);
-        padding = EditorGUILayout.IntField("Padding", padding);
+        main.size = EditorGUILayout.Vector2Field("Size", main.size);
+        main.padding = EditorGUILayout.IntField("Padding", main.padding);
 
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("Generate"))
         {
-            levelCreator.Generate(size, padding);
+            main.Generate(main.size, main.padding);
         }
         if (GUILayout.Button("Clear"))
         {
-            levelCreator.Clear();
+            main.Clear();
         }
         GUILayout.EndHorizontal();
     }
