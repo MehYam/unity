@@ -50,23 +50,9 @@ namespace lifeEngine
         /// <param name="callback"></param>
         public void ForEach(Action<int, int, T> callback)
         {
-            for (var y = 0; y < size.y; ++y)
+            for (var y = size.y-1; y >= 0; --y)
             {
                 for (var x = 0; x < size.x; ++x)
-                {
-                    callback(x, y, tiles[x, y]);
-                }
-            }
-        }
-        /// <summary>
-        /// Iterate every other tile in the layer, invoking the callback with (x, y, item) arguments
-        /// </summary>
-        /// <param name="callback"></param>
-        public void ForEveryOther(Action<int, int, T> callback)
-        {
-            for (var y = 0; y < size.y; ++y)
-            {
-                for (var x = y % 2; x < size.x; x += 2)
                 {
                     callback(x, y, tiles[x, y]);
                 }
@@ -85,75 +71,16 @@ namespace lifeEngine
         public override string ToString()
         {
             var sb = new StringBuilder();
-            int thisY = -1;
+            int currentY = size.y - 1;
             ForEach((int x, int y, T t) =>
             {
-                if (thisY != y)
+                if (currentY != y)
                 {
-                    thisY = y;
-                    if (thisY > 0)
-                    {
-                        sb.AppendLine();
-                    }
-                    sb.Append((thisY % 10) + " ");
+                    currentY = y;
+                    sb.AppendLine();
                 }
                 sb.Append(t.ToString());
             });
-            return sb.ToString();
-        }
-    }
-    public sealed class Map<T>
-    {
-        public readonly int width;
-        public readonly int height;
-
-        readonly Layer<T>[] layers;
-
-        public Map(int depth, int width, int height)
-        {
-            this.width = width;
-            this.height = height;
-
-            layers = new Layer<T>[depth];
-
-            for (var d = 0; d < depth; ++d)
-            {
-                layers[d] = new Layer<T>(width, height);
-            }
-        }
-        public Layer<T> Get(int i)
-        {
-            return layers[i];
-        }
-        /// <summary>
-        /// Iterate all layers, invoking the callback with (layer, x, y, item) arguments
-        /// </summary>
-        /// <param name="callback"></param>
-        public void ForEach(Action<int, int, int, T> callback)
-        {
-            int iLayer = 0;
-            foreach (var layer in layers)
-            {
-                layer.ForEach((int x, int y, T t) => callback(iLayer, x, y, t));
-
-                iLayer++;
-            }
-        }
-        public void ForEachLayer(Action<Layer<T>> callback)
-        {
-            foreach (var layer in layers)
-            {
-                callback(layer);
-            }
-        }
-        public override string ToString()
-        {
-            var sb = new StringBuilder();
-            foreach (var layer in layers)
-            {
-                sb.AppendLine(layer.ToString());
-                sb.AppendLine("--------------------------------");
-            }
             return sb.ToString();
         }
     }

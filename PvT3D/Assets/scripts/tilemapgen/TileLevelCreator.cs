@@ -6,7 +6,7 @@ using PvT3D.Util;
 using Layer = lifeEngine.Layer<Tile>;
 using Point = lifeEngine.Point<int>;
 
-public class Tile
+public struct Tile
 {
     public static char[] types = { 'X', '_' };
 
@@ -90,29 +90,25 @@ public sealed class TileLevelCreator : MonoBehaviour
     public void ParseAndGenerate(string textFile)
     {
         var lines = textFile.Split(new string[] { "\r\n", "\n" }, System.StringSplitOptions.None);
-        var height = 0;
 
-        var width = lines[0].Length;
+        var height = lines.Length;
+        var width = 0;
         foreach (var line in lines)
         {
-            if (line.Length == width)
-            {
-                ++height;
-            }
+            width = System.Math.Max(width, line.Length);
         }
         var retval = new Layer(width, height);
 
         for (int y = 0; y < height; ++y)
         {
             var line = lines[y];
-            if (line.Length == width)
+            for (int x = 0; x < width; ++x)
             {
-                for (int x = 0; x < line.Length; ++x)
-                {
-                    retval.Set(new Point(x, height-y-1), new Tile(line[x]));
-                }
+                var tile = x < line.Length ? new Tile(line[x]) : new Tile(' ');
+                retval.Set(new Point(x, height-y-1), tile);
             }
         }
+        Debug.Log(retval);
         Generate(retval, 1);
     }
     public void Clear()
