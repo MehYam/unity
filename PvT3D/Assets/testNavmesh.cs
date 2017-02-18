@@ -8,11 +8,11 @@ public class testNavmesh : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
-        var agent = GetComponent<NavMeshAgent>();
+        var agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
 
         //agent.destination = target.transform.position;
 
-        var path = new NavMeshPath();
+        var path = new UnityEngine.AI.NavMeshPath();
         agent.CalculatePath(target.transform.position, path);
 
         

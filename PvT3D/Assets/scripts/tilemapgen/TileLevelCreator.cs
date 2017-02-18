@@ -28,6 +28,7 @@ public sealed class TileLevelCreator : MonoBehaviour
     public GameObject wall;
     public GameObject cornerWall;
     public GameObject endWall;
+    public GameObject animated;
 
     // These will be drawn by the custom editor
     [HideInInspector] public TextAsset levelFile;
