@@ -6,32 +6,36 @@ using UnityEngine.EventSystems;
 
 public sealed class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    Vector3 dragStart;
-    Transform dragStartParent;
+    class StartOfDrag
+    {
+        public readonly Vector3 pos;
+        public readonly Transform parent;
+        public readonly bool blocksRaycasts;
+        public StartOfDrag(Vector3 pos, Transform parent, bool blocksRaycasts) { this.pos = pos;  this.parent = parent; this.blocksRaycasts = blocksRaycasts; }
+    }
 
-
+    StartOfDrag start = null;
     public void OnBeginDrag(PointerEventData eventData)
     {
-        dragStart = transform.position;
-        dragStartParent = transform.parent;
+        start = new StartOfDrag(transform.position, transform.parent, GetComponent<CanvasGroup>().blocksRaycasts);
+
+        GetComponent<CanvasGroup>().blocksRaycasts = false;
 
         transform.SetParent(transform.parent.parent.parent); //KAI:
-
-        Debug.Log("OnBeginDrag");
     }
-
     public void OnDrag(PointerEventData eventData)
     {
-        //KAI: this right?  what about eventData?
         transform.position = Input.mousePosition;
-
-        Debug.Log("OnDrag");
     }
-
     public void OnEndDrag(PointerEventData eventData)
     {
-        transform.SetParent(dragStartParent);
-
-        transform.position = dragStart;
+        if (transform.parent.GetComponent<DropHandler>() == null)
+        {
+            // DropHandler.OnDrop() has not parented this item when it was dropped, snatch it back
+            transform.SetParent(start.parent);
+            transform.position = start.pos;
+        }
+        GetComponent<CanvasGroup>().blocksRaycasts = start.blocksRaycasts;
+        start = null;
     }
 }
