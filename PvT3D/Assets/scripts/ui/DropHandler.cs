@@ -8,8 +8,6 @@ public sealed class DropHandler : MonoBehaviour, IDropHandler
 {
     public void OnDrop(PointerEventData eventData)
     {
-        Debug.Log("OnDrop " + name);
-
         if (GetComponentInChildren<DragHandler>() == null)
         {
             eventData.pointerDrag.transform.SetParent(transform);

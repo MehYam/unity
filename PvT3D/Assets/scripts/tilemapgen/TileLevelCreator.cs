@@ -3,8 +3,8 @@ using System.Collections;
 
 using PvT3D.Util;
 
-using Layer = lifeEngine.Layer<Tile>;
-using Point = lifeEngine.Point<int>;
+using Layer = kaiGameUtil.Layer<Tile>;
+using Point = kaiGameUtil.Point<int>;
 
 public struct Tile
 {
@@ -72,14 +72,14 @@ public sealed class TileLevelCreator : MonoBehaviour
             {
                 AddTile(x, y, GameObject.Instantiate(floor));
 
-                foreach (var dir in lifeEngine.Util.cardinalDirections)
+                foreach (var dir in kaiGameUtil.Util.cardinalDirections)
                 {
-                    var neighbor = lifeEngine.Util.Add(dir, new Point(x, y));
+                    var neighbor = kaiGameUtil.Util.Add(dir, new Point(x, y));
                     if (!layer.IsValid(neighbor) || layer.Get(neighbor).Empty)
                     {
                         // need to put up a wall
                         var wallGO = GameObject.Instantiate(wall);
-                        var angle = Util.Angle(lifeEngine.Util.down.ToVector2()) - Util.Angle(dir.ToVector2());
+                        var angle = Util.Angle(kaiGameUtil.Util.down.ToVector2()) - Util.Angle(dir.ToVector2());
 
                         wallGO.transform.eulerAngles = new Vector3(0, angle, 0);
                         AddTile(x, y, wallGO);

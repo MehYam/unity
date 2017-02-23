@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-using lifeEngine;
+using kaiGameUtil;
 
 namespace PvT3D.Util
 {

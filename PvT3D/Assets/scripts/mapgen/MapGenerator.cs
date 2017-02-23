@@ -350,7 +350,7 @@ public class MapGenerator : MonoBehaviour {
 
 	void RandomFillMap(int[,] map) {
         seed = useRandomSeed ? UnityEngine.Random.Range(0, int.MaxValue) : seed;
-        UnityEngine.Random.seed = seed;
+        UnityEngine.Random.InitState(seed);
 
 		for (int x = 0; x < width; x ++) {
 			for (int y = 0; y < height; y ++) {
