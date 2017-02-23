@@ -13,7 +13,11 @@ public sealed class DropHandler : MonoBehaviour, IDropHandler
         if (GetComponentInChildren<DragHandler>() == null)
         {
             eventData.pointerDrag.transform.SetParent(transform);
-            eventData.pointerDrag.transform.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+
+            var rt = eventData.pointerDrag.transform.GetComponent<RectTransform>();
+            rt.anchoredPosition = Vector2.zero;
+            rt.offsetMin = Vector2.zero;
+            rt.offsetMax = Vector2.one;
         }
     }
 }
