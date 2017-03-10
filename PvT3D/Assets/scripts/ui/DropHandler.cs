@@ -10,7 +10,7 @@ public sealed class DropHandler : MonoBehaviour, IDropHandler
     {
         if (GetComponentInChildren<DragHandler>() == null)
         {
-            eventData.pointerDrag.transform.SetParent(transform);
+            eventData.pointerDrag.transform.SetParent(transform, false);
 
             var rt = eventData.pointerDrag.transform.GetComponent<RectTransform>();
             rt.anchoredPosition = Vector2.zero;

@@ -36,13 +36,12 @@ public class InventoryUI : MonoBehaviour
                 slot.transform.SetParent(transform, false);
             }
         }
+        SetSlotNames();
     }
     void DestroySlots(int n)
     {
         var slotObjects = transform.GetComponentsInChildren<SlotUI>();
         n = Mathf.Min(slotObjects.Length, n);
-
-        Debug.LogFormat("destroy {0} slots of {1}", n, slotObjects.Length);
         while (n-- > 0)
         {
 #if UNITY_EDITOR
@@ -50,6 +49,16 @@ public class InventoryUI : MonoBehaviour
 #else
             Destroy(slots[n].gameObject);
 #endif
+        }
+        SetSlotNames();
+    }
+    void SetSlotNames()
+    {
+        var slotObjects = transform.GetComponentsInChildren<SlotUI>();
+        var n = 0;
+        foreach (var slot in slotObjects)
+        {
+            slot.name = "slot " + n++;
         }
     }
 }
