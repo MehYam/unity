@@ -2,6 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DischargerComponentUI : MonoBehaviour
+public class ChargerComponentUI : MonoBehaviour
 {
 }
