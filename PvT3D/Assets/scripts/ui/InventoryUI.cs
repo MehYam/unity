@@ -26,6 +26,20 @@ public class InventoryUI : MonoBehaviour
             }
         }
     }
+    public void AddItem(GameObject go)
+    {
+        var slotObjects = transform.GetComponentsInChildren<SlotUI>();
+
+        // find the next empty slot
+        foreach (var slot in slotObjects)
+        {
+            var item = slot.transform.GetComponentInChildren<InventoryItemUI>();
+            if (item == null)
+            {
+                go.transform.SetParent(slot.transform, false);
+            }
+        }
+    }
     void CreateSlots(int n)
     {
         if (slotPrefab != null)
