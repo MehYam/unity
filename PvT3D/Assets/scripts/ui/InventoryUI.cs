@@ -1,8 +1,11 @@
 using UnityEngine;
+using System;
 using kaiGameUtil;
 
 public class InventoryUI : MonoBehaviour
 {
+    public Action<InventoryItemUI, Point<int>> ItemDropped = delegate { };
+
     [SerializeField]
     GameObject slotPrefab;
     public int slots
@@ -25,20 +28,64 @@ public class InventoryUI : MonoBehaviour
             }
         }
     }
-    public void AddItem(InventoryItemUI go)
+    public Point<int> size
+    {
+        get
+        {
+            var retval = Util.zero;
+            var slotObjects = transform.GetComponentsInChildren<InventorySlotUI>();
+            if (slotObjects.Length > 0)
+            {
+                var parentSize = GetComponent<RectTransform>().rect;
+                var cellSize = slotObjects[0].GetComponent<RectTransform>().rect;
+
+                int columnWidth = (int)(parentSize.x / cellSize.x);
+                int columns = slotObjects.Length < columnWidth ? (slotObjects.Length % columnWidth) : columnWidth;
+                int rows = slotObjects.Length / columnWidth;
+
+                retval.x = columns;
+                retval.y = rows;
+            }
+            return retval;
+        }
+    }
+    public void AddItem(InventoryItemUI item)
     {
         var slotObjects = transform.GetComponentsInChildren<InventorySlotUI>();
 
         // find the next empty slot
         foreach (var slot in slotObjects)
         {
-            var item = slot.transform.GetComponentInChildren<InventoryItemUI>();
-            if (item == null)
+            var existing = slot.transform.GetComponentInChildren<InventoryItemUI>();
+            if (existing == null)
             {
-                go.transform.SetParent(slot.transform, false);
+                item.transform.SetParent(slot.transform, false);
                 break;
             }
         }
+    }
+    public void AddItem(InventoryItemUI item, Point<int> pos)
+    {
+        var existingItem = GetItemAt(pos);
+        if (existingItem == null)
+        {
+            var slot = GetSlotAt(pos);
+            if (slot != null)
+            {
+                item.transform.SetParent(slot.transform, false);
+            }
+        }
+    }
+    public InventoryItemUI GetItemAt(Point<int> pos)
+    {
+        var slot = GetSlotAt(pos);
+        return slot ? slot.transform.GetComponentInChildren<InventoryItemUI>() : null;
+    }
+    InventorySlotUI GetSlotAt(Point<int> pos)
+    {
+        var slotObjects = transform.GetComponentsInChildren<InventorySlotUI>();
+        var index = PointToSlotIndex(pos);
+        return (index < slotObjects.Length) ? slotObjects[index] : null;
     }
     void CreateSlots(int n)
     {
@@ -85,22 +132,23 @@ public class InventoryUI : MonoBehaviour
     /// </summary>
     Point<int> SlotIndexToPoint(int slotIndex)
     {
-        var slotObjects = transform.GetComponentsInChildren<InventorySlotUI>();
-        if (slotObjects.Length > 0)
+        var s = size;
+        if (s != Util.zero)
         {
-            var parentSize = GetComponent<RectTransform>().rect;
-            var cellSize = slotObjects[0].GetComponent<RectTransform>().rect;
-
-            int columnWidth = (int)(parentSize.x / cellSize.x);
-            int columns = slotObjects.Length < columnWidth ? (slotObjects.Length % columnWidth) : columnWidth;
-            int rows = slotObjects.Length / columnWidth;
-
+            int columnWidth = s.x;
             return new Point<int>(slotIndex % columnWidth, slotIndex / columnWidth);
         }
         return new Point<int>(-1, -1);
     }
-    public void OnItemDropped(InventorySlotUI slot, InventoryItemUI item)
+    int PointToSlotIndex(Point<int> point)
     {
-        Debug.LogFormat("{0} dropped on {1}, position {2}", item.name, slot.index, SlotIndexToPoint(slot.index));
+        var s = size;
+        return point.y * s.x + point.x;
+    }
+    public void OnItemDropped(InventorySlotUI slot, InventoryItemUI item)  //KAI: wish there were a way to hide this 
+    {
+        var point = SlotIndexToPoint(slot.index);
+        ItemDropped(item, point);
+        //Debug.LogFormat("{0} dropped on {1}, position {2}", item.name, slot.index, point);
     }
 }

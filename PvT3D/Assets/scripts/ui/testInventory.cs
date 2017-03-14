@@ -1,6 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+
+using kaiGameUtil;
 
 public class testInventory : MonoBehaviour
 {
@@ -18,13 +18,23 @@ public class testInventory : MonoBehaviour
     [SerializeField]
     GameObject emitterPrefab;
 
-	// Use this for initialization
+    Components.Schematic inventory = new Components.Schematic();
 	void Start()
     {
         AddInventoryItem(powerModulePrefab);
         AddInventoryItem(autofirePrefab);
         AddInventoryItem(chargerPrefab);
         AddInventoryItem(emitterPrefab);
+
+        schematicUI.ItemDropped += OnItemDropped;
+    }
+    void OnDestroy()
+    {
+        schematicUI.ItemDropped -= OnItemDropped;
+    }
+    void OnItemDropped(InventoryItemUI inventory, Point<int> pos)
+    {
+        Debug.LogFormat("Dropped {0} to {1}", inventory.name, pos);
     }
     void AddInventoryItem(GameObject prefab)
     {
