@@ -5,9 +5,9 @@ using UnityEngine;
 public class testInventory : MonoBehaviour
 {
     [SerializeField]
-    InventoryUI inventory;
+    InventoryUI inventoryUI;
     [SerializeField]
-    InventoryUI schematic;
+    InventoryUI schematicUI;
 
     [SerializeField]
     GameObject powerModulePrefab;
@@ -21,12 +21,16 @@ public class testInventory : MonoBehaviour
 	// Use this for initialization
 	void Start()
     {
-        GlobalEvent.Instance.InventoryItemMoved += OnItemMoved;
-
-        inventory.AddItem(GameObject.Instantiate(powerModulePrefab));
-	}
-    void OnItemMoved(InventoryUI inventory, SlotUI slot)
+        AddInventoryItem(powerModulePrefab);
+        AddInventoryItem(autofirePrefab);
+        AddInventoryItem(chargerPrefab);
+        AddInventoryItem(emitterPrefab);
+    }
+    void AddInventoryItem(GameObject prefab)
     {
-        //Debug.LogFormat("OnItemMoved {0}, {1}", inventory.name, slot.name);
+        var go = GameObject.Instantiate(prefab);
+        var item = go.GetComponent<InventoryItemUI>();
+
+        inventoryUI.AddItem(item);
     }
 }

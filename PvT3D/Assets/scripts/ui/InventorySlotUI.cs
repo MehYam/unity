@@ -1,11 +1,10 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public sealed class DropHandler : MonoBehaviour, IDropHandler
+public class InventorySlotUI : MonoBehaviour, IDropHandler
 {
+    public int index = -1;
+
     public void OnDrop(PointerEventData eventData)
     {
         //KAI: this should instead reflect an OnDrop call or event down to the draggee
@@ -19,12 +18,10 @@ public sealed class DropHandler : MonoBehaviour, IDropHandler
             rt.offsetMax = Vector2.one;
         }
 
-        //KAI: hard time putting into words how bad this is, but we're in "it works for now" mode
         var inventoryParent = transform.parent.GetComponent<InventoryUI>();
-        var slot = transform.GetComponent<SlotUI>();
-        if (inventoryParent != null && slot != null)
+        if (inventoryParent != null)
         {
-            GlobalEvent.Instance.FireInventoryItemMoved(inventoryParent, slot);
+            inventoryParent.OnItemDropped(this, eventData.pointerDrag.GetComponent<InventoryItemUI>());
         }
     }
 }

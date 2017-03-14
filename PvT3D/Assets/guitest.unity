@@ -320,8 +320,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8515a5a0cb2691d419ff0f188cf8c4ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventory: {fileID: 1333221751}
-  schematic: {fileID: 358865151}
+  inventoryUI: {fileID: 1333221751}
+  schematicUI: {fileID: 358865151}
   powerModulePrefab: {fileID: 1718325711350302, guid: 7f06c95fb0893c145adcff375f27e4e9,
     type: 2}
   autofirePrefab: {fileID: 1892229635537678, guid: e013f70fd7a78ab4286abba7a7a59ce1,

@@ -1,5 +1,5 @@
 using UnityEngine;
-using System;
+using kaiGameUtil;
 
 public class InventoryUI : MonoBehaviour
 {
@@ -9,7 +9,7 @@ public class InventoryUI : MonoBehaviour
     {
         get
         {
-            var slotObjects = transform.GetComponentsInChildren<SlotUI>();
+            var slotObjects = transform.GetComponentsInChildren<InventorySlotUI>();
             return slotObjects.Length;
         }
         set
@@ -21,14 +21,13 @@ public class InventoryUI : MonoBehaviour
             }
             else if (delta < 0)
             {
-
                 DestroySlots(-delta);
             }
         }
     }
-    public void AddItem(GameObject go)
+    public void AddItem(InventoryItemUI go)
     {
-        var slotObjects = transform.GetComponentsInChildren<SlotUI>();
+        var slotObjects = transform.GetComponentsInChildren<InventorySlotUI>();
 
         // find the next empty slot
         foreach (var slot in slotObjects)
@@ -50,11 +49,11 @@ public class InventoryUI : MonoBehaviour
                 slot.transform.SetParent(transform, false);
             }
         }
-        SetSlotNames();
+        FixUpSlots();
     }
     void DestroySlots(int n)
     {
-        var slotObjects = transform.GetComponentsInChildren<SlotUI>();
+        var slotObjects = transform.GetComponentsInChildren<InventorySlotUI>();
         n = Mathf.Min(slotObjects.Length, n);
         while (n-- > 0)
         {
@@ -64,15 +63,44 @@ public class InventoryUI : MonoBehaviour
             Destroy(slots[n].gameObject);
 #endif
         }
-        SetSlotNames();
+        FixUpSlots();
     }
-    void SetSlotNames()
+    void FixUpSlots()
     {
-        var slotObjects = transform.GetComponentsInChildren<SlotUI>();
+        var slotObjects = transform.GetComponentsInChildren<InventorySlotUI>();
         var n = 0;
         foreach (var slot in slotObjects)
         {
+            slot.index = n;
             slot.name = "slot " + n++;
         }
+    }
+    /// <summary>
+    /// MIND BLOWING.  GridLayoutGroup gives you no facility to know the row/col of an element.  So we'll figure it
+    /// out ourselves, and cache the values in the SlotUI for convenience.
+    /// 
+    /// You can iterate the cell x,y coordinates to divine the row,col position, but only if you wait a frame for the
+    /// grid to do layout.
+    /// </summary>
+    Point<int> SlotIndexToPoint(int slotIndex)
+    {
+        var slotObjects = transform.GetComponentsInChildren<InventorySlotUI>();
+        if (slotObjects.Length > 0)
+        {
+            var parentSize = GetComponent<RectTransform>().rect;
+            var cellSize = slotObjects[0].GetComponent<RectTransform>().rect;
+
+            int columnWidth = (int)(parentSize.x / cellSize.x);
+            int columns = slotObjects.Length < columnWidth ? (slotObjects.Length % columnWidth) : columnWidth;
+            int rows = slotObjects.Length / columnWidth;
+
+            Debug.LogFormat("columnWidth {0}, columns {1}, rows {2}", columnWidth, columns, rows);
+            return new Point<int>(slotIndex % columnWidth, slotIndex / columnWidth);
+        }
+        return new Point<int>(-1, -1);
+    }
+    public void OnItemDropped(InventorySlotUI slot, InventoryItemUI item)
+    {
+        Debug.LogFormat("{0} dropped on {1}, position {2}", item.name, slot.index, SlotIndexToPoint(slot.index));
     }
 }

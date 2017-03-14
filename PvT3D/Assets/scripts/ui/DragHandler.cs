@@ -29,7 +29,7 @@ public sealed class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler
     }
     public void OnEndDrag(PointerEventData eventData)
     {
-        if (transform.parent.GetComponent<DropHandler>() == null)
+        if (transform.parent.GetComponent<InventorySlotUI>() == null)
         {
             // DropHandler.OnDrop() has not parented this item when it was dropped, snatch it back
             transform.SetParent(start.parent);

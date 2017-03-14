@@ -41,8 +41,4 @@ class GlobalEvent
 
     public event Action<string> DebugString = delegate { };
     public void FireDebugString(string text) { DebugString(text); }
-
-    /// UI events
-    public event Action<InventoryUI, SlotUI> InventoryItemMoved = delegate { };
-    public void FireInventoryItemMoved(InventoryUI inventory, SlotUI slot) { InventoryItemMoved(inventory, slot);  }
 }
