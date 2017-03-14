@@ -36,6 +36,7 @@ public class InventoryUI : MonoBehaviour
             if (item == null)
             {
                 go.transform.SetParent(slot.transform, false);
+                break;
             }
         }
     }
@@ -94,7 +95,6 @@ public class InventoryUI : MonoBehaviour
             int columns = slotObjects.Length < columnWidth ? (slotObjects.Length % columnWidth) : columnWidth;
             int rows = slotObjects.Length / columnWidth;
 
-            Debug.LogFormat("columnWidth {0}, columns {1}, rows {2}", columnWidth, columns, rows);
             return new Point<int>(slotIndex % columnWidth, slotIndex / columnWidth);
         }
         return new Point<int>(-1, -1);
