@@ -39,7 +39,7 @@ public class InventoryUI : MonoBehaviour
                 var parentSize = GetComponent<RectTransform>().rect;
                 var cellSize = slotObjects[0].GetComponent<RectTransform>().rect;
 
-                int columnWidth = (int)(parentSize.x / cellSize.x);
+                int columnWidth = (int)(parentSize.width / cellSize.width);
                 int columns = slotObjects.Length < columnWidth ? (slotObjects.Length % columnWidth) : columnWidth;
                 int rows = slotObjects.Length / columnWidth;
 

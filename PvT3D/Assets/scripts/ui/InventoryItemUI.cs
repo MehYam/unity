@@ -32,7 +32,7 @@ public class InventoryItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     {
         if (transform.parent.GetComponent<InventorySlotUI>() == null)
         {
-            // DropHandler.OnDrop() has not parented this item when it was dropped, snatch it back
+            // InventorySlotUI.OnDrop() has not parented this item when it was dropped, snatch it back
             transform.SetParent(start.parent);
             transform.position = start.pos;
         }

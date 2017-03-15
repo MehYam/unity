@@ -83,8 +83,11 @@ namespace Components
     }
     class Schematic
     {
-        public readonly Layer<Component> grid = new Layer<Component>(3, 3);
-
+        public readonly Layer<Component> grid;
+        public Schematic(int width, int height)
+        {
+            grid = new Layer<Component>(width, height);
+        }
         public override string ToString()
         {
             return grid.ToString();
