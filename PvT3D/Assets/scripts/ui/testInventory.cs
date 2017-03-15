@@ -27,10 +27,12 @@ public class testInventory : MonoBehaviour
         AddInventoryItem(emitterPrefab);
 
         schematicUI.ItemDropped += OnItemDropped;
+        inventoryUI.ItemDropped += OnItemDropped;
     }
     void OnDestroy()
     {
         schematicUI.ItemDropped -= OnItemDropped;
+        inventoryUI.ItemDropped -= OnItemDropped;
     }
     void OnItemDropped(InventoryItemUI inventory, Point<int> pos)
     {

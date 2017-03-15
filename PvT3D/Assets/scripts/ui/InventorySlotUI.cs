@@ -8,7 +8,7 @@ public class InventorySlotUI : MonoBehaviour, IDropHandler
     public void OnDrop(PointerEventData eventData)
     {
         //KAI: this should instead reflect an OnDrop call or event down to the draggee
-        if (GetComponentInChildren<DragHandler>() == null)
+        if (GetComponentInChildren<InventoryItemUI>() == null)
         {
             eventData.pointerDrag.transform.SetParent(transform, false);
 

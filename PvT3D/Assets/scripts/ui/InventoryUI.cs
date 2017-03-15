@@ -145,6 +145,11 @@ public class InventoryUI : MonoBehaviour
         var s = size;
         return point.y * s.x + point.x;
     }
+
+    public void OnItemBeginDrag(InventorySlotUI slot, InventoryItemUI item) //KAI: wish there was a way to hide this
+    {
+
+    }
     public void OnItemDropped(InventorySlotUI slot, InventoryItemUI item)  //KAI: wish there were a way to hide this 
     {
         var point = SlotIndexToPoint(slot.index);
