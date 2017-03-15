@@ -28,43 +28,47 @@ public class testInventory : MonoBehaviour
     }
     IEnumerator DelayedStart()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForEndOfFrame();
 
         LoadInventory();
         PopulateInventoryUI();
 
+        schematicUI.ItemBeginDrag += OnItemDraggingFromSchematic;
+        inventoryUI.ItemBeginDrag += OnItemDraggingFromInventory;
         schematicUI.ItemDropped += OnItemPlacedInSchematic;
         inventoryUI.ItemDropped += OnItemPlacedInInventory;
-
-        yield return 0;
     }
     void OnDestroy()
     {
+        schematicUI.ItemBeginDrag -= OnItemDraggingFromSchematic;
+        inventoryUI.ItemBeginDrag -= OnItemDraggingFromInventory;
         schematicUI.ItemDropped -= OnItemPlacedInSchematic;
         inventoryUI.ItemDropped -= OnItemPlacedInInventory;
     }
     void LoadInventory()
     {
-        inventory.grid.Set(0, 0, new Components.PowerModule("power", 1));
-        inventory.grid.Set(1, 0, new Components.ChargerAutofire("autofire", 10));
-        inventory.grid.Set(2, 0, new Components.Charger("charger", 10));
-        inventory.grid.Set(0, 1, new Components.Emitter("emitter"));
+        inventory.grid.Set(0, 0, new Components.PowerModule("P", 1));
+        inventory.grid.Set(1, 0, new Components.ChargerAutofire("A", 10));
+        inventory.grid.Set(2, 0, new Components.Charger("C", 10));
+        inventory.grid.Set(0, 1, new Components.Emitter("E"));
     }
     void PopulateInventoryUI()
     {
         // set up the map of model objects to UI objects
-        var mapComponentToPrefab = new Dictionary<System.Type, GameObject>();
-        mapComponentToPrefab[typeof(Components.PowerModule)] = powerModulePrefab;
-        mapComponentToPrefab[typeof(Components.ChargerAutofire)] = autofirePrefab;
-        mapComponentToPrefab[typeof(Components.Charger)] = chargerPrefab;
-        mapComponentToPrefab[typeof(Components.Emitter)] = emitterPrefab;
+        var mapComponentToPrefab = new Dictionary<System.Type, GameObject>()
+        {
+            { typeof(Components.PowerModule), powerModulePrefab },
+            { typeof(Components.ChargerAutofire), autofirePrefab },
+            { typeof(Components.Charger), chargerPrefab },
+            { typeof(Components.Emitter), emitterPrefab }
+        };
 
         // walk the inventory object, populating the UI as necessary
         inventory.grid.ForEach((x, y, component) =>
         {
             if (component != null)
             {
-                Debug.LogFormat("adding component {0} at {1},{2}", component, x, y);
+                //Debug.LogFormat("adding component {0} at {1},{2}", component, x, y);
                 var prefab = mapComponentToPrefab[component.GetType()];
                 AddInventoryItem(prefab, new Point<int>(x, y));
             }
@@ -77,12 +81,35 @@ public class testInventory : MonoBehaviour
 
         inventoryUI.AddItem(item, at);
     }
+    class DragState
+    {
+        public readonly Components.Schematic from;
+        public readonly Point<int> pos;
+
+        public DragState(Components.Schematic from, Point<int> pos) { this.from = from; this.pos = pos; }
+    }
+    DragState dragState;
+    void OnItemDraggingFromSchematic(InventoryItemUI item, Point<int> pos)
+    {
+        dragState = new DragState(schematic, pos);
+    }
+    void OnItemDraggingFromInventory(InventoryItemUI item, Point<int> pos)
+    {
+        dragState = new DragState(inventory, pos);
+    }
     void OnItemPlacedInSchematic(InventoryItemUI item, Point<int> pos)
     {
-        Debug.LogFormat("Dropped {0} to {1} in schematic", item.name, pos);
+        var component = dragState.from.grid.Get(dragState.pos);
+        dragState.from.grid.Set(dragState.pos, null);
+        schematic.grid.Set(pos, component);
+        dragState = null;
     }
     void OnItemPlacedInInventory(InventoryItemUI item, Point<int> pos)
     {
-        Debug.LogFormat("Dropped {0} to {1} in inventory", item.name, pos);
+        var component = dragState.from.grid.Get(dragState.pos);
+
+        dragState.from.grid.Set(dragState.pos, null);
+        inventory.grid.Set(pos, component);
+        dragState = null;
     }
 }

@@ -18,6 +18,8 @@ public class InventoryItemUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     StartOfDrag start = null;
     public void OnBeginDrag(PointerEventData eventData)
     {
+        transform.parent.SendMessage("OnItemBeginDrag", this);
+
         start = new StartOfDrag(transform.position, transform.parent, GetComponent<CanvasGroup>().blocksRaycasts);
 
         GetComponent<CanvasGroup>().blocksRaycasts = false;

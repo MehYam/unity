@@ -18,10 +18,17 @@ public class InventorySlotUI : MonoBehaviour, IDropHandler
             rt.offsetMax = Vector2.one;
         }
 
-        var inventoryParent = transform.parent.GetComponent<InventoryUI>();
-        if (inventoryParent != null)
+        transform.parent.gameObject.SendMessage("OnItemDropped", this);
+    }
+    void OnItemBeginDrag(InventoryItemUI item)
+    {
+        transform.parent.SendMessage("OnItemBeginDrag", this);
+    }
+    public InventoryItemUI item
+    {
+        get
         {
-            inventoryParent.OnItemDropped(this, eventData.pointerDrag.GetComponent<InventoryItemUI>());
+            return transform.GetComponentInChildren<InventoryItemUI>();
         }
     }
 }

@@ -4,6 +4,7 @@ using kaiGameUtil;
 
 public class InventoryUI : MonoBehaviour
 {
+    public Action<InventoryItemUI, Point<int>> ItemBeginDrag = delegate { };
     public Action<InventoryItemUI, Point<int>> ItemDropped = delegate { };
 
     [SerializeField]
@@ -129,6 +130,12 @@ public class InventoryUI : MonoBehaviour
     /// 
     /// You can iterate the cell x,y coordinates to divine the row,col position, but only if you wait a frame for the
     /// grid to do layout.
+    /// 
+    /// 
+    /// NOTE:  we could simplify the interface of this to do everything with one-dimensional arrays, and just let
+    /// the UI do the job of "wrapping" the content to multiple rows.  You still need two dimensions when using the
+    /// grid for layout purposes, but just exposing SlotIndexToPoint/PointToSlotIndex should give the callers everything
+    /// they need.
     /// </summary>
     Point<int> SlotIndexToPoint(int slotIndex)
     {
@@ -145,15 +152,16 @@ public class InventoryUI : MonoBehaviour
         var s = size;
         return point.y * s.x + point.x;
     }
-
-    public void OnItemBeginDrag(InventorySlotUI slot, InventoryItemUI item) //KAI: wish there was a way to hide this
-    {
-
-    }
-    public void OnItemDropped(InventorySlotUI slot, InventoryItemUI item)  //KAI: wish there were a way to hide this 
+    void OnItemBeginDrag(InventorySlotUI slot)
     {
         var point = SlotIndexToPoint(slot.index);
-        ItemDropped(item, point);
-        //Debug.LogFormat("{0} dropped on {1}, position {2}", item.name, slot.index, point);
+        ItemBeginDrag(slot.item, point);
+    }
+    void OnItemDropped(InventorySlotUI slot)
+    {
+        var point = SlotIndexToPoint(slot.index);
+        ItemDropped(slot.item, point);
+
+        //Debug.LogFormat("{0} dropped on {1}, position {2}", slot.item.name, slot.index, point);
     }
 }
