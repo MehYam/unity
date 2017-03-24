@@ -24,10 +24,11 @@ public class testInventory : MonoBehaviour
     readonly Components.Schematic schematic = new Components.Schematic(5, 3);
 	void Start()
     {
-        StartCoroutine(DelayedStart());  // because the grids are never ready on the first frame...
+        StartCoroutine(DelayedStart());  
     }
     IEnumerator DelayedStart()
     {
+        // because the grids are never ready to render on the first frame.
         yield return new WaitForEndOfFrame();
 
         LoadInventory();
