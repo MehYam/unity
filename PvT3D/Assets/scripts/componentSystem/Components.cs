@@ -7,86 +7,139 @@ using System;
 
 namespace Components
 {
-    abstract class Component
+    interface IFrameHandler
+    {
+        void OnFixedUpdate(float time, float fixedDeltaTime);
+    }
+    interface IPowerable
+    {
+        void PowerOn(float time);
+        void PowerOff(float time);
+    }
+    abstract class Component_fancyTypeHierarchyWeMaybeWant : IFrameHandler, IPowerable
     {
         public readonly string name;
+        public Component_fancyTypeHierarchyWeMaybeWant(string name) { this.name = name; }
 
-        public readonly List<Component> inputs = new List<Component>();
-        public readonly List<Component> outputs = new List<Component>();
-
-        public void ReceivePower(Component from, float power) { ReceivePower_Impl(from, power); }
-        public Component(string name) { this.name = name; }
-
-        abstract protected void ReceivePower_Impl(Component from, float power);
-
+        public Component_fancyTypeHierarchyWeMaybeWant Output
+        {
+            set; protected get;
+        }
         public override string ToString()
         {
             return name;
         }
+
+        bool powered = false;
+        public void PowerOn(float time)
+        {
+            if (Output != null)
+            {
+                powered = true;
+                Output.PowerOn(time);
+            }
+        }
+        public void PowerOff(float time)
+        {
+            if (Output != null)
+            {
+                Output.PowerOff(time);
+                powered = false;
+            }
+        }
+        public void OnFixedUpdate(float time, float fixedDeltaTime)
+        {
+            if (powered && Output != null)
+            {
+                Output.OnFixedUpdate(time, fixedDeltaTime);
+            }
+        }
+
+        protected abstract void OnPowerOn();
+        protected abstract void OnPowerOff();
+        protected abstract void OnFixedFrame();
     }
-    class PowerModule : Component
+
+    abstract class SimpleComponent
+    {
+        public readonly string name;
+        public SimpleComponent(string name) { this.name = name; }
+    }
+    class PowerModule : SimpleComponent
     {
         readonly float power;
         public PowerModule(string name, float power) : base(name) { this.power = power; }
-         
-        protected override void ReceivePower_Impl(Component from, float p)
+
+        public Charger output { set; private get; }
+        public float powerOnTime = 0;
+        public void PowerOn(float time)
         {
-            // any power activates this power module
-            var powerToSend = p > 0 ? this.power : 0;
-            foreach (var component in outputs)
+            if (output != null)
             {
-                component.ReceivePower(this, powerToSend);
+                powerOnTime = time;
+                output.StartCharging();
+            }
+        }
+        public void PowerOff(float time)
+        {
+            if (output != null)
+            {
+                float elapsed = time - powerOnTime;
+                output.ConsumePower(elapsed * power);
+                output.Discharge();
+
+                powerOnTime = 0;
             }
         }
     }
-    interface ICharger
-    {
-        void Charge();
-        void Discharge();
-    }
-    class Charger : Component, ICharger
+    class Charger : SimpleComponent
     {
         readonly public float capacity;
         public Charger(string name, float capacity) : base(name)
         {
             this.capacity = capacity;
         }
-        public void Charge() { }
-        public void Discharge() { }
+        public Emitter output { set; private get; }
 
-        protected override void ReceivePower_Impl(Component from, float power)
+        float storedPower = 0;
+        public void StartCharging()
         {
+        }
+        public float ConsumePower(float power)
+        {
+            float remainingCapacity = capacity - storedPower;
+            float toConsume = Mathf.Min(power, remainingCapacity);
+
+            storedPower += toConsume;
+            return power - toConsume;
+        }
+        public void Discharge()
+        {
+            if (output != null)
+            {
+                output.ConsumePower(storedPower);
+                storedPower = 0;
+            }
         }
     }
-    class ChargerAutofire : Component, ICharger
+    class Emitter : SimpleComponent
     {
-        readonly public float capacity;
-        public ChargerAutofire(string name, float capacity) : base(name)
-        {
-            this.capacity = capacity;
-        }
-        public void Charge() { }
-        public void Discharge() { }
+        public Action<float> PowerEmitted = delegate { };
 
-        protected override void ReceivePower_Impl(Component from, float power)
-        {
-        }
-    }
-    class Emitter : Component
-    {
         public Emitter(string name) : base(name) { }
 
-        protected override void ReceivePower_Impl(Component from, float power)
+        public void ConsumePower(float power)
         {
-            // raise an event that indicates it's time to fire
+            // Fire an event here if the power is sufficient
+            PowerEmitted(power);
         }
     }
     class Schematic
     {
-        public readonly Layer<Component> grid;
+        public readonly Layer<SimpleComponent> grid;
         public Schematic(int width, int height)
         {
-            grid = new Layer<Component>(width, height);
+            grid = new Layer<SimpleComponent>(width, height);
         }
         public override string ToString()
         {

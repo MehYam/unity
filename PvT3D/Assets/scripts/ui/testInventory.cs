@@ -49,7 +49,7 @@ public class testInventory : MonoBehaviour
     void LoadInventory()
     {
         inventory.grid.Set(0, 0, new Components.PowerModule("P", 1));
-        inventory.grid.Set(1, 0, new Components.ChargerAutofire("A", 10));
+        inventory.grid.Set(1, 0, new Components.Charger("A", 10));
         inventory.grid.Set(2, 0, new Components.Charger("C", 10));
         inventory.grid.Set(0, 1, new Components.Emitter("E"));
     }
@@ -59,7 +59,6 @@ public class testInventory : MonoBehaviour
         var mapComponentToPrefab = new Dictionary<System.Type, GameObject>()
         {
             { typeof(Components.PowerModule), powerModulePrefab },
-            { typeof(Components.ChargerAutofire), autofirePrefab },
             { typeof(Components.Charger), chargerPrefab },
             { typeof(Components.Emitter), emitterPrefab }
         };
