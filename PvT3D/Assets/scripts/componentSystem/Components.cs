@@ -9,90 +9,54 @@ namespace Components
 {
     interface IFrameHandler
     {
-        void OnFixedUpdate(float time, float fixedDeltaTime);
+        void OnFixedUpdate();
     }
     interface IPowerable
     {
-        void PowerOn(float time);
-        void PowerOff(float time);
+        void PowerOn();
+        void PowerOff();
     }
-    abstract class Component_fancyTypeHierarchyWeMaybeWant : IFrameHandler, IPowerable
+    interface ICharger : IFrameHandler
     {
-        public readonly string name;
-        public Component_fancyTypeHierarchyWeMaybeWant(string name) { this.name = name; }
+        void StartCharging(float power);
+        void Discharge();
 
-        public Component_fancyTypeHierarchyWeMaybeWant Output
-        {
-            set; protected get;
-        }
-        public override string ToString()
-        {
-            return name;
-        }
-
-        bool powered = false;
-        public void PowerOn(float time)
-        {
-            if (Output != null)
-            {
-                powered = true;
-                Output.PowerOn(time);
-            }
-        }
-        public void PowerOff(float time)
-        {
-            if (Output != null)
-            {
-                Output.PowerOff(time);
-                powered = false;
-            }
-        }
-        public void OnFixedUpdate(float time, float fixedDeltaTime)
-        {
-            if (powered && Output != null)
-            {
-                Output.OnFixedUpdate(time, fixedDeltaTime);
-            }
-        }
-
-        protected abstract void OnPowerOn();
-        protected abstract void OnPowerOff();
-        protected abstract void OnFixedFrame();
+        Emitter output { set; }
     }
-
     abstract class SimpleComponent
     {
         public readonly string name;
         public SimpleComponent(string name) { this.name = name; }
     }
-    class PowerModule : SimpleComponent
+    class PowerModule : SimpleComponent, IFrameHandler
     {
         readonly float power;
         public PowerModule(string name, float power) : base(name) { this.power = power; }
 
-        public Charger output { set; private get; }
-        public float powerOnTime = 0;
-        public void PowerOn(float time)
+        public ICharger output { set; private get; }
+        public void PowerOn()
         {
             if (output != null)
             {
-                powerOnTime = time;
-                output.StartCharging();
+                output.StartCharging(power);
             }
         }
-        public void PowerOff(float time)
+        public void PowerOff()
         {
             if (output != null)
             {
-                float elapsed = time - powerOnTime;
-                output.ConsumePower(elapsed * power);
                 output.Discharge();
-
-                powerOnTime = 0;
+            }
+        }
+        public void OnFixedUpdate()
+        {
+            if (output != null)
+            {
+                output.OnFixedUpdate();
             }
         }
     }
-    class Charger : SimpleComponent
+    class Charger : SimpleComponent, ICharger
     {
         readonly public float capacity;
         public Charger(string name, float capacity) : base(name)
@@ -101,36 +65,76 @@ namespace Components
         }
         public Emitter output { set; private get; }
 
-        float storedPower = 0;
-        public void StartCharging()
+        class PowerState
         {
-        }
-        public float ConsumePower(float power)
-        {
-            float remainingCapacity = capacity - storedPower;
-            float toConsume = Mathf.Min(power, remainingCapacity);
+            public readonly float power;
+            public readonly float startTime;
 
-            storedPower += toConsume;
-            return power - toConsume;
+            public PowerState(float power, float startTime) { this.power = power;  this.startTime = startTime; }
+        }
+        PowerState _state;
+        public void StartCharging(float power)
+        {
+            _state = new PowerState(power, Time.fixedTime);
         }
         public void Discharge()
         {
-            if (output != null)
+            if (output != null && _state != null)
             {
-                output.ConsumePower(storedPower);
-                storedPower = 0;
+                var charge = Mathf.Min((Time.fixedTime - _state.startTime) * _state.power, capacity);
+
+                output.EmitPower(charge);
+            }
+            _state = null;
+        }
+        public void OnFixedUpdate()
+        {
+        }
+    }
+    class AutofireCharger : SimpleComponent, ICharger
+    {
+        readonly public float capacity;
+        readonly public float dischargeDelay;
+        public AutofireCharger(string name, float capacity, float rate) : base(name)
+        {
+            this.capacity = capacity;
+            this.dischargeDelay = 1 / Mathf.Max(rate, float.MinValue);
+        }
+        public Emitter output { set; private get; }
+
+        class PowerState
+        {
+            public readonly float power;
+            public readonly float startTime;
+
+            public PowerState(float power, float startTime) { this.power = power; this.startTime = startTime; }
+        }
+        PowerState _state;
+        public void StartCharging(float power)
+        {
+            _state = new PowerState(power, Time.fixedTime);
+        }
+        public void Discharge()
+        {
+            _state = null;
+        }
+        public void OnFixedUpdate()
+        {
+            if (output != null && _state != null && (Time.fixedTime - _state.startTime) >= dischargeDelay)
+            {
+                var charge = Mathf.Min((Time.fixedTime - _state.startTime) * _state.power, capacity);
+                output.EmitPower(charge);
+
+                _state = new PowerState(_state.power, _state.startTime + dischargeDelay);
             }
         }
     }
     class Emitter : SimpleComponent
     {
         public Action<float> PowerEmitted = delegate { };
-
         public Emitter(string name) : base(name) { }
-
-        public void ConsumePower(float power)
+        public void EmitPower(float power)
         {
-            // Fire an event here if the power is sufficient
             PowerEmitted(power);
         }
     }

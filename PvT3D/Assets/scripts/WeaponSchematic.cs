@@ -16,7 +16,8 @@ public class WeaponSchematic : MonoBehaviour
 
         var schem = new Components.Schematic(5, 3);
         schem.grid.Set(0, 0, new Components.PowerModule("P", 1));
-        schem.grid.Set(1, 0, new Components.Charger("C", 10));
+        //schem.grid.Set(1, 0, new Components.Charger("C", 10));
+        schem.grid.Set(1, 0, new Components.AutofireCharger("A", 10, 1));
 
         var emitter = new Components.Emitter("E");
         schem.grid.Set(2, 0, emitter);
@@ -56,7 +57,7 @@ public class WeaponSchematic : MonoBehaviour
     void ConnectWeaponSchematic(Components.Schematic schem)
     {
         Components.PowerModule powerModule = null;
-        Components.Charger charger = null;
+        Components.ICharger charger = null;
         Components.Emitter emitter = null;
         schem.grid.ForEach((x, y, component) =>
         {
@@ -68,9 +69,9 @@ public class WeaponSchematic : MonoBehaviour
             {
                 emitter = component as Components.Emitter;
             }
-            else if (component is Components.Charger)
+            else if (component is Components.ICharger)
             {
-                charger = component as Components.Charger;
+                charger = component as Components.ICharger;
             }
         });
 
@@ -87,21 +88,21 @@ public class WeaponSchematic : MonoBehaviour
     {
         if (_state != null && _state.powerModule != null)
         {
-            _state.powerModule.PowerOn(Time.fixedTime);
+            _state.powerModule.PowerOn();
         }
     }
     void OnFireEnd()
     {
         if (_state != null && _state.powerModule != null)
         {
-            _state.powerModule.PowerOff(Time.fixedTime);
+            _state.powerModule.PowerOff();
         }
     }
     void OnFireFrame()
     {
         if (_state != null && _state.powerModule != null)
         {
-            // send frames to schematic too - i.e. autofire would need this, and many other things optimally
+            _state.powerModule.OnFixedUpdate();
         }
     }
     void OnPowerEmitted(float power)
@@ -129,7 +130,7 @@ public class WeaponSchematic : MonoBehaviour
             rb.angularVelocity = Vector3.up * 10;
 
             // this is a chargable shot, scale it by the power
-            shot.transform.localScale = new Vector3(power, power, 1);
+            shot.transform.localScale = new Vector3(power, power, power);
 
             // particles
             _ps.Play();
