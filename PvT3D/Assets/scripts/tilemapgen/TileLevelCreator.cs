@@ -82,6 +82,18 @@ public sealed class TileLevelCreator : MonoBehaviour
 
                         wallGO.transform.eulerAngles = new Vector3(0, angle, 0);
                         AddTile(x, y, wallGO);
+
+                        // make this wall a door as necessary
+                        if (tile.type == 'D')
+                        {
+                            wallGO.AddComponent<SimpleDoor>();
+
+                            var collider = wallGO.GetComponent<Collider>();
+                            if (collider != null)
+                            {
+                                collider.isTrigger = true;
+                            }
+                        }
                     }
                 }
             }
