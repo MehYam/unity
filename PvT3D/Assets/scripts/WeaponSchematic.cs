@@ -5,9 +5,9 @@ using kaiGameUtil;
 
 public class WeaponSchematic : MonoBehaviour
 {
-    [SerializeField] GameObject firepoint;
-    [SerializeField] GameObject ammoPrefab;
-    [SerializeField] bool inheritShipVelocity;
+    [SerializeField] GameObject firepoint = null;
+    [SerializeField] GameObject ammoPrefab = null;
+    [SerializeField] bool inheritShipVelocity = false;
 
     ParticleSystem _ps;
     void Start()

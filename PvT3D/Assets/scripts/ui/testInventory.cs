@@ -9,16 +9,16 @@ public class testInventory : MonoBehaviour
     [SerializeField]
     InventoryUI inventoryUI = null;
     [SerializeField]
-    InventoryUI schematicUI;
+    InventoryUI schematicUI = null;
 
     [SerializeField]
-    GameObject powerModulePrefab;
+    GameObject powerModulePrefab = null;
     [SerializeField]
-    GameObject autofirePrefab;
+    GameObject autofirePrefab = null;
     [SerializeField]
-    GameObject chargerPrefab;
+    GameObject chargerPrefab = null;
     [SerializeField]
-    GameObject emitterPrefab;
+    GameObject emitterPrefab = null;
 
     readonly Components.Schematic inventory = new Components.Schematic(3, 6);
     readonly Components.Schematic schematic = new Components.Schematic(5, 3);

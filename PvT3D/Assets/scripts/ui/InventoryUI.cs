@@ -8,7 +8,7 @@ public class InventoryUI : MonoBehaviour
     public Action<InventoryItemUI, Point<int>> ItemDropped = delegate { };
 
     [SerializeField]
-    GameObject slotPrefab;
+    GameObject slotPrefab = null;
     public int slots
     {
         get

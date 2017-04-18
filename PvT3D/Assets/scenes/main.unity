@@ -688,7 +688,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a57afc629507544faf5be63b7982c85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxRPS: 1
+  maxRPS: 1.5
   faceFiringDirection: 1
 --- !u!114 &68873568
 MonoBehaviour:
@@ -5163,7 +5163,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 68873563}
-  distance: 70
+  distance: 55
 --- !u!1 &376005341
 GameObject:
   m_ObjectHideFlags: 0

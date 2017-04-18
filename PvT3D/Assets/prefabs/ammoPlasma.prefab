@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 11440582}
   - component: {fileID: 11475580}
   m_Layer: 11
-  m_Name: ammoRedBall
+  m_Name: ammoPlasma
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
