@@ -8,27 +8,26 @@ using Point = kaiGameUtil.Point<int>;
 
 public struct Tile
 {
-    public static char[] types = { 'X', '_' };
+    public static char EMPTY = (char)0;
+    public static char[] types = { EMPTY, 'X', '_', '-', 'D' };
 
     public readonly char type;
     public Tile(char type)
     {
-        this.type = type;
+        this.type = type == ' ' ? EMPTY : type;  // this is wacky, but 'type' gets set to 0 in the default constructor case for structs;  so instead of ' ' and 0 both meaning empty, we canonicalize ' ' into 0
     }
-    public bool Empty {  get { return type != 'X' && type != '_'; } }
+    public bool Empty {  get { return type == EMPTY; } }
     public override string ToString()
     {
-        return type.ToString();
+        return Empty ? " " : type.ToString();
     }
 }
-
 public sealed class TileLevelCreator : MonoBehaviour
 {
-    public GameObject floor;
-    public GameObject wall;
-    public GameObject cornerWall;
-    public GameObject endWall;
-    public GameObject animated;
+    [SerializeField] GameObject floor = null;
+    [SerializeField] GameObject wall = null;
+    [SerializeField] GameObject cornerWall = null;
+    [SerializeField] GameObject endWall = null;
 
     // These will be drawn by the custom editor
     [HideInInspector] public TextAsset levelFile;
@@ -38,7 +37,7 @@ public sealed class TileLevelCreator : MonoBehaviour
     public void Generate(Vector2 size, float padding)
     {
         var layer = new Layer((int)size.x, (int)size.y);
-        layer.Fill((x, y) => new Tile('_'));
+        layer.Fill((x, y) => new Tile());
         Generate(layer, padding);
     }
     public void Generate(Layer layer, float padding)
@@ -68,7 +67,7 @@ public sealed class TileLevelCreator : MonoBehaviour
 
         layer.ForEach((x, y, tile) =>
         {
-            if (tile.type == '_')
+            if (!tile.Empty)
             {
                 AddTile(x, y, GameObject.Instantiate(floor));
 
@@ -105,7 +104,7 @@ public sealed class TileLevelCreator : MonoBehaviour
             var line = lines[y];
             for (int x = 0; x < width; ++x)
             {
-                var tile = x < line.Length ? new Tile(line[x]) : new Tile(' ');
+                var tile = x < line.Length ? new Tile(line[x]) : new Tile();
                 retval.Set(new Point(x, height-y-1), tile);
             }
         }
