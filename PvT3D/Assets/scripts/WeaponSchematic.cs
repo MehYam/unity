@@ -17,7 +17,7 @@ public class WeaponSchematic : MonoBehaviour
         var schem = new Components.Schematic(5, 3);
         schem.grid.Set(0, 0, new Components.PowerModule("P", 1));
         //schem.grid.Set(1, 0, new Components.Charger("C", 10));
-        schem.grid.Set(1, 0, new Components.AutofireCharger("A", 10, 1));
+        schem.grid.Set(1, 0, new Components.AutofireCharger("A", 1));
 
         var emitter = new Components.Emitter("E");
         schem.grid.Set(2, 0, emitter);
@@ -107,7 +107,6 @@ public class WeaponSchematic : MonoBehaviour
     }
     void OnPowerEmitted(float power)
     {
-        Debug.Log("OnPowerEmitted " + power);
         if (ammoPrefab != null)
         {
             // line the shot up

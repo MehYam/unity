@@ -93,39 +93,30 @@ namespace Components
     }
     class AutofireCharger : SimpleComponent, ICharger
     {
-        readonly public float capacity;
-        readonly public float dischargeDelay;
-        public AutofireCharger(string name, float capacity, float rate) : base(name)
+        readonly public float chargeTime;
+        public AutofireCharger(string name, float rate) : base(name)
         {
-            this.capacity = capacity;
-            this.dischargeDelay = 1 / Mathf.Max(rate, float.MinValue);
+            this.chargeTime = 1 / Mathf.Max(rate, float.MinValue);
         }
         public Emitter output { set; private get; }
 
-        class PowerState
-        {
-            public readonly float power;
-            public readonly float startTime;
-
-            public PowerState(float power, float startTime) { this.power = power; this.startTime = startTime; }
-        }
-        PowerState _state;
+        float _lastFireTime = 0;
+        float _power = 0;
         public void StartCharging(float power)
         {
-            _state = new PowerState(power, Time.fixedTime);
+            _power = power;
         }
         public void Discharge()
         {
-            _state = null;
+            _power = 0;
         }
         public void OnFixedUpdate()
         {
-            if (output != null && _state != null && (Time.fixedTime - _state.startTime) >= dischargeDelay)
+            if (output != null && _power > 0 && (Time.fixedTime - _lastFireTime) >= chargeTime)
             {
-                var charge = Mathf.Min((Time.fixedTime - _state.startTime) * _state.power, capacity);
-                output.EmitPower(charge);
+                output.EmitPower(_power);
 
-                _state = new PowerState(_state.power, _state.startTime + dischargeDelay);
+                _lastFireTime = Time.fixedTime;
             }
         }
     }
