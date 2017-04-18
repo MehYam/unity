@@ -7,7 +7,7 @@ using kaiGameUtil;
 public class testInventory : MonoBehaviour
 {
     [SerializeField]
-    InventoryUI inventoryUI;
+    InventoryUI inventoryUI = null;
     [SerializeField]
     InventoryUI schematicUI;
 

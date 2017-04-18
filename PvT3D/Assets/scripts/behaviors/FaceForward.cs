@@ -5,14 +5,15 @@ using PvT3D.Util;
 
 public sealed class FaceForward : MonoBehaviour
 {
+    [SerializeField]
     [Tooltip("Maximum rotation speed in Rotations Per Second")]
-    public float maxRPS = 1;
+    float maxRPS = 1;
 
     //KAI: this is really doing two unrelated things, facing forward OR facing the fire direction.  Would be nice to put
     // some thought into selecting between different scripts
-
+    [SerializeField]
     [Tooltip("Rotate towards cursor or thumbstick while firing")]
-    public bool faceFiringDirection = true;
+    bool faceFiringDirection = true;
 	void FixedUpdate()
     {
         var angles = gameObject.transform.eulerAngles;

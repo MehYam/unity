@@ -112,6 +112,7 @@ public class WeaponSchematic : MonoBehaviour
             // line the shot up
             var shot = GameObject.Instantiate(ammoPrefab);
             shot.transform.position = firepoint.transform.position;
+            shot.transform.rotation = firepoint.transform.rotation;
 
             // inherit the ship's velocity
             var rb = shot.transform.GetComponent<Rigidbody>();
@@ -120,7 +121,7 @@ public class WeaponSchematic : MonoBehaviour
                 //KAI: a bug, turret ammo needs to pick up launcher velocity as well
                 rb.velocity = gameObject.GetComponent<Rigidbody>().velocity;
             }
-            const float SPEED = 25;  //KAI: this needs to come from the emitter
+            const float SPEED = 25;  //KAI: this needs to come from the weapon schematic
 
             // impart ammo velocity in the direction of the firer
             rb.velocity += gameObject.transform.forward * SPEED;
