@@ -63,4 +63,19 @@ public sealed class Actor : MonoBehaviour
         var body = GetComponent<Rigidbody>();
         body.velocity = Vector3.ClampMagnitude(body.velocity, maxSpeed);
     }
+
+    public SimpleRoom room { get; private set; }
+    void OnRoomEnter(SimpleRoom room)
+    {
+        if (this.room != room)
+        {
+            Debug.LogFormat("actor {0} entered room {1}", name, room.name);
+
+            this.room = room;
+        }
+    }
+    void OnRoomExit(SimpleRoom room)
+    {
+
+    }
 }
