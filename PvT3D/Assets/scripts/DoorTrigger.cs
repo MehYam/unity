@@ -11,12 +11,11 @@ public class DoorTrigger : MonoBehaviour
         var actor = other.GetComponent<Actor>();
         if (actor != null)
         {
-            Debug.Log("oen");
             var room = transform.parent.GetComponentInParent<SimpleRoom>();
             if (room != null)
             {
-                Debug.Log("two");
-                //KAI: don't need SendMessage given that we have an Actor interface... think about this.
+                //KAI: don't need SendMessage given that we have an concrete interfaces... think about this.
+                room.SendMessage("OnActorEnter", actor);
                 actor.SendMessage("OnRoomEnter", room);
             }
         }

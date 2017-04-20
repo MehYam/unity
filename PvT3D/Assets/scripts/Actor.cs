@@ -21,6 +21,8 @@ public sealed class Actor : MonoBehaviour
         {
             _startColor = material.color;
         }
+
+        // Detect our room
     }
     void OnCollisionEnter(Collision col)
     {
@@ -69,13 +71,9 @@ public sealed class Actor : MonoBehaviour
     {
         if (this.room != room)
         {
-            Debug.LogFormat("actor {0} entered room {1}", name, room.name);
+            Debug.LogFormat("Actor {0} enters room {1}", name, room.name);
 
             this.room = room;
         }
-    }
-    void OnRoomExit(SimpleRoom room)
-    {
-
     }
 }
