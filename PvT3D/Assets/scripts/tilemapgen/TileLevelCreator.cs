@@ -28,6 +28,7 @@ public sealed class TileLevelCreator : MonoBehaviour
     [SerializeField] GameObject wall = null;
     [SerializeField] GameObject cornerWall = null;
     [SerializeField] GameObject endWall = null;
+    [SerializeField] GameObject door = null;
 
     // These will be drawn by the custom editor
     [HideInInspector] public TextAsset levelFile;
@@ -77,23 +78,11 @@ public sealed class TileLevelCreator : MonoBehaviour
                     if (!layer.IsValid(neighbor) || layer.Get(neighbor).Empty)
                     {
                         // need to put up a wall
-                        var wallGO = GameObject.Instantiate(wall);
+                        var wallGO = tile.type == 'D' ? GameObject.Instantiate(door) : GameObject.Instantiate(wall);
                         var angle = Util.Angle(kaiGameUtil.Util.down.ToVector2()) - Util.Angle(dir.ToVector2());
 
                         wallGO.transform.eulerAngles = new Vector3(0, angle, 0);
                         AddTile(x, y, wallGO);
-
-                        // make this wall a door as necessary
-                        if (tile.type == 'D')
-                        {
-                            wallGO.AddComponent<SimpleDoor>();
-
-                            var collider = wallGO.GetComponent<Collider>();
-                            if (collider != null)
-                            {
-                                collider.isTrigger = true;
-                            }
-                        }
                     }
                 }
             }

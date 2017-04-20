@@ -4,8 +4,11 @@ using UnityEngine;
 
 public sealed class SimpleDoor : MonoBehaviour
 {
-    void OnTriggerEnter(Collider other)
+    void OnCollisionEnter(Collision col)
     {
-        Debug.Log("SimpleDoor struck by: " + other.name);
+        var otherActor = col.collider.GetComponent<Actor>();
+        Debug.Log("door struck by " + otherActor.name);
+
+        gameObject.GetComponent<Animation>().Play();
     }
 }
