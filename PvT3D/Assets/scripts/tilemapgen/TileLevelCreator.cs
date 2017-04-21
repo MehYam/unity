@@ -57,32 +57,44 @@ public sealed class TileLevelCreator : MonoBehaviour
 
         var parent = new GameObject("tiles");
         parent.transform.parent = transform;
+        parent.transform.localPosition = Vector3.zero;
 
-        System.Action<int, int, GameObject> AddTile = (x, y, tile) =>
+        System.Action<int, int, GameObject, string> AddTile = (x, y, tile, name) =>
         {
-            tile.name = string.Format("tile {0}x{1}", x, y);
+            tile.name = string.Format("{0}x{1} {2}", x, y, name);
 
-            tile.transform.position = topLeft + new Vector3(x * (bounds.size.x + padding), 0, y * (bounds.size.z + padding));
             tile.transform.parent = parent.transform;
+            tile.transform.localPosition = topLeft + new Vector3(x * (bounds.size.x + padding), 0, y * (bounds.size.z + padding));
         };
 
         layer.ForEach((x, y, tile) =>
         {
             if (!tile.Empty)
             {
-                AddTile(x, y, GameObject.Instantiate(floor));
+                AddTile(x, y, GameObject.Instantiate(floor), floor.name);
 
                 foreach (var dir in kaiGameUtil.Util.cardinalDirections)
                 {
                     var neighbor = kaiGameUtil.Util.Add(dir, new Point(x, y));
                     if (!layer.IsValid(neighbor) || layer.Get(neighbor).Empty)
                     {
-                        // need to put up a wall
-                        var wallGO = tile.type == 'D' ? GameObject.Instantiate(door) : GameObject.Instantiate(wall);
+                        // need to put up a wall, which is possibly a door
+                        string tileName = null;
+                        GameObject wallGO = null;
+                        if (tile.type == 'D')
+                        {
+                            tileName = "door";
+                            wallGO = GameObject.Instantiate(door);
+                        }
+                        else
+                        {
+                            tileName = "wall";
+                            wallGO = GameObject.Instantiate(wall);
+                        }
                         var angle = Util.Angle(kaiGameUtil.Util.down.ToVector2()) - Util.Angle(dir.ToVector2());
 
                         wallGO.transform.eulerAngles = new Vector3(0, angle, 0);
-                        AddTile(x, y, wallGO);
+                        AddTile(x, y, wallGO, tileName);
                     }
                 }
             }
