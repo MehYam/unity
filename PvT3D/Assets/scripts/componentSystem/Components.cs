@@ -122,11 +122,17 @@ namespace ShipComponents
     }
     class Emitter : SimpleComponent
     {
-        public Action<float> PowerEmitted = delegate { };
-        public Emitter(string name) : base(name) { }
+        /// <summary>
+        ///  PowerEmitted(damage, speed, lifetime)
+        /// </summary>
+        public Action<float, float, float> AmmoEmitted = delegate { };
+
+        public readonly float speed;
+        public readonly float lifetime;
+        public Emitter(string name, float speed, float lifetime) : base(name) { this.speed = speed; this.lifetime = lifetime; }
         public void EmitPower(float power)
         {
-            PowerEmitted(power);
+            AmmoEmitted(power, speed, lifetime);
         }
     }
     class Schematic

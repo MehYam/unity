@@ -19,7 +19,7 @@ public class WeaponSchematic : MonoBehaviour
         //schem.grid.Set(1, 0, new Components.Charger("C", 10));
         schem.grid.Set(1, 0, new ShipComponents.AutofireCharger("A", 1));
 
-        var emitter = new ShipComponents.Emitter("E");
+        var emitter = new ShipComponents.Emitter("E", 80, 1);
         schem.grid.Set(2, 0, emitter);
 
         ConnectWeaponSchematic(schem);
@@ -79,7 +79,7 @@ public class WeaponSchematic : MonoBehaviour
         charger.output = emitter;
         if (emitter != null)
         {
-            emitter.PowerEmitted += OnPowerEmitted;
+            emitter.AmmoEmitted += OnAmmoEmitted;
         }
 
         _state = new SchematicState(schem, powerModule, emitter);
@@ -105,7 +105,7 @@ public class WeaponSchematic : MonoBehaviour
             _state.powerModule.OnFixedUpdate();
         }
     }
-    void OnPowerEmitted(float power)
+    void OnAmmoEmitted(float power, float speed, float lifetime)
     {
         if (ammoPrefab != null)
         {
@@ -121,10 +121,15 @@ public class WeaponSchematic : MonoBehaviour
                 //KAI: a bug, turret ammo needs to pick up launcher velocity as well
                 rb.velocity = gameObject.GetComponent<Rigidbody>().velocity;
             }
-            const float SPEED = 25;  //KAI: this needs to come from the weapon schematic
+
+            var ttl = shot.GetComponent<TimeToLive>();
+            if (ttl != null)
+            {
+                ttl.seconds = lifetime;
+            }
 
             // impart ammo velocity in the direction of the firer
-            rb.velocity += gameObject.transform.forward * SPEED;
+            rb.velocity += gameObject.transform.forward * speed;
 
             // spin it for kicks
             rb.angularVelocity = Vector3.up * 10;

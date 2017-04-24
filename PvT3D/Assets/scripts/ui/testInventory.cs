@@ -49,7 +49,7 @@ public class testInventory : MonoBehaviour
         inventory.grid.Set(0, 0, new ShipComponents.PowerModule("P", 1));
         inventory.grid.Set(1, 0, new ShipComponents.Charger("A", 10));
         inventory.grid.Set(2, 0, new ShipComponents.Charger("C", 10));
-        inventory.grid.Set(0, 1, new ShipComponents.Emitter("E"));
+        inventory.grid.Set(0, 1, new ShipComponents.Emitter("E", 100, 2));
     }
     void PopulateInventoryUI()
     {
