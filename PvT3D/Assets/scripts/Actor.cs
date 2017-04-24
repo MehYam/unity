@@ -22,7 +22,12 @@ public sealed class Actor : MonoBehaviour
             _startColor = material.color;
         }
 
-        // Detect our room
+        // Detect our room - KAI: this looks expensive, esp. for things like ammo?  Also, there may be an easier way to do this with raycasts/collisions?
+        //var rooms = FindObjectsOfType<SimpleRoom>();
+        //foreach (var room in rooms)
+        //{
+
+        //}
     }
     void OnCollisionEnter(Collision col)
     {
@@ -71,7 +76,7 @@ public sealed class Actor : MonoBehaviour
     {
         if (this.room != room)
         {
-            Debug.LogFormat("Actor {0} enters room {1}", name, room.name);
+            //Debug.LogFormat("Actor {0} enters room {1}", name, room.name);
 
             this.room = room;
         }

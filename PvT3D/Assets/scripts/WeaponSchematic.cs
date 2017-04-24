@@ -14,12 +14,12 @@ public class WeaponSchematic : MonoBehaviour
     {
         _ps = firepoint.GetComponent<ParticleSystem>();
 
-        var schem = new Components.Schematic(5, 3);
-        schem.grid.Set(0, 0, new Components.PowerModule("P", 1));
+        var schem = new ShipComponents.Schematic(5, 3);
+        schem.grid.Set(0, 0, new ShipComponents.PowerModule("P", 1));
         //schem.grid.Set(1, 0, new Components.Charger("C", 10));
-        schem.grid.Set(1, 0, new Components.AutofireCharger("A", 1));
+        schem.grid.Set(1, 0, new ShipComponents.AutofireCharger("A", 1));
 
-        var emitter = new Components.Emitter("E");
+        var emitter = new ShipComponents.Emitter("E");
         schem.grid.Set(2, 0, emitter);
 
         ConnectWeaponSchematic(schem);
@@ -46,32 +46,32 @@ public class WeaponSchematic : MonoBehaviour
     }
     class SchematicState
     {
-        public readonly Components.Schematic schematic;
-        public readonly Components.PowerModule powerModule;
-        public readonly Components.Emitter emitter;
+        public readonly ShipComponents.Schematic schematic;
+        public readonly ShipComponents.PowerModule powerModule;
+        public readonly ShipComponents.Emitter emitter;
 
-        public SchematicState(Components.Schematic schem, Components.PowerModule pm, Components.Emitter e)
+        public SchematicState(ShipComponents.Schematic schem, ShipComponents.PowerModule pm, ShipComponents.Emitter e)
         { this.schematic = schem;  this.powerModule = pm; this.emitter = e; }
     }
     SchematicState _state;
-    void ConnectWeaponSchematic(Components.Schematic schem)
+    void ConnectWeaponSchematic(ShipComponents.Schematic schem)
     {
-        Components.PowerModule powerModule = null;
-        Components.ICharger charger = null;
-        Components.Emitter emitter = null;
+        ShipComponents.PowerModule powerModule = null;
+        ShipComponents.ICharger charger = null;
+        ShipComponents.Emitter emitter = null;
         schem.grid.ForEach((x, y, component) =>
         {
-            if (component is Components.PowerModule)
+            if (component is ShipComponents.PowerModule)
             {
-                powerModule = component as Components.PowerModule;
+                powerModule = component as ShipComponents.PowerModule;
             }
-            else if (component is Components.Emitter)
+            else if (component is ShipComponents.Emitter)
             {
-                emitter = component as Components.Emitter;
+                emitter = component as ShipComponents.Emitter;
             }
-            else if (component is Components.ICharger)
+            else if (component is ShipComponents.ICharger)
             {
-                charger = component as Components.ICharger;
+                charger = component as ShipComponents.ICharger;
             }
         });
 

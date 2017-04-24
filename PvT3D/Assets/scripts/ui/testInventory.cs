@@ -14,14 +14,12 @@ public class testInventory : MonoBehaviour
     [SerializeField]
     GameObject powerModulePrefab = null;
     [SerializeField]
-    GameObject autofirePrefab = null;
-    [SerializeField]
     GameObject chargerPrefab = null;
     [SerializeField]
     GameObject emitterPrefab = null;
 
-    readonly Components.Schematic inventory = new Components.Schematic(3, 6);
-    readonly Components.Schematic schematic = new Components.Schematic(5, 3);
+    readonly ShipComponents.Schematic inventory = new ShipComponents.Schematic(3, 6);
+    readonly ShipComponents.Schematic schematic = new ShipComponents.Schematic(5, 3);
 	void Start()
     {
         StartCoroutine(DelayedStart());  
@@ -48,19 +46,19 @@ public class testInventory : MonoBehaviour
     }
     void LoadInventory()
     {
-        inventory.grid.Set(0, 0, new Components.PowerModule("P", 1));
-        inventory.grid.Set(1, 0, new Components.Charger("A", 10));
-        inventory.grid.Set(2, 0, new Components.Charger("C", 10));
-        inventory.grid.Set(0, 1, new Components.Emitter("E"));
+        inventory.grid.Set(0, 0, new ShipComponents.PowerModule("P", 1));
+        inventory.grid.Set(1, 0, new ShipComponents.Charger("A", 10));
+        inventory.grid.Set(2, 0, new ShipComponents.Charger("C", 10));
+        inventory.grid.Set(0, 1, new ShipComponents.Emitter("E"));
     }
     void PopulateInventoryUI()
     {
         // set up the map of model objects to UI objects
         var mapComponentToPrefab = new Dictionary<System.Type, GameObject>()
         {
-            { typeof(Components.PowerModule), powerModulePrefab },
-            { typeof(Components.Charger), chargerPrefab },
-            { typeof(Components.Emitter), emitterPrefab }
+            { typeof(ShipComponents.PowerModule), powerModulePrefab },
+            { typeof(ShipComponents.Charger), chargerPrefab },
+            { typeof(ShipComponents.Emitter), emitterPrefab }
         };
 
         // walk the inventory object, populating the UI as necessary
@@ -83,10 +81,10 @@ public class testInventory : MonoBehaviour
     }
     class DragState
     {
-        public readonly Components.Schematic from;
+        public readonly ShipComponents.Schematic from;
         public readonly Point<int> pos;
 
-        public DragState(Components.Schematic from, Point<int> pos) { this.from = from; this.pos = pos; }
+        public DragState(ShipComponents.Schematic from, Point<int> pos) { this.from = from; this.pos = pos; }
     }
     DragState dragState;
     void OnItemDraggingFromSchematic(InventoryItemUI item, Point<int> pos)

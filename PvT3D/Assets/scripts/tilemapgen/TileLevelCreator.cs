@@ -26,8 +26,6 @@ public sealed class TileLevelCreator : MonoBehaviour
 {
     [SerializeField] GameObject floor = null;
     [SerializeField] GameObject wall = null;
-    [SerializeField] GameObject cornerWall = null;
-    [SerializeField] GameObject endWall = null;
     [SerializeField] GameObject door = null;
 
     // These will be drawn by the custom editor

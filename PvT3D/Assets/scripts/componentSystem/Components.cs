@@ -5,7 +5,7 @@ using UnityEngine;
 using kaiGameUtil;
 using System;
 
-namespace Components
+namespace ShipComponents
 {
     interface IFrameHandler
     {
