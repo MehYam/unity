@@ -10,9 +10,11 @@ public class tweentest : MonoBehaviour
     {
         var scale = transform.localScale;
 
-        LeanTween.scaleZ(gameObject, 50, 0.5f).setEaseOutExpo().setLoopPingPong(1).setDelay(1f);
-        LeanTween.scaleX(gameObject, scale.x * 5, 0.5f).setEaseOutExpo().setLoopPingPong(1).setDelay(1f);
-        LeanTween.scaleY(gameObject, scale.y * 5, 0.5f).setEaseOutExpo().setLoopPingPong(1).setDelay(1f);
+        LeanTween.scaleZ(gameObject, 50, 0.5f).setEaseOutExpo().setDelay(1f);
+        LeanTween.scaleX(gameObject, scale.x * 5, 0.25f).setEaseOutExpo().setLoopPingPong(1).setDelay(1f);
+
+        var cube = transform.FindChild("TestCube");
+        LeanTween.alpha(cube.gameObject, 0, 1).setEaseInCirc().setDelay(1f);
     }
 
     IEnumerator StartAnimation()
