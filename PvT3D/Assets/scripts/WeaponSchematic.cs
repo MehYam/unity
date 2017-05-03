@@ -19,7 +19,7 @@ public class WeaponSchematic : MonoBehaviour, ship.IConsumer
         var schem = new ship.Schematic(5, 3);
         schem.grid.Set(0, 0, new ship.Power("P", 1));
         schem.grid.Set(1, 0, new ship.AutofireCharger("C", 1));
-        schem.grid.Set(1, 0, new ship.Charger("C", 10));
+        //schem.grid.Set(1, 0, new ship.Charger("C", 10));
         schem.grid.Set(2, 0, new ship.Envelope("E", 1));
         schem.grid.Set(3, 0, new ship.Accelerator("A", 80));
 
@@ -109,14 +109,14 @@ public class WeaponSchematic : MonoBehaviour, ship.IConsumer
             _state.frameHandler.OnFixedUpdate();
         }
     }
-    public void AcceptProduct(ship.Product product) 
+    public void ConsumeProduct(ship.AmmoProduct product) 
     {
         if (prefabPlasmaAmmo != null)
         {
             LaunchPlasmaAmmo(product);
         }
     }
-    void LaunchPlasmaAmmo(ship.Product product)
+    void LaunchPlasmaAmmo(ship.AmmoProduct product)
     {
         // line the shot up
         var shot = GameObject.Instantiate(prefabPlasmaAmmo);
@@ -150,7 +150,7 @@ public class WeaponSchematic : MonoBehaviour, ship.IConsumer
         // particles
         _ps.Play();
     }
-    void LaunchBeamAmmo(ship.Product product)
+    void LaunchBeamAmmo(ship.AmmoProduct product)
     {
         // line the shot up
         var shot = GameObject.Instantiate(prefabBeamAmmo);

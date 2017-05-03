@@ -4,8 +4,8 @@ using UnityEngine;
 public class AmmoBeam : MonoBehaviour
 {
     public float duration = 1;
-    [SerializeField] float distance = 50;
-    [SerializeField] float width = 0.5f;
+    public float distance = 50;
+    public float width = 0.5f;
 
     // Use this for initialization
     void Start()

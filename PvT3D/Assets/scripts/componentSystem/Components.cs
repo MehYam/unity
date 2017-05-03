@@ -8,18 +8,22 @@ using System;
 namespace PvT3D.ShipComponents
 {
     /// <summary>
-    /// Product can be thought of as the object on the assembly line.  It passes from Component to Component, which alter the product
+    /// AmmoProduct can be thought of as the object on the assembly line.  It passes from Component to Component, which alter the product
     /// to produce something useful
     /// </summary>
-    public class Product
+    public class AmmoProduct
     {
+        public enum Type { Normal, Laser }
+
+        public Type type = Type.Normal;  //KAI: subclass instead, so that a method override actually does the launching based on the type
+
         public float damage = 0;
         public float timeToLive = 0;
         public float speed = 0;
     }
     interface IConsumer
     {
-        void AcceptProduct(Product product);
+        void ConsumeProduct(AmmoProduct product);
     }
     interface IProducer
     {
@@ -77,9 +81,9 @@ namespace PvT3D.ShipComponents
         {
             if (output != null && _state != null)
             {
-                var product = new Product();
+                var product = new AmmoProduct();
                 product.damage = Mathf.Min((Time.fixedTime - _state.startTime) * _state.power, capacity);
-                output.AcceptProduct(product);
+                output.ConsumeProduct(product);
             }
             _state = null;
         }
@@ -111,9 +115,9 @@ namespace PvT3D.ShipComponents
                 var elapsed = (Time.fixedTime - _lastFireTime);
                 if (elapsed >= chargeTime)
                 {
-                    var product = new Product();
+                    var product = new AmmoProduct();
                     product.damage = powerSource.power;
-                    output.AcceptProduct(product);
+                    output.ConsumeProduct(product);
 
                     _lastFireTime = Time.fixedTime;
                 }
@@ -131,12 +135,12 @@ namespace PvT3D.ShipComponents
             this.lifetime = lifetime;
         }
         public IConsumer output { set; private get; }
-        public void AcceptProduct(Product product)
+        public void ConsumeProduct(AmmoProduct product)
         {
             product.timeToLive = lifetime;
             if (output != null)
             {
-                output.AcceptProduct(product);
+                output.ConsumeProduct(product);
             }
         }
     }
@@ -148,12 +152,12 @@ namespace PvT3D.ShipComponents
         public readonly float speed;
         public Accelerator(string name, float speed) : base(name) { this.speed = speed; }
         public IConsumer output { set; private get; }
-        public void AcceptProduct(Product product)
+        public void ConsumeProduct(AmmoProduct product)
         {
             product.speed = speed;
             if (output != null)
             {
-                output.AcceptProduct(product);
+                output.ConsumeProduct(product);
             }
         }
     }
