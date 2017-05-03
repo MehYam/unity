@@ -22,6 +22,7 @@ public class WeaponSchematic : MonoBehaviour, ship.IConsumer
         //schem.grid.Set(1, 0, new ship.Charger("C", 10));
         schem.grid.Set(2, 0, new ship.Envelope("E", 1));
         schem.grid.Set(3, 0, new ship.Accelerator("A", 80));
+        schem.grid.Set(3, 0, new ship.LaserAccelerator("L", 100, 0.5f));
 
         ConnectWeaponSchematic(schem);
     }
@@ -111,9 +112,23 @@ public class WeaponSchematic : MonoBehaviour, ship.IConsumer
     }
     public void ConsumeProduct(ship.AmmoProduct product) 
     {
-        if (prefabPlasmaAmmo != null)
+        switch(product.type)
         {
-            LaunchPlasmaAmmo(product);
+            case ship.AmmoProduct.Type.Normal:
+                if (prefabPlasmaAmmo != null)
+                {
+                    LaunchPlasmaAmmo(product);
+                }
+                break;
+            case ship.AmmoProduct.Type.Laser:
+                if (prefabBeamAmmo != null)
+                {
+                    LaunchBeamAmmo(product);
+                }
+                break;
+            default:
+                Debug.LogError("no handler for " + product.type);
+                break;
         }
     }
     void LaunchPlasmaAmmo(ship.AmmoProduct product)
@@ -160,5 +175,7 @@ public class WeaponSchematic : MonoBehaviour, ship.IConsumer
         // duration
         var beam = shot.GetComponent<AmmoBeam>();
         beam.duration = product.duration;
+        beam.distance = product.distance;
+        beam.width = product.width;
     }
 }

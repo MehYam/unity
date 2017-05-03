@@ -22,7 +22,7 @@ namespace PvT3D.ShipComponents
 
         // used only for Type.Laser at the moment
         public float width = 0;
-        public float length = 0;
+        public float distance = 0;
     }
     interface IConsumer
     {
@@ -158,6 +158,23 @@ namespace PvT3D.ShipComponents
         public void ConsumeProduct(AmmoProduct product)
         {
             product.speed = speed;
+            if (output != null)
+            {
+                output.ConsumeProduct(product);
+            }
+        }
+    }
+    class LaserAccelerator : SimpleComponent, IConsumer, IProducer
+    {
+        public readonly float width;
+        public readonly float distance;
+        public LaserAccelerator(string name, float distance, float width) : base(name) { this.width = width; this.distance = distance; }
+        public IConsumer output { set; private get; }
+        public void ConsumeProduct(AmmoProduct product)
+        {
+            product.type = AmmoProduct.Type.Laser;
+            product.width = width;
+            product.distance = distance;
             if (output != null)
             {
                 output.ConsumeProduct(product);
