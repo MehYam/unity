@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 using kaiGameUtil;
+using ShipComponents = PvT3D.ShipComponents;
 
 public class testInventory : MonoBehaviour
 {
@@ -46,19 +47,19 @@ public class testInventory : MonoBehaviour
     }
     void LoadInventory()
     {
-        inventory.grid.Set(0, 0, new ShipComponents.PowerModule("P", 1));
-        inventory.grid.Set(1, 0, new ShipComponents.Charger("A", 10));
+        inventory.grid.Set(0, 0, new ShipComponents.Power("P", 1));
+        inventory.grid.Set(1, 0, new ShipComponents.Charger("C", 10));
         inventory.grid.Set(2, 0, new ShipComponents.Charger("C", 10));
-        inventory.grid.Set(0, 1, new ShipComponents.Emitter("E", 100, 2));
+        inventory.grid.Set(0, 1, new ShipComponents.Accelerator("A", 100));
     }
     void PopulateInventoryUI()
     {
         // set up the map of model objects to UI objects
         var mapComponentToPrefab = new Dictionary<System.Type, GameObject>()
         {
-            { typeof(ShipComponents.PowerModule), powerModulePrefab },
+            { typeof(ShipComponents.Power), powerModulePrefab },
             { typeof(ShipComponents.Charger), chargerPrefab },
-            { typeof(ShipComponents.Emitter), emitterPrefab }
+            { typeof(ShipComponents.Accelerator), emitterPrefab }
         };
 
         // walk the inventory object, populating the UI as necessary

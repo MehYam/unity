@@ -5,65 +5,61 @@ using UnityEngine;
 using kaiGameUtil;
 using System;
 
-namespace ShipComponents
+namespace PvT3D.ShipComponents
 {
+    /// <summary>
+    /// Product can be thought of as the object on the assembly line.  It passes from Component to Component, which alter the product
+    /// to produce something useful
+    /// </summary>
+    public class Product
+    {
+        public float damage = 0;
+        public float timeToLive = 0;
+        public float speed = 0;
+    }
+    interface IConsumer
+    {
+        void AcceptProduct(Product product);
+    }
+    interface IProducer
+    {
+        IConsumer output { set; }
+    }
     interface IFrameHandler
     {
         void OnFixedUpdate();
     }
-    interface IPowerable
+    interface ICharger
     {
-        void PowerOn();
-        void PowerOff();
-    }
-    interface ICharger : IFrameHandler
-    {
-        void StartCharging(float power);
+        Power powerSource { set; }
+        void Charge();
         void Discharge();
-
-        Emitter output { set; }
     }
     abstract class SimpleComponent
     {
         public readonly string name;
         public SimpleComponent(string name) { this.name = name; }
     }
-    class PowerModule : SimpleComponent, IFrameHandler
+    /// <summary>
+    /// Power defines damage, and perhaps more things in the future
+    /// </summary>
+    class Power : SimpleComponent
     {
-        readonly float power;
-        public PowerModule(string name, float power) : base(name) { this.power = power; }
-
-        public ICharger output { set; private get; }
-        public void PowerOn()
-        {
-            if (output != null)
-            {
-                output.StartCharging(power);
-            }
-        }
-        public void PowerOff()
-        {
-            if (output != null)
-            {
-                output.Discharge();
-            }
-        }
-        public void OnFixedUpdate()
-        {
-            if (output != null)
-            {
-                output.OnFixedUpdate();
-            }
-        }
+        public readonly float power;
+        public Power(string name, float power) : base(name) { this.power = power; }
     }
-    class Charger : SimpleComponent, ICharger
+    /// <summary>
+    /// Chargers define rate of fire, and whether the weapon charges up or autofires
+    /// </summary>
+    class Charger : SimpleComponent, ICharger, IProducer
     {
         readonly public float capacity;
         public Charger(string name, float capacity) : base(name)
         {
             this.capacity = capacity;
         }
-        public Emitter output { set; private get; }
+        public Power powerSource { set; private get; }
+        public IConsumer output { set; private get; }
 
         class PowerState
         {
@@ -73,66 +69,92 @@ namespace ShipComponents
             public PowerState(float power, float startTime) { this.power = power;  this.startTime = startTime; }
         }
         PowerState _state;
-        public void StartCharging(float power)
+        public void Charge()
         {
-            _state = new PowerState(power, Time.fixedTime);
+            _state = new PowerState(powerSource.power, Time.fixedTime);
         }
         public void Discharge()
         {
             if (output != null && _state != null)
             {
-                var charge = Mathf.Min((Time.fixedTime - _state.startTime) * _state.power, capacity);
-
-                output.EmitPower(charge);
+                var product = new Product();
+                product.damage = Mathf.Min((Time.fixedTime - _state.startTime) * _state.power, capacity);
+                output.AcceptProduct(product);
             }
             _state = null;
         }
-        public void OnFixedUpdate()
-        {
-        }
     }
-    class AutofireCharger : SimpleComponent, ICharger
+    class AutofireCharger : SimpleComponent, ICharger, IProducer, IFrameHandler
     {
         readonly public float chargeTime;
         public AutofireCharger(string name, float rate) : base(name)
         {
             this.chargeTime = 1 / Mathf.Max(rate, float.MinValue);
         }
-        public Emitter output { set; private get; }
+        public Power powerSource { set; private get; }
+        public IConsumer output { set; private get; }
 
         float _lastFireTime = 0;
-        float _power = 0;
-        public void StartCharging(float power)
+        bool _firing = false;
+        public void Charge()
         {
-            _power = power;
+            _firing = true;
         }
         public void Discharge()
         {
-            _power = 0;
+            _firing = false;
         }
         public void OnFixedUpdate()
         {
-            if (output != null && _power > 0 && (Time.fixedTime - _lastFireTime) >= chargeTime)
+            if (output != null && _firing)
             {
-                output.EmitPower(_power);
+                var elapsed = (Time.fixedTime - _lastFireTime);
+                if (elapsed >= chargeTime)
+                {
+                    var product = new Product();
+                    product.damage = powerSource.power;
+                    output.AcceptProduct(product);
 
-                _lastFireTime = Time.fixedTime;
+                    _lastFireTime = Time.fixedTime;
+                }
             }
         }
     }
-    class Emitter : SimpleComponent
+    /// <summary>
+    /// Envelope defines time to live for the ammo. Along with speed from the Emitter, this determines the range of the shot
+    /// </summary>
+    class Envelope : SimpleComponent, IConsumer, IProducer
     {
-        /// <summary>
-        ///  PowerEmitted(damage, speed, lifetime)
-        /// </summary>
-        public Action<float, float, float> AmmoEmitted = delegate { };
-
-        public readonly float speed;
         public readonly float lifetime;
-        public Emitter(string name, float speed, float lifetime) : base(name) { this.speed = speed; this.lifetime = lifetime; }
-        public void EmitPower(float power)
+        public Envelope(string name, float lifetime) : base(name)
         {
-            AmmoEmitted(power, speed, lifetime);
+            this.lifetime = lifetime;
+        }
+        public IConsumer output { set; private get; }
+        public void AcceptProduct(Product product)
+        {
+            product.timeToLive = lifetime;
+            if (output != null)
+            {
+                output.AcceptProduct(product);
+            }
+        }
+    }
+    /// <summary>
+    /// Accelerator gives the ammo speed, and 
+    /// </summary>
+    class Accelerator : SimpleComponent, IConsumer, IProducer
+    {
+        public readonly float speed;
+        public Accelerator(string name, float speed) : base(name) { this.speed = speed; }
+        public IConsumer output { set; private get; }
+        public void AcceptProduct(Product product)
+        {
+            product.speed = speed;
+            if (output != null)
+            {
+                output.AcceptProduct(product);
+            }
         }
     }
     class Schematic

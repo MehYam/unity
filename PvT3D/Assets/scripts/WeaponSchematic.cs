@@ -1,9 +1,10 @@
 using UnityEngine;
 
 using PvT3D.Util;
+using ship = PvT3D.ShipComponents;
 using kaiGameUtil;
 
-public class WeaponSchematic : MonoBehaviour
+public class WeaponSchematic : MonoBehaviour, ship.IConsumer
 {
     [SerializeField] GameObject firepoint = null;
     [SerializeField] GameObject ammoPrefab = null;
@@ -14,13 +15,12 @@ public class WeaponSchematic : MonoBehaviour
     {
         _ps = firepoint.GetComponent<ParticleSystem>();
 
-        var schem = new ShipComponents.Schematic(5, 3);
-        schem.grid.Set(0, 0, new ShipComponents.PowerModule("P", 1));
-        //schem.grid.Set(1, 0, new Components.Charger("C", 10));
-        schem.grid.Set(1, 0, new ShipComponents.AutofireCharger("A", 1));
-
-        var emitter = new ShipComponents.Emitter("E", 80, 1);
-        schem.grid.Set(2, 0, emitter);
+        var schem = new ship.Schematic(5, 3);
+        schem.grid.Set(0, 0, new ship.Power("P", 1));
+        schem.grid.Set(1, 0, new ship.AutofireCharger("C", 1));
+        schem.grid.Set(1, 0, new ship.Charger("C", 10));
+        schem.grid.Set(2, 0, new ship.Envelope("E", 1));
+        schem.grid.Set(3, 0, new ship.Accelerator("A", 80));
 
         ConnectWeaponSchematic(schem);
     }
@@ -46,66 +46,69 @@ public class WeaponSchematic : MonoBehaviour
     }
     class SchematicState
     {
-        public readonly ShipComponents.Schematic schematic;
-        public readonly ShipComponents.PowerModule powerModule;
-        public readonly ShipComponents.Emitter emitter;
+        public readonly ship.ICharger charger;
+        public readonly ship.IFrameHandler frameHandler;
+        public readonly ship.IProducer producer;
 
-        public SchematicState(ShipComponents.Schematic schem, ShipComponents.PowerModule pm, ShipComponents.Emitter e)
-        { this.schematic = schem;  this.powerModule = pm; this.emitter = e; }
+        public SchematicState(ship.ICharger charger, ship.SimpleComponent lastComponent)
+        {
+            this.charger = charger;
+            this.frameHandler = charger as ship.IFrameHandler;
+            this.producer = lastComponent as ship.IProducer;
+        }
     }
     SchematicState _state;
-    void ConnectWeaponSchematic(ShipComponents.Schematic schem)
+    void ConnectWeaponSchematic(ship.Schematic schem)
     {
-        ShipComponents.PowerModule powerModule = null;
-        ShipComponents.ICharger charger = null;
-        ShipComponents.Emitter emitter = null;
-        schem.grid.ForEach((x, y, component) =>
+        ship.ICharger charger = null;
+        ship.SimpleComponent leftComponent = null;
+        for (var x = 0; x < schem.grid.size.x; ++x)
         {
-            if (component is ShipComponents.PowerModule)
-            {
-                powerModule = component as ShipComponents.PowerModule;
-            }
-            else if (component is ShipComponents.Emitter)
-            {
-                emitter = component as ShipComponents.Emitter;
-            }
-            else if (component is ShipComponents.ICharger)
-            {
-                charger = component as ShipComponents.ICharger;
-            }
-        });
+            ship.SimpleComponent component = schem.grid.Get(x, 0);
+            if (component == null) break;
 
-        powerModule.output = charger;
-        charger.output = emitter;
-        if (emitter != null)
-        {
-            emitter.AmmoEmitted += OnAmmoEmitted;
+            if (component is ship.ICharger)
+            {
+                charger = component as ship.ICharger;
+                if (leftComponent is ship.Power)
+                {
+                    charger.powerSource = leftComponent as ship.Power;
+                }
+            }
+            else if (leftComponent is ship.IProducer && component is ship.IConsumer)
+            {
+                ((ship.IProducer)leftComponent).output = component as ship.IConsumer;
+            }
+            leftComponent = component;
         }
-
-        _state = new SchematicState(schem, powerModule, emitter);
+        _state = new SchematicState(charger, leftComponent);
+        if (_state.producer != null)
+        {
+            _state.producer.output = this;
+        }
     }
     void OnFireStart()
     {
-        if (_state != null && _state.powerModule != null)
+        if (_state != null && _state.charger != null)
         {
-            _state.powerModule.PowerOn();
+            _state.charger.Charge();
         }
     }
     void OnFireEnd()
     {
-        if (_state != null && _state.powerModule != null)
+        if (_state != null && _state.charger != null)
         {
-            _state.powerModule.PowerOff();
+            _state.charger.Discharge();
         }
     }
     void OnFireFrame()
     {
-        if (_state != null && _state.powerModule != null)
+        if (_state != null && _state.frameHandler != null)
         {
-            _state.powerModule.OnFixedUpdate();
+            _state.frameHandler.OnFixedUpdate();
         }
     }
-    void OnAmmoEmitted(float power, float speed, float lifetime)
+    public void AcceptProduct(ship.Product product) 
     {
         if (ammoPrefab != null)
         {
@@ -125,17 +128,17 @@ public class WeaponSchematic : MonoBehaviour
             var ttl = shot.GetComponent<TimeToLive>();
             if (ttl != null)
             {
-                ttl.seconds = lifetime;
+                ttl.seconds = product.timeToLive;
             }
 
             // impart ammo velocity in the direction of the firer
-            rb.velocity += gameObject.transform.forward * speed;
+            rb.velocity += gameObject.transform.forward * product.speed;
 
             // spin it for kicks
             rb.angularVelocity = Vector3.up * 10;
 
             // this is a chargable shot, scale it by the power
-            shot.transform.localScale = new Vector3(power, power, power);
+            shot.transform.localScale = new Vector3(product.damage, product.damage, product.damage);
 
             // particles
             _ps.Play();
