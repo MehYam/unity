@@ -135,7 +135,7 @@ public class WeaponSchematic : MonoBehaviour, ship.IConsumer
         var ttl = shot.GetComponent<TimeToLive>();
         if (ttl != null)
         {
-            ttl.seconds = product.timeToLive;
+            ttl.seconds = product.duration;
         }
 
         // impart ammo velocity in the direction of the firer
@@ -159,6 +159,6 @@ public class WeaponSchematic : MonoBehaviour, ship.IConsumer
 
         // duration
         var beam = shot.GetComponent<AmmoBeam>();
-        beam.duration = product.timeToLive;
+        beam.duration = product.duration;
     }
 }

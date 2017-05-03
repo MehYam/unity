@@ -14,12 +14,15 @@ namespace PvT3D.ShipComponents
     public class AmmoProduct
     {
         public enum Type { Normal, Laser }
-
-        public Type type = Type.Normal;  //KAI: subclass instead, so that a method override actually does the launching based on the type
+        public Type type = Type.Normal;  //KAI: consider hierarchy instead, so that a method override actually does the launching based on the type
 
         public float damage = 0;
-        public float timeToLive = 0;
+        public float duration = 0;
         public float speed = 0;
+
+        // used only for Type.Laser at the moment
+        public float width = 0;
+        public float length = 0;
     }
     interface IConsumer
     {
@@ -129,15 +132,15 @@ namespace PvT3D.ShipComponents
     /// </summary>
     class Envelope : SimpleComponent, IConsumer, IProducer
     {
-        public readonly float lifetime;
-        public Envelope(string name, float lifetime) : base(name)
+        public readonly float duration;
+        public Envelope(string name, float duration) : base(name)
         {
-            this.lifetime = lifetime;
+            this.duration = duration;
         }
         public IConsumer output { set; private get; }
         public void ConsumeProduct(AmmoProduct product)
         {
-            product.timeToLive = lifetime;
+            product.duration = duration;
             if (output != null)
             {
                 output.ConsumeProduct(product);
