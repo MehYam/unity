@@ -1082,7 +1082,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   firepoint: {fileID: 1733552265}
-  ammoPrefab: {fileID: 199322, guid: 793b40b395830e64297852daf7a015dc, type: 2}
+  prefabPlasmaAmmo: {fileID: 199322, guid: 793b40b395830e64297852daf7a015dc, type: 2}
+  prefabBeamAmmo: {fileID: 1967924314864710, guid: 644c954e45d49964bb84fc0e338edbb8,
+    type: 2}
   inheritShipVelocity: 0
 --- !u!65 &68873570
 BoxCollider:

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class AmmoBeam : MonoBehaviour
 {
-    [SerializeField] float duration = 1;
+    public float duration = 1;
     [SerializeField] float distance = 50;
     [SerializeField] float width = 0.5f;
 
@@ -20,6 +20,6 @@ public class AmmoBeam : MonoBehaviour
         LeanTween.scaleZ(gameObject, distance / visual.localScale.z, duration / 2).setEaseOutExpo();
         LeanTween.scaleX(gameObject, width / visual.localScale.x, duration / 4);
 
-        LeanTween.alpha(visual.gameObject, 0, duration);
+        LeanTween.alpha(gameObject, 0, duration).setDestroyOnComplete(true);
     }
 }

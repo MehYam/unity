@@ -7,7 +7,8 @@ using kaiGameUtil;
 public class WeaponSchematic : MonoBehaviour, ship.IConsumer
 {
     [SerializeField] GameObject firepoint = null;
-    [SerializeField] GameObject ammoPrefab = null;
+    [SerializeField] GameObject prefabPlasmaAmmo = null;
+    [SerializeField] GameObject prefabBeamAmmo = null;
     [SerializeField] bool inheritShipVelocity = false;
 
     ParticleSystem _ps;
@@ -110,38 +111,54 @@ public class WeaponSchematic : MonoBehaviour, ship.IConsumer
     }
     public void AcceptProduct(ship.Product product) 
     {
-        if (ammoPrefab != null)
+        if (prefabPlasmaAmmo != null)
         {
-            // line the shot up
-            var shot = GameObject.Instantiate(ammoPrefab);
-            shot.transform.position = firepoint.transform.position;
-            shot.transform.rotation = firepoint.transform.rotation;
-
-            // inherit the ship's velocity
-            var rb = shot.transform.GetComponent<Rigidbody>();
-            if (inheritShipVelocity && gameObject.GetComponent<Rigidbody>() != null)
-            {
-                //KAI: a bug, turret ammo needs to pick up launcher velocity as well
-                rb.velocity = gameObject.GetComponent<Rigidbody>().velocity;
-            }
-
-            var ttl = shot.GetComponent<TimeToLive>();
-            if (ttl != null)
-            {
-                ttl.seconds = product.timeToLive;
-            }
-
-            // impart ammo velocity in the direction of the firer
-            rb.velocity += gameObject.transform.forward * product.speed;
-
-            // spin it for kicks
-            rb.angularVelocity = Vector3.up * 10;
-
-            // this is a chargable shot, scale it by the power
-            shot.transform.localScale = new Vector3(product.damage, product.damage, product.damage);
-
-            // particles
-            _ps.Play();
+            LaunchPlasmaAmmo(product);
         }
+    }
+    void LaunchPlasmaAmmo(ship.Product product)
+    {
+        // line the shot up
+        var shot = GameObject.Instantiate(prefabPlasmaAmmo);
+        shot.transform.position = firepoint.transform.position;
+        shot.transform.rotation = firepoint.transform.rotation;
+
+        // inherit the ship's velocity
+        var rb = shot.transform.GetComponent<Rigidbody>();
+        if (inheritShipVelocity && gameObject.GetComponent<Rigidbody>() != null)
+        {
+            //KAI: a bug, turret ammo needs to pick up launcher velocity as well
+            rb.velocity = gameObject.GetComponent<Rigidbody>().velocity;
+        }
+
+        // duration
+        var ttl = shot.GetComponent<TimeToLive>();
+        if (ttl != null)
+        {
+            ttl.seconds = product.timeToLive;
+        }
+
+        // impart ammo velocity in the direction of the firer
+        rb.velocity += gameObject.transform.forward * product.speed;
+
+        // spin it for kicks
+        rb.angularVelocity = Vector3.up * 10;
+
+        // this is a chargable shot, scale it by the power
+        shot.transform.localScale = new Vector3(product.damage, product.damage, product.damage);
+
+        // particles
+        _ps.Play();
+    }
+    void LaunchBeamAmmo(ship.Product product)
+    {
+        // line the shot up
+        var shot = GameObject.Instantiate(prefabBeamAmmo);
+        shot.transform.position = firepoint.transform.position;
+        shot.transform.rotation = firepoint.transform.rotation;
+
+        // duration
+        var beam = shot.GetComponent<AmmoBeam>();
+        beam.duration = product.timeToLive;
     }
 }
