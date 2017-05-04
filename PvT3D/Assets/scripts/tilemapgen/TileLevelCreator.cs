@@ -9,7 +9,7 @@ using Point = kaiGameUtil.Point<int>;
 public struct Tile
 {
     public static char EMPTY = (char)0;
-    public static char[] types = { EMPTY, 'X', '_', '-', 'D' };
+    public static char[] types = { EMPTY, 'X', '_', '-', 'D', 'S' };
 
     public readonly char type;
     public Tile(char type)
@@ -27,6 +27,7 @@ public sealed class TileLevelCreator : MonoBehaviour
     [SerializeField] GameObject floor = null;
     [SerializeField] GameObject wall = null;
     [SerializeField] GameObject door = null;
+    [SerializeField] GameObject spawner = null;
 
     // These will be drawn by the custom editor
     [HideInInspector] public TextAsset levelFile;
@@ -57,7 +58,8 @@ public sealed class TileLevelCreator : MonoBehaviour
         parent.transform.parent = transform;
         parent.transform.localPosition = Vector3.zero;
 
-        System.Action<int, int, GameObject, string> AddTile = (x, y, tile, name) =>
+        System.Action<int, int, GameObject, string> AddTile = 
+            (x, y, tile, name) =>
         {
             tile.name = string.Format("{0}x{1} {2}", x, y, name);
 
@@ -71,28 +73,33 @@ public sealed class TileLevelCreator : MonoBehaviour
             {
                 AddTile(x, y, GameObject.Instantiate(floor), floor.name);
 
+                if (tile.type == 'S')
+                {
+                    Debug.Log("ADDING SPAWNER");
+                    AddTile(x, y, GameObject.Instantiate(spawner), "spawner");
+                }
                 foreach (var dir in kaiGameUtil.Util.cardinalDirections)
                 {
                     var neighbor = kaiGameUtil.Util.Add(dir, new Point(x, y));
                     if (!layer.IsValid(neighbor) || layer.Get(neighbor).Empty)
                     {
                         // need to put up a wall, which is possibly a door
-                        string tileName = null;
-                        GameObject wallGO = null;
+                        string tileName = "unknown";
+                        GameObject tileGO = null;
                         if (tile.type == 'D')
                         {
                             tileName = "door";
-                            wallGO = GameObject.Instantiate(door);
+                            tileGO = GameObject.Instantiate(door);
                         }
                         else
                         {
                             tileName = "wall";
-                            wallGO = GameObject.Instantiate(wall);
+                            tileGO = GameObject.Instantiate(wall);
                         }
                         var angle = Util.Angle(kaiGameUtil.Util.down.ToVector2()) - Util.Angle(dir.ToVector2());
 
-                        wallGO.transform.eulerAngles = new Vector3(0, angle, 0);
-                        AddTile(x, y, wallGO, tileName);
+                        tileGO.transform.eulerAngles = new Vector3(0, angle, 0);
+                        AddTile(x, y, tileGO, tileName);
                     }
                 }
             }
@@ -116,6 +123,7 @@ public sealed class TileLevelCreator : MonoBehaviour
             for (int x = 0; x < width; ++x)
             {
                 var tile = x < line.Length ? new Tile(line[x]) : new Tile();
+                if (tile.type == 'S') Debug.Log("FOUND SPAWNER");
                 retval.Set(new Point(x, height-y-1), tile);
             }
         }
