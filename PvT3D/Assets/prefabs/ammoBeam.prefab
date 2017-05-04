@@ -22,8 +22,8 @@ GameObject:
   - component: {fileID: 33139258954659420}
   - component: {fileID: 65689523407621082}
   - component: {fileID: 23933973668692418}
-  m_Layer: 0
-  m_Name: beamVisual
+  m_Layer: 11
+  m_Name: visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -39,7 +39,7 @@ GameObject:
   - component: {fileID: 4605223680767534}
   - component: {fileID: 114892684998149772}
   - component: {fileID: 114100974336312960}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: ammoBeam
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -118,7 +118,7 @@ BoxCollider:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1198406419358918}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}

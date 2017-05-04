@@ -18,11 +18,11 @@ public class WeaponSchematic : MonoBehaviour, ship.IConsumer
 
         var schem = new ship.Schematic(5, 3);
         schem.grid.Set(0, 0, new ship.Power("P", 1));
-        schem.grid.Set(1, 0, new ship.AutofireCharger("C", 1));
+        schem.grid.Set(1, 0, new ship.AutofireCharger("C", 2));
         //schem.grid.Set(1, 0, new ship.Charger("C", 10));
         schem.grid.Set(2, 0, new ship.Envelope("E", 1));
-        schem.grid.Set(3, 0, new ship.Accelerator("A", 80));
-        schem.grid.Set(3, 0, new ship.LaserAccelerator("L", 100, 0.5f));
+        schem.grid.Set(3, 0, new ship.Accelerator("A", 60));
+        //schem.grid.Set(3, 0, new ship.LaserAccelerator("L", 100, 0.5f));
 
         ConnectWeaponSchematic(schem);
     }
