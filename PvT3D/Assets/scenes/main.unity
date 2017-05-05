@@ -19545,7 +19545,7 @@ MonoBehaviour:
   _actorParent: {fileID: 1354027102}
   _playerPrefab: {fileID: 1864547239629706, guid: 7ac1b59bfc679f54ba37d11b5fba075e,
     type: 2}
-  _enemyPrefab: {fileID: 1448038195057554, guid: 3dcc2443a8edc8b4fb9c46b8ffe40270,
+  _enemyPrefab: {fileID: 1805238065851154, guid: 495f1c49bd7c4054ea58b5f3659d345e,
     type: 2}
 --- !u!4 &1599316354
 Transform:
