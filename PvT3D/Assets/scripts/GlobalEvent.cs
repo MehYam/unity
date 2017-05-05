@@ -31,14 +31,15 @@ class GlobalEvent
     /// Events
     /// </summary>
     public event Action MainReady = delegate { };
-    public void FireMainReady() { MainReady(); }
-
     public event Action<Actor> ActorSpawned = delegate { };
-    public void FireActorSpawned(Actor a) { ActorSpawned(a); }
-
     public event Action<Actor> ActorDeath = delegate { };
-    public void FireActorDeath(Actor actor) { ActorDeath(actor); }
-
     public event Action<string> DebugString = delegate { };
+
+    public event Action<SimpleRoom> RoomEntered = delegate { };
+    public event Action<SimpleDoor> DoorOpened = delegate { };
+
+    public void FireMainReady() { MainReady(); }
+    public void FireActorSpawned(Actor a) { ActorSpawned(a); }
+    public void FireActorDeath(Actor actor) { ActorDeath(actor); }
     public void FireDebugString(string text) { DebugString(text); }
 }

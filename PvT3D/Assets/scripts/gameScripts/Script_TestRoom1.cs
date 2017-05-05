@@ -2,10 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RoomScript : MonoBehaviour
-{
+public class Script_TestRoom1 : MonoBehaviour {
+
 	// Use this for initialization
 	void Start () {
+		
+	}
+	
+	// Update is called once per frame
+	void Update () {
 		
 	}
 }

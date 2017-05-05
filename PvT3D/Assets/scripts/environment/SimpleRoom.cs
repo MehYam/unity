@@ -8,7 +8,7 @@ public class SimpleRoom : MonoBehaviour
     {
         if (actor.room != this)
         {
-            //Debug.LogFormat("Room {0} sees actor {1} enter", name, actor.name);
+            Debug.LogFormat("Room {0} sees actor {1} enter", name, actor.name);
         }
     }
 }

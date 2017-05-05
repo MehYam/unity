@@ -123,7 +123,6 @@ public sealed class TileLevelCreator : MonoBehaviour
             for (int x = 0; x < width; ++x)
             {
                 var tile = x < line.Length ? new Tile(line[x]) : new Tile();
-                if (tile.type == 'S') Debug.Log("FOUND SPAWNER");
                 retval.Set(new Point(x, height-y-1), tile);
             }
         }

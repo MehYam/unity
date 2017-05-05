@@ -29,6 +29,8 @@ public sealed class Spawner : MonoBehaviour
         {
             // create an enemy, give it initial heading and velocity.
             var spawn = GameObject.Instantiate(enemy);
+            spawn.transform.parent = Main.game.actorParent.transform;
+
             var spawnedActor = spawn.GetComponent<Actor>();
             _liveEnemies.Add(spawnedActor);
 
