@@ -58,7 +58,7 @@ public sealed class TileLevelCreator : MonoBehaviour
         parent.transform.parent = transform;
         parent.transform.localPosition = Vector3.zero;
 
-        System.Action<int, int, GameObject, string> AddTile = 
+        System.Action<int, int, GameObject, string> AddRoomObject = 
             (x, y, tile, name) =>
         {
             tile.name = string.Format("{0}x{1} {2}", x, y, name);
@@ -71,12 +71,11 @@ public sealed class TileLevelCreator : MonoBehaviour
         {
             if (!tile.Empty)
             {
-                AddTile(x, y, GameObject.Instantiate(floor), floor.name);
+                AddRoomObject(x, y, GameObject.Instantiate(floor), floor.name);
 
                 if (tile.type == 'S')
                 {
-                    Debug.Log("ADDING SPAWNER");
-                    AddTile(x, y, GameObject.Instantiate(spawner), "spawner");
+                    AddRoomObject(x, y, GameObject.Instantiate(spawner), "spawner");
                 }
                 foreach (var dir in kaiGameUtil.Util.cardinalDirections)
                 {
@@ -99,7 +98,7 @@ public sealed class TileLevelCreator : MonoBehaviour
                         var angle = Util.Angle(kaiGameUtil.Util.down.ToVector2()) - Util.Angle(dir.ToVector2());
 
                         tileGO.transform.eulerAngles = new Vector3(0, angle, 0);
-                        AddTile(x, y, tileGO, tileName);
+                        AddRoomObject(x, y, tileGO, tileName);
                     }
                 }
             }

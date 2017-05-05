@@ -4,9 +4,10 @@ using System;
 
 public sealed class Main : MonoBehaviour, IGame
 {
-    [SerializeField] GameObject _playerPrefab;
     [SerializeField] GameObject _actorParent;
-	void Start()
+    [SerializeField] GameObject _playerPrefab;
+    [SerializeField] GameObject _enemyPrefab;
+    void Start()
     {
         //Physics.gravity = Vector3.zero;
         game = this;
@@ -36,6 +37,7 @@ public sealed class Main : MonoBehaviour, IGame
             Camera.main.GetComponent<CameraFollow>().target = _player.gameObject;
         }
     }
-    public GameObject playerPrefab { get { return _playerPrefab; } }
     public GameObject actorParent { get { return _actorParent; } }
+    public GameObject defaultPlayerPrefab { get { return _playerPrefab; } }
+    public GameObject defaultEnemyPrefab { get { return _enemyPrefab; } }
 }

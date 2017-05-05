@@ -8,7 +8,7 @@ public class SimpleRoom : MonoBehaviour
     {
         if (actor.room != this)
         {
-            SendMessage("OnRoomEntered", this);
+            SendMessage("OnRoomEntered", this, SendMessageOptions.DontRequireReceiver);
         }
     }
 }

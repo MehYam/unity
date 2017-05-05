@@ -21,5 +21,11 @@ public class Script_TestRoom1 : MonoBehaviour
         {
             door.Close();
         }
+
+        yield return new WaitForSeconds(2);
+        var spawner = GetComponentInChildren<Spawner>();
+        spawner.target = Main.game.player.gameObject;
+        spawner.enemy = Main.game.defaultEnemyPrefab;
+        spawner.enabled = true;
     }
 }

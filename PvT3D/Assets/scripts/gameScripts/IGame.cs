@@ -7,5 +7,6 @@ public interface IGame
     GameObject          actorParent { get; }
     Actor               player { get; set; }
 
-    GameObject          playerPrefab { get; }
+    GameObject          defaultPlayerPrefab { get; }
+    GameObject          defaultEnemyPrefab { get; }
 }

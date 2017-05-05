@@ -12667,6 +12667,10 @@ Prefab:
       propertyPath: target
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 1448038195057554, guid: 3dcc2443a8edc8b4fb9c46b8ffe40270, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 3dcc2443a8edc8b4fb9c46b8ffe40270, type: 2}
   m_IsPrefabParent: 0
@@ -13799,7 +13803,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: b5c59dc07e0ce464894212547ef9e8af, type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: b5c59dc07e0ce464894212547ef9e8af, type: 3}
       propertyPath: m_Name
@@ -13923,6 +13927,10 @@ Prefab:
         type: 2}
       propertyPath: target
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1805238065851154, guid: 495f1c49bd7c4054ea58b5f3659d345e, type: 2}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 495f1c49bd7c4054ea58b5f3659d345e, type: 2}
@@ -19534,9 +19542,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 009973b09c79f0c4e8bfe8ae264cfa77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _actorParent: {fileID: 1354027102}
   _playerPrefab: {fileID: 1864547239629706, guid: 7ac1b59bfc679f54ba37d11b5fba075e,
     type: 2}
-  _actorParent: {fileID: 1354027102}
+  _enemyPrefab: {fileID: 1448038195057554, guid: 3dcc2443a8edc8b4fb9c46b8ffe40270,
+    type: 2}
 --- !u!4 &1599316354
 Transform:
   m_ObjectHideFlags: 0

@@ -7,7 +7,7 @@ public class Script_StartingRoom : MonoBehaviour
 	void Start()
     {
         // Spawn player
-		var player = GameObject.Instantiate(Main.game.playerPrefab);
+		var player = GameObject.Instantiate(Main.game.defaultPlayerPrefab);
         player.transform.parent = Main.game.actorParent.transform;
         
         Main.game.player = player.GetComponent<Actor>();
