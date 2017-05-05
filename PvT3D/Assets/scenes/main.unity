@@ -19572,6 +19572,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _actorParent: {fileID: 1354027102}
+  _ammoParent: {fileID: 1844522409}
+  _effectParent: {fileID: 756977983}
   _playerPrefab: {fileID: 1864547239629706, guid: 7ac1b59bfc679f54ba37d11b5fba075e,
     type: 2}
   _enemyPrefab: {fileID: 1805238065851154, guid: 495f1c49bd7c4054ea58b5f3659d345e,
