@@ -6597,6 +6597,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d83f95a0448a69f409959e0d2dceb4da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  time: 1
   left: {fileID: 1702037496}
   right: {fileID: 1862062577}
 --- !u!1 &367814345
@@ -19796,6 +19797,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d83f95a0448a69f409959e0d2dceb4da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  time: 1
   left: {fileID: 1677944095}
   right: {fileID: 409205580}
 --- !u!4 &1626052164 stripped
@@ -20371,6 +20373,7 @@ GameObject:
   - component: {fileID: 1678411143}
   - component: {fileID: 1678411145}
   - component: {fileID: 1678411144}
+  - component: {fileID: 1678411146}
   m_Layer: 0
   m_Name: simpleRoom 2
   m_TagString: Untagged
@@ -20421,6 +20424,17 @@ MonoBehaviour:
   levelFile: {fileID: 4900000, guid: 6ff47d434734dd94f869f10f6fe3a837, type: 3}
   size: {x: 2, y: 2}
   padding: 1
+--- !u!114 &1678411146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1678411142}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2438c1e77c185324ba624d08f0db2bcb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1684462208
 GameObject:
   m_ObjectHideFlags: 0
@@ -22293,6 +22307,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d83f95a0448a69f409959e0d2dceb4da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  time: 1
   left: {fileID: 121501301}
   right: {fileID: 25710842}
 --- !u!1 &1888320418

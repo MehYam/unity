@@ -42,4 +42,6 @@ class GlobalEvent
     public void FireActorSpawned(Actor a) { ActorSpawned(a); }
     public void FireActorDeath(Actor actor) { ActorDeath(actor); }
     public void FireDebugString(string text) { DebugString(text); }
+
+    public void FireRoomEntered(SimpleRoom room) { RoomEntered(room); }
 }
