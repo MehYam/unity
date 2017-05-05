@@ -19547,6 +19547,12 @@ MonoBehaviour:
     type: 2}
   _enemyPrefab: {fileID: 1805238065851154, guid: 495f1c49bd7c4054ea58b5f3659d345e,
     type: 2}
+  _smallExplosionPrefab: {fileID: 1000013462590818, guid: ecdd96beb7f93494880c052dfccf9dc1,
+    type: 2}
+  _bigExplosionPrefab: {fileID: 1000011797152326, guid: acf39d9f4addf294d93fa56fa373961b,
+    type: 2}
+  _plasmaExplosionPrefab: {fileID: 1000011128802252, guid: 96730f8640590934eacb6f860058e7f9,
+    type: 2}
 --- !u!4 &1599316354
 Transform:
   m_ObjectHideFlags: 0

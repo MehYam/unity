@@ -44,6 +44,12 @@ public sealed class Actor : MonoBehaviour
             {
                 //Debug.Log("Taken lethal damage DESTROY=====");
                 GlobalEvent.Instance.FireActorDeath(this);
+
+                if (gameObject.layer == LayerMask.NameToLayer("enemy"))
+                {
+                    var explosion = GameObject.Instantiate(Main.game.plasmaExplosionPrefab);
+                    explosion.transform.position = transform.position;
+                }
                 GameObject.Destroy(gameObject);
             }
             else

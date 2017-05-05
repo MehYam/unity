@@ -7,6 +7,9 @@ public sealed class Main : MonoBehaviour, IGame
     [SerializeField] GameObject _actorParent;
     [SerializeField] GameObject _playerPrefab;
     [SerializeField] GameObject _enemyPrefab;
+    [SerializeField] GameObject _smallExplosionPrefab;
+    [SerializeField] GameObject _bigExplosionPrefab;
+    [SerializeField] GameObject _plasmaExplosionPrefab;
     void Start()
     {
         //Physics.gravity = Vector3.zero;
@@ -40,4 +43,7 @@ public sealed class Main : MonoBehaviour, IGame
     public GameObject actorParent { get { return _actorParent; } }
     public GameObject defaultPlayerPrefab { get { return _playerPrefab; } }
     public GameObject defaultEnemyPrefab { get { return _enemyPrefab; } }
+    public GameObject smallExplosionPrefab { get { return _smallExplosionPrefab; } }
+    public GameObject bigExplosionPrefab { get { return _bigExplosionPrefab; } }
+    public GameObject plasmaExplosionPrefab { get { return _plasmaExplosionPrefab; } }
 }
