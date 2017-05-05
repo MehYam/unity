@@ -131,15 +131,20 @@ public class WeaponSchematic : MonoBehaviour, ship.IConsumer
                 break;
         }
     }
+    void OrientAmmo(GameObject ammo)
+    {
+        ammo.transform.parent = Main.game.ammoParent.transform;
+        ammo.transform.position = firepoint.transform.position;
+        ammo.transform.rotation = firepoint.transform.rotation;
+    }
     void LaunchPlasmaAmmo(ship.AmmoProduct product)
     {
         // line the shot up
-        var shot = GameObject.Instantiate(prefabPlasmaAmmo);
-        shot.transform.position = firepoint.transform.position;
-        shot.transform.rotation = firepoint.transform.rotation;
+        var ammo = GameObject.Instantiate(prefabPlasmaAmmo);
+        OrientAmmo(ammo);
 
         // inherit the ship's velocity
-        var rb = shot.transform.GetComponent<Rigidbody>();
+        var rb = ammo.transform.GetComponent<Rigidbody>();
         if (inheritShipVelocity && gameObject.GetComponent<Rigidbody>() != null)
         {
             //KAI: a bug, turret ammo needs to pick up launcher velocity as well
@@ -147,7 +152,7 @@ public class WeaponSchematic : MonoBehaviour, ship.IConsumer
         }
 
         // duration
-        var ttl = shot.GetComponent<TimeToLive>();
+        var ttl = ammo.GetComponent<TimeToLive>();
         if (ttl != null)
         {
             ttl.seconds = product.duration;
@@ -160,7 +165,7 @@ public class WeaponSchematic : MonoBehaviour, ship.IConsumer
         rb.angularVelocity = Vector3.up * 10;
 
         // this is a chargable shot, scale it by the power
-        shot.transform.localScale = new Vector3(product.damage, product.damage, product.damage);
+        ammo.transform.localScale = new Vector3(product.damage, product.damage, product.damage);
 
         // particles
         _ps.Play();
@@ -168,12 +173,11 @@ public class WeaponSchematic : MonoBehaviour, ship.IConsumer
     void LaunchBeamAmmo(ship.AmmoProduct product)
     {
         // line the shot up
-        var shot = GameObject.Instantiate(prefabBeamAmmo);
-        shot.transform.position = firepoint.transform.position;
-        shot.transform.rotation = firepoint.transform.rotation;
+        var ammo = GameObject.Instantiate(prefabBeamAmmo);
+        OrientAmmo(ammo);
 
         // duration
-        var beam = shot.GetComponent<AmmoBeam>();
+        var beam = ammo.GetComponent<AmmoBeam>();
         beam.duration = product.duration;
         beam.distance = product.distance;
         beam.width = product.width;

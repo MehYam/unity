@@ -11237,6 +11237,34 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7adfb541db231d14b99faf6d4b6dffeb, type: 3}
   m_IsPrefabParent: 0
+--- !u!1 &756977983
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 756977984}
+  m_Layer: 0
+  m_Name: _effects
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &756977984
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 756977983}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &761254199
 GameObject:
   m_ObjectHideFlags: 0
@@ -14107,6 +14135,7 @@ MonoBehaviour:
   acceleration: 200
   rotationalAcceleration: 0.5
   maxSpeed: 8
+  explosionOnDeath: 0
 --- !u!1 &1030163952
 GameObject:
   m_ObjectHideFlags: 0
@@ -19553,6 +19582,7 @@ MonoBehaviour:
     type: 2}
   _plasmaExplosionPrefab: {fileID: 1000011128802252, guid: 96730f8640590934eacb6f860058e7f9,
     type: 2}
+  _damageSmokePrefab: {fileID: 100000, guid: 5e26ff61dd22d4746ab41a42b8de9f7d, type: 2}
 --- !u!4 &1599316354
 Transform:
   m_ObjectHideFlags: 0
@@ -21994,6 +22024,34 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1833417457}
   m_Mesh: {fileID: 4300000, guid: 307a228c274840f4dbf02848f7b4d9fe, type: 3}
+--- !u!1 &1844522409
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1844522410}
+  m_Layer: 0
+  m_Name: _ammo
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1844522410
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1844522409}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1862062577
 GameObject:
   m_ObjectHideFlags: 0

@@ -209,6 +209,7 @@ MonoBehaviour:
   acceleration: 75
   rotationalAcceleration: 0.5
   maxSpeed: 20
+  explosionOnDeath: 1
 --- !u!114 &114723200657520958
 MonoBehaviour:
   m_ObjectHideFlags: 1

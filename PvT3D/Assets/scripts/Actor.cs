@@ -5,15 +5,19 @@ using PvT3D.Util;
 
 public sealed class Actor : MonoBehaviour
 {
-    public float health = 0;
-    public float collisionDamage = 0;
+    const float HEALTH_PER_DAMAGE_SMOKE = 25;
+
+    [Tooltip("Starting health value.  Zero health for invulnerability")]
+    [SerializeField] float health = 0;
+    [SerializeField] float collisionDamage = 0;
     public float acceleration = 10;
     public float rotationalAcceleration = 0.5f;
     public float maxSpeed = 10;
+    public bool explosionOnDeath = false;
 
-    static int _collisions = 0;
-
+    int _collisions = 0;
     Color _startColor;
+    float _startHealth = 0;
     void Start()
     {
         var material = Util.GetMaterialInChildren(gameObject);
@@ -21,40 +25,79 @@ public sealed class Actor : MonoBehaviour
         {
             _startColor = material.color;
         }
-
-        // Detect our room - KAI: this looks expensive, esp. for things like ammo?  Also, there may be an easier way to do this with raycasts/collisions?
-        //var rooms = FindObjectsOfType<SimpleRoom>();
-        //foreach (var room in rooms)
-        //{
-
-        //}
+        _startHealth = health;
     }
     void OnCollisionEnter(Collision col)
     {
         ++_collisions;
 
         var otherActor = col.collider.GetComponent<Actor>();
-        var doesDamage = otherActor != null && gameObject.layer != otherActor.gameObject.layer;
+        var takingDamage = 
+            otherActor != null && 
+            gameObject.layer != otherActor.gameObject.layer && 
+            _startHealth > 0;
 
-        //Debug.Log(string.Format("{0}. {1} hit by {2}, does damage: {3}", _collisions, name, col.collider.name, doesDamage));
-        if (doesDamage)
+        //Debug.Log(string.Format("{0}. {1} hit by {2}, does damage: {3}", _collisions, name, col.collider.name, takingDamage));
+        if (takingDamage)
         {
+            int damageSmokeBeforeHit = Mathf.FloorToInt((_startHealth - health) / HEALTH_PER_DAMAGE_SMOKE);
             health -= otherActor.collisionDamage;
-            if (health <= 0)
+            if (health > 0)
             {
-                //Debug.Log("Taken lethal damage DESTROY=====");
+                // Injury
+                StartCoroutine(DisplayHit());
+                AddDamageSmoke(Mathf.FloorToInt((_startHealth - health) / HEALTH_PER_DAMAGE_SMOKE) - damageSmokeBeforeHit);
+            }
+            else
+            {
+                // Death
                 GlobalEvent.Instance.FireActorDeath(this);
-
-                if (gameObject.layer == LayerMask.NameToLayer("enemy"))
+                RemoveDamageSmoke();
+                if (explosionOnDeath)
                 {
                     var explosion = GameObject.Instantiate(Main.game.plasmaExplosionPrefab);
+                    explosion.transform.parent = Main.game.effectParent.transform;
                     explosion.transform.position = transform.position;
                 }
                 GameObject.Destroy(gameObject);
             }
-            else
+        }
+    }
+    Transform damageSmoke;
+    void AddDamageSmoke(int num)
+    {
+        Debug.Log("AddDamageSmoke " + num);
+        if (num > 0)
+        {
+            if (damageSmoke == null)
             {
-                StartCoroutine(DisplayHit());
+                damageSmoke = new GameObject("damageSmokeParent").transform;
+                damageSmoke.parent = transform;
+                damageSmoke.transform.localPosition = Vector3.zero;
+
+                for (int i = 0; i < num; ++i)
+                {
+                    var smoke = GameObject.Instantiate(Main.game.damageSmokePrefab);
+                    smoke.transform.parent = damageSmoke;
+                    smoke.transform.localPosition = Random.insideUnitSphere * 3;
+                }
+            }
+        }
+    }
+    void RemoveDamageSmoke()
+    {
+        // we want damage smoke particles to stick around after death, so parent them to the effects layer
+        if (damageSmoke != null)
+        {
+            damageSmoke.parent = Main.game.effectParent.transform;
+
+            var ttl = damageSmoke.gameObject.AddComponent<TimeToLive>();
+            ttl.seconds = 5;
+
+            var particles = damageSmoke.GetComponentsInChildren<ParticleSystem>();
+            foreach (var particle in particles)
+            {
+                particle.Stop();
             }
         }
     }

@@ -221,3 +221,4 @@ MonoBehaviour:
   acceleration: 20
   rotationalAcceleration: 0.25
   maxSpeed: 15
+  explosionOnDeath: 1
