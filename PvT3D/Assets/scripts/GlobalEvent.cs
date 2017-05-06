@@ -44,4 +44,5 @@ class GlobalEvent
     public void FireDebugString(string text) { DebugString(text); }
 
     public void FireRoomEntered(SimpleRoom room) { RoomEntered(room); }
+    public void FireDoorOpened(SimpleDoor door) { DoorOpened(door); }
 }

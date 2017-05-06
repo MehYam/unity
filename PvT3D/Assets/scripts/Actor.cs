@@ -11,8 +11,11 @@ public sealed class Actor : MonoBehaviour
     [SerializeField] float health = 0;
     [SerializeField] float collisionDamage = 0;
     public float acceleration = 10;
-    public float rotationalAcceleration = 0.5f;
     public float maxSpeed = 10;
+    public float rotationalAcceleration = 0.5f;
+    [Tooltip("Maximum rotation speed in Rotations Per Second")]
+    public float maxRPS = 1;
+
     public bool explosionOnDeath = false;
 
     int _collisions = 0;
@@ -66,7 +69,6 @@ public sealed class Actor : MonoBehaviour
     Transform damageSmoke;
     void AddDamageSmoke(int num)
     {
-        Debug.Log("AddDamageSmoke " + num);
         if (num > 0)
         {
             if (damageSmoke == null)

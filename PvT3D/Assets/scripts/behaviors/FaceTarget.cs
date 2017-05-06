@@ -9,10 +9,6 @@ public sealed class FaceTarget : MonoBehaviour
     [Tooltip("The GameObject this object will LookAt()")]
     public GameObject target;
 
-    //KAI: copy/pasta of FaceForward
-    [Tooltip("Maximum rotation speed in Rotations Per Second")]
-    public float maxRPS = 1;
-
     Actor _actor;
     void Start()
     {
@@ -32,7 +28,7 @@ public sealed class FaceTarget : MonoBehaviour
 
         rb.AddTorque(0, angleDelta * _actor.rotationalAcceleration, 0);
 #else
-        var maxRotationThisFrame = maxRPS * Time.fixedDeltaTime * 360;
+        var maxRotationThisFrame = _actor.maxRPS * Time.fixedDeltaTime * 360;
 
         angleDelta = Mathf.Clamp(angleDelta, -maxRotationThisFrame, maxRotationThisFrame);
 

@@ -179,7 +179,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rollTime: 0.5
-  maxRPS: 0.2
   maxRollAngle: 25
 --- !u!114 &114324852871543438
 MonoBehaviour:
@@ -204,7 +203,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
-  maxRPS: 0.2
 --- !u!114 &114944114339560750
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -219,6 +217,7 @@ MonoBehaviour:
   health: 100
   collisionDamage: 5
   acceleration: 20
-  rotationalAcceleration: 0.25
   maxSpeed: 15
+  rotationalAcceleration: 0.25
+  maxRPS: 0.2
   explosionOnDeath: 1

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 /// <summary>
@@ -9,14 +9,16 @@ public sealed class RollIntoTurns : MonoBehaviour
     [Tooltip("Time required to complete the roll.  Smaller values = faster response")]
     public float rollTime = 0.2f;
 
-    [Tooltip("HACK - Maximum rotation per second that the ship is capable of.  This must match what's set in the FaceForward/FaceMouse script")]
-    public float maxRPS = 1f;
-
     [Tooltip("Maximum amount of roll to apply during turns")]
     public float maxRollAngle = 60;
 
     float _lastHeading = 0;
     float _velocityZ = 0;
+    Actor _actor;
+    void Start()
+    {
+        _actor = GetComponent<Actor>();
+    }
     void FixedUpdate()
     {
         if (Time.fixedDeltaTime > 0)
@@ -24,7 +26,7 @@ public sealed class RollIntoTurns : MonoBehaviour
             // calculate a rotational velocity
             var currentHeading = gameObject.transform.eulerAngles.y;
             var rotationVelocity = Mathf.DeltaAngle(currentHeading, _lastHeading) / Time.fixedDeltaTime;
-            var rotationPctOfMax = rotationVelocity / 360 / maxRPS;
+            var rotationPctOfMax = rotationVelocity / 360 / _actor.maxRPS;
 
             // tilt the ship to mimic roll during turns
             var angles = gameObject.transform.eulerAngles;

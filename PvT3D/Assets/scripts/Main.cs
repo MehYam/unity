@@ -10,6 +10,7 @@ public sealed class Main : MonoBehaviour, IGame
 
     [SerializeField] GameObject _playerPrefab = null;
     [SerializeField] GameObject _enemyPrefab = null;
+    [SerializeField] GameObject _enemyPrefab2 = null;
     [SerializeField] GameObject _smallExplosionPrefab = null;
     [SerializeField] GameObject _bigExplosionPrefab = null;
     [SerializeField] GameObject _plasmaExplosionPrefab = null;
@@ -50,6 +51,7 @@ public sealed class Main : MonoBehaviour, IGame
 
     public GameObject defaultPlayerPrefab { get { return _playerPrefab; } }
     public GameObject defaultEnemyPrefab { get { return _enemyPrefab; } }
+    public GameObject defaultEnemyPrefab2 { get { return _enemyPrefab2; } }
     public GameObject smallExplosionPrefab { get { return _smallExplosionPrefab; } }
     public GameObject bigExplosionPrefab { get { return _bigExplosionPrefab; } }
     public GameObject plasmaExplosionPrefab { get { return _plasmaExplosionPrefab; } }

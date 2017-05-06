@@ -13,6 +13,7 @@ public interface IGame
 
     GameObject          defaultPlayerPrefab { get; }
     GameObject          defaultEnemyPrefab { get; }
+    GameObject          defaultEnemyPrefab2 { get; }
     GameObject          smallExplosionPrefab { get; }
     GameObject          bigExplosionPrefab { get; }
     GameObject          plasmaExplosionPrefab { get; }
