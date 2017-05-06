@@ -36,7 +36,13 @@ public sealed class Spawner : MonoBehaviour
 
             spawn.transform.position = transform.position;
             spawn.transform.eulerAngles = new Vector3(0, Util.DegreesRotationInY(target.transform.position - spawn.transform.position), 0);
-            spawn.GetComponent<FaceTarget>().target = target;
+
+            var faceTarget = spawn.GetComponent<FaceTarget>();
+            if (faceTarget != null)
+            {
+                Debug.LogWarningFormat("KAI: {0} is still using FaceTarget instead of FaceTargetBehavior, fix", spawn.name);
+                spawn.GetComponent<FaceTarget>().target = target;
+            }
 
             var body = spawn.GetComponent<Rigidbody>();
             body.velocity = spawn.transform.right * spawnedActor.maxSpeed;

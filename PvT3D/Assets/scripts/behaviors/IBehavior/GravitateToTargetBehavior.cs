@@ -9,6 +9,6 @@ public class GravitateToTargetBehavior : IBehavior
     public GravitateToTargetBehavior(GameObject target) { this.target = target; }
     public void FixedUpdate(Actor actor)
     {
-        actor.GetComponent<Rigidbody>().AddForce(target.transform.position - actor.transform.position);
+        actor.GetComponent<Rigidbody>().AddForce((target.transform.position - actor.transform.position).normalized * actor.acceleration);
     }
 }

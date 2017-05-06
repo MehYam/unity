@@ -100,7 +100,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1448038195057554}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.86, y: 0, z: 0}
+  m_LocalPosition: {x: -4, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4840487980086166}
@@ -238,10 +238,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 100
   collisionDamage: 5
-  acceleration: 200
-  maxSpeed: 40
+  acceleration: 150
+  maxSpeed: 30
   rotationalAcceleration: 0.5
-  maxRPS: 1
+  maxRPS: 0.5
   explosionOnDeath: 1
 --- !u!114 &114507375071166002
 MonoBehaviour:
