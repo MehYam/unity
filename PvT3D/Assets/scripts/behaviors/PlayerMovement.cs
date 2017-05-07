@@ -15,7 +15,6 @@ public sealed class PlayerMovement : MonoBehaviour
         var movement = InputUtil.MovementVector;
         if (movement != Vector3.zero)
         {
-            movement.Normalize();
             gameObject.GetComponent<Rigidbody>().AddForce(movement * actor.acceleration);
         }
     }
