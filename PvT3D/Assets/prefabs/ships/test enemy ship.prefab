@@ -20,13 +20,13 @@ GameObject:
   m_Component:
   - component: {fileID: 4920527140040392}
   - component: {fileID: 54689799292347762}
+  - component: {fileID: 114944114339560750}
   - component: {fileID: 114131591620188980}
   - component: {fileID: 114108188232128802}
   - component: {fileID: 114469299749341362}
   - component: {fileID: 114323807696423354}
   - component: {fileID: 114324852871543438}
   - component: {fileID: 65546403197697372}
-  - component: {fileID: 114944114339560750}
   m_Layer: 10
   m_Name: test enemy ship
   m_TagString: Untagged
@@ -150,7 +150,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1805238065851154}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2bad94e1e26b9b44f9285e7cbed635aa, type: 3}
   m_Name: 

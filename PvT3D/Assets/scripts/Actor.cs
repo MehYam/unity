@@ -21,6 +21,7 @@ public sealed class Actor : MonoBehaviour
     int _collisions = 0;
     Color _startColor;
     float _startHealth = 0;
+    float _startY = 0;
     void Start()
     {
         var material = Util.GetMaterialInChildren(gameObject);
@@ -29,6 +30,7 @@ public sealed class Actor : MonoBehaviour
             _startColor = material.color;
         }
         _startHealth = health;
+        _startY = transform.position.y;
     }
     void OnCollisionEnter(Collision col)
     {
@@ -121,7 +123,17 @@ public sealed class Actor : MonoBehaviour
         //NOTE: Actor should be set to run after all other scripts in the script execution order, unless we start using the 
         // roll-your-own composited behaviors from PvT
         var body = GetComponent<Rigidbody>();
-        body.velocity = Vector3.ClampMagnitude(body.velocity, maxSpeed);
+        var clamped = Vector3.ClampMagnitude(body.velocity, maxSpeed);
+        clamped.y = 0;
+        body.velocity = clamped;
+
+        // lock the actor's height for now.  This is a hack, partly because the freeze constraints options on the rigidbody fail upon collision
+        var position = transform.position;
+        if (position.y != _startY)
+        {
+            position.y = _startY;
+            transform.position = position;
+        }
     }
 
     public SimpleRoom room { get; private set; }
