@@ -26,26 +26,6 @@ public class WeaponSchematic : MonoBehaviour, ship.IConsumer
 
         ConnectWeaponSchematic(schem);
     }
-    bool fireState = false;
-    void FixedUpdate()
-    {
-        var fv = InputUtil.GetFiringVector(transform.position);
-        if (fv != Vector3.zero)
-        {
-            // determine the change in state
-            if (!fireState)
-            {
-                fireState = true;
-                OnFireStart();
-            }
-            OnFireFrame();
-        }
-        else if (fireState)
-        {
-            OnFireEnd();
-            fireState = false;
-        }
-    }
     class SchematicState
     {
         public readonly ship.ICharger charger;
@@ -89,21 +69,21 @@ public class WeaponSchematic : MonoBehaviour, ship.IConsumer
             _state.producer.output = this;
         }
     }
-    void OnFireStart()
+    public void OnFireStart()
     {
         if (_state != null && _state.charger != null)
         {
             _state.charger.Charge();
         }
     }
-    void OnFireEnd()
+    public void OnFireEnd()
     {
         if (_state != null && _state.charger != null)
         {
             _state.charger.Discharge();
         }
     }
-    void OnFireFrame()
+    public void OnFireFrame()
     {
         if (_state != null && _state.frameHandler != null)
         {

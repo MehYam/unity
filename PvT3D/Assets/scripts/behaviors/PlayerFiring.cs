@@ -5,21 +5,31 @@ using PvT3D.Util;
 
 public sealed class PlayerFiring : MonoBehaviour
 {
-    MonoBehaviour firing;
-
-    //KAI: this potentially lags the firing for one frame...
+    WeaponSchematic schematic;
 
 	// Use this for initialization
 	void Start()
     {
-        firing = GetComponent<FireWeapon>();
-        firing.enabled = false;
+        schematic = GetComponent<WeaponSchematic>();  // 
 	}
+    bool fireState = false;
     void FixedUpdate()
     {
-        if (firing != null)
+        var fv = InputUtil.GetFiringVector(transform.position);
+        if (fv != Vector3.zero)
         {
-            firing.enabled = InputUtil.GetFiringVector(transform.position) != Vector3.zero;
+            // determine the change in state
+            if (!fireState)
+            {
+                fireState = true;
+                schematic.OnFireStart();
+            }
+            schematic.OnFireFrame();
+        }
+        else if (fireState)
+        {
+            schematic.OnFireEnd();
+            fireState = false;
         }
     }
 }
