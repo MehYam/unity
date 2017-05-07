@@ -45,11 +45,15 @@ public sealed class Actor : MonoBehaviour
         {
             int damageSmokeBeforeHit = Mathf.FloorToInt((_startHealth - health) / HEALTH_PER_DAMAGE_SMOKE);
             health -= otherActor.collisionDamage;
+
             if (health > 0)
             {
                 // Injury
+                int damageSmokeAfterHit = Mathf.FloorToInt((_startHealth - health) / HEALTH_PER_DAMAGE_SMOKE);
+                AddDamageSmoke(damageSmokeAfterHit - damageSmokeBeforeHit);
+
+                Debug.LogFormat("before hit {0}, after hit {1}", damageSmokeBeforeHit, damageSmokeAfterHit);
                 StartCoroutine(DisplayHit());
-                AddDamageSmoke(Mathf.FloorToInt((_startHealth - health) / HEALTH_PER_DAMAGE_SMOKE) - damageSmokeBeforeHit);
             }
             else
             {
@@ -76,13 +80,12 @@ public sealed class Actor : MonoBehaviour
                 damageSmoke = new GameObject("damageSmokeParent").transform;
                 damageSmoke.parent = transform;
                 damageSmoke.transform.localPosition = Vector3.zero;
-
-                for (int i = 0; i < num; ++i)
-                {
-                    var smoke = GameObject.Instantiate(Main.game.damageSmokePrefab);
-                    smoke.transform.parent = damageSmoke;
-                    smoke.transform.localPosition = Random.insideUnitSphere * 3;
-                }
+            }
+            for (int i = 0; i < num; ++i)
+            {
+                var smoke = GameObject.Instantiate(Main.game.damageSmokePrefab);
+                smoke.transform.parent = damageSmoke;
+                smoke.transform.localPosition = Random.insideUnitSphere * 3;
             }
         }
     }
