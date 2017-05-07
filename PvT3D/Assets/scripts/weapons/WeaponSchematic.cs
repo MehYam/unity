@@ -11,11 +11,21 @@ public class WeaponSchematic : MonoBehaviour, ship.IConsumer
     [SerializeField] GameObject prefabBeamAmmo = null;
     [SerializeField] bool inheritShipVelocity = false;
 
+    int ammoLayer;
     ParticleSystem _ps;
     void Start()
     {
+        if (gameObject.layer == LayerMask.NameToLayer("enemy"))
+        {
+            ammoLayer = LayerMask.NameToLayer("enemyAmmo");
+        }
+        else if (gameObject.layer == LayerMask.NameToLayer("friendly"))
+        {
+            ammoLayer = LayerMask.NameToLayer("friendlyAmmo");
+        }
         _ps = firepoint.GetComponent<ParticleSystem>();
 
+        // a sample schematic - needs to come from somewhere else
         var schem = new ship.Schematic(5, 3);
         schem.grid.Set(0, 0, new ship.Power("P", 1));
         schem.grid.Set(1, 0, new ship.AutofireCharger("C", 2));
@@ -69,6 +79,8 @@ public class WeaponSchematic : MonoBehaviour, ship.IConsumer
             _state.producer.output = this;
         }
     }
+
+    //KAI: OnFirexxx kind of belong in some interface
     public void OnFireStart()
     {
         if (_state != null && _state.charger != null)
@@ -90,6 +102,11 @@ public class WeaponSchematic : MonoBehaviour, ship.IConsumer
             _state.frameHandler.OnFixedUpdate();
         }
     }
+
+    /// <summary>
+    /// ship.IConsumer implementation
+    /// </summary>
+    /// <param name="product">the ammo coming from the weapon components</param>
     public void ConsumeProduct(ship.AmmoProduct product) 
     {
         switch(product.type)
@@ -116,6 +133,7 @@ public class WeaponSchematic : MonoBehaviour, ship.IConsumer
         ammo.transform.parent = Main.game.ammoParent.transform;
         ammo.transform.position = firepoint.transform.position;
         ammo.transform.rotation = firepoint.transform.rotation;
+        ammo.layer = ammoLayer;
     }
     void LaunchPlasmaAmmo(ship.AmmoProduct product)
     {
@@ -148,7 +166,10 @@ public class WeaponSchematic : MonoBehaviour, ship.IConsumer
         ammo.transform.localScale = new Vector3(product.damage, product.damage, product.damage);
 
         // particles
-        _ps.Play();
+        if (_ps != null)
+        {
+            _ps.Play();
+        }
     }
     void LaunchBeamAmmo(ship.AmmoProduct product)
     {

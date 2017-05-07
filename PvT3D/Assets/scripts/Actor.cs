@@ -52,7 +52,6 @@ public sealed class Actor : MonoBehaviour
                 int damageSmokeAfterHit = Mathf.FloorToInt((_startHealth - health) / HEALTH_PER_DAMAGE_SMOKE);
                 AddDamageSmoke(damageSmokeAfterHit - damageSmokeBeforeHit);
 
-                Debug.LogFormat("before hit {0}, after hit {1}", damageSmokeBeforeHit, damageSmokeAfterHit);
                 StartCoroutine(DisplayHit());
             }
             else
