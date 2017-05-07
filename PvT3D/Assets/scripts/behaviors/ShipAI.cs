@@ -19,6 +19,11 @@ public class ShipAI : MonoBehaviour
             //new FaceForwardBehavior()
             new FaceTargetBehavior(Main.game.player.gameObject)
         );
+
+        yield return new WaitForSeconds(10);
+
+        _currentBehavior = new CompositeBehavior(
+        );
         yield return null;
     }
 
