@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 111492375166683850}
   - component: {fileID: 65334166440608596}
   - component: {fileID: 114858275542479200}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: left
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -41,7 +41,7 @@ GameObject:
   - component: {fileID: 4621249457484062}
   - component: {fileID: 65279201536422490}
   - component: {fileID: 114591702316368344}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: trigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -61,7 +61,7 @@ GameObject:
   - component: {fileID: 111467279792979974}
   - component: {fileID: 65441404290466862}
   - component: {fileID: 114111238749730744}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -77,7 +77,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4652799923426226}
   - component: {fileID: 114251293470397996}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: door
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -303,6 +303,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d83f95a0448a69f409959e0d2dceb4da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  time: 1
   left: {fileID: 1174336058885622}
   right: {fileID: 1548863857533750}
 --- !u!114 &114591702316368344
