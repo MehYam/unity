@@ -21,8 +21,12 @@ GameObject:
   - component: {fileID: 4484867333007514}
   - component: {fileID: 33585593367102072}
   - component: {fileID: 23887384863942174}
+  - component: {fileID: 114542719518906830}
+  - component: {fileID: 54608880627329672}
+  - component: {fileID: 114009971665791658}
+  - component: {fileID: 114009989521549754}
   m_Layer: 0
-  m_Name: halfsphere
+  m_Name: ammoShield
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -79,3 +83,59 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1795262085350758}
   m_Mesh: {fileID: 4300000, guid: e411c9faf0cac36459b29b5926d85559, type: 3}
+--- !u!54 &54608880627329672
+Rigidbody:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1795262085350758}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!114 &114009971665791658
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1795262085350758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd473bb36fdb35f4aa70a8bd4f915798, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114009989521549754
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1795262085350758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b0e422eca6926349a30a69c1efd1154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  seconds: 2
+--- !u!114 &114542719518906830
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1795262085350758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65821d44c0b381240856280879c3cf82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 100
+  collisionDamage: 50
+  acceleration: 0
+  maxSpeed: 100
+  rotationalAcceleration: 0
+  maxRPS: 0
+  explosionOnDeath: 0
