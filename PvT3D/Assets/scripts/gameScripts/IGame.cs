@@ -18,4 +18,6 @@ public interface IGame
     GameObject          bigExplosionPrefab { get; }
     GameObject          plasmaExplosionPrefab { get; }
     GameObject          damageSmokePrefab { get; }
+
+    AmmoRegistry        ammoRegistry { get; }
 }

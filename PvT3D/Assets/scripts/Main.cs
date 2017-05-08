@@ -56,4 +56,17 @@ public sealed class Main : MonoBehaviour, IGame
     public GameObject bigExplosionPrefab { get { return _bigExplosionPrefab; } }
     public GameObject plasmaExplosionPrefab { get { return _plasmaExplosionPrefab; } }
     public GameObject damageSmokePrefab { get { return _damageSmokePrefab; } }
+
+    AmmoRegistry _ammoRegistry;
+    public AmmoRegistry ammoRegistry
+    {
+        get
+        {
+            if (_ammoRegistry == null)
+            {
+                _ammoRegistry = gameObject.GetComponent<AmmoRegistry>();
+            }
+            return _ammoRegistry;
+        }
+    }
 }

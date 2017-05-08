@@ -7,8 +7,6 @@ using kaiGameUtil;
 public class WeaponSchematic : MonoBehaviour, ship.IConsumer
 {
     [SerializeField] GameObject firepoint = null;
-    [SerializeField] GameObject prefabPlasmaAmmo = null;
-    [SerializeField] GameObject prefabBeamAmmo = null;
     [SerializeField] bool inheritShipVelocity = false;
 
     int ammoLayer;
@@ -112,16 +110,10 @@ public class WeaponSchematic : MonoBehaviour, ship.IConsumer
         switch(product.type)
         {
             case ship.AmmoProduct.Type.Normal:
-                if (prefabPlasmaAmmo != null)
-                {
-                    LaunchPlasmaAmmo(product);
-                }
+                LaunchPlasmaAmmo(product);
                 break;
             case ship.AmmoProduct.Type.Laser:
-                if (prefabBeamAmmo != null)
-                {
-                    LaunchBeamAmmo(product);
-                }
+                LaunchBeamAmmo(product);
                 break;
             default:
                 Debug.LogError("no handler for " + product.type);
@@ -138,7 +130,7 @@ public class WeaponSchematic : MonoBehaviour, ship.IConsumer
     void LaunchPlasmaAmmo(ship.AmmoProduct product)
     {
         // line the shot up
-        var ammo = GameObject.Instantiate(prefabPlasmaAmmo);
+        var ammo = GameObject.Instantiate(Main.game.ammoRegistry.plasmaPrefab);
         OrientAmmo(ammo);
 
         // inherit the ship's velocity
@@ -174,7 +166,7 @@ public class WeaponSchematic : MonoBehaviour, ship.IConsumer
     void LaunchBeamAmmo(ship.AmmoProduct product)
     {
         // line the shot up
-        var ammo = GameObject.Instantiate(prefabBeamAmmo);
+        var ammo = GameObject.Instantiate(Main.game.ammoRegistry.beamPrefab);
         OrientAmmo(ammo);
 
         // duration
