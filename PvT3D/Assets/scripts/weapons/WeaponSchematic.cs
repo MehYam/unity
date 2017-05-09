@@ -1,7 +1,7 @@
 using UnityEngine;
 
 using PvT3D.Util;
-using ship = PvT3D.ShipComponents;
+using ship = PvT3D.WeaponComponents;
 using kaiGameUtil;
 
 public class WeaponSchematic : MonoBehaviour, ship.IConsumer
@@ -40,7 +40,7 @@ public class WeaponSchematic : MonoBehaviour, ship.IConsumer
         public readonly ship.IFrameHandler frameHandler;
         public readonly ship.IProducer producer;
 
-        public SchematicState(ship.ICharger charger, ship.SimpleComponent lastComponent)
+        public SchematicState(ship.ICharger charger, ship.Component lastComponent)
         {
             this.charger = charger;
             this.frameHandler = charger as ship.IFrameHandler;
@@ -51,10 +51,10 @@ public class WeaponSchematic : MonoBehaviour, ship.IConsumer
     void ConnectWeaponSchematic(ship.Schematic schem)
     {
         ship.ICharger charger = null;
-        ship.SimpleComponent leftComponent = null;
+        ship.Component leftComponent = null;
         for (var x = 0; x < schem.grid.size.x; ++x)
         {
-            ship.SimpleComponent component = schem.grid.Get(x, 0);
+            ship.Component component = schem.grid.Get(x, 0);
             if (component == null) break;
 
             if (component is ship.ICharger)
@@ -105,15 +105,18 @@ public class WeaponSchematic : MonoBehaviour, ship.IConsumer
     /// ship.IConsumer implementation
     /// </summary>
     /// <param name="product">the ammo coming from the weapon components</param>
-    public void ConsumeProduct(ship.AmmoProduct product) 
+    public void ConsumeAmmoProduct(ship.AmmoProduct product) 
     {
         switch(product.type)
         {
-            case ship.AmmoProduct.Type.Normal:
+            case ship.AmmoProduct.Type.Plasma:
                 LaunchPlasmaAmmo(product);
                 break;
             case ship.AmmoProduct.Type.Laser:
                 LaunchBeamAmmo(product);
+                break;
+            case ship.AmmoProduct.Type.Shield:
+                LaunchShieldAmmo(product);
                 break;
             default:
                 Debug.LogError("no handler for " + product.type);
@@ -155,7 +158,7 @@ public class WeaponSchematic : MonoBehaviour, ship.IConsumer
         rb.angularVelocity = Vector3.up * 10;
 
         // this is a chargable shot, scale it by the power
-        ammo.transform.localScale = new Vector3(product.damage, product.damage, product.damage);
+        ammo.transform.localScale = new Vector3(product.power, product.power, product.power);
 
         // particles
         if (_ps != null)
@@ -174,5 +177,10 @@ public class WeaponSchematic : MonoBehaviour, ship.IConsumer
         beam.duration = product.duration;
         beam.distance = product.distance;
         beam.width = product.width;
+    }
+    void LaunchShieldAmmo(ship.AmmoProduct product)
+    {
+        var ammo = GameObject.Instantiate(Main.game.ammoRegistry.shieldPrefab);
+        OrientAmmo(ammo);
     }
 }

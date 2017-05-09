@@ -5,7 +5,7 @@ using UnityEngine;
 using kaiGameUtil;
 using System;
 
-namespace PvT3D.ShipComponents
+namespace PvT3D.WeaponComponents
 {
     /// <summary>
     /// AmmoProduct can be thought of as the object on the assembly line.  It passes from Component to Component, which alter the product
@@ -13,20 +13,18 @@ namespace PvT3D.ShipComponents
     /// </summary>
     public class AmmoProduct
     {
-        public enum Type { Normal, Laser }
-        public Type type = Type.Normal;  //KAI: consider hierarchy instead, so that a method override actually does the launching based on the type
+        public enum Type { Plasma, Laser, Shield }
+        public Type type = Type.Plasma;  //KAI: consider hierarchy instead, so that a method override actually does the launching based on the type
 
-        public float damage = 0;
+        public float power = 0;
         public float duration = 0;
         public float speed = 0;
-
-        // used only for Type.Laser at the moment
         public float width = 0;
         public float distance = 0;
     }
     interface IConsumer
     {
-        void ConsumeProduct(AmmoProduct product);
+        void ConsumeAmmoProduct(AmmoProduct product);
     }
     interface IProducer
     {
@@ -42,15 +40,15 @@ namespace PvT3D.ShipComponents
         void Charge();
         void Discharge();
     }
-    abstract class SimpleComponent
+    abstract class Component
     {
         public readonly string name;
-        public SimpleComponent(string name) { this.name = name; }
+        public Component(string name) { this.name = name; }
     }
     /// <summary>
     /// Power defines damage, and perhaps more things in the future
     /// </summary>
-    class Power : SimpleComponent
+    class Power : Component
     {
         public readonly float power;
         public Power(string name, float power) : base(name) { this.power = power; }
@@ -58,7 +56,7 @@ namespace PvT3D.ShipComponents
     /// <summary>
     /// Chargers define rate of fire, and whether the weapon charges up or autofires
     /// </summary>
-    class Charger : SimpleComponent, ICharger, IProducer
+    class Charger : Component, ICharger, IProducer
     {
         readonly public float capacity;
         public Charger(string name, float capacity) : base(name)
@@ -85,13 +83,20 @@ namespace PvT3D.ShipComponents
             if (output != null && _state != null)
             {
                 var product = new AmmoProduct();
-                product.damage = Mathf.Min((Time.fixedTime - _state.startTime) * _state.power, capacity);
-                output.ConsumeProduct(product);
+                product.power = currentPower;
+                output.ConsumeAmmoProduct(product);
             }
             _state = null;
         }
+        public float currentPower
+        {
+            get
+            {
+                return _state == null ? 0 : Mathf.Min((Time.fixedTime - _state.startTime) * _state.power, capacity);
+            }
+        }
     }
-    class AutofireCharger : SimpleComponent, ICharger, IProducer, IFrameHandler
+    class AutofireCharger : Component, ICharger, IProducer, IFrameHandler
     {
         readonly public float chargeTime;
         public AutofireCharger(string name, float rate) : base(name)
@@ -119,18 +124,37 @@ namespace PvT3D.ShipComponents
                 if (elapsed >= chargeTime)
                 {
                     var product = new AmmoProduct();
-                    product.damage = powerSource.power;
-                    output.ConsumeProduct(product);
+                    product.power = powerSource.power;
+                    output.ConsumeAmmoProduct(product);
 
                     _lastFireTime = Time.fixedTime;
                 }
             }
         }
     }
+    class ShieldCharger : Component, ICharger, IProducer, IFrameHandler
+    {
+        public ShieldCharger(string name, float rate) : base(name)
+        {
+
+        }
+        public IConsumer output {  set; private get; }
+        public Power powerSource {  set; private get; }
+
+        public void Charge()
+        {
+        }
+        public void Discharge()
+        {
+        }
+        public void OnFixedUpdate()
+        {
+        }
+    }
     /// <summary>
-    /// Envelope defines time to live for the ammo. Along with speed from the Emitter, this determines the range of the shot
+    /// Envelope defines time to live for the ammo. Along with speed from the Accelerator, this determines the range of the shot
     /// </summary>
-    class Envelope : SimpleComponent, IConsumer, IProducer
+    class Envelope : Component, IConsumer, IProducer
     {
         public readonly float duration;
         public Envelope(string name, float duration) : base(name)
@@ -138,55 +162,55 @@ namespace PvT3D.ShipComponents
             this.duration = duration;
         }
         public IConsumer output { set; private get; }
-        public void ConsumeProduct(AmmoProduct product)
+        public void ConsumeAmmoProduct(AmmoProduct product)
         {
             product.duration = duration;
             if (output != null)
             {
-                output.ConsumeProduct(product);
+                output.ConsumeAmmoProduct(product);
             }
         }
     }
     /// <summary>
-    /// Accelerator gives the ammo speed, and 
+    /// Accelerator imparts speed to ammo projectile
     /// </summary>
-    class Accelerator : SimpleComponent, IConsumer, IProducer
+    class Accelerator : Component, IConsumer, IProducer
     {
         public readonly float speed;
         public Accelerator(string name, float speed) : base(name) { this.speed = speed; }
         public IConsumer output { set; private get; }
-        public void ConsumeProduct(AmmoProduct product)
+        public void ConsumeAmmoProduct(AmmoProduct product)
         {
             product.speed = speed;
             if (output != null)
             {
-                output.ConsumeProduct(product);
+                output.ConsumeAmmoProduct(product);
             }
         }
     }
-    class LaserAccelerator : SimpleComponent, IConsumer, IProducer
+    class LaserAccelerator : Component, IConsumer, IProducer
     {
         public readonly float width;
         public readonly float distance;
         public LaserAccelerator(string name, float distance, float width) : base(name) { this.width = width; this.distance = distance; }
         public IConsumer output { set; private get; }
-        public void ConsumeProduct(AmmoProduct product)
+        public void ConsumeAmmoProduct(AmmoProduct product)
         {
             product.type = AmmoProduct.Type.Laser;
             product.width = width;
             product.distance = distance;
             if (output != null)
             {
-                output.ConsumeProduct(product);
+                output.ConsumeAmmoProduct(product);
             }
         }
     }
     class Schematic
     {
-        public readonly Layer<SimpleComponent> grid;
+        public readonly Layer<Component> grid;
         public Schematic(int width, int height)
         {
-            grid = new Layer<SimpleComponent>(width, height);
+            grid = new Layer<Component>(width, height);
         }
         public override string ToString()
         {
