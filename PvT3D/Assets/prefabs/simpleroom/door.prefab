@@ -303,7 +303,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d83f95a0448a69f409959e0d2dceb4da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time: 1
+  time: 0.3
   left: {fileID: 1174336058885622}
   right: {fileID: 1548863857533750}
 --- !u!114 &114591702316368344

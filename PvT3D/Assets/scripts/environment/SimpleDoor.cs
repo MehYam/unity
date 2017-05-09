@@ -32,10 +32,10 @@ public sealed class SimpleDoor : MonoBehaviour
     {
         if (!locked && !open)
         {
-            LeanTween.scaleX(left, 0.1f, time).setEaseOutElastic();
-            LeanTween.scaleX(right, 0.1f, time).setEaseOutElastic();
-            LeanTween.moveLocalX(left, -9, time).setEaseOutElastic();
-            LeanTween.moveLocalX(right, 9, time).setEaseOutElastic();
+            LeanTween.scaleX(left, 0.1f, time).setEaseOutBounce();
+            LeanTween.scaleX(right, 0.1f, time).setEaseOutBounce();
+            LeanTween.moveLocalX(left, -9, time).setEaseOutBounce();
+            LeanTween.moveLocalX(right, 9, time).setEaseOutBounce();
 
             open = true;
         }
