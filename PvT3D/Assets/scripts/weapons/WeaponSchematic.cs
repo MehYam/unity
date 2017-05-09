@@ -31,7 +31,7 @@ public class WeaponSchematic : MonoBehaviour, wcmp.IAmmoProductConsumer
         schem.grid.Set(3, 0, new wcmp.Accelerator("A", 60));
         //schem.grid.Set(3, 0, new ship.LaserAccelerator("L", 100, 0.5f));
 
-        schem.grid.Set(1, 1, new wcmp.Autofire("Af"));
+        //schem.grid.Set(1, 1, new wcmp.Autofire("Af"));
 
         ConnectWeaponSchematic(schem);
     }

@@ -70,14 +70,14 @@ namespace PvT3D.WeaponComponents
         public Power powerSource { set; private get; }
         public IAmmoProductConsumer output { set; private get; }
 
-        float _startOfCharge = 0;
+        float _startOfCharge = -1;
         public void Charge()
         {
             _startOfCharge = Time.fixedTime;
         }
         public void Discharge()
         {
-            if (output != null && _startOfCharge > 0)
+            if (output != null && _startOfCharge >= 0)
             {
                 var product = new AmmoProduct();
                 product.power = currentCharge;
@@ -89,7 +89,7 @@ namespace PvT3D.WeaponComponents
         {
             get
             {
-                return _startOfCharge > 0 ? Mathf.Min((Time.fixedTime - _startOfCharge) * rate, powerSource.power) : 0;
+                return _startOfCharge >= 0 ? Mathf.Min((Time.fixedTime - _startOfCharge) * rate, powerSource.power) : 0;
             }
         }
     }
@@ -97,34 +97,44 @@ namespace PvT3D.WeaponComponents
     {
         public Autofire(string name) : base(name) { }
 
-        public ICharger charger { set; private get; }
-        public float currentCharge { get {  return charger.currentCharge; } }
+        ICharger _charger;
+        public ICharger charger
+        {
+            set
+            {
+                _charger = value;
+
+                // the charger is basically always charging, so that the fire button shoots immediate when not pressed for a while
+                _charger.Charge();
+            }
+        }
+
+        public float currentCharge { get {  return _charger.currentCharge; } }
         public Power powerSource { set; private get; }
 
         public void Charge()
         {
-            if (charger.currentCharge == powerSource.power)
+            if (_charger.currentCharge == powerSource.power)
             {
-                charger.Discharge();
+                _charger.Discharge();
             }
-            charger.Charge();
+            _charger.Charge();
         }
         public void Discharge()
         {
             // leave the actual charger in a charging state by doing nothing.  This
             // will make it so that the next fire button press will fire immediately,
-            // assuming there's been enough time for a charge.  It will also
-            // prevent a smaller ammo from being output from leftover charge when
-            // the fire button's released
+            // given time to charge.  Doing nothing also prevents a small ammo from 
+            // being output from leftover charge when the fire button's released
         }
         public void OnFixedUpdate()
         {
-            if (charger != null && powerSource != null)
+            if (_charger != null && powerSource != null)
             {
-                if (charger.currentCharge == powerSource.power)
+                if (_charger.currentCharge == powerSource.power)
                 {
-                    charger.Discharge();
-                    charger.Charge();
+                    _charger.Discharge();
+                    _charger.Charge();
                 }
             }
         }
