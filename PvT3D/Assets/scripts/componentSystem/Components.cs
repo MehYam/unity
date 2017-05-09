@@ -22,13 +22,13 @@ namespace PvT3D.WeaponComponents
         public float width = 0;
         public float distance = 0;
     }
-    interface IConsumer
+    interface IAmmoProductConsumer
     {
         void ConsumeAmmoProduct(AmmoProduct product);
     }
-    interface IProducer
+    interface IAmmoProductProducer
     {
-        IConsumer output { set; }
+        IAmmoProductConsumer output { set; }
     }
     interface IFrameHandler
     {
@@ -37,6 +37,8 @@ namespace PvT3D.WeaponComponents
     interface ICharger
     {
         Power powerSource { set; }
+        float currentCharge { get; }
+
         void Charge();
         void Discharge();
     }
@@ -44,6 +46,11 @@ namespace PvT3D.WeaponComponents
     {
         public readonly string name;
         public Component(string name) { this.name = name; }
+
+        public override string ToString()
+        {
+            return name;
+        }
     }
     /// <summary>
     /// Power defines damage, and perhaps more things in the future
@@ -53,92 +60,85 @@ namespace PvT3D.WeaponComponents
         public readonly float power;
         public Power(string name, float power) : base(name) { this.power = power; }
     }
-    /// <summary>
-    /// Chargers define rate of fire, and whether the weapon charges up or autofires
-    /// </summary>
-    class Charger : Component, ICharger, IProducer
+    class Charger : Component, ICharger, IAmmoProductProducer
     {
-        readonly public float capacity;
-        public Charger(string name, float capacity) : base(name)
+        readonly public float rate;
+        public Charger(string name, float rate) : base(name)
         {
-            this.capacity = capacity;
+            this.rate = rate;
         }
         public Power powerSource { set; private get; }
-        public IConsumer output { set; private get; }
+        public IAmmoProductConsumer output { set; private get; }
 
-        class PowerState
-        {
-            public readonly float power;
-            public readonly float startTime;
-
-            public PowerState(float power, float startTime) { this.power = power;  this.startTime = startTime; }
-        }
-        PowerState _state;
+        float _startOfCharge = 0;
         public void Charge()
         {
-            _state = new PowerState(powerSource.power, Time.fixedTime);
+            _startOfCharge = Time.fixedTime;
         }
         public void Discharge()
         {
-            if (output != null && _state != null)
+            if (output != null && _startOfCharge > 0)
             {
                 var product = new AmmoProduct();
-                product.power = currentPower;
+                product.power = currentCharge;
                 output.ConsumeAmmoProduct(product);
             }
-            _state = null;
+            _startOfCharge = 0;
         }
-        public float currentPower
+        public float currentCharge
         {
             get
             {
-                return _state == null ? 0 : Mathf.Min((Time.fixedTime - _state.startTime) * _state.power, capacity);
+                return _startOfCharge > 0 ? Mathf.Min((Time.fixedTime - _startOfCharge) * rate, powerSource.power) : 0;
             }
         }
     }
-    class AutofireCharger : Component, ICharger, IProducer, IFrameHandler
+    class Autofire : Component, IFrameHandler, ICharger
     {
-        readonly public float chargeTime;
-        public AutofireCharger(string name, float rate) : base(name)
-        {
-            this.chargeTime = 1 / Mathf.Max(rate, float.MinValue);
-        }
-        public Power powerSource { set; private get; }
-        public IConsumer output { set; private get; }
+        public Autofire(string name) : base(name) { }
 
-        float _lastFireTime = 0;
-        bool _firing = false;
+        public ICharger charger { set; private get; }
+        public float currentCharge { get {  return charger.currentCharge; } }
+        public Power powerSource { set; private get; }
+
         public void Charge()
         {
-            _firing = true;
+            if (charger.currentCharge == powerSource.power)
+            {
+                charger.Discharge();
+            }
+            charger.Charge();
         }
         public void Discharge()
         {
-            _firing = false;
+            // leave the actual charger in a charging state by doing nothing.  This
+            // will make it so that the next fire button press will fire immediately,
+            // assuming there's been enough time for a charge.  It will also
+            // prevent a smaller ammo from being output from leftover charge when
+            // the fire button's released
         }
         public void OnFixedUpdate()
         {
-            if (output != null && _firing)
+            if (charger != null && powerSource != null)
             {
-                var elapsed = (Time.fixedTime - _lastFireTime);
-                if (elapsed >= chargeTime)
+                if (charger.currentCharge == powerSource.power)
                 {
-                    var product = new AmmoProduct();
-                    product.power = powerSource.power;
-                    output.ConsumeAmmoProduct(product);
-
-                    _lastFireTime = Time.fixedTime;
+                    charger.Discharge();
+                    charger.Charge();
                 }
             }
         }
     }
-    class ShieldCharger : Component, ICharger, IProducer, IFrameHandler
+    /// <summary>
+    /// UNFINISHED
+    /// </summary>
+    class ShieldCharger : Component, ICharger, IAmmoProductProducer, IFrameHandler
     {
         public ShieldCharger(string name, float rate) : base(name)
         {
 
         }
-        public IConsumer output {  set; private get; }
+        public IAmmoProductConsumer output {  set; private get; }
         public Power powerSource {  set; private get; }
 
         public void Charge()
@@ -147,6 +147,7 @@ namespace PvT3D.WeaponComponents
         public void Discharge()
         {
         }
+        public float currentCharge { get {  return 0; } }
         public void OnFixedUpdate()
         {
         }
@@ -154,14 +155,14 @@ namespace PvT3D.WeaponComponents
     /// <summary>
     /// Envelope defines time to live for the ammo. Along with speed from the Accelerator, this determines the range of the shot
     /// </summary>
-    class Envelope : Component, IConsumer, IProducer
+    class Envelope : Component, IAmmoProductConsumer, IAmmoProductProducer
     {
         public readonly float duration;
         public Envelope(string name, float duration) : base(name)
         {
             this.duration = duration;
         }
-        public IConsumer output { set; private get; }
+        public IAmmoProductConsumer output { set; private get; }
         public void ConsumeAmmoProduct(AmmoProduct product)
         {
             product.duration = duration;
@@ -174,11 +175,11 @@ namespace PvT3D.WeaponComponents
     /// <summary>
     /// Accelerator imparts speed to ammo projectile
     /// </summary>
-    class Accelerator : Component, IConsumer, IProducer
+    class Accelerator : Component, IAmmoProductConsumer, IAmmoProductProducer
     {
         public readonly float speed;
         public Accelerator(string name, float speed) : base(name) { this.speed = speed; }
-        public IConsumer output { set; private get; }
+        public IAmmoProductConsumer output { set; private get; }
         public void ConsumeAmmoProduct(AmmoProduct product)
         {
             product.speed = speed;
@@ -188,12 +189,12 @@ namespace PvT3D.WeaponComponents
             }
         }
     }
-    class LaserAccelerator : Component, IConsumer, IProducer
+    class LaserAccelerator : Component, IAmmoProductConsumer, IAmmoProductProducer
     {
         public readonly float width;
         public readonly float distance;
         public LaserAccelerator(string name, float distance, float width) : base(name) { this.width = width; this.distance = distance; }
-        public IConsumer output { set; private get; }
+        public IAmmoProductConsumer output { set; private get; }
         public void ConsumeAmmoProduct(AmmoProduct product)
         {
             product.type = AmmoProduct.Type.Laser;

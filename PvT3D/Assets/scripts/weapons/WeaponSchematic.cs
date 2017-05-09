@@ -1,10 +1,10 @@
 using UnityEngine;
 
 using PvT3D.Util;
-using ship = PvT3D.WeaponComponents;
+using wcmp = PvT3D.WeaponComponents;
 using kaiGameUtil;
 
-public class WeaponSchematic : MonoBehaviour, ship.IConsumer
+public class WeaponSchematic : MonoBehaviour, wcmp.IAmmoProductConsumer
 {
     [SerializeField] GameObject firepoint = null;
     [SerializeField] bool inheritShipVelocity = false;
@@ -23,55 +23,75 @@ public class WeaponSchematic : MonoBehaviour, ship.IConsumer
         }
         _ps = firepoint.GetComponent<ParticleSystem>();
 
-        // a sample schematic - needs to come from somewhere else
-        var schem = new ship.Schematic(5, 3);
-        schem.grid.Set(0, 0, new ship.Power("P", 1));
-        schem.grid.Set(1, 0, new ship.AutofireCharger("C", 2));
-        //schem.grid.Set(1, 0, new ship.Charger("C", 10));
-        schem.grid.Set(2, 0, new ship.Envelope("E", 1));
-        schem.grid.Set(3, 0, new ship.Accelerator("A", 60));
+        // a sample schematic - needs to load from somewhere else
+        var schem = new wcmp.Schematic(5, 3);
+        schem.grid.Set(0, 0, new wcmp.Power("P", 1));
+        schem.grid.Set(1, 0, new wcmp.Charger("C", 2));
+        schem.grid.Set(2, 0, new wcmp.Envelope("E", 1));
+        schem.grid.Set(3, 0, new wcmp.Accelerator("A", 60));
         //schem.grid.Set(3, 0, new ship.LaserAccelerator("L", 100, 0.5f));
+
+        schem.grid.Set(1, 1, new wcmp.Autofire("Af"));
 
         ConnectWeaponSchematic(schem);
     }
     class SchematicState
     {
-        public readonly ship.ICharger charger;
-        public readonly ship.IFrameHandler frameHandler;
-        public readonly ship.IProducer producer;
+        public readonly wcmp.ICharger charger;
+        public readonly wcmp.IFrameHandler frameHandler;
+        public readonly wcmp.IAmmoProductProducer producer;
 
-        public SchematicState(ship.ICharger charger, ship.Component lastComponent)
+        public SchematicState(wcmp.ICharger charger, wcmp.IFrameHandler frameHandler, wcmp.IAmmoProductProducer producer)
         {
             this.charger = charger;
-            this.frameHandler = charger as ship.IFrameHandler;
-            this.producer = lastComponent as ship.IProducer;
+            this.frameHandler = frameHandler;
+            this.producer = producer;
         }
     }
     SchematicState _state;
-    void ConnectWeaponSchematic(ship.Schematic schem)
+    void ConnectWeaponSchematic(wcmp.Schematic schem)
     {
-        ship.ICharger charger = null;
-        ship.Component leftComponent = null;
-        for (var x = 0; x < schem.grid.size.x; ++x)
-        {
-            ship.Component component = schem.grid.Get(x, 0);
-            if (component == null) break;
+        // walk through the schematic and wire things up in a left-to-right manner.  Not the final idea, but works for now
+        wcmp.Component lastComponent = null;
+        wcmp.Power power = null;
+        wcmp.ICharger charger = null;
+        wcmp.IFrameHandler frameHandler = null;
+        wcmp.IAmmoProductProducer producer = null;
 
-            if (component is ship.ICharger)
+        schem.grid.ForEach((x, y, component) =>
+        {
+            if (component != null)
             {
-                charger = component as ship.ICharger;
-                if (leftComponent is ship.Power)
+                //KAI: wonky, but the end game is supposed to have connections between the components, so it'll be addressed then
+                if (component is wcmp.Power)
                 {
-                    charger.powerSource = leftComponent as ship.Power;
+                    power = component as wcmp.Power;
                 }
+                if (component is wcmp.Autofire)
+                {
+                    ((wcmp.Autofire)component).charger = charger;
+                }
+                if (component is wcmp.ICharger)
+                {
+                    charger = component as wcmp.ICharger;
+                    ((wcmp.ICharger)component).powerSource = power;
+                }
+                if (component is wcmp.IFrameHandler)
+                {
+                    frameHandler = component as wcmp.IFrameHandler;
+                }
+                if (component is wcmp.IAmmoProductProducer)
+                {
+                    producer = component as wcmp.IAmmoProductProducer;
+                }
+                if (lastComponent is wcmp.IAmmoProductProducer && component is wcmp.IAmmoProductConsumer)
+                {
+                    ((wcmp.IAmmoProductProducer)lastComponent).output = component as wcmp.IAmmoProductConsumer;
+                }
+                lastComponent = component;
             }
-            else if (leftComponent is ship.IProducer && component is ship.IConsumer)
-            {
-                ((ship.IProducer)leftComponent).output = component as ship.IConsumer;
-            }
-            leftComponent = component;
-        }
-        _state = new SchematicState(charger, leftComponent);
+        });
+        _state = new SchematicState(charger, frameHandler, producer);
         if (_state.producer != null)
         {
             _state.producer.output = this;
@@ -105,17 +125,17 @@ public class WeaponSchematic : MonoBehaviour, ship.IConsumer
     /// ship.IConsumer implementation
     /// </summary>
     /// <param name="product">the ammo coming from the weapon components</param>
-    public void ConsumeAmmoProduct(ship.AmmoProduct product) 
+    public void ConsumeAmmoProduct(wcmp.AmmoProduct product) 
     {
         switch(product.type)
         {
-            case ship.AmmoProduct.Type.Plasma:
+            case wcmp.AmmoProduct.Type.Plasma:
                 LaunchPlasmaAmmo(product);
                 break;
-            case ship.AmmoProduct.Type.Laser:
+            case wcmp.AmmoProduct.Type.Laser:
                 LaunchBeamAmmo(product);
                 break;
-            case ship.AmmoProduct.Type.Shield:
+            case wcmp.AmmoProduct.Type.Shield:
                 LaunchShieldAmmo(product);
                 break;
             default:
@@ -130,7 +150,7 @@ public class WeaponSchematic : MonoBehaviour, ship.IConsumer
         ammo.transform.rotation = firepoint.transform.rotation;
         ammo.layer = ammoLayer;
     }
-    void LaunchPlasmaAmmo(ship.AmmoProduct product)
+    void LaunchPlasmaAmmo(wcmp.AmmoProduct product)
     {
         // line the shot up
         var ammo = GameObject.Instantiate(Main.game.ammoRegistry.plasmaPrefab);
@@ -166,7 +186,7 @@ public class WeaponSchematic : MonoBehaviour, ship.IConsumer
             _ps.Play();
         }
     }
-    void LaunchBeamAmmo(ship.AmmoProduct product)
+    void LaunchBeamAmmo(wcmp.AmmoProduct product)
     {
         // line the shot up
         var ammo = GameObject.Instantiate(Main.game.ammoRegistry.beamPrefab);
@@ -178,7 +198,7 @@ public class WeaponSchematic : MonoBehaviour, ship.IConsumer
         beam.distance = product.distance;
         beam.width = product.width;
     }
-    void LaunchShieldAmmo(ship.AmmoProduct product)
+    void LaunchShieldAmmo(wcmp.AmmoProduct product)
     {
         var ammo = GameObject.Instantiate(Main.game.ammoRegistry.shieldPrefab);
         OrientAmmo(ammo);

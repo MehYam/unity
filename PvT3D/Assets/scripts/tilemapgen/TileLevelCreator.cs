@@ -80,7 +80,7 @@ public sealed class TileLevelCreator : MonoBehaviour
                 foreach (var dir in kaiGameUtil.Util.cardinalDirections)
                 {
                     var neighbor = kaiGameUtil.Util.Add(dir, new Point(x, y));
-                    if (!layer.IsValid(neighbor) || layer.Get(neighbor).Empty)
+                    if (!layer.InBounds(neighbor) || layer.Get(neighbor).Empty)
                     {
                         // need to put up a wall, which is possibly a door
                         string tileName = "unknown";
