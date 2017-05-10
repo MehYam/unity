@@ -50,7 +50,7 @@ public class testInventory : MonoBehaviour
         inventory.grid.Set(0, 0, new WeaponComponents.Power("P", 1));
         inventory.grid.Set(1, 0, new WeaponComponents.Charger("C", 10));
         inventory.grid.Set(2, 0, new WeaponComponents.Charger("C", 10));
-        inventory.grid.Set(0, 1, new WeaponComponents.Accelerator("A", 100));
+        inventory.grid.Set(0, 1, new WeaponComponents.Speed("A", 100));
     }
     void PopulateInventoryUI()
     {
@@ -59,7 +59,7 @@ public class testInventory : MonoBehaviour
         {
             { typeof(WeaponComponents.Power), powerModulePrefab },
             { typeof(WeaponComponents.Charger), chargerPrefab },
-            { typeof(WeaponComponents.Accelerator), emitterPrefab }
+            { typeof(WeaponComponents.Speed), emitterPrefab }
         };
 
         // walk the inventory object, populating the UI as necessary

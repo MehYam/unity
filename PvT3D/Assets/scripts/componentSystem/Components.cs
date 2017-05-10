@@ -14,8 +14,8 @@ namespace PvT3D.WeaponComponents
     public class AmmoProduct
     {
         public enum Type { Plasma, Laser, Shield }
-        public Type type = Type.Plasma;  //KAI: consider hierarchy instead, so that a method override actually does the launching based on the type
 
+        public Type  type = Type.Plasma;  //KAI: consider hierarchy instead, so that a method override actually does the launching based on the type
         public float power = 0;
         public float duration = 0;
         public float speed = 0;
@@ -153,9 +153,11 @@ namespace PvT3D.WeaponComponents
 
         public void Charge()
         {
+            // immediately create a shield.  The shield's health and currentCharge must be linked somehow
         }
         public void Discharge()
         {
+            // detach the shield
         }
         public float currentCharge { get {  return 0; } }
         public void OnFixedUpdate()
@@ -165,10 +167,10 @@ namespace PvT3D.WeaponComponents
     /// <summary>
     /// Envelope defines time to live for the ammo. Along with speed from the Accelerator, this determines the range of the shot
     /// </summary>
-    class Envelope : Component, IAmmoProductConsumer, IAmmoProductProducer
+    class Lifetime : Component, IAmmoProductConsumer, IAmmoProductProducer
     {
         public readonly float duration;
-        public Envelope(string name, float duration) : base(name)
+        public Lifetime(string name, float duration) : base(name)
         {
             this.duration = duration;
         }
@@ -185,10 +187,10 @@ namespace PvT3D.WeaponComponents
     /// <summary>
     /// Accelerator imparts speed to ammo projectile
     /// </summary>
-    class Accelerator : Component, IAmmoProductConsumer, IAmmoProductProducer
+    class Speed : Component, IAmmoProductConsumer, IAmmoProductProducer
     {
         public readonly float speed;
-        public Accelerator(string name, float speed) : base(name) { this.speed = speed; }
+        public Speed(string name, float speed) : base(name) { this.speed = speed; }
         public IAmmoProductConsumer output { set; private get; }
         public void ConsumeAmmoProduct(AmmoProduct product)
         {

@@ -107,7 +107,6 @@ public sealed class TileLevelCreator : MonoBehaviour
     public void ParseAndGenerate(string textFile)
     {
         var lines = textFile.Split(new string[] { "\r\n", "\n" }, System.StringSplitOptions.None);
-
         var height = lines.Length;
         var width = 0;
         foreach (var line in lines)

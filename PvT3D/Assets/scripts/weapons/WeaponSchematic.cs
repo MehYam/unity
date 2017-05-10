@@ -1,11 +1,13 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
-using PvT3D.Util;
-using wcmp = PvT3D.WeaponComponents;
 using kaiGameUtil;
+using wcmp = PvT3D.WeaponComponents;
 
 public class WeaponSchematic : MonoBehaviour, wcmp.IAmmoProductConsumer
 {
+    [SerializeField] TextAsset schematicFile = null;
     [SerializeField] GameObject firepoint = null;
     [SerializeField] bool inheritShipVelocity = false;
 
@@ -23,16 +25,72 @@ public class WeaponSchematic : MonoBehaviour, wcmp.IAmmoProductConsumer
         }
         _ps = firepoint.GetComponent<ParticleSystem>();
 
+        if (schematicFile != null)
+        {
+            Load(schematicFile.text);
+        }
+        else
+        {
+            Debug.LogWarningFormat("Warning, no schem file found for {0}", name);
+            LoadSampleSchematic();
+        }
+    }
+    void LoadSampleSchematic()
+    {
         // a sample schematic - needs to load from somewhere else
         var schem = new wcmp.Schematic(5, 3);
         schem.grid.Set(0, 0, new wcmp.Power("P", 1));
         schem.grid.Set(1, 0, new wcmp.Charger("C", 2));
-        schem.grid.Set(2, 0, new wcmp.Envelope("E", 1));
-        schem.grid.Set(3, 0, new wcmp.Accelerator("A", 60));
+        schem.grid.Set(2, 0, new wcmp.Lifetime("E", 1));
+        schem.grid.Set(3, 0, new wcmp.Speed("A", 60));
         //schem.grid.Set(3, 0, new ship.LaserAccelerator("L", 100, 0.5f));
 
         schem.grid.Set(1, 1, new wcmp.Autofire("Af"));
+        ConnectWeaponSchematic(schem);
+    }
+    static readonly Dictionary<string, Func<string[], wcmp.Component>> componentFactory = new Dictionary<string, Func<string[], wcmp.Component>>() 
+    {
+        { "power", (args) => new wcmp.Power("P", int.Parse(args[0])) },
+        { "charger", (args) => new wcmp.Charger("C", int.Parse(args[0])) },
+        { "lifetime", (args) => new wcmp.Lifetime("L", int.Parse(args[0])) },
+        { "speed", (args) => new wcmp.Speed("S", int.Parse(args[0])) },
+        { "autofire", (args) => new wcmp.Autofire("Af") }
+    };
+    void Load(string textFile)
+    {
+        // This is very unsafe and throws exceptions if something's not right.
+        var lines = textFile.Split(new string[] { "\r\n", "\n" }, System.StringSplitOptions.None);
+        var height = lines.Length;
 
+        // read all the components first so we know how big the schematic needs to be
+        var components = new List<wcmp.Component>();
+        var positions = new List<Point<int>>();
+        var max = new Point<int>(-1, -1);
+        foreach (var line in lines)
+        {
+            var args = new List<string>(line.Split(','));
+            if (args.Count < 3) break;
+
+            var pos = new Point<int>(int.Parse(args[0]), int.Parse(args[1]));
+            var cname = args[2].Trim();
+            var remaining = args.GetRange(3, args.Count - 3);
+
+            max.x = Mathf.Max(max.x, pos.x);
+            max.y = Mathf.Max(max.y, pos.y);
+
+            var component = componentFactory[cname](remaining.ToArray());
+            components.Add(component);
+            positions.Add(pos);
+        }
+
+        Debug.Assert(components.Count == positions.Count, "ya done messed up");
+
+        // write to the schema
+        var schem = new wcmp.Schematic(max.x + 1, max.y + 1);
+        for (var i = 0; i < components.Count; ++i)
+        {
+            schem.grid.Set(positions[i], components[i]);
+        }
         ConnectWeaponSchematic(schem);
     }
     class SchematicState

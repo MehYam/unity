@@ -19,26 +19,32 @@ public class ShipAI : MonoBehaviour
         var player = Main.game.player.gameObject;
         var facePlayer = new FaceTargetBehavior(player);
 
-        _currentBehavior = new CompositeBehavior(
-            new GravitateToTargetBehavior(player),
-            //new FaceForwardBehavior()
-            facePlayer
-        );
+        for (int i = 0; i < 10; ++i)
+        {
+            // strafe/follow player
+            _currentBehavior = new CompositeBehavior(
+                new GravitateToTargetBehavior(player),
+                //new FaceForwardBehavior()
+                facePlayer
+            );
 
-        yield return new WaitForSeconds(5);
+            yield return new WaitForSeconds(5);
 
-        var schematic = transform.parent.GetComponent<WeaponSchematic>();
+            // fire at player
+            var schematic = transform.parent.GetComponent<WeaponSchematic>();
 
-        Debug.AssertFormat(schematic != null, "schematic's not found for {0}", transform.parent.name);
+            Debug.AssertFormat(schematic != null, "schematic's not found for {0}", transform.parent.name);
 
-        var fire = new FireAtTargetBehavior(player, schematic);
-        _currentBehavior = new CompositeBehavior(
-            fire,
-            facePlayer
-        );
+            var fire = new FireAtTargetBehavior(player, schematic);
+            _currentBehavior = new CompositeBehavior(
+                fire,
+                facePlayer
+            );
 
-        fire.firing = true;
+            fire.firing = true;
 
+            yield return new WaitForSeconds(5);
+        }
         yield return null;
     }
 
