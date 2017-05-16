@@ -266,10 +266,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4954decdc6bc9fa47a947952cde26de9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  schematicFile: {fileID: 4900000, guid: 8709260372c16f1428407d0206ceb648, type: 3}
   firepoint: {fileID: 1019585779684010}
-  prefabPlasmaAmmo: {fileID: 199322, guid: 793b40b395830e64297852daf7a015dc, type: 2}
-  prefabBeamAmmo: {fileID: 1967924314864710, guid: 644c954e45d49964bb84fc0e338edbb8,
-    type: 2}
   inheritShipVelocity: 0
 --- !u!136 &136107098549241822
 CapsuleCollider:

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 using kaiGameUtil;
-using WeaponComponents = PvT3D.WeaponComponents;
+using ShipComponent = PvT3D.ShipComponent;
 
 public class testInventory : MonoBehaviour
 {
@@ -19,8 +19,8 @@ public class testInventory : MonoBehaviour
     [SerializeField]
     GameObject emitterPrefab = null;
 
-    readonly WeaponComponents.Schematic inventory = new WeaponComponents.Schematic(3, 6);
-    readonly WeaponComponents.Schematic schematic = new WeaponComponents.Schematic(5, 3);
+    readonly ShipComponent.Schematic inventory = new ShipComponent.Schematic(3, 6);
+    readonly ShipComponent.Schematic schematic = new ShipComponent.Schematic(5, 3);
 	void Start()
     {
         StartCoroutine(DelayedStart());  
@@ -47,19 +47,19 @@ public class testInventory : MonoBehaviour
     }
     void LoadInventory()
     {
-        inventory.grid.Set(0, 0, new WeaponComponents.Power("P", 1));
-        inventory.grid.Set(1, 0, new WeaponComponents.Charger("C", 10));
-        inventory.grid.Set(2, 0, new WeaponComponents.Charger("C", 10));
-        inventory.grid.Set(0, 1, new WeaponComponents.Speed("A", 100));
+        inventory.grid.Set(0, 0, new ShipComponent.Power("P", 1));
+        inventory.grid.Set(1, 0, new ShipComponent.Charger("C", 10));
+        inventory.grid.Set(2, 0, new ShipComponent.Charger("C", 10));
+        inventory.grid.Set(0, 1, new ShipComponent.Speed("A", 100));
     }
     void PopulateInventoryUI()
     {
         // set up the map of model objects to UI objects
         var mapComponentToPrefab = new Dictionary<System.Type, GameObject>()
         {
-            { typeof(WeaponComponents.Power), powerModulePrefab },
-            { typeof(WeaponComponents.Charger), chargerPrefab },
-            { typeof(WeaponComponents.Speed), emitterPrefab }
+            { typeof(ShipComponent.Power), powerModulePrefab },
+            { typeof(ShipComponent.Charger), chargerPrefab },
+            { typeof(ShipComponent.Speed), emitterPrefab }
         };
 
         // walk the inventory object, populating the UI as necessary
@@ -82,10 +82,10 @@ public class testInventory : MonoBehaviour
     }
     class DragState
     {
-        public readonly WeaponComponents.Schematic from;
+        public readonly ShipComponent.Schematic from;
         public readonly Point<int> pos;
 
-        public DragState(WeaponComponents.Schematic from, Point<int> pos) { this.from = from; this.pos = pos; }
+        public DragState(ShipComponent.Schematic from, Point<int> pos) { this.from = from; this.pos = pos; }
     }
     DragState dragState;
     void OnItemDraggingFromSchematic(InventoryItemUI item, Point<int> pos)

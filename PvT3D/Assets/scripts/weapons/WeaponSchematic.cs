@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using kaiGameUtil;
-using wcmp = PvT3D.WeaponComponents;
+using sc = PvT3D.ShipComponent;
 
-public class WeaponSchematic : MonoBehaviour, wcmp.IAmmoProductConsumer
+public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
 {
     [SerializeField] TextAsset schematicFile = null;
     [SerializeField] GameObject firepoint = null;
@@ -32,29 +32,47 @@ public class WeaponSchematic : MonoBehaviour, wcmp.IAmmoProductConsumer
         else
         {
             Debug.LogWarningFormat("Warning, no schem file found for {0}", name);
-            LoadSampleSchematic();
+            LoadSampleShieldSchematic();
         }
     }
-    void LoadSampleSchematic()
+    void LoadSampleAutofireSchematic()
     {
-        // a sample schematic - needs to load from somewhere else
-        var schem = new wcmp.Schematic(5, 3);
-        schem.grid.Set(0, 0, new wcmp.Power("P", 1));
-        schem.grid.Set(1, 0, new wcmp.Charger("C", 2));
-        schem.grid.Set(2, 0, new wcmp.Lifetime("E", 1));
-        schem.grid.Set(3, 0, new wcmp.Speed("A", 60));
-        //schem.grid.Set(3, 0, new ship.LaserAccelerator("L", 100, 0.5f));
+        var schem = new sc.Schematic(5, 3);
+        schem.grid.Set(0, 0, new sc.Power("P", 1));
+        schem.grid.Set(1, 0, new sc.Charger("C", 2));
+        schem.grid.Set(2, 0, new sc.Lifetime("E", 1));
+        schem.grid.Set(3, 0, new sc.Speed("A", 60));
+        schem.grid.Set(1, 1, new sc.Autofire("Af"));
 
-        schem.grid.Set(1, 1, new wcmp.Autofire("Af"));
         ConnectWeaponSchematic(schem);
     }
-    static readonly Dictionary<string, Func<string[], wcmp.Component>> componentFactory = new Dictionary<string, Func<string[], wcmp.Component>>() 
+    void LoadSampleLaserSchematic()
     {
-        { "power", (args) => new wcmp.Power("P", int.Parse(args[0])) },
-        { "charger", (args) => new wcmp.Charger("C", int.Parse(args[0])) },
-        { "lifetime", (args) => new wcmp.Lifetime("L", int.Parse(args[0])) },
-        { "speed", (args) => new wcmp.Speed("S", int.Parse(args[0])) },
-        { "autofire", (args) => new wcmp.Autofire("Af") }
+        //KAI: probably doesn't work anymore
+        var schem = new sc.Schematic(5, 3);
+        schem.grid.Set(0, 0, new sc.Power("P", 1));
+        schem.grid.Set(1, 0, new sc.Charger("C", 2));
+        schem.grid.Set(2, 0, new sc.Lifetime("E", 1));
+        schem.grid.Set(3, 0, new sc.LaserAccelerator("L", 100, 0.5f));
+    }
+    void LoadSampleShieldSchematic()
+    {
+        var schem = new sc.Schematic(5, 3);
+        schem.grid.Set(0, 0, new sc.Power("P", 1));
+        schem.grid.Set(1, 0, new sc.Charger("C", 2));
+        schem.grid.Set(2, 0, new sc.Shield("S"));
+        //schem.grid.Set(3, 0, new wcmp.Lifetime("E", 1));
+        //schem.grid.Set(4, 0, new wcmp.Speed("A", 60));
+
+        ConnectWeaponSchematic(schem);
+    }
+    static readonly Dictionary<string, Func<string[], sc.Component>> componentFactory = new Dictionary<string, Func<string[], sc.Component>>() 
+    {
+        { "power", (args) => new sc.Power("P", int.Parse(args[0])) },
+        { "charger", (args) => new sc.Charger("C", int.Parse(args[0])) },
+        { "lifetime", (args) => new sc.Lifetime("L", int.Parse(args[0])) },
+        { "speed", (args) => new sc.Speed("S", int.Parse(args[0])) },
+        { "autofire", (args) => new sc.Autofire("Af") }
     };
     void Load(string textFile)
     {
@@ -63,7 +81,7 @@ public class WeaponSchematic : MonoBehaviour, wcmp.IAmmoProductConsumer
         var height = lines.Length;
 
         // read all the components first so we know how big the schematic needs to be
-        var components = new List<wcmp.Component>();
+        var components = new List<sc.Component>();
         var positions = new List<Point<int>>();
         var max = new Point<int>(-1, -1);
         foreach (var line in lines)
@@ -86,7 +104,7 @@ public class WeaponSchematic : MonoBehaviour, wcmp.IAmmoProductConsumer
         Debug.Assert(components.Count == positions.Count, "ya done messed up");
 
         // write to the schema
-        var schem = new wcmp.Schematic(max.x + 1, max.y + 1);
+        var schem = new sc.Schematic(max.x + 1, max.y + 1);
         for (var i = 0; i < components.Count; ++i)
         {
             schem.grid.Set(positions[i], components[i]);
@@ -95,11 +113,11 @@ public class WeaponSchematic : MonoBehaviour, wcmp.IAmmoProductConsumer
     }
     class SchematicState
     {
-        public readonly wcmp.ICharger charger;
-        public readonly wcmp.IFrameHandler frameHandler;
-        public readonly wcmp.IAmmoProductProducer producer;
+        public readonly sc.ICharger charger;
+        public readonly sc.IFrameHandler frameHandler;
+        public readonly sc.IProductProducer producer;
 
-        public SchematicState(wcmp.ICharger charger, wcmp.IFrameHandler frameHandler, wcmp.IAmmoProductProducer producer)
+        public SchematicState(sc.ICharger charger, sc.IFrameHandler frameHandler, sc.IProductProducer producer)
         {
             this.charger = charger;
             this.frameHandler = frameHandler;
@@ -107,44 +125,44 @@ public class WeaponSchematic : MonoBehaviour, wcmp.IAmmoProductConsumer
         }
     }
     SchematicState _state;
-    void ConnectWeaponSchematic(wcmp.Schematic schem)
+    void ConnectWeaponSchematic(sc.Schematic schem)
     {
         // walk through the schematic and wire things up in a left-to-right manner.  Not the final idea, but works for now
-        wcmp.Component lastComponent = null;
-        wcmp.Power power = null;
-        wcmp.ICharger charger = null;
-        wcmp.IFrameHandler frameHandler = null;
-        wcmp.IAmmoProductProducer producer = null;
+        sc.Component lastComponent = null;
+        sc.Power power = null;
+        sc.ICharger charger = null;
+        sc.IFrameHandler frameHandler = null;
+        sc.IProductProducer producer = null;
 
         schem.grid.ForEach((x, y, component) =>
         {
             if (component != null)
             {
                 //KAI: wonky, but the end game is supposed to have connections between the components, so it'll be addressed then
-                if (component is wcmp.Power)
+                if (component is sc.Power)
                 {
-                    power = component as wcmp.Power;
+                    power = component as sc.Power;
                 }
-                if (component is wcmp.Autofire)
+                if (component is sc.Autofire)
                 {
-                    ((wcmp.Autofire)component).charger = charger;
+                    ((sc.Autofire)component).charger = charger;
                 }
-                if (component is wcmp.ICharger)
+                if (component is sc.ICharger)
                 {
-                    charger = component as wcmp.ICharger;
-                    ((wcmp.ICharger)component).powerSource = power;
+                    charger = component as sc.ICharger;
+                    ((sc.ICharger)component).powerSource = power;
                 }
-                if (component is wcmp.IFrameHandler)
+                if (component is sc.IFrameHandler)
                 {
-                    frameHandler = component as wcmp.IFrameHandler;
+                    frameHandler = component as sc.IFrameHandler;
                 }
-                if (component is wcmp.IAmmoProductProducer)
+                if (component is sc.IProductProducer)
                 {
-                    producer = component as wcmp.IAmmoProductProducer;
+                    producer = component as sc.IProductProducer;
                 }
-                if (lastComponent is wcmp.IAmmoProductProducer && component is wcmp.IAmmoProductConsumer)
+                if (lastComponent is sc.IProductProducer && component is sc.IProductConsumer)
                 {
-                    ((wcmp.IAmmoProductProducer)lastComponent).output = component as wcmp.IAmmoProductConsumer;
+                    ((sc.IProductProducer)lastComponent).output = component as sc.IProductConsumer;
                 }
                 lastComponent = component;
             }
@@ -183,17 +201,17 @@ public class WeaponSchematic : MonoBehaviour, wcmp.IAmmoProductConsumer
     /// ship.IConsumer implementation
     /// </summary>
     /// <param name="product">the ammo coming from the weapon components</param>
-    public void ConsumeAmmoProduct(wcmp.AmmoProduct product) 
+    public void ConsumeShipProduct(sc.ComponentProduct product) 
     {
         switch(product.type)
         {
-            case wcmp.AmmoProduct.Type.Plasma:
+            case sc.ComponentProduct.Type.Plasma:
                 LaunchPlasmaAmmo(product);
                 break;
-            case wcmp.AmmoProduct.Type.Laser:
+            case sc.ComponentProduct.Type.Laser:
                 LaunchBeamAmmo(product);
                 break;
-            case wcmp.AmmoProduct.Type.Shield:
+            case sc.ComponentProduct.Type.Shield:
                 LaunchShieldAmmo(product);
                 break;
             default:
@@ -208,7 +226,7 @@ public class WeaponSchematic : MonoBehaviour, wcmp.IAmmoProductConsumer
         ammo.transform.rotation = firepoint.transform.rotation;
         ammo.layer = ammoLayer;
     }
-    void LaunchPlasmaAmmo(wcmp.AmmoProduct product)
+    void LaunchPlasmaAmmo(sc.ComponentProduct product)
     {
         // line the shot up
         var ammo = GameObject.Instantiate(Main.game.ammoRegistry.plasmaPrefab);
@@ -244,7 +262,7 @@ public class WeaponSchematic : MonoBehaviour, wcmp.IAmmoProductConsumer
             _ps.Play();
         }
     }
-    void LaunchBeamAmmo(wcmp.AmmoProduct product)
+    void LaunchBeamAmmo(sc.ComponentProduct product)
     {
         // line the shot up
         var ammo = GameObject.Instantiate(Main.game.ammoRegistry.beamPrefab);
@@ -256,9 +274,13 @@ public class WeaponSchematic : MonoBehaviour, wcmp.IAmmoProductConsumer
         beam.distance = product.distance;
         beam.width = product.width;
     }
-    void LaunchShieldAmmo(wcmp.AmmoProduct product)
+    void LaunchShieldAmmo(sc.ComponentProduct product)
     {
+        // line the shield up
         var ammo = GameObject.Instantiate(Main.game.ammoRegistry.shieldPrefab);
         OrientAmmo(ammo);
+
+        // attach it to the ship
+        ammo.transform.parent = transform;
     }
 }

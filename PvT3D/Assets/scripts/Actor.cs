@@ -123,9 +123,12 @@ public sealed class Actor : MonoBehaviour
         //NOTE: Actor should be set to run after all other scripts in the script execution order, unless we start using the 
         // roll-your-own composited behaviors from PvT
         var body = GetComponent<Rigidbody>();
-        var clamped = Vector3.ClampMagnitude(body.velocity, maxSpeed);
-        clamped.y = 0;
-        body.velocity = clamped;
+        if (body != null)
+        {
+            var clamped = Vector3.ClampMagnitude(body.velocity, maxSpeed);
+            clamped.y = 0;
+            body.velocity = clamped;
+        }
 
         // lock the actor's height for now.  This is a hack, partly because the freeze constraints options on the rigidbody fail upon collision
         var position = transform.position;

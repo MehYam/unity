@@ -5,13 +5,13 @@ using UnityEngine;
 using kaiGameUtil;
 using System;
 
-namespace PvT3D.WeaponComponents
+namespace PvT3D.ShipComponent
 {
     /// <summary>
-    /// AmmoProduct can be thought of as the object on the assembly line.  It passes from Component to Component, which alter the product
+    /// ComponentProduct can be thought of as the object on the assembly line.  It passes from Component to Component, which alter the product
     /// to produce something useful
     /// </summary>
-    public class AmmoProduct
+    public class ComponentProduct
     {
         public enum Type { Plasma, Laser, Shield }
 
@@ -22,13 +22,13 @@ namespace PvT3D.WeaponComponents
         public float width = 0;
         public float distance = 0;
     }
-    interface IAmmoProductConsumer
+    interface IProductConsumer
     {
-        void ConsumeAmmoProduct(AmmoProduct product);
+        void ConsumeShipProduct(ComponentProduct product);
     }
-    interface IAmmoProductProducer
+    interface IProductProducer
     {
-        IAmmoProductConsumer output { set; }
+        IProductConsumer output { set; }
     }
     interface IFrameHandler
     {
@@ -60,7 +60,7 @@ namespace PvT3D.WeaponComponents
         public readonly float power;
         public Power(string name, float power) : base(name) { this.power = power; }
     }
-    class Charger : Component, ICharger, IAmmoProductProducer
+    class Charger : Component, ICharger, IProductProducer
     {
         readonly public float rate;
         public Charger(string name, float rate) : base(name)
@@ -68,7 +68,7 @@ namespace PvT3D.WeaponComponents
             this.rate = rate;
         }
         public Power powerSource { set; private get; }
-        public IAmmoProductConsumer output { set; private get; }
+        public IProductConsumer output { set; private get; }
 
         float _startOfCharge = -1;
         public void Charge()
@@ -79,9 +79,9 @@ namespace PvT3D.WeaponComponents
         {
             if (output != null && _startOfCharge >= 0)
             {
-                var product = new AmmoProduct();
+                var product = new ComponentProduct();
                 product.power = currentCharge;
-                output.ConsumeAmmoProduct(product);
+                output.ConsumeShipProduct(product);
             }
             _startOfCharge = 0;
         }
@@ -142,79 +142,75 @@ namespace PvT3D.WeaponComponents
     /// <summary>
     /// UNFINISHED
     /// </summary>
-    class ShieldCharger : Component, ICharger, IAmmoProductProducer, IFrameHandler
+    class Shield : Component, IProductConsumer, IFrameHandler
     {
-        public ShieldCharger(string name, float rate) : base(name)
+        public Shield(string name) : base(name)
         {
-
         }
-        public IAmmoProductConsumer output {  set; private get; }
+        public IProductConsumer output {  set; private get; }
         public Power powerSource {  set; private get; }
 
-        public void Charge()
+        public void ConsumeShipProduct(ComponentProduct product)
         {
-            // immediately create a shield.  The shield's health and currentCharge must be linked somehow
+            if (output != null) output.ConsumeShipProduct(product);
         }
-        public void Discharge()
-        {
-            // detach the shield
-        }
-        public float currentCharge { get {  return 0; } }
+
         public void OnFixedUpdate()
         {
+
         }
     }
     /// <summary>
     /// Envelope defines time to live for the ammo. Along with speed from the Accelerator, this determines the range of the shot
     /// </summary>
-    class Lifetime : Component, IAmmoProductConsumer, IAmmoProductProducer
+    class Lifetime : Component, IProductConsumer, IProductProducer
     {
         public readonly float duration;
         public Lifetime(string name, float duration) : base(name)
         {
             this.duration = duration;
         }
-        public IAmmoProductConsumer output { set; private get; }
-        public void ConsumeAmmoProduct(AmmoProduct product)
+        public IProductConsumer output { set; private get; }
+        public void ConsumeShipProduct(ComponentProduct product)
         {
             product.duration = duration;
             if (output != null)
             {
-                output.ConsumeAmmoProduct(product);
+                output.ConsumeShipProduct(product);
             }
         }
     }
     /// <summary>
     /// Accelerator imparts speed to ammo projectile
     /// </summary>
-    class Speed : Component, IAmmoProductConsumer, IAmmoProductProducer
+    class Speed : Component, IProductConsumer, IProductProducer
     {
         public readonly float speed;
         public Speed(string name, float speed) : base(name) { this.speed = speed; }
-        public IAmmoProductConsumer output { set; private get; }
-        public void ConsumeAmmoProduct(AmmoProduct product)
+        public IProductConsumer output { set; private get; }
+        public void ConsumeShipProduct(ComponentProduct product)
         {
             product.speed = speed;
             if (output != null)
             {
-                output.ConsumeAmmoProduct(product);
+                output.ConsumeShipProduct(product);
             }
         }
     }
-    class LaserAccelerator : Component, IAmmoProductConsumer, IAmmoProductProducer
+    class LaserAccelerator : Component, IProductConsumer, IProductProducer
     {
         public readonly float width;
         public readonly float distance;
         public LaserAccelerator(string name, float distance, float width) : base(name) { this.width = width; this.distance = distance; }
-        public IAmmoProductConsumer output { set; private get; }
-        public void ConsumeAmmoProduct(AmmoProduct product)
+        public IProductConsumer output { set; private get; }
+        public void ConsumeShipProduct(ComponentProduct product)
         {
-            product.type = AmmoProduct.Type.Laser;
+            product.type = ComponentProduct.Type.Laser;
             product.width = width;
             product.distance = distance;
             if (output != null)
             {
-                output.ConsumeAmmoProduct(product);
+                output.ConsumeShipProduct(product);
             }
         }
     }

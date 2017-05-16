@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using PvT3D.WeaponComponents;
+using PvT3D.ShipComponent;
 
 public class ShipAI : MonoBehaviour
 {
