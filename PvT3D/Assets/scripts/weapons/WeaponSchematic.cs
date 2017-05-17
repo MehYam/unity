@@ -33,6 +33,7 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
         {
             Debug.LogWarningFormat("Warning, no schem file found for {0}", name);
             LoadSampleShieldSchematic();
+            //LoadSampleAutofireSchematic();
         }
     }
     void LoadSampleAutofireSchematic()
@@ -42,7 +43,7 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
         schem.grid.Set(1, 0, new sc.Charger("C", 2));
         schem.grid.Set(2, 0, new sc.Lifetime("E", 1));
         schem.grid.Set(3, 0, new sc.Speed("A", 60));
-        schem.grid.Set(1, 1, new sc.Autofire("Af"));
+        schem.grid.Set(1, 1, new sc.Repeater("R"));
 
         ConnectWeaponSchematic(schem);
     }
@@ -53,7 +54,7 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
         schem.grid.Set(0, 0, new sc.Power("P", 1));
         schem.grid.Set(1, 0, new sc.Charger("C", 2));
         schem.grid.Set(2, 0, new sc.Lifetime("E", 1));
-        schem.grid.Set(3, 0, new sc.LaserAccelerator("L", 100, 0.5f));
+        schem.grid.Set(3, 0, new sc.Laser("L", 100, 0.5f));
     }
     void LoadSampleShieldSchematic()
     {
@@ -61,8 +62,8 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
         schem.grid.Set(0, 0, new sc.Power("P", 1));
         schem.grid.Set(1, 0, new sc.Charger("C", 2));
         schem.grid.Set(2, 0, new sc.Shield("S"));
-        //schem.grid.Set(3, 0, new wcmp.Lifetime("E", 1));
-        //schem.grid.Set(4, 0, new wcmp.Speed("A", 60));
+        schem.grid.Set(3, 0, new sc.Lifetime("E", 1));
+        schem.grid.Set(4, 0, new sc.Speed("A", 60));
 
         ConnectWeaponSchematic(schem);
     }
@@ -72,7 +73,7 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
         { "charger", (args) => new sc.Charger("C", int.Parse(args[0])) },
         { "lifetime", (args) => new sc.Lifetime("L", int.Parse(args[0])) },
         { "speed", (args) => new sc.Speed("S", int.Parse(args[0])) },
-        { "autofire", (args) => new sc.Autofire("Af") }
+        { "autofire", (args) => new sc.Repeater("Af") }
     };
     void Load(string textFile)
     {
@@ -115,13 +116,13 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
     {
         public readonly sc.ICharger charger;
         public readonly sc.IFrameHandler frameHandler;
-        public readonly sc.IProductProducer producer;
+        public readonly sc.IProductProducer productProducer;
 
-        public SchematicState(sc.ICharger charger, sc.IFrameHandler frameHandler, sc.IProductProducer producer)
+        public SchematicState(sc.ICharger charger, sc.IFrameHandler frameHandler, sc.IProductProducer productProducer)
         {
             this.charger = charger;
             this.frameHandler = frameHandler;
-            this.producer = producer;
+            this.productProducer = productProducer;
         }
     }
     SchematicState _state;
@@ -132,7 +133,7 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
         sc.Power power = null;
         sc.ICharger charger = null;
         sc.IFrameHandler frameHandler = null;
-        sc.IProductProducer producer = null;
+        sc.IProductProducer productProducer = null;
 
         schem.grid.ForEach((x, y, component) =>
         {
@@ -143,9 +144,9 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
                 {
                     power = component as sc.Power;
                 }
-                if (component is sc.Autofire)
+                if (component is sc.IChargerWrapper)
                 {
-                    ((sc.Autofire)component).charger = charger;
+                    ((sc.IChargerWrapper)component).charger = charger;
                 }
                 if (component is sc.ICharger)
                 {
@@ -158,19 +159,23 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
                 }
                 if (component is sc.IProductProducer)
                 {
-                    producer = component as sc.IProductProducer;
+                    productProducer = component as sc.IProductProducer;
+                }
+                if (component is sc.ILiveProductProducer)
+                {
+                    ((sc.ILiveProductProducer)component).liveProductOutput = this;
                 }
                 if (lastComponent is sc.IProductProducer && component is sc.IProductConsumer)
                 {
-                    ((sc.IProductProducer)lastComponent).output = component as sc.IProductConsumer;
+                    ((sc.IProductProducer)lastComponent).productOutput = component as sc.IProductConsumer;
                 }
                 lastComponent = component;
             }
         });
-        _state = new SchematicState(charger, frameHandler, producer);
-        if (_state.producer != null)
+        _state = new SchematicState(charger, frameHandler, productProducer);
+        if (_state.productProducer != null)
         {
-            _state.producer.output = this;
+            _state.productProducer.productOutput = this;
         }
     }
 
@@ -201,7 +206,7 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
     /// ship.IConsumer implementation
     /// </summary>
     /// <param name="product">the ammo coming from the weapon components</param>
-    public void ConsumeShipProduct(sc.ComponentProduct product) 
+    public void ConsumeProduct(sc.ComponentProduct product) 
     {
         switch(product.type)
         {
@@ -212,7 +217,7 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
                 LaunchBeamAmmo(product);
                 break;
             case sc.ComponentProduct.Type.Shield:
-                LaunchShieldAmmo(product);
+                HandleShieldAmmo(product);
                 break;
             default:
                 Debug.LogError("no handler for " + product.type);
@@ -274,13 +279,47 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
         beam.distance = product.distance;
         beam.width = product.width;
     }
-    void LaunchShieldAmmo(sc.ComponentProduct product)
+    Actor _currentShield;
+    void HandleShieldAmmo(sc.ComponentProduct product)
     {
-        // line the shield up
-        var ammo = GameObject.Instantiate(Main.game.ammoRegistry.shieldPrefab);
-        OrientAmmo(ammo);
+        // if we don't currently have a shield, create one
+        if (_currentShield == null)
+        {
+            _currentShield = GameObject.Instantiate(Main.game.ammoRegistry.shieldPrefab).GetComponent<Actor>();
+            _currentShield.lockedY = false;
+            _currentShield.health = product.power;
+            _currentShield.collisionDamage = product.power;
 
-        // attach it to the ship
-        ammo.transform.parent = transform;
+            OrientAmmo(_currentShield.gameObject);
+
+            // attach it to the ship
+            _currentShield.transform.parent = transform;
+        }
+
+        // if we have a shield and product has speed, launch it.
+        if (product.speed > 0)
+        {
+            // inherit the ship's velocity
+            var rb = _currentShield.gameObject.AddComponent<Rigidbody>();
+            if (inheritShipVelocity && gameObject.GetComponent<Rigidbody>() != null)
+            {
+                //KAI: a bug, turret ammo needs to pick up launcher velocity as well
+                rb.velocity = gameObject.GetComponent<Rigidbody>().velocity;
+            }
+
+            // duration
+            var ttl = _currentShield.GetComponent<TimeToLive>();
+            if (ttl != null)
+            {
+                ttl.seconds = product.duration;
+                ttl.enabled = true;
+            }
+
+            // impart ammo velocity in the direction of the firer
+            rb.velocity += gameObject.transform.forward * product.speed;
+
+            _currentShield.transform.parent = Main.game.ammoParent.transform;
+            _currentShield = null;
+        }
     }
 }

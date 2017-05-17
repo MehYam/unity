@@ -8,13 +8,14 @@ public sealed class Actor : MonoBehaviour
     const float HEALTH_PER_DAMAGE_SMOKE = 25;
 
     [Tooltip("Starting health value.  Zero health for invulnerability")]
-    [SerializeField] float health = 0;
-    [SerializeField] float collisionDamage = 0;
+    public float health = 0;
+    public float collisionDamage = 0;
     public float acceleration = 10;
     public float maxSpeed = 10;
     public float rotationalAcceleration = 0.5f;
     [Tooltip("Maximum rotation speed in Rotations Per Second")]
     public float maxRPS = 1;
+    public bool lockedY = true;
 
     public bool explosionOnDeath = false;
 
@@ -131,11 +132,14 @@ public sealed class Actor : MonoBehaviour
         }
 
         // lock the actor's height for now.  This is a hack, partly because the freeze constraints options on the rigidbody fail upon collision
-        var position = transform.position;
-        if (position.y != _startY)
+        if (lockedY)
         {
-            position.y = _startY;
-            transform.position = position;
+            var position = transform.position;
+            if (position.y != _startY)
+            {
+                position.y = _startY;
+                transform.position = position;
+            }
         }
     }
 

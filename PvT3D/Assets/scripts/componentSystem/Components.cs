@@ -22,13 +22,17 @@ namespace PvT3D.ShipComponent
         public float width = 0;
         public float distance = 0;
     }
-    interface IProductConsumer
-    {
-        void ConsumeShipProduct(ComponentProduct product);
-    }
     interface IProductProducer
     {
-        IProductConsumer output { set; }
+        IProductConsumer productOutput { set; }
+    }
+    interface IProductConsumer
+    {
+        void ConsumeProduct(ComponentProduct product);
+    }
+    interface ILiveProductProducer
+    {
+        IProductConsumer liveProductOutput { set; }
     }
     interface IFrameHandler
     {
@@ -41,6 +45,10 @@ namespace PvT3D.ShipComponent
 
         void Charge();
         void Discharge();
+    }
+    interface IChargerWrapper: ICharger
+    {
+        ICharger charger { set; }
     }
     abstract class Component
     {
@@ -68,7 +76,7 @@ namespace PvT3D.ShipComponent
             this.rate = rate;
         }
         public Power powerSource { set; private get; }
-        public IProductConsumer output { set; private get; }
+        public IProductConsumer productOutput { set; private get; }
 
         float _startOfCharge = -1;
         public void Charge()
@@ -77,11 +85,11 @@ namespace PvT3D.ShipComponent
         }
         public void Discharge()
         {
-            if (output != null && _startOfCharge >= 0)
+            if (productOutput != null && _startOfCharge >= 0)
             {
                 var product = new ComponentProduct();
                 product.power = currentCharge;
-                output.ConsumeShipProduct(product);
+                productOutput.ConsumeProduct(product);
             }
             _startOfCharge = 0;
         }
@@ -93,9 +101,12 @@ namespace PvT3D.ShipComponent
             }
         }
     }
-    class Autofire : Component, IFrameHandler, ICharger
+    /// <summary>
+    /// Repeater is how we get autofire - it basically connects to the charger and automates it
+    /// </summary>
+    class Repeater : Component, IChargerWrapper, IFrameHandler
     {
-        public Autofire(string name) : base(name) { }
+        public Repeater(string name) : base(name) { }
 
         ICharger _charger;
         public ICharger charger
@@ -140,24 +151,60 @@ namespace PvT3D.ShipComponent
         }
     }
     /// <summary>
-    /// UNFINISHED
+    /// Shield is a complicated component - it needs to produce a shield when charging begins, maintain the shield
+    /// strength based on how much damage it's taking and how quickly it's being charged, and then launch it
+    /// when charging is finished
     /// </summary>
-    class Shield : Component, IProductConsumer, IFrameHandler
+    class Shield : Component, IChargerWrapper, IFrameHandler, IProductProducer, ILiveProductProducer
     {
         public Shield(string name) : base(name)
         {
         }
-        public IProductConsumer output {  set; private get; }
-        public Power powerSource {  set; private get; }
 
-        public void ConsumeShipProduct(ComponentProduct product)
+        public ICharger charger { set; private get;}
+        public IProductConsumer productOutput { set; private get; }
+        public IProductConsumer liveProductOutput { set; private get; }
+
+        public Power powerSource { set; private get; }
+        public float currentCharge
         {
-            if (output != null) output.ConsumeShipProduct(product);
+            get
+            {
+                return charger.currentCharge;
+            }
         }
+        ComponentProduct _currentProduct;
+        public void Charge()
+        {
+            // create the shield
+            if (_currentProduct == null)
+            {
+                _currentProduct = new ComponentProduct();
+                _currentProduct.type = ComponentProduct.Type.Shield;
 
+                UpdateOutput(_currentProduct);
+            }
+        }
+        public void Discharge()
+        {
+            // release the shield
+            productOutput.ConsumeProduct(_currentProduct);
+            _currentProduct = null;
+        }
         public void OnFixedUpdate()
         {
-
+            // add to the shield's charge
+            if (_currentProduct != null)
+            {
+                UpdateOutput(_currentProduct);
+            }
+        }
+        void UpdateOutput(ComponentProduct product)
+        {
+            if (liveProductOutput != null)
+            {
+                liveProductOutput.ConsumeProduct(_currentProduct);
+            }
         }
     }
     /// <summary>
@@ -170,47 +217,47 @@ namespace PvT3D.ShipComponent
         {
             this.duration = duration;
         }
-        public IProductConsumer output { set; private get; }
-        public void ConsumeShipProduct(ComponentProduct product)
+        public IProductConsumer productOutput { set; private get; }
+        public void ConsumeProduct(ComponentProduct product)
         {
             product.duration = duration;
-            if (output != null)
+            if (productOutput != null)
             {
-                output.ConsumeShipProduct(product);
+                productOutput.ConsumeProduct(product);
             }
         }
     }
     /// <summary>
-    /// Accelerator imparts speed to ammo projectile
+    /// Launcher imparts speed to ammo projectile
     /// </summary>
     class Speed : Component, IProductConsumer, IProductProducer
     {
         public readonly float speed;
         public Speed(string name, float speed) : base(name) { this.speed = speed; }
-        public IProductConsumer output { set; private get; }
-        public void ConsumeShipProduct(ComponentProduct product)
+        public IProductConsumer productOutput { set; private get; }
+        public void ConsumeProduct(ComponentProduct product)
         {
             product.speed = speed;
-            if (output != null)
+            if (productOutput != null)
             {
-                output.ConsumeShipProduct(product);
+                productOutput.ConsumeProduct(product);
             }
         }
     }
-    class LaserAccelerator : Component, IProductConsumer, IProductProducer
+    class Laser : Component, IProductConsumer, IProductProducer
     {
         public readonly float width;
         public readonly float distance;
-        public LaserAccelerator(string name, float distance, float width) : base(name) { this.width = width; this.distance = distance; }
-        public IProductConsumer output { set; private get; }
-        public void ConsumeShipProduct(ComponentProduct product)
+        public Laser(string name, float distance, float width) : base(name) { this.width = width; this.distance = distance; }
+        public IProductConsumer productOutput { set; private get; }
+        public void ConsumeProduct(ComponentProduct product)
         {
             product.type = ComponentProduct.Type.Laser;
             product.width = width;
             product.distance = distance;
-            if (output != null)
+            if (productOutput != null)
             {
-                output.ConsumeShipProduct(product);
+                productOutput.ConsumeProduct(product);
             }
         }
     }
