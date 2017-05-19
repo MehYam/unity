@@ -9,7 +9,6 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
 {
     [SerializeField] TextAsset schematicFile = null;
     [SerializeField] GameObject firepoint = null;
-    [SerializeField] bool inheritShipVelocity = false;
 
     int ammoLayer;
     ParticleSystem _ps;
@@ -59,11 +58,11 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
     void LoadSampleShieldSchematic()
     {
         var schem = new sc.Schematic(5, 3);
-        schem.grid.Set(0, 0, new sc.Power("P", 1));
+        schem.grid.Set(0, 0, new sc.Power("P", 100));
         schem.grid.Set(1, 0, new sc.Charger("C", 2));
         schem.grid.Set(2, 0, new sc.Shield("S"));
         schem.grid.Set(3, 0, new sc.Lifetime("E", 1));
-        schem.grid.Set(4, 0, new sc.Speed("A", 60));
+        schem.grid.Set(4, 0, new sc.Speed("A", 10));
 
         ConnectWeaponSchematic(schem);
     }
@@ -239,7 +238,7 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
 
         // inherit the ship's velocity
         var rb = ammo.transform.GetComponent<Rigidbody>();
-        if (inheritShipVelocity && gameObject.GetComponent<Rigidbody>() != null)
+        if (product.inheritShipVelocity && gameObject.GetComponent<Rigidbody>() != null)
         {
             //KAI: a bug, turret ammo needs to pick up launcher velocity as well
             rb.velocity = gameObject.GetComponent<Rigidbody>().velocity;
@@ -294,17 +293,19 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
 
             // attach it to the ship
             _currentShield.transform.parent = transform;
+            _currentShield.gameObject.layer = LayerMask.NameToLayer("friendly");
         }
 
         // if we have a shield and product has speed, launch it.
         if (product.speed > 0)
         {
             // inherit the ship's velocity
-            var rb = _currentShield.gameObject.AddComponent<Rigidbody>();
-            if (inheritShipVelocity && gameObject.GetComponent<Rigidbody>() != null)
+            var rb = _currentShield.gameObject.GetComponent<Rigidbody>();
+            if (product.inheritShipVelocity && gameObject.GetComponent<Rigidbody>() != null)
             {
                 //KAI: a bug, turret ammo needs to pick up launcher velocity as well
                 rb.velocity = gameObject.GetComponent<Rigidbody>().velocity;
+                rb.isKinematic = false;
             }
 
             // duration
@@ -319,6 +320,7 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
             rb.velocity += gameObject.transform.forward * product.speed;
 
             _currentShield.transform.parent = Main.game.ammoParent.transform;
+            _currentShield.gameObject.layer = LayerMask.NameToLayer("friendlyAmmo");
             _currentShield = null;
         }
     }

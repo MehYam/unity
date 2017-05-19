@@ -43,7 +43,7 @@ public sealed class Actor : MonoBehaviour
             gameObject.layer != otherActor.gameObject.layer && 
             _startHealth > 0;
 
-        //Debug.Log(string.Format("{0}. {1} hit by {2}, does damage: {3}", _collisions, name, col.collider.name, takingDamage));
+        Debug.Log(string.Format("{0}. {1} hit by {2}, does damage: {3}", _collisions, name, col.collider.name, takingDamage));
         if (takingDamage)
         {
             int damageSmokeBeforeHit = Mathf.FloorToInt((_startHealth - health) / HEALTH_PER_DAMAGE_SMOKE);

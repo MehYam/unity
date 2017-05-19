@@ -21,6 +21,8 @@ namespace PvT3D.ShipComponent
         public float speed = 0;
         public float width = 0;
         public float distance = 0;
+
+        public bool inheritShipVelocity = false;
     }
     interface IProductProducer
     {
@@ -181,6 +183,7 @@ namespace PvT3D.ShipComponent
             {
                 _currentProduct = new ComponentProduct();
                 _currentProduct.type = ComponentProduct.Type.Shield;
+                _currentProduct.inheritShipVelocity = true;
 
                 UpdateOutput(_currentProduct);
             }
