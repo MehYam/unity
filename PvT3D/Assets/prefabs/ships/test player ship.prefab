@@ -64,6 +64,7 @@ GameObject:
   - component: {fileID: 114599918271520132}
   - component: {fileID: 114308824843936694}
   - component: {fileID: 114727705992629320}
+  - component: {fileID: 114510285717792560}
   m_Layer: 9
   m_Name: test player ship
   m_TagString: Untagged
@@ -78,7 +79,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1633578562584084}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1, z: 2.67}
+  m_LocalPosition: {x: 0, y: -0.3, z: 2.67}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4966518892938016}
@@ -203,6 +204,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 1
+--- !u!114 &114510285717792560
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1864547239629706}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 176b0e3d7dbb80f43a4de9be5ddd572e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  showHits: 1
+  showDamageSmoke: 1
+  showExplosionOnDeath: 1
 --- !u!114 &114571982618455232
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -236,8 +251,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4954decdc6bc9fa47a947952cde26de9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  schematicFile: {fileID: 0}
   firepoint: {fileID: 1633578562584084}
-  inheritShipVelocity: 0
 --- !u!114 &114813607713124400
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -286,13 +301,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65821d44c0b381240856280879c3cf82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 100
+  startHealth: 100
   collisionDamage: 5
   acceleration: 200
   maxSpeed: 40
   rotationalAcceleration: 0.75
   maxRPS: 1
-  explosionOnDeath: 1
+  lockedY: 1
 --- !u!198 &198817151274631372
 ParticleSystem:
   m_ObjectHideFlags: 1

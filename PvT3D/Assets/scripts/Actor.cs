@@ -1,14 +1,12 @@
 using UnityEngine;
-using System.Collections;
+using System;
 
 using PvT3D.Util;
 
 public sealed class Actor : MonoBehaviour
 {
-    const float HEALTH_PER_DAMAGE_SMOKE = 25;
-
     [Tooltip("Starting health value.  Zero health for invulnerability")]
-    public float health = 0;
+    public float startHealth = 0;
     public float collisionDamage = 0;
     public float acceleration = 10;
     public float maxSpeed = 10;
@@ -17,21 +15,44 @@ public sealed class Actor : MonoBehaviour
     public float maxRPS = 1;
     public bool lockedY = true;
 
-    public bool explosionOnDeath = false;
+    /// <summary>
+    /// HealthChanged(Actor this, float oldHealth, float newHealth)
+    /// </summary>
+    public Action<Actor, float, float> HealthChanged = delegate { };
+    /// <summary>
+    /// ActorDying(Actor this)
+    /// </summary>
+    public Action<Actor> ActorDying = delegate { };
 
+    float _health = 0;
     int _collisions = 0;
     Color _startColor;
-    float _startHealth = 0;
     float _startY = 0;
     void Start()
     {
-        var material = Util.GetMaterialInChildren(gameObject);
-        if (material != null && material.HasProperty("_Color"))
-        {
-            _startColor = material.color;
-        }
-        _startHealth = health;
         _startY = transform.position.y;
+        _health = startHealth;
+    }
+    public float health { get {  return _health; } }
+    public float healthPct { get { return startHealth > 0 ? (_health/startHealth) : 0; } }
+    public void SetHealth(float newHealth, bool countsAsDamage = false)
+    {
+        var old = _health;
+
+        _health = newHealth;
+        HealthChanged(this, old, newHealth);
+
+        if (health <= 0)
+        {
+            ActorDying(this);
+
+            GlobalEvent.Instance.FireActorDeath(this);
+            GameObject.Destroy(gameObject);
+        }
+    }
+    public void SetHealthPct(float newPct, bool countsAsDamage = false)
+    {
+        SetHealth(startHealth * newPct, countsAsDamage);
     }
     void OnCollisionEnter(Collision col)
     {
@@ -41,82 +62,12 @@ public sealed class Actor : MonoBehaviour
         var takingDamage = 
             otherActor != null && 
             gameObject.layer != otherActor.gameObject.layer && 
-            _startHealth > 0;
+            _health > 0;
 
         Debug.Log(string.Format("{0}. {1} hit by {2}, does damage: {3}", _collisions, name, col.collider.name, takingDamage));
         if (takingDamage)
         {
-            int damageSmokeBeforeHit = Mathf.FloorToInt((_startHealth - health) / HEALTH_PER_DAMAGE_SMOKE);
-            health -= otherActor.collisionDamage;
-
-            if (health > 0)
-            {
-                // Injury
-                int damageSmokeAfterHit = Mathf.FloorToInt((_startHealth - health) / HEALTH_PER_DAMAGE_SMOKE);
-                AddDamageSmoke(damageSmokeAfterHit - damageSmokeBeforeHit);
-
-                StartCoroutine(DisplayHit());
-            }
-            else
-            {
-                // Death
-                GlobalEvent.Instance.FireActorDeath(this);
-                RemoveDamageSmoke();
-                if (explosionOnDeath)
-                {
-                    var explosion = GameObject.Instantiate(Main.game.plasmaExplosionPrefab);
-                    explosion.transform.parent = Main.game.effectParent.transform;
-                    explosion.transform.position = transform.position;
-                }
-                GameObject.Destroy(gameObject);
-            }
-        }
-    }
-    Transform damageSmoke;
-    void AddDamageSmoke(int num)
-    {
-        if (num > 0)
-        {
-            if (damageSmoke == null)
-            {
-                damageSmoke = new GameObject("damageSmokeParent").transform;
-                damageSmoke.parent = transform;
-                damageSmoke.transform.localPosition = Vector3.zero;
-            }
-            for (int i = 0; i < num; ++i)
-            {
-                var smoke = GameObject.Instantiate(Main.game.damageSmokePrefab);
-                smoke.transform.parent = damageSmoke;
-                smoke.transform.localPosition = Random.insideUnitSphere * 3;
-            }
-        }
-    }
-    void RemoveDamageSmoke()
-    {
-        // we want damage smoke particles to stick around after death, so parent them to the effects layer
-        if (damageSmoke != null)
-        {
-            damageSmoke.parent = Main.game.effectParent.transform;
-
-            var ttl = damageSmoke.gameObject.AddComponent<TimeToLive>();
-            ttl.seconds = 5;
-
-            var particles = damageSmoke.GetComponentsInChildren<ParticleSystem>();
-            foreach (var particle in particles)
-            {
-                particle.Stop();
-            }
-        }
-    }
-    IEnumerator DisplayHit()
-    {
-        //KAI: seems like this doesn't belong in Actor, but what do I know
-        var renderer = GetComponentInChildren<Renderer>();
-        if (renderer != null && renderer.material != null)
-        {
-            renderer.material.color = new Color(1, .7f, .7f);
-            yield return new WaitForSeconds(0.1f);
-            renderer.material.color = _startColor;
+            SetHealth(_health - otherActor.collisionDamage, true);
         }
     }
     void FixedUpdate()

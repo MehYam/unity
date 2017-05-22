@@ -20,13 +20,13 @@ GameObject:
   m_Component:
   - component: {fileID: 4920527140040392}
   - component: {fileID: 54689799292347762}
+  - component: {fileID: 65546403197697372}
   - component: {fileID: 114944114339560750}
   - component: {fileID: 114131591620188980}
-  - component: {fileID: 114108188232128802}
   - component: {fileID: 114469299749341362}
   - component: {fileID: 114323807696423354}
   - component: {fileID: 114324852871543438}
-  - component: {fileID: 65546403197697372}
+  - component: {fileID: 114951364758055218}
   m_Layer: 10
   m_Name: test enemy ship
   m_TagString: Untagged
@@ -144,18 +144,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 4, y: 1.7, z: 3.7}
   m_Center: {x: 0, y: -0.1, z: 0}
---- !u!114 &114108188232128802
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1805238065851154}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2bad94e1e26b9b44f9285e7cbed635aa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 1
 --- !u!114 &114131591620188980
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -214,10 +202,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65821d44c0b381240856280879c3cf82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 100
+  startHealth: 100
   collisionDamage: 5
   acceleration: 20
   maxSpeed: 15
   rotationalAcceleration: 0.25
   maxRPS: 0.2
-  explosionOnDeath: 1
+  lockedY: 1
+--- !u!114 &114951364758055218
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1805238065851154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 176b0e3d7dbb80f43a4de9be5ddd572e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  showHits: 1
+  showDamageSmoke: 1
+  showExplosionOnDeath: 1

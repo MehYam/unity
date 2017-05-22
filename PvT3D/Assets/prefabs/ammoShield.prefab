@@ -26,6 +26,8 @@ GameObject:
   - component: {fileID: 114009989521549754}
   - component: {fileID: 65854918033167722}
   - component: {fileID: 65656227352579456}
+  - component: {fileID: 54665792597389408}
+  - component: {fileID: 114855530615804668}
   m_Layer: 0
   m_Name: ammoShield
   m_TagString: Untagged
@@ -41,7 +43,7 @@ Transform:
   m_GameObject: {fileID: 1795262085350758}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -84,6 +86,21 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1795262085350758}
   m_Mesh: {fileID: 4300000, guid: e411c9faf0cac36459b29b5926d85559, type: 3}
+--- !u!54 &54665792597389408
+Rigidbody:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1795262085350758}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!65 &65656227352579456
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -131,6 +148,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   seconds: 2
+  fadeHealthOverTime: 1
 --- !u!114 &114542719518906830
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -142,10 +160,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65821d44c0b381240856280879c3cf82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 100
+  startHealth: 100
   collisionDamage: 50
   acceleration: 0
   maxSpeed: 100
   rotationalAcceleration: 0
   maxRPS: 0
-  explosionOnDeath: 0
+  lockedY: 1
+--- !u!114 &114855530615804668
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1795262085350758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e18bc8fc07c728544ac1949034b67f15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -61,8 +61,8 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
         schem.grid.Set(0, 0, new sc.Power("P", 100));
         schem.grid.Set(1, 0, new sc.Charger("C", 2));
         schem.grid.Set(2, 0, new sc.Shield("S"));
-        schem.grid.Set(3, 0, new sc.Lifetime("E", 1));
-        schem.grid.Set(4, 0, new sc.Speed("A", 10));
+        schem.grid.Set(3, 0, new sc.Lifetime("E", 5));
+        schem.grid.Set(4, 0, new sc.Speed("A", 5));
 
         ConnectWeaponSchematic(schem);
     }
@@ -111,14 +111,16 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
         }
         ConnectWeaponSchematic(schem);
     }
-    class SchematicState
+    class SchematicState  // KAI: the degree to which we need this thing is the degree to which the component design isn't fully fleshed out, and doesn't take care of itself
     {
+        public readonly sc.Power power;
         public readonly sc.ICharger charger;
         public readonly sc.IFrameHandler frameHandler;
         public readonly sc.IProductProducer productProducer;
 
-        public SchematicState(sc.ICharger charger, sc.IFrameHandler frameHandler, sc.IProductProducer productProducer)
+        public SchematicState(sc.Power power, sc.ICharger charger, sc.IFrameHandler frameHandler, sc.IProductProducer productProducer)
         {
+            this.power = power;
             this.charger = charger;
             this.frameHandler = frameHandler;
             this.productProducer = productProducer;
@@ -171,7 +173,7 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
                 lastComponent = component;
             }
         });
-        _state = new SchematicState(charger, frameHandler, productProducer);
+        _state = new SchematicState(power, charger, frameHandler, productProducer);
         if (_state.productProducer != null)
         {
             _state.productProducer.productOutput = this;
@@ -286,8 +288,12 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
         {
             _currentShield = GameObject.Instantiate(Main.game.ammoRegistry.shieldPrefab).GetComponent<Actor>();
             _currentShield.lockedY = false;
-            _currentShield.health = product.power;
-            _currentShield.collisionDamage = product.power;
+
+            //KAI: these need to ramp up from the charger instead
+            //_currentShield.startHealth = product.power;
+            //_currentShield.collisionDamage = product.power;
+            _currentShield.startHealth = _state.power.power;
+            _currentShield.collisionDamage = _state.power.power;
 
             OrientAmmo(_currentShield.gameObject);
 

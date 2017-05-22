@@ -100,7 +100,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4726128194958602, guid: 3dcc2443a8edc8b4fb9c46b8ffe40270, type: 2}
       propertyPath: m_LocalPosition.x
-      value: -10
+      value: 9.98
       objectReference: {fileID: 0}
     - target: {fileID: 4726128194958602, guid: 3dcc2443a8edc8b4fb9c46b8ffe40270, type: 2}
       propertyPath: m_LocalPosition.y
@@ -132,7 +132,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1448038195057554, guid: 3dcc2443a8edc8b4fb9c46b8ffe40270, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 3dcc2443a8edc8b4fb9c46b8ffe40270, type: 2}
@@ -18398,13 +18398,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65821d44c0b381240856280879c3cf82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 100
+  startHealth: 0
   collisionDamage: 50
   acceleration: 200
   maxSpeed: 8
   rotationalAcceleration: 0.5
   maxRPS: 1
-  explosionOnDeath: 0
+  lockedY: 1
 --- !u!1 &1024494815
 GameObject:
   m_ObjectHideFlags: 0

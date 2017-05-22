@@ -54,11 +54,11 @@ GameObject:
   - component: {fileID: 54770395291037572}
   - component: {fileID: 114257288690220640}
   - component: {fileID: 114723200657520958}
-  - component: {fileID: 114220079664641842}
   - component: {fileID: 114216160947907180}
   - component: {fileID: 136180455643697726}
   - component: {fileID: 136107098549241822}
   - component: {fileID: 114977086553791558}
+  - component: {fileID: 114306951161884642}
   m_Layer: 10
   m_Name: test enemy ship 2
   m_TagString: Untagged
@@ -203,18 +203,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rollTime: 0.5
   maxRollAngle: 60
---- !u!114 &114220079664641842
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1448038195057554}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2bad94e1e26b9b44f9285e7cbed635aa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 1
 --- !u!114 &114257288690220640
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -226,13 +214,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65821d44c0b381240856280879c3cf82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 100
+  startHealth: 100
   collisionDamage: 5
   acceleration: 150
   maxSpeed: 30
   rotationalAcceleration: 0.5
   maxRPS: 0.5
-  explosionOnDeath: 1
+  lockedY: 1
+--- !u!114 &114306951161884642
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1448038195057554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 176b0e3d7dbb80f43a4de9be5ddd572e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  showHits: 1
+  showDamageSmoke: 1
+  showExplosionOnDeath: 1
 --- !u!114 &114507375071166002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -268,7 +270,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   schematicFile: {fileID: 4900000, guid: 8709260372c16f1428407d0206ceb648, type: 3}
   firepoint: {fileID: 1019585779684010}
-  inheritShipVelocity: 0
 --- !u!136 &136107098549241822
 CapsuleCollider:
   m_ObjectHideFlags: 1

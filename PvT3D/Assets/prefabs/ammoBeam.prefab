@@ -82,7 +82,7 @@ MeshRenderer:
   m_GameObject: {fileID: 1198406419358918}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 1
+  m_ReceiveShadows: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -149,8 +149,10 @@ MonoBehaviour:
   health: 0
   collisionDamage: 50
   acceleration: 0
-  rotationalAcceleration: 0
   maxSpeed: 0
+  rotationalAcceleration: 0
+  maxRPS: 1
+  lockedY: 1
   explosionOnDeath: 0
 --- !u!114 &114892684998149772
 MonoBehaviour:
