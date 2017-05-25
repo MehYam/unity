@@ -61,7 +61,7 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
         schem.grid.Set(0, 0, new sc.Power("P", 100));
         schem.grid.Set(1, 0, new sc.Charger("C", 2));
         schem.grid.Set(2, 0, new sc.Shield("S", 0.1f));
-        schem.grid.Set(3, 0, new sc.Lifetime("E", 5));
+        schem.grid.Set(3, 0, new sc.Lifetime("E", 3));
         schem.grid.Set(4, 0, new sc.Speed("A", 5));
 
         ConnectWeaponSchematic(schem);
@@ -326,7 +326,6 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
             rb.velocity += gameObject.transform.forward * product.speed;
 
             _currentShield.transform.parent = Main.game.ammoParent.transform;
-            _currentShield.gameObject.layer = LayerMask.NameToLayer("friendlyAmmo");
             _currentShield = null;
         }
     }

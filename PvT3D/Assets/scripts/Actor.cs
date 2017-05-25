@@ -64,7 +64,7 @@ public sealed class Actor : MonoBehaviour
             gameObject.layer != otherActor.gameObject.layer && 
             _health > 0;
 
-        Debug.Log(string.Format("{0}. {1} hit by {2}, does damage: {3}", _collisions, name, col.collider.name, takingDamage));
+        //Debug.Log(string.Format("{0}. {1} hit by {2}, does damage: {3}", _collisions, name, col.collider.name, takingDamage));
         if (takingDamage)
         {
             SetHealth(_health - otherActor.collisionDamage, true);
