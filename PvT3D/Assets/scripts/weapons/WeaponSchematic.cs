@@ -60,7 +60,7 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
         var schem = new sc.Schematic(5, 3);
         schem.grid.Set(0, 0, new sc.Power("P", 100));
         schem.grid.Set(1, 0, new sc.Charger("C", 2));
-        schem.grid.Set(2, 0, new sc.Shield("S"));
+        schem.grid.Set(2, 0, new sc.Shield("S", 0.1f));
         schem.grid.Set(3, 0, new sc.Lifetime("E", 5));
         schem.grid.Set(4, 0, new sc.Speed("A", 5));
 
@@ -218,7 +218,7 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
                 LaunchBeamAmmo(product);
                 break;
             case sc.ComponentProduct.Type.Shield:
-                HandleShieldAmmo(product);
+                HandleShieldAmmo((sc.ShieldProduct)product);
                 break;
             default:
                 Debug.LogError("no handler for " + product.type);
@@ -281,7 +281,7 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
         beam.width = product.width;
     }
     Actor _currentShield;
-    void HandleShieldAmmo(sc.ComponentProduct product)
+    void HandleShieldAmmo(sc.ShieldProduct product)
     {
         // if we don't currently have a shield, create one
         if (_currentShield == null)
@@ -292,8 +292,8 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
             //KAI: these need to ramp up from the charger instead
             //_currentShield.startHealth = product.power;
             //_currentShield.collisionDamage = product.power;
-            _currentShield.startHealth = _state.power.power;
-            _currentShield.collisionDamage = _state.power.power;
+            _currentShield.startHealth = _state.power.power * (1 - product.damagePct);
+            _currentShield.collisionDamage = _state.power.power * product.damagePct;
 
             OrientAmmo(_currentShield.gameObject);
 

@@ -24,6 +24,10 @@ namespace PvT3D.ShipComponent
 
         public bool inheritShipVelocity = false;
     }
+    public class ShieldProduct : ComponentProduct
+    {
+        public float damagePct = 0;
+    }
     interface IProductProducer
     {
         IProductConsumer productOutput { set; }
@@ -159,8 +163,16 @@ namespace PvT3D.ShipComponent
     /// </summary>
     class Shield : Component, IChargerWrapper, IFrameHandler, IProductProducer, ILiveProductProducer
     {
-        public Shield(string name) : base(name)
+        readonly float damagePct;
+
+        /// <summary>
+        /// A shield charger - connects to an existing ICharger and converts the power to shields
+        /// </summary>
+        /// <param name="name">name of component</param>
+        /// <param name="damagePct">percentage of power that's converted to damage. 0 == all health, 1 == all damage</param>
+        public Shield(string name, float damagePct) : base(name)
         {
+            this.damagePct = damagePct;
         }
 
         public ICharger charger { set; private get;}
@@ -175,14 +187,15 @@ namespace PvT3D.ShipComponent
                 return charger.currentCharge;
             }
         }
-        ComponentProduct _currentProduct;
+        ShieldProduct _currentProduct;
         public void Charge()
         {
             // create the shield
             if (_currentProduct == null)
             {
-                _currentProduct = new ComponentProduct();
+                _currentProduct = new ShieldProduct();
                 _currentProduct.type = ComponentProduct.Type.Shield;
+                _currentProduct.damagePct = damagePct;
                 _currentProduct.inheritShipVelocity = true;
 
                 UpdateOutput(_currentProduct);
