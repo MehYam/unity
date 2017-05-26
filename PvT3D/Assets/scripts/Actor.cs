@@ -32,6 +32,13 @@ public sealed class Actor : MonoBehaviour
     {
         _startY = transform.position.y;
         _health = startHealth;
+
+        // for now, freeze rotation on all actors
+        var rb = GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.freezeRotation = true;
+        }
     }
     public float health { get {  return _health; } }
     public float healthPct { get { return startHealth > 0 ? (_health/startHealth) : 0; } }

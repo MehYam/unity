@@ -31,8 +31,10 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
         else
         {
             Debug.LogWarningFormat("Warning, no schem file found for {0}", name);
-            LoadSampleShieldSchematic();
-            //LoadSampleAutofireSchematic();
+
+            LoadSampleAutofireSchematic();
+            //LoadSampleLaserSchematic();
+            //LoadSampleShieldSchematic();
         }
     }
     void LoadSampleAutofireSchematic()
@@ -54,6 +56,8 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
         schem.grid.Set(1, 0, new sc.Charger("C", 2));
         schem.grid.Set(2, 0, new sc.Lifetime("E", 1));
         schem.grid.Set(3, 0, new sc.Laser("L", 100, 0.5f));
+
+        ConnectWeaponSchematic(schem);
     }
     void LoadSampleShieldSchematic()
     {
@@ -312,6 +316,7 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
                 //KAI: a bug, turret ammo needs to pick up launcher velocity as well
                 rb.velocity = gameObject.GetComponent<Rigidbody>().velocity;
                 rb.isKinematic = false;
+                rb.freezeRotation = true;
             }
 
             // duration
