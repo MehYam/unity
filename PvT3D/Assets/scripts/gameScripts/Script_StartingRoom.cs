@@ -6,8 +6,10 @@ public class Script_StartingRoom : MonoBehaviour
 {
 	void Start()
     {
-        // Spawn player
-		var player = GameObject.Instantiate(Main.game.defaultPlayerPrefab);
+        // Spawn player - check for a test player already dropped into the scene
+        var playerMovement = FindObjectOfType<PlayerMovement>();
+
+		var player = playerMovement == null ? GameObject.Instantiate(Main.game.defaultPlayerPrefab) : playerMovement.gameObject;
         player.transform.parent = Main.game.actorParent.transform;
 
         Main.game.player = player.GetComponent<Actor>();
