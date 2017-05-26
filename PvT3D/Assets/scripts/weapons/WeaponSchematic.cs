@@ -1,8 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 using kaiGameUtil;
+using PvT3D.Util;
 using sc = PvT3D.ShipComponent;
 
 public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
@@ -73,7 +75,7 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
         schem.grid.Set(1, 0, new sc.Charger("C", 2));
         schem.grid.Set(2, 0, new sc.Shield("S", 0.1f));
         schem.grid.Set(3, 0, new sc.Lifetime("E", 3));
-        schem.grid.Set(4, 0, new sc.Speed("A", 5));
+        schem.grid.Set(4, 0, new sc.Speed("A", 10));
 
         ConnectWeaponSchematic(schem);
     }
@@ -249,19 +251,19 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
         var ammo = GameObject.Instantiate(Main.game.ammoRegistry.plasmaPrefab);
         OrientAmmo(ammo);
 
+        // duration  KAI: replace this with Destroy(, t)!!!!!!
+        var ttl = ammo.GetComponent<TimeToLive>();
+        if (ttl != null)
+        {
+            ttl.seconds = product.duration;
+        }
+
         // inherit the ship's velocity
         var rb = ammo.transform.GetComponent<Rigidbody>();
         if (product.inheritShipVelocity && gameObject.GetComponent<Rigidbody>() != null)
         {
             //KAI: a bug, turret ammo needs to pick up launcher velocity as well
             rb.velocity = gameObject.GetComponent<Rigidbody>().velocity;
-        }
-
-        // duration
-        var ttl = ammo.GetComponent<TimeToLive>();
-        if (ttl != null)
-        {
-            ttl.seconds = product.duration;
         }
 
         // impart ammo velocity in the direction of the firer
@@ -311,34 +313,50 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
             // attach it to the ship
             _currentShield.transform.parent = transform;
             _currentShield.gameObject.layer = LayerMask.NameToLayer("friendlyShield");
+
+            // use a joint to attach the shield.  You don't strictly need one, but physics and collisions with walls work more realistically
+            // if you have one
+            var joint = gameObject.GetOrAddComponent<FixedJoint>();
+            joint.connectedBody = _currentShield.gameObject.GetComponent<Rigidbody>();
         }
 
         // if we have a shield and product has speed, launch it.
         if (product.speed > 0)
         {
-            // inherit the ship's velocity
-            var rb = _currentShield.gameObject.GetComponent<Rigidbody>();
-            if (product.inheritShipVelocity && gameObject.GetComponent<Rigidbody>() != null)
-            {
-                //KAI: a bug, turret ammo needs to pick up launcher velocity as well
-                rb.velocity = gameObject.GetComponent<Rigidbody>().velocity;
-                rb.isKinematic = false;
-                rb.freezeRotation = true;
-            }
-
-            // duration
-            var ttl = _currentShield.GetComponent<TimeToLive>();
-            if (ttl != null)
-            {
-                ttl.seconds = product.duration;
-                ttl.enabled = true;
-            }
-
-            // impart ammo velocity in the direction of the firer
-            rb.velocity += gameObject.transform.forward * product.speed;
+            // asynchronous operations in the physics system require us to use a coroutine
+            StartCoroutine(DetachShield(_currentShield, product));
 
             _currentShield.transform.parent = Main.game.ammoParent.transform;
             _currentShield = null;
         }
+    }
+    IEnumerator DetachShield(Actor shield, sc.ShieldProduct product)
+    {
+        // disconnect the joint
+        var joint = GetComponent<FixedJoint>();
+        Destroy(GetComponent<FixedJoint>());
+
+        // Destroy is asynchronous, so wait until end of frame for this to actually take effect.  
+        // Otherwise, the ammo velocity we impart below will affect the ship
+        yield return new WaitForEndOfFrame();
+
+        // duration
+        var ttl = shield.GetComponent<TimeToLive>();
+        if (ttl != null)
+        {
+            ttl.seconds = product.duration;
+            ttl.enabled = true;
+        }
+
+        // inherit the ship's velocity
+        var rb = shield.gameObject.GetComponent<Rigidbody>();
+        if (product.inheritShipVelocity && gameObject.GetComponent<Rigidbody>() != null)
+        {
+            //KAI: a bug, turret ammo needs to pick up launcher velocity as well
+            rb.velocity = gameObject.GetComponent<Rigidbody>().velocity;
+        }
+
+        // impart ammo velocity in the direction of the firer
+        rb.velocity += gameObject.transform.forward * product.speed;
     }
 }
