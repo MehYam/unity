@@ -7,6 +7,8 @@ using sc = PvT3D.ShipComponent;
 
 public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
 {
+    enum TestSchematic { NONE, Autofire, Laser, Shield };
+    [SerializeField] TestSchematic testSchematic = TestSchematic.Autofire;
     [SerializeField] TextAsset schematicFile = null;
     [SerializeField] GameObject firepoint = null;
 
@@ -24,17 +26,22 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
         }
         _ps = firepoint.GetComponent<ParticleSystem>();
 
-        if (schematicFile != null)
+        switch(testSchematic)
         {
-            Load(schematicFile.text);
-        }
-        else
-        {
-            Debug.LogWarningFormat("Warning, no schem file found for {0}", name);
-
-            LoadSampleAutofireSchematic();
-            //LoadSampleLaserSchematic();
-            //LoadSampleShieldSchematic();
+            case TestSchematic.Autofire: LoadSampleAutofireSchematic(); break;
+            case TestSchematic.Laser: LoadSampleLaserSchematic(); break;
+            case TestSchematic.Shield: LoadSampleShieldSchematic(); break;
+            default:
+                if (schematicFile == null)
+                {
+                    Debug.LogWarningFormat("Warning, no schem file found for {0}", name);
+                    LoadSampleAutofireSchematic();
+                }
+                else
+                {
+                    Load(schematicFile.text);
+                }
+                break;
         }
     }
     void LoadSampleAutofireSchematic()
