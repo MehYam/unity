@@ -18,8 +18,8 @@ TagManager:
   - enemy
   - friendlyAmmo
   - enemyAmmo
-  - 
-  - 
+  - friendlyShield
+  - enemyShield
   - 
   - 
   - 

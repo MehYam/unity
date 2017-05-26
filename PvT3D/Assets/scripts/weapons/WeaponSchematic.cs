@@ -299,7 +299,7 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
 
             // attach it to the ship
             _currentShield.transform.parent = transform;
-            _currentShield.gameObject.layer = LayerMask.NameToLayer("friendly");
+            _currentShield.gameObject.layer = LayerMask.NameToLayer("friendlyShield");
         }
 
         // if we have a shield and product has speed, launch it.
