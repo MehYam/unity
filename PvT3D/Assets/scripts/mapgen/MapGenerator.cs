@@ -90,22 +90,22 @@ public class MapGenerator : MonoBehaviour {
 #endif
     }
     public bool IsGenerated {
-        get { return transform.FindChild(CAVE_NAME) != null; }
+        get { return transform.Find(CAVE_NAME) != null; }
     }
     public void ClearMap() {
-        var cave = transform.FindChild(CAVE_NAME);
+        var cave = transform.Find(CAVE_NAME);
         if (cave != null) {
             SafeDestroy(cave.gameObject);
         }
-        var walls = transform.FindChild(WALL_NAME);
+        var walls = transform.Find(WALL_NAME);
         if (walls != null) {
             SafeDestroy(walls.gameObject);
         }
     }
     public void SaveMeshes() {
         if (IsGenerated) {
-            SaveMesh(transform.FindChild(CAVE_NAME).GetComponent<MeshFilter>().sharedMesh, "cave");
-            SaveMesh(transform.FindChild(WALL_NAME).GetComponent<MeshFilter>().sharedMesh, "wall");
+            SaveMesh(transform.Find(CAVE_NAME).GetComponent<MeshFilter>().sharedMesh, "cave");
+            SaveMesh(transform.Find(WALL_NAME).GetComponent<MeshFilter>().sharedMesh, "wall");
         }
     }
     static void SaveMesh(Mesh mesh, string name) {
