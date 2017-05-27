@@ -24,7 +24,7 @@ public sealed class Actor : MonoBehaviour
     /// </summary>
     public Action<Actor> ActorDying = delegate { };
 
-    float _health = 0;
+    [SerializeField] float _health = 0;
     int _collisions = 0;
     Color _startColor;
     float _startY = 0;

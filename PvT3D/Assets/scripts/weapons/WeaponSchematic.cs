@@ -9,7 +9,7 @@ using sc = PvT3D.ShipComponent;
 
 public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
 {
-    enum TestSchematic { NONE, Autofire, Laser, Shield };
+    enum TestSchematic { NONE, Charge, Autofire, Laser, Shield };
     [SerializeField] TestSchematic testSchematic = TestSchematic.Autofire;
     [SerializeField] TextAsset schematicFile = null;
     [SerializeField] GameObject firepoint = null;
@@ -33,6 +33,7 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
             case TestSchematic.Autofire: LoadSampleAutofireSchematic(); break;
             case TestSchematic.Laser: LoadSampleLaserSchematic(); break;
             case TestSchematic.Shield: LoadSampleShieldSchematic(); break;
+            case TestSchematic.Charge: LoadSampleChargeSchematic(); break;
             default:
                 if (schematicFile == null)
                 {
@@ -45,6 +46,16 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
                 }
                 break;
         }
+    }
+    void LoadSampleChargeSchematic()
+    {
+        var schem = new sc.Schematic(5, 3);
+        schem.grid.Set(0, 0, new sc.Power("P", 1));
+        schem.grid.Set(1, 0, new sc.Charger("C", 2));
+        schem.grid.Set(2, 0, new sc.Lifetime("E", 1));
+        schem.grid.Set(3, 0, new sc.Speed("A", 60));
+
+        ConnectWeaponSchematic(schem);
     }
     void LoadSampleAutofireSchematic()
     {
@@ -72,7 +83,7 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
     {
         var schem = new sc.Schematic(5, 3);
         schem.grid.Set(0, 0, new sc.Power("P", 100));
-        schem.grid.Set(1, 0, new sc.Charger("C", 2));
+        schem.grid.Set(1, 0, new sc.Charger("C", 20));
         schem.grid.Set(2, 0, new sc.Shield("S", 0.1f));
         schem.grid.Set(3, 0, new sc.Lifetime("E", 3));
         schem.grid.Set(4, 0, new sc.Speed("A", 10));
@@ -302,9 +313,6 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
             _currentShield = GameObject.Instantiate(Main.game.ammoRegistry.shieldPrefab).GetComponent<Actor>();
             _currentShield.lockedY = false;
 
-            //KAI: these need to ramp up from the charger instead
-            //_currentShield.startHealth = product.power;
-            //_currentShield.collisionDamage = product.power;
             _currentShield.startHealth = _state.power.power * (1 - product.damagePct);
             _currentShield.collisionDamage = _state.power.power * product.damagePct;
 
@@ -319,6 +327,9 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
             var joint = gameObject.GetOrAddComponent<FixedJoint>();
             joint.connectedBody = _currentShield.gameObject.GetComponent<Rigidbody>();
         }
+
+        Debug.Log("power " + product.power);
+        _currentShield.SetHealth(product.power);
 
         // if we have a shield and product has speed, launch it.
         if (product.speed > 0)

@@ -4,6 +4,7 @@ using System;
 
 public sealed class Main : MonoBehaviour, IGame
 {
+    [SerializeField] bool       _testFrameRate = false;
     [SerializeField] GameObject _actorParent = null;
     [SerializeField] GameObject _ammoParent = null;
     [SerializeField] GameObject _effectParent = null;
@@ -19,6 +20,12 @@ public sealed class Main : MonoBehaviour, IGame
     {
         //Physics.gravity = Vector3.zero;
         game = this;
+
+        if (_testFrameRate)
+        {
+            Application.targetFrameRate = 4;
+            Time.fixedDeltaTime = .25f;
+        }
 	}
     void OnDestroy()
     {

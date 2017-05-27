@@ -103,6 +103,7 @@ namespace PvT3D.ShipComponent
         {
             get
             {
+                Debug.LogFormat("charger {0} => {1}, {2}/{3}", _startOfCharge, Time.fixedTime, powerSource.power, rate);
                 return _startOfCharge >= 0 ? Mathf.Min((Time.fixedTime - _startOfCharge) * rate, powerSource.power) : 0;
             }
         }
@@ -190,6 +191,8 @@ namespace PvT3D.ShipComponent
         ShieldProduct _currentProduct;
         public void Charge()
         {
+            charger.Charge();
+
             // create the shield
             if (_currentProduct == null)
             {
@@ -197,7 +200,7 @@ namespace PvT3D.ShipComponent
                 _currentProduct.type = ComponentProduct.Type.Shield;
                 _currentProduct.damagePct = damagePct;
                 _currentProduct.inheritShipVelocity = true;
-
+                _currentProduct.power = 0.001f;  //KAI: lame, but we can't start at 0
                 UpdateOutput(_currentProduct);
             }
         }
@@ -212,6 +215,7 @@ namespace PvT3D.ShipComponent
             // add to the shield's charge
             if (_currentProduct != null)
             {
+                _currentProduct.power = currentCharge;
                 UpdateOutput(_currentProduct);
             }
         }
