@@ -103,7 +103,7 @@ namespace PvT3D.ShipComponent
         {
             get
             {
-                Debug.LogFormat("charger {0} => {1}, {2}/{3}", _startOfCharge, Time.fixedTime, powerSource.power, rate);
+                //Debug.LogFormat("charger {0} => {1}, {2}/{3}", _startOfCharge, Time.fixedTime, powerSource.power, rate);
                 return _startOfCharge >= 0 ? Mathf.Min((Time.fixedTime - _startOfCharge) * rate, powerSource.power) : 0;
             }
         }

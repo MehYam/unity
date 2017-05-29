@@ -313,7 +313,7 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
             _currentShield = GameObject.Instantiate(Main.game.ammoRegistry.shieldPrefab).GetComponent<Actor>();
             _currentShield.lockedY = false;
 
-            _currentShield.startHealth = _state.power.power * (1 - product.damagePct);
+            _currentShield.baseHealth = _state.power.power * (1 - product.damagePct);
             _currentShield.collisionDamage = _state.power.power * product.damagePct;
 
             OrientAmmo(_currentShield.gameObject);
@@ -328,7 +328,6 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
             joint.connectedBody = _currentShield.gameObject.GetComponent<Rigidbody>();
         }
 
-        Debug.Log("power " + product.power);
         _currentShield.SetHealth(product.power);
 
         // if we have a shield and product has speed, launch it.

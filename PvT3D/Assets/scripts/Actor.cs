@@ -6,7 +6,8 @@ using PvT3D.Util;
 public sealed class Actor : MonoBehaviour
 {
     [Tooltip("Starting health value.  Zero health for invulnerability")]
-    public float startHealth = 0;
+    public float baseHealth = 0;
+    [SerializeField] float _health = -1;
     public float collisionDamage = 0;
     public float acceleration = 10;
     public float maxSpeed = 10;
@@ -16,22 +17,21 @@ public sealed class Actor : MonoBehaviour
     public bool lockedY = true;
 
     /// <summary>
-    /// HealthChanged(Actor this, float oldHealth, float newHealth)
+    /// HealthChanged(Actor this, float oldHealth, float newHealth, bool fromDamage)
     /// </summary>
-    public Action<Actor, float, float> HealthChanged = delegate { };
-    /// <summary>
-    /// ActorDying(Actor this)
-    /// </summary>
+    public Action<Actor, float, float, bool> HealthChanged = delegate { };
     public Action<Actor> ActorDying = delegate { };
 
-    [SerializeField] float _health = 0;
     int _collisions = 0;
     Color _startColor;
     float _startY = 0;
     void Start()
     {
         _startY = transform.position.y;
-        _health = startHealth;
+        if (_health == -1)
+        {
+            _health = baseHealth;
+        }
 
         // for now, freeze rotation on all actors
         var rb = GetComponent<Rigidbody>();
@@ -41,13 +41,13 @@ public sealed class Actor : MonoBehaviour
         }
     }
     public float health { get {  return _health; } }
-    public float healthPct { get { return startHealth > 0 ? (_health/startHealth) : 0; } }
-    public void SetHealth(float newHealth, bool countsAsDamage = false)
+    public float healthPct { get { return baseHealth > 0 ? (_health/baseHealth) : 0; } }
+    public void SetHealth(float newHealth, bool fromDamage = false)
     {
         var old = _health;
 
         _health = newHealth;
-        HealthChanged(this, old, newHealth);
+        HealthChanged(this, old, newHealth, fromDamage);
 
         if (health <= 0)
         {
@@ -59,7 +59,7 @@ public sealed class Actor : MonoBehaviour
     }
     public void SetHealthPct(float newPct, bool countsAsDamage = false)
     {
-        SetHealth(startHealth * newPct, countsAsDamage);
+        SetHealth(baseHealth * newPct, countsAsDamage);
     }
     void OnCollisionEnter(Collision col)
     {

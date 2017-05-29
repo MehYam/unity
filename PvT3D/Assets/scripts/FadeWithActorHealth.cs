@@ -12,6 +12,8 @@ public sealed class FadeWithActorHealth : MonoBehaviour
         _renderer = GetComponent<Renderer>();
 
         Debug.AssertFormat(_actor != null, "{0} has no Actor component", name);
+
+        Fade();
     }
 	
 	// Update is called once per frame
@@ -20,14 +22,18 @@ public sealed class FadeWithActorHealth : MonoBehaviour
     {
 	    if (_actor != null)
         {
-            var healthPct = _actor.healthPct;
-            if (_optimize_lastPct != healthPct)
-            {
-                var faded = _renderer.material.color;
-                faded.a = _actor.healthPct;
-
-                _renderer.material.color = faded;
-            }
+            Fade();
         }
 	}
+    void Fade()
+    {
+        var healthPct = _actor.healthPct;
+        if (_optimize_lastPct != healthPct)
+        {
+            var faded = _renderer.material.color;
+            faded.a = _actor.healthPct;
+
+            _renderer.material.color = faded;
+        }
+    }
 }

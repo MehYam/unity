@@ -12,14 +12,11 @@ public class DamageEffects : MonoBehaviour
     public bool showDamageSmoke = false;
     public bool showExplosionOnDeath = false;
 
+    Material _material;
     Color _startColor;
     void Start()
     {
-        var material = Util.GetMaterialInChildren(gameObject);
-        if (material != null && material.HasProperty("_Color"))
-        {
-            _startColor = material.color;
-        }
+        _material = Util.GetMaterialInChildren(gameObject);
 
         var actor = GetComponent<Actor>();
         Debug.AssertFormat(actor != null, "DamageEffects for {0} can't find Actor", name);
@@ -27,9 +24,9 @@ public class DamageEffects : MonoBehaviour
         actor.HealthChanged += OnHealthChanged;
         actor.ActorDying += OnActorDying;
     }
-    void OnHealthChanged(Actor actor, float oldHealth, float newHealth)
+    void OnHealthChanged(Actor actor, float oldHealth, float newHealth, bool fromDamage)
     {
-        if (actor.health > 0)
+        if (fromDamage && actor.health > 0)
         {
             if (showHits)
             {
@@ -39,8 +36,8 @@ public class DamageEffects : MonoBehaviour
             if (showDamageSmoke)
             {
                 // Injury
-                int damageSmokeBeforeHit = Mathf.FloorToInt((actor.startHealth - oldHealth) / HEALTH_PER_DAMAGE_SMOKE);
-                int damageSmokeAfterHit = Mathf.FloorToInt((actor.startHealth - newHealth) / HEALTH_PER_DAMAGE_SMOKE);
+                int damageSmokeBeforeHit = Mathf.FloorToInt((actor.baseHealth - oldHealth) / HEALTH_PER_DAMAGE_SMOKE);
+                int damageSmokeAfterHit = Mathf.FloorToInt((actor.baseHealth - newHealth) / HEALTH_PER_DAMAGE_SMOKE);
 
                 AddDamageSmoke(damageSmokeAfterHit - damageSmokeBeforeHit);
             }
@@ -95,15 +92,17 @@ public class DamageEffects : MonoBehaviour
             damageSmoke = null;
         }
     }
+    //KAI: this won't work for shields because they're fading....
     IEnumerator DisplayHit()
     {
-        //KAI: seems like this doesn't belong in Actor, but what do I know
+        var startColor = _material.color;
+
         var renderer = GetComponentInChildren<Renderer>();
         if (renderer != null && renderer.material != null)
         {
             renderer.material.color = new Color(1, .7f, .7f);
             yield return new WaitForSeconds(0.1f);
-            renderer.material.color = _startColor;
+            renderer.material.color = startColor;
         }
     }
 }
