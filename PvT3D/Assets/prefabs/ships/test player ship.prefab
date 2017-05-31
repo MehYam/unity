@@ -63,8 +63,8 @@ GameObject:
   - component: {fileID: 114813607713124400}
   - component: {fileID: 114599918271520132}
   - component: {fileID: 114308824843936694}
-  - component: {fileID: 114727705992629320}
   - component: {fileID: 114510285717792560}
+  - component: {fileID: 114002768704182994}
   m_Layer: 9
   m_Name: test player ship
   m_TagString: Untagged
@@ -182,6 +182,23 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 3.8, y: 1, z: 4.5}
   m_Center: {x: 0, y: -0.36, z: 0}
+--- !u!114 &114002768704182994
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1864547239629706}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05d73cc28509294449d4a2a0026dee04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 10
+  speed: 10
+  duration: 2
+  rate: 2
+  firepoint: {fileID: 4008924943361016}
+  prefab: {fileID: 199322, guid: 793b40b395830e64297852daf7a015dc, type: 2}
 --- !u!114 &114308824843936694
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -241,20 +258,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c469aed0e9d0c884690ee536c4573a38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114727705992629320
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1864547239629706}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4954decdc6bc9fa47a947952cde26de9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  testSchematic: 4
-  schematicFile: {fileID: 0}
-  firepoint: {fileID: 1633578562584084}
 --- !u!114 &114813607713124400
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -303,14 +306,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65821d44c0b381240856280879c3cf82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startHealth: 100
+  baseHealth: 100
+  _health: 0
   collisionDamage: 5
   acceleration: 200
   maxSpeed: 40
   rotationalAcceleration: 0.75
   maxRPS: 1
   lockedY: 1
-  _health: 0
 --- !u!198 &198817151274631372
 ParticleSystem:
   m_ObjectHideFlags: 1

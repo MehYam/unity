@@ -7,7 +7,7 @@ using kaiGameUtil;
 using PvT3D.Util;
 using sc = PvT3D.ShipComponent;
 
-public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
+public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer, IWeaponControl
 {
     enum TestSchematic { NONE, Charge, Autofire, Laser, Shield };
     [SerializeField] TestSchematic testSchematic = TestSchematic.Autofire;
@@ -204,7 +204,6 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
         }
     }
 
-    //KAI: OnFirexxx kind of belong in some interface
     public void OnFireStart()
     {
         if (_state != null && _state.charger != null)

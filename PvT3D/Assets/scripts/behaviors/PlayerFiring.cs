@@ -5,12 +5,12 @@ using PvT3D.Util;
 
 public sealed class PlayerFiring : MonoBehaviour
 {
-    WeaponSchematic schematic;
+    IWeaponControl weapon;
 
 	// Use this for initialization
 	void Start()
     {
-        schematic = GetComponent<WeaponSchematic>();  // 
+        weapon = GetComponent<WeaponPlasma>();
 	}
     bool fireState = false;
     void FixedUpdate()
@@ -22,13 +22,13 @@ public sealed class PlayerFiring : MonoBehaviour
             if (!fireState)
             {
                 fireState = true;
-                schematic.OnFireStart();
+                weapon.OnFireStart();
             }
-            schematic.OnFireFrame();
+            weapon.OnFireFrame();
         }
         else if (fireState)
         {
-            schematic.OnFireEnd();
+            weapon.OnFireEnd();
             fireState = false;
         }
     }

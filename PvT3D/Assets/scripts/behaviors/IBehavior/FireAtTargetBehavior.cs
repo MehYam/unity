@@ -6,11 +6,11 @@ using UnityEngine;
 public class FireAtTargetBehavior : IBehavior
 {
     readonly GameObject target;
-    readonly WeaponSchematic schematic;
-    public FireAtTargetBehavior(GameObject target, WeaponSchematic schematic)
+    readonly IWeaponControl weapon;
+    public FireAtTargetBehavior(GameObject target, IWeaponControl weapon)
     {
         this.target = target;
-        this.schematic = schematic;
+        this.weapon = weapon;
     }
     bool _firing = false;
     public bool firing
@@ -20,11 +20,11 @@ public class FireAtTargetBehavior : IBehavior
         {
             if (value && !_firing)
             {
-                schematic.OnFireStart();
+                weapon.OnFireStart();
             }
             else if (!value && _firing)
             {
-                schematic.OnFireEnd();
+                weapon.OnFireEnd();
             }
             _firing = value;
         }
@@ -33,7 +33,7 @@ public class FireAtTargetBehavior : IBehavior
     {
         if (_firing)
         {
-            schematic.OnFireFrame();
+            weapon.OnFireFrame();
         }
     }
 }

@@ -167,6 +167,7 @@ MeshRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 0
 --- !u!33 &33265114941401066
 MeshFilter:
@@ -214,7 +215,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65821d44c0b381240856280879c3cf82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startHealth: 100
+  baseHealth: 100
+  _health: 0
   collisionDamage: 5
   acceleration: 150
   maxSpeed: 30
@@ -268,6 +270,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4954decdc6bc9fa47a947952cde26de9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  testSchematic: 1
   schematicFile: {fileID: 4900000, guid: 8709260372c16f1428407d0206ceb648, type: 3}
   firepoint: {fileID: 1019585779684010}
 --- !u!136 &136107098549241822
