@@ -6,8 +6,7 @@ using PvT3D.Util;
 public sealed class Actor : MonoBehaviour
 {
     [Tooltip("Starting health value.  Zero health for invulnerability")]
-    public float baseHealth = 0;
-    [SerializeField] float _health = -1;
+    public float health = 0;
     public float collisionDamage = 0;
     public float acceleration = 10;
     public float maxSpeed = 10;
@@ -25,13 +24,11 @@ public sealed class Actor : MonoBehaviour
     int _collisions = 0;
     Color _startColor;
     float _startY = 0;
+    float _startHealth = 0;
     void Start()
     {
         _startY = transform.position.y;
-        if (_health == -1)
-        {
-            _health = baseHealth;
-        }
+        _startHealth = 0;
 
         // for now, freeze rotation on all actors
         var rb = GetComponent<Rigidbody>();
@@ -40,13 +37,13 @@ public sealed class Actor : MonoBehaviour
             rb.freezeRotation = true;
         }
     }
-    public float health { get {  return _health; } }
-    public float healthPct { get { return baseHealth > 0 ? (_health/baseHealth) : 0; } }
+    public float baseHealth { get { return _startHealth; } set { _startHealth = value; } }
+    public float healthPct { get { return _startHealth > 0 ? (health/_startHealth) : 0; } }
     public void SetHealth(float newHealth, bool fromDamage = false)
     {
-        var old = _health;
+        var old = health;
 
-        _health = newHealth;
+        health = newHealth;
         HealthChanged(this, old, newHealth, fromDamage);
 
         if (health <= 0)
@@ -59,7 +56,7 @@ public sealed class Actor : MonoBehaviour
     }
     public void SetHealthPct(float newPct, bool countsAsDamage = false)
     {
-        SetHealth(baseHealth * newPct, countsAsDamage);
+        SetHealth(_startHealth * newPct, countsAsDamage);
     }
     void OnCollisionEnter(Collision col)
     {
@@ -69,12 +66,12 @@ public sealed class Actor : MonoBehaviour
         var takingDamage = 
             otherActor != null && 
             gameObject.layer != otherActor.gameObject.layer && 
-            _health > 0;
+            health > 0;
 
         //Debug.Log(string.Format("{0}. {1} hit by {2}, does damage: {3}", _collisions, name, col.collider.name, takingDamage));
         if (takingDamage)
         {
-            SetHealth(_health - otherActor.collisionDamage, true);
+            SetHealth(health - otherActor.collisionDamage, true);
         }
     }
     void FixedUpdate()
