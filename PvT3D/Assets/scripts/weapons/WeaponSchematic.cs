@@ -6,10 +6,11 @@ using UnityEngine;
 using kaiGameUtil;
 using PvT3D.Util;
 using sc = PvT3D.ShipComponent;
+using sc2 = PvT3D.ShipComponent2;
 
 public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
 {
-    enum TestSchematic { NONE, Charge, Autofire, Laser, Shield };
+    enum TestSchematic { NONE, Charge, Autofire, Laser, Shield, NEW };
     [SerializeField] TestSchematic testSchematic = TestSchematic.Autofire;
     [SerializeField] TextAsset schematicFile = null;
     [SerializeField] GameObject firepoint = null;
@@ -34,6 +35,7 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
             case TestSchematic.Laser: LoadSampleLaserSchematic(); break;
             case TestSchematic.Shield: LoadSampleShieldSchematic(); break;
             case TestSchematic.Charge: LoadSampleChargeSchematic(); break;
+            case TestSchematic.NEW: LoadSchematic2(); break;
             default:
                 if (schematicFile == null)
                 {
@@ -204,6 +206,12 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer
         }
     }
 
+    void LoadSchematic2()
+    {
+        var sch = new sc2.Schematic(8, 3);
+
+        //sch.grid.Set();
+    }
     //KAI: OnFirexxx kind of belong in some interface
     public void OnFireStart()
     {
