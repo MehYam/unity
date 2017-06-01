@@ -46,6 +46,7 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer, IWeaponContro
                 }
                 break;
         }
+        SendMessage("OnWeaponControlStart", this);
     }
     void LoadSampleChargeSchematic()
     {

@@ -6,13 +6,11 @@ using PvT3D.Util;
 public sealed class PlayerFiring : MonoBehaviour
 {
     IWeaponControl weapon;
-
-	// Use this for initialization
-	void Start()
-    {
-        weapon = GetComponent<WeaponPlasma>();
-	}
     bool fireState = false;
+    void OnWeaponControlStart(IWeaponControl weapon)
+    {
+        this.weapon = weapon;
+    }
     void FixedUpdate()
     {
         var fv = InputUtil.GetFiringVector(transform.position);

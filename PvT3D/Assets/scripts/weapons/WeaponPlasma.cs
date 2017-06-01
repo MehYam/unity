@@ -27,6 +27,8 @@ public class WeaponPlasma : MonoBehaviour, IWeaponControl
             ammoLayer = LayerMask.NameToLayer("friendlyAmmo");
         }
         _ps = firepoint.GetComponent<ParticleSystem>();
+
+        SendMessage("OnWeaponControlStart", this);
     }
 
     float _lastFire = 0;

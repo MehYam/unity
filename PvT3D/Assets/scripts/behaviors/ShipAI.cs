@@ -9,8 +9,13 @@ public class ShipAI : MonoBehaviour
     Actor _actor;
     void Start()
     {
-        _actor = transform.parent.GetComponent<Actor>();
+        _actor = GetComponent<Actor>();
         StartCoroutine(ShipBehavior());
+    }
+    IWeaponControl weapon;
+    void OnWeaponControlStart(IWeaponControl weapon)
+    {
+        this.weapon = weapon;
     }
     IEnumerator ShipBehavior()
     {
@@ -31,11 +36,9 @@ public class ShipAI : MonoBehaviour
             yield return new WaitForSeconds(5);
 
             // fire at player
-            var schematic = transform.parent.GetComponent<WeaponSchematic>();
+            Debug.AssertFormat(weapon != null, "weapon's not found for {0}", transform.parent.name);
 
-            Debug.AssertFormat(schematic != null, "schematic's not found for {0}", transform.parent.name);
-
-            var fire = new FireAtTargetBehavior(player, schematic);
+            var fire = new FireAtTargetBehavior(player, weapon);
             _currentBehavior = new CompositeBehavior(
                 fire,
                 facePlayer

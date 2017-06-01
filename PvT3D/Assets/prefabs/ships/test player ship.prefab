@@ -194,9 +194,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 10
-  speed: 10
+  speed: 100
   duration: 2
   rate: 2
+  inheritShipVelocity: 0
   firepoint: {fileID: 4008924943361016}
   prefab: {fileID: 199322, guid: 793b40b395830e64297852daf7a015dc, type: 2}
 --- !u!114 &114308824843936694
@@ -306,8 +307,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65821d44c0b381240856280879c3cf82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseHealth: 100
-  _health: 0
+  health: 100
   collisionDamage: 5
   acceleration: 200
   maxSpeed: 40

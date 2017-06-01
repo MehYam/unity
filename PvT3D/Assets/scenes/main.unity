@@ -19051,8 +19051,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65821d44c0b381240856280879c3cf82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseHealth: 0
-  _health: -1
+  health: 0
   collisionDamage: 50
   acceleration: 200
   maxSpeed: 8
