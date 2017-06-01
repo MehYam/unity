@@ -58,11 +58,18 @@ public sealed class Actor : MonoBehaviour
     {
         SetHealth(_startHealth * newPct, countsAsDamage);
     }
-    void OnCollisionEnter(Collision col)
+    void OnCollisionEnter(Collision other)
+    {
+        HandleActorCollision(other.collider);
+    }
+    void OnTriggerEnter(Collider other)
+    {
+        HandleActorCollision(other);
+    }
+    void HandleActorCollision(Collider other)
     {
         ++_collisions;
-
-        var otherActor = col.collider.GetComponent<Actor>();
+        var otherActor = other.GetComponent<Actor>();
         var takingDamage = 
             otherActor != null && 
             gameObject.layer != otherActor.gameObject.layer && 

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WeaponPlasma : MonoBehaviour, IWeaponControl
+public class WeaponAutofire : MonoBehaviour, IWeaponControl
 {
     [SerializeField] float damage;
     [SerializeField] float speed;
@@ -58,7 +58,7 @@ public class WeaponPlasma : MonoBehaviour, IWeaponControl
     void Launch()
     {
         // line the shot up
-        var ammo = GameObject.Instantiate(Main.game.ammoRegistry.plasmaPrefab);
+        var ammo = GameObject.Instantiate(prefab);
         OrientAmmo(ammo);
 
         // duration  KAI: replace this with Destroy(, t)!!!!!!
