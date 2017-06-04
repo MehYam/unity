@@ -28,7 +28,7 @@ public sealed class Actor : MonoBehaviour
     void Start()
     {
         _startY = transform.position.y;
-        _startHealth = 0;
+        _startHealth = Mathf.Max(_startHealth, health);
 
         // for now, freeze rotation on all actors
         var rb = GetComponent<Rigidbody>();

@@ -65,6 +65,8 @@ GameObject:
   - component: {fileID: 114308824843936694}
   - component: {fileID: 114510285717792560}
   - component: {fileID: 114002768704182994}
+  - component: {fileID: 114370992968781710}
+  - component: {fileID: 114601445780530556}
   m_Layer: 9
   m_Name: test player ship
   m_TagString: Untagged
@@ -188,7 +190,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1864547239629706}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 05d73cc28509294449d4a2a0026dee04, type: 3}
   m_Name: 
@@ -199,7 +201,7 @@ MonoBehaviour:
   rate: 2
   inheritShipVelocity: 0
   firepoint: {fileID: 4008924943361016}
-  prefab: {fileID: 1589126623989286, guid: eee88190c23061342a19f10a4828e046, type: 2}
+  prefab: {fileID: 199322, guid: 793b40b395830e64297852daf7a015dc, type: 2}
 --- !u!114 &114308824843936694
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -211,6 +213,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c22b579370a9510408377ee04db6f3a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114370992968781710
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1864547239629706}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1058b75a594177a4199c2c1b8c3dc58d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 50
+  chargeTime: 5
+  delay: 1
+  speed: 20
+  duration: 5
+  inheritShipVelocity: 0
+  firepoint: {fileID: 4008924943361016}
+  prefab: {fileID: 1589126623989286, guid: eee88190c23061342a19f10a4828e046, type: 2}
 --- !u!114 &114438943563109156
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -259,6 +280,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c469aed0e9d0c884690ee536c4573a38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114601445780530556
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1864547239629706}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe6bb81626e757a47b2c73ff3ec6284f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
+  damage: 20
+  healthPerSecond: 33
+  delay: 1
+  speed: 20
+  duration: 3
+  inheritShipVelocity: 1
+  firepoint: {fileID: 4008924943361016}
+  prefab: {fileID: 1795262085350758, guid: 8d27c5dff371bc64187faa0ca4719c8c, type: 2}
 --- !u!114 &114813607713124400
 MonoBehaviour:
   m_ObjectHideFlags: 1

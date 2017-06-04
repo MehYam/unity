@@ -28,6 +28,7 @@ public sealed class FadeWithActorHealth : MonoBehaviour
     void Fade()
     {
         var healthPct = _actor.healthPct;
+
         if (_optimize_lastPct != healthPct)
         {
             var faded = _renderer.material.color;

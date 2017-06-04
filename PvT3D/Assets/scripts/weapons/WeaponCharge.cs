@@ -30,13 +30,13 @@ public class WeaponCharge : MonoBehaviour, IWeaponControl
     public void OnFireStart()
     {
         _state = FireState.WaitingToCharge;
-        Debug.Log("Waiting");
+        //Debug.Log("Waiting");
     }
     public void OnFireFrame()
     {
         if (_state == FireState.WaitingToCharge && (Time.fixedTime - _lastFireEnd) >= delay)
         {
-            Debug.Log("Charging");
+            //Debug.Log("Charging");
 
             _state = FireState.Charging;
             _lastChargeStart = Time.fixedTime;
@@ -52,7 +52,7 @@ public class WeaponCharge : MonoBehaviour, IWeaponControl
 
             Launch(totalDamage, chargePct);
 
-            Debug.LogFormat("Launch {0} damage", totalDamage);
+            //Debug.LogFormat("Launch {0} damage", totalDamage);
             _lastFireEnd = Time.fixedTime;
         }
         _state = FireState.Idle;

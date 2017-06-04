@@ -57,9 +57,9 @@ GameObject:
   - component: {fileID: 114216160947907180}
   - component: {fileID: 136180455643697726}
   - component: {fileID: 136107098549241822}
-  - component: {fileID: 114977086553791558}
   - component: {fileID: 114306951161884642}
   - component: {fileID: 114843076049648478}
+  - component: {fileID: 114406754763455184}
   m_Layer: 10
   m_Name: test enemy ship 2
   m_TagString: Untagged
@@ -207,6 +207,24 @@ MonoBehaviour:
   showHits: 1
   showDamageSmoke: 1
   showExplosionOnDeath: 1
+--- !u!114 &114406754763455184
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1448038195057554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05d73cc28509294449d4a2a0026dee04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 5
+  speed: 30
+  duration: 2
+  rate: 1
+  inheritShipVelocity: 1
+  firepoint: {fileID: 4888919491875892}
+  prefab: {fileID: 199322, guid: 793b40b395830e64297852daf7a015dc, type: 2}
 --- !u!114 &114723200657520958
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -229,20 +247,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14fcbc6ed31b38848a7c45ae8ddeb84e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114977086553791558
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1448038195057554}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4954decdc6bc9fa47a947952cde26de9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  testSchematic: 1
-  schematicFile: {fileID: 4900000, guid: 8709260372c16f1428407d0206ceb648, type: 3}
-  firepoint: {fileID: 1019585779684010}
 --- !u!136 &136107098549241822
 CapsuleCollider:
   m_ObjectHideFlags: 1

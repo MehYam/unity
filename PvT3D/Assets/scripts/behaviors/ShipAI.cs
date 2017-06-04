@@ -19,7 +19,7 @@ public class ShipAI : MonoBehaviour
     }
     IEnumerator ShipBehavior()
     {
-        yield return new WaitForSeconds(2); //KAI: because Main.game.player isn't ready yet - need to think about the proper solution to this
+        yield return new WaitForSeconds(2); //KAI: because Main.game.player isn't ready yet - need to think about the proper solution to this, like broadcasting message or GlobalEvent
 
         var player = Main.game.player.gameObject;
         var facePlayer = new FaceTargetBehavior(player);
