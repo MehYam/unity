@@ -17,6 +17,7 @@ public class DamageEffects : MonoBehaviour
     void Start()
     {
         _material = Util.GetMaterialInChildren(gameObject);
+        _startColor = Util.GetColor(gameObject);
 
         var actor = GetComponent<Actor>();
         Debug.AssertFormat(actor != null, "DamageEffects for {0} can't find Actor", name);
@@ -95,14 +96,12 @@ public class DamageEffects : MonoBehaviour
     //KAI: this won't work for shields because they're fading....
     IEnumerator DisplayHit()
     {
-        var startColor = _material.color;
-
-        var renderer = GetComponentInChildren<Renderer>();
-        if (renderer != null && renderer.material != null)
+        if (_startColor != Color.black)
         {
-            renderer.material.color = new Color(1, .7f, .7f);
+            _material.color = new Color(1, .3f, .3f);
+
             yield return new WaitForSeconds(0.1f);
-            renderer.material.color = startColor;
+            _material.color = _startColor;
         }
     }
 }

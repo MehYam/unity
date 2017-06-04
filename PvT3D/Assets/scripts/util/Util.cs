@@ -44,6 +44,11 @@ namespace PvT3D.Util
             var renderer = obj.GetComponentInChildren<Renderer>();
             return renderer != null ? renderer.material : null;
         }
+        static public Color GetColor(GameObject obj)
+        {
+            var material = GetMaterialInChildren(obj);
+            return (material != null && material.HasProperty("_Color")) ? material.color : Color.black;
+        }
         /// <summary>
         /// Extension method on GameObject that adds a component of type T, or returns
         /// an existing if a T is already attached.
