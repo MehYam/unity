@@ -9,8 +9,8 @@ GameObject:
   m_Component:
   - component: {fileID: 467594}
   - component: {fileID: 5461976}
-  - component: {fileID: 11414362}
   - component: {fileID: 13514240}
+  - component: {fileID: 11414362}
   - component: {fileID: 11440582}
   - component: {fileID: 11475580}
   m_Layer: 11

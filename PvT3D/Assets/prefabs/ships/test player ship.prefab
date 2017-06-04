@@ -219,7 +219,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1864547239629706}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1058b75a594177a4199c2c1b8c3dc58d, type: 3}
   m_Name: 
@@ -231,7 +231,7 @@ MonoBehaviour:
   duration: 5
   inheritShipVelocity: 0
   firepoint: {fileID: 4008924943361016}
-  prefab: {fileID: 1589126623989286, guid: eee88190c23061342a19f10a4828e046, type: 2}
+  prefab: {fileID: 1967924314864710, guid: 644c954e45d49964bb84fc0e338edbb8, type: 2}
 --- !u!114 &114438943563109156
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -286,7 +286,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1864547239629706}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe6bb81626e757a47b2c73ff3ec6284f, type: 3}
   m_Name: 

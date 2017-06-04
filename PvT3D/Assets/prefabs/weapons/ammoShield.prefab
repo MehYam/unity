@@ -21,12 +21,12 @@ GameObject:
   - component: {fileID: 4484867333007514}
   - component: {fileID: 33585593367102072}
   - component: {fileID: 23887384863942174}
+  - component: {fileID: 54665792597389408}
+  - component: {fileID: 65854918033167722}
+  - component: {fileID: 65656227352579456}
   - component: {fileID: 114542719518906830}
   - component: {fileID: 114009971665791658}
   - component: {fileID: 114009989521549754}
-  - component: {fileID: 65854918033167722}
-  - component: {fileID: 65656227352579456}
-  - component: {fileID: 54665792597389408}
   - component: {fileID: 114855530615804668}
   m_Layer: 0
   m_Name: ammoShield
@@ -161,8 +161,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65821d44c0b381240856280879c3cf82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseHealth: 0
-  _health: 0
+  health: 0
   collisionDamage: 50
   acceleration: 0
   maxSpeed: 100
