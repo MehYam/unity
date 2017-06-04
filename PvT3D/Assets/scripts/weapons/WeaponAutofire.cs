@@ -14,20 +14,10 @@ public class WeaponAutofire : MonoBehaviour, IWeaponControl
     [SerializeField] Transform firepoint;
     [SerializeField] GameObject prefab;
 
-    int ammoLayer;
-    ParticleSystem _ps;
+    WeaponHelper _helper;
     void Start()
     {
-        if (gameObject.layer == LayerMask.NameToLayer("enemy"))
-        {
-            ammoLayer = LayerMask.NameToLayer("enemyAmmo");
-        }
-        else if (gameObject.layer == LayerMask.NameToLayer("friendly"))
-        {
-            ammoLayer = LayerMask.NameToLayer("friendlyAmmo");
-        }
-        _ps = firepoint.GetComponent<ParticleSystem>();
-
+        _helper = new WeaponHelper(gameObject, firepoint);
         SendMessage("OnWeaponControlStart", this);
     }
 
@@ -48,44 +38,17 @@ public class WeaponAutofire : MonoBehaviour, IWeaponControl
             _lastFire = Time.fixedTime;
         }
     }
-    void OrientAmmo(GameObject ammo)
-    {
-        ammo.transform.parent = Main.game.ammoParent.transform;
-        ammo.transform.position = firepoint.transform.position;
-        ammo.transform.rotation = firepoint.transform.rotation;
-        ammo.layer = ammoLayer;
-    }
     void Launch()
     {
-        // line the shot up
-        var ammo = GameObject.Instantiate(prefab);
-        OrientAmmo(ammo);
+        Vector3 inheritedVelocity = inheritShipVelocity ? gameObject.GetComponent<Rigidbody>().velocity : Vector3.zero;
 
-        // duration  KAI: replace this with Destroy(, t)!!!!!!
-        var ttl = ammo.GetComponent<TimeToLive>();
-        if (ttl != null)
-        {
-            ttl.seconds = duration;
-        }
-
-        // inherit the ship's velocity
-        var rb = ammo.transform.GetComponent<Rigidbody>();
-        if (inheritShipVelocity && gameObject.GetComponent<Rigidbody>() != null)
-        {
-            //KAI: a bug, turret ammo needs to pick up launcher velocity as well
-            rb.velocity = gameObject.GetComponent<Rigidbody>().velocity;
-        }
-
-        // impart ammo velocity in the direction of the firer
-        rb.velocity += gameObject.transform.forward * speed;
-
-        var ammoActor = ammo.GetComponent<Actor>();
-        ammoActor.collisionDamage = damage;
-
-        // particles
-        if (_ps != null)
-        {
-            _ps.Play();
-        }
+        _helper.Launch(
+            gameObject,
+            prefab,
+            damage,
+            duration,
+            speed,
+            inheritedVelocity,
+            1);
     }
 }

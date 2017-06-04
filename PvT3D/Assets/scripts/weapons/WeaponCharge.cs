@@ -15,20 +15,10 @@ public class WeaponCharge : MonoBehaviour, IWeaponControl
     [SerializeField] Transform firepoint;
     [SerializeField] GameObject prefab;
 
-    int ammoLayer;
-    ParticleSystem _ps;
+    WeaponHelper _helper;
     void Start()
     {
-        if (gameObject.layer == LayerMask.NameToLayer("enemy"))
-        {
-            ammoLayer = LayerMask.NameToLayer("enemyAmmo");
-        }
-        else if (gameObject.layer == LayerMask.NameToLayer("friendly"))
-        {
-            ammoLayer = LayerMask.NameToLayer("friendlyAmmo");
-        }
-        _ps = firepoint.GetComponent<ParticleSystem>();
-
+        _helper = new WeaponHelper(gameObject, firepoint);
         SendMessage("OnWeaponControlStart", this);
     }
 
@@ -67,46 +57,17 @@ public class WeaponCharge : MonoBehaviour, IWeaponControl
         }
         _state = FireState.Idle;
     }
-    void OrientAmmo(GameObject ammo)
+    void Launch(float damage, float intensity)
     {
-        ammo.transform.parent = Main.game.ammoParent.transform;
-        ammo.transform.position = firepoint.transform.position;
-        ammo.transform.rotation = firepoint.transform.rotation;
-        ammo.layer = ammoLayer;
-    }
-    void Launch(float totalDamage, float intensity)
-    {
-        // line the shot up
-        var ammo = GameObject.Instantiate(prefab);
-        OrientAmmo(ammo);
-
-        // duration  KAI: replace this with Destroy(, t)!!!!!!
-        var ttl = ammo.GetComponent<TimeToLive>();
-        if (ttl != null)
-        {
-            ttl.seconds = duration;
-        }
-
-        // inherit the ship's velocity
-        var rb = ammo.transform.GetComponent<Rigidbody>();
-        if (inheritShipVelocity && gameObject.GetComponent<Rigidbody>() != null)
-        {
-            //KAI: a bug, turret ammo needs to pick up launcher velocity as well
-            rb.velocity = gameObject.GetComponent<Rigidbody>().velocity;
-        }
-
-        // impart ammo velocity in the direction of the firer
-        rb.velocity += gameObject.transform.forward * speed;
-
-        // this is a chargable shot, scale it by the power
-        var ammoActor = ammo.GetComponent<Actor>();
-        ammoActor.collisionDamage = totalDamage;
-        ammo.transform.localScale = new Vector3(2 * intensity, 2 * intensity, 2 * intensity);
-
-        // particles
-        if (_ps != null)
-        {
-            _ps.Play();
-        }
+        Vector3 inheritedVelocity = inheritShipVelocity ? gameObject.GetComponent<Rigidbody>().velocity : Vector3.zero;
+        _helper.Launch(
+            gameObject,
+            prefab,
+            damage, 
+            duration,
+            speed,
+            inheritedVelocity,
+            2 * intensity
+            );
     }
 }
