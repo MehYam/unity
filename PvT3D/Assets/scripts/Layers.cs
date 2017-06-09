@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Overengineer: all this to avoid 1) lookups based on layer name strings, 2) casting Layers.ID to int everywhere
 public static class Layers
 {
-    public enum bitnum : byte
+    public enum ID : byte
     {
         Environment = 8,
         Friendly,
@@ -15,23 +16,19 @@ public static class Layers
         EnemyShield,
         Inanimate
     }
-    public const int Environment = (int)bitnum.Environment;
-    public const int Friendly = (int)bitnum.Friendly;
-    public const int Enemy = (int)bitnum.Enemy;
-    public const int FriendlyAmmo = (int)bitnum.FriendlyAmmo;
-    public const int EnemyAmmo = (int)bitnum.EnemyAmmo;
-    public const int FriendlyShield = (int)bitnum.FriendlyShield;
-    public const int EnemyShield = (int)bitnum.EnemyShield;
-    public const int Inanimate = (int)bitnum.Inanimate;
-    public static class Masks
+    public struct Layer
     {
-        public const int Environment = 1 << Layers.Environment;
-        public const int Friendly = 1 << Layers.Friendly;
-        public const int Enemy = 1 << Layers.Enemy;
-        public const int FriendlyAmmo = 1 << Layers.FriendlyAmmo;
-        public const int EnemyAmmo = 1 << Layers.EnemyAmmo;
-        public const int FriendlyShield = 1 << Layers.FriendlyShield;
-        public const int EnemyShield = 1 << Layers.EnemyShield;
-        public const int Inanimate = 1 << Layers.Inanimate;
+        public readonly ID id;
+        public readonly int idNum;
+        public readonly int mask;
+        public Layer(ID bn) { this.id = bn; this.idNum = (int)bn; mask = 1 << idNum; }
     }
+    static public readonly Layer Environment = new Layer(ID.Environment);
+    static public readonly Layer Friendly = new Layer(ID.Friendly);
+    static public readonly Layer Enemy = new Layer(ID.Enemy);
+    static public readonly Layer FriendlyAmmo = new Layer(ID.FriendlyAmmo);
+    static public readonly Layer EnemyAmmo = new Layer(ID.EnemyAmmo);
+    static public readonly Layer FriendlyShield = new Layer(ID.FriendlyShield);
+    static public readonly Layer EnemyShield = new Layer(ID.EnemyShield);
+    static public readonly Layer Inanimate = new Layer(ID.Inanimate);
 }
