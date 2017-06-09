@@ -38,7 +38,6 @@ GameObject:
   - component: {fileID: 4605223680767534}
   - component: {fileID: 114892684998149772}
   - component: {fileID: 114100974336312960}
-  - component: {fileID: 65178280193957008}
   - component: {fileID: 114211076305945494}
   m_Layer: 11
   m_Name: ammoBeam
@@ -113,18 +112,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1198406419358918}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!65 &65178280193957008
-BoxCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1967924314864710}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &114100974336312960
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -166,5 +153,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   duration: 1
-  distance: 50
+  maxDistance: 100
   width: 0.5

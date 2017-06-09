@@ -301,7 +301,7 @@ public class WeaponSchematic : MonoBehaviour, sc.IProductConsumer, IWeaponContro
         // duration
         var beam = ammo.GetComponent<AmmoBeam>();
         beam.duration = product.duration;
-        beam.distance = product.distance;
+        beam.maxDistance = product.distance;
         beam.width = product.width;
     }
     Actor _currentShield;
