@@ -6,6 +6,11 @@ using PvT3D.ShipComponent;
 
 public class ShipAI : MonoBehaviour
 {
+    public enum AI
+    {
+        StrafeThenShoot
+    };
+    [SerializeField] AI ai;
     Actor _actor;
     void Start()
     {

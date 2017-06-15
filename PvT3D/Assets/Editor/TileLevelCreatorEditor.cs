@@ -2,14 +2,14 @@ using UnityEditor;
 using UnityEngine;
 using System.Collections;
 
-[CustomEditor(typeof(TileLevelCreator))]
+[CustomEditor(typeof(TileRoomCreator))]
 public sealed class TileLevelCreatorEditor : Editor
 {
     public override void OnInspectorGUI()
     {
         DrawDefaultInspector();
 
-        var main = (TileLevelCreator)target;
+        var main = (TileRoomCreator)target;
 
         GUILayout.BeginHorizontal();
         main.levelFile = (TextAsset)EditorGUILayout.ObjectField("File", main.levelFile, typeof(TextAsset), true);

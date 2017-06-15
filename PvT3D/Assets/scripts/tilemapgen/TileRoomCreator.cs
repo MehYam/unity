@@ -22,7 +22,7 @@ public struct Tile
         return Empty ? " " : type.ToString();
     }
 }
-public sealed class TileLevelCreator : MonoBehaviour
+public sealed class TileRoomCreator : MonoBehaviour
 {
     [SerializeField] GameObject floor = null;
     [SerializeField] GameObject wall = null;
