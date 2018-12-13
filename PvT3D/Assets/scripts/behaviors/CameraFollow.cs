@@ -16,6 +16,7 @@ public sealed class CameraFollow : MonoBehaviour
         var pos = target.transform.position;
 
         pos.y += distance;
+        pos.z -= 20;
         transform.position = pos;
 
         transform.LookAt(target.transform);
