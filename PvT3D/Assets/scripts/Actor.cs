@@ -109,7 +109,7 @@ public sealed class Actor : MonoBehaviour
     {
         if (this.room != room)
         {
-            //Debug.LogFormat("Actor {0} enters room {1}", name, room.name);
+            Debug.LogFormat("Actor {0} enters room {1}", name, room.name);
 
             this.room = room;
         }

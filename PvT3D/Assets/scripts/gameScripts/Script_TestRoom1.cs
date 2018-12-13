@@ -9,6 +9,7 @@ public class Script_TestRoom1 : MonoBehaviour
 	}
     void OnRoomEntered(SimpleRoom room)
     {
+        Debug.LogFormat("OnRoomEntered {0}", name);
         StartCoroutine(RoomScript());
     }
     IEnumerator RoomScript()
