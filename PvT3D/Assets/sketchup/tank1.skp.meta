@@ -1,50 +1,79 @@
 fileFormatVersion: 2
 guid: 0ab23896823c61545b8b5a3d322b05e7
-timeCreated: 1465954727
-licenseType: Free
 SketchUpImporter:
   generateBackFace: 0
   mergeCoplanarFaces: 0
-  selectedNodes: 
+  selectedNodes: 0000000001000000020000000300000004000000050000000600000007000000
   assetHash:
     serializedVersion: 2
-    Hash: e02ee5cb44804a6c330992ca228c7589
-  longitude: 0
-  latitude: 0
-  northCorrection: 0
+    Hash: 7c01168f5290f1573ea803a077bc8a09
+  longitude: -105.242139
+  latitude: 40.018309
+  northCorrection: -0
   fileUnit: 0
   sketchUpImportData:
     defaultCamera:
-      position: {x: 0, y: 0, z: 0}
-      lookAt: {x: 0, y: 0, z: 1}
-      up: {x: 0, y: 1, z: 0}
-      fov: 45
-      aspectRatio: 1.33
-      orthoSize: 0
+      position: {x: 22.807594, y: 8.367599, z: -20.790962}
+      lookAt: {x: 7.287069, y: 4.806271, z: -5.6379404}
+      up: {x: -0.115926296, y: 0.98678833, z: 0.11318134}
+      fov: 35
+      aspectRatio: 0
+      orthoSize: 1
       isPerspective: 1
     scenes: []
-  serializedVersion: 19
-  fileIDToRecycleName: {}
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: hull
+    100002: //RootNode
+    100004: tread
+    100006: tread 1
+    400000: hull
+    400002: //RootNode
+    400004: tread
+    400006: tread 1
+    2300000: hull
+    2300002: //RootNode
+    2300004: tread
+    2300006: tread 1
+    3300000: hull
+    3300002: //RootNode
+    3300004: tread
+    3300006: tread 1
+    4300000: Mesh tank1
+    4300002: Mesh hull
+    4300004: Mesh tread
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: _defaultMat
+    second: {fileID: 2100000, guid: fbd88e0a123e41d4099f1605eab9a681, type: 2}
   materials:
     importMaterials: 1
     materialName: 2
     materialSearch: 0
+    materialLocation: 0
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
-    resampleRotations: 1
+    resampleCurves: 1
     optimizeGameObjects: 0
     motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
+    extraUserProperties: []
     clipAnimations: []
     isReadable: 1
   meshes:
@@ -52,25 +81,38 @@ SketchUpImporter:
     globalScale: 0.0254
     meshCompression: 0
     addColliders: 0
+    useSRGBMaterialColor: 1
+    importVisibility: 0
     importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
     optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
     useFileScale: 1
+    previousCalculatedGlobalScale: 1
+    hasPreviousCalculatedGlobalScale: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 3
+    normalCalculationMode: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
   importAnimation: 0
   copyAvatar: 0
   humanDescription:
+    serializedVersion: 2
     human: []
     skeleton: []
     armTwist: 0.5
@@ -82,6 +124,8 @@ SketchUpImporter:
     feetSpacing: 0
     rootMotionBoneName: 
     hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 0
   humanoidOversampling: 1

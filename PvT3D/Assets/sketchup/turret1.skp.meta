@@ -1,50 +1,74 @@
 fileFormatVersion: 2
 guid: 3ed76c8c32cbdfd4789e99db89473a48
-timeCreated: 1465954727
-licenseType: Free
 SketchUpImporter:
   generateBackFace: 0
   mergeCoplanarFaces: 0
-  selectedNodes: 
+  selectedNodes: 000000000100000002000000030000000400000005000000
   assetHash:
     serializedVersion: 2
-    Hash: 72621fc02003dab34bcf8c7514d96117
-  longitude: 0
-  latitude: 0
-  northCorrection: 0
+    Hash: 53fbe19edb7276cd6057d1d3265ca5a0
+  longitude: -105.242139
+  latitude: 40.018309
+  northCorrection: -0
   fileUnit: 0
   sketchUpImportData:
     defaultCamera:
-      position: {x: 0, y: 0, z: 0}
-      lookAt: {x: 0, y: 0, z: 1}
-      up: {x: 0, y: 1, z: 0}
-      fov: 45
-      aspectRatio: 1.33
-      orthoSize: 0
+      position: {x: -14.917422, y: 8.795553, z: 13.874858}
+      lookAt: {x: 0.21406336, y: 0.59516305, z: 0.20095873}
+      up: {x: 0.27678716, y: 0.9278074, z: -0.2501248}
+      fov: 35
+      aspectRatio: 0
+      orthoSize: 1
       isPerspective: 1
     scenes: []
-  serializedVersion: 19
-  fileIDToRecycleName: {}
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: tread
+    100002: tread 1
+    100004: //RootNode
+    400000: tread
+    400002: tread 1
+    400004: //RootNode
+    2300000: tread
+    2300002: tread 1
+    2300004: //RootNode
+    3300000: tread
+    3300002: tread 1
+    3300004: //RootNode
+    4300000: Mesh turret1
+    4300002: Mesh tread
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: _defaultMat
+    second: {fileID: 2100000, guid: 7997934fa7e75b24082b625086ac6504, type: 2}
   materials:
     importMaterials: 1
     materialName: 2
     materialSearch: 0
+    materialLocation: 0
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
-    resampleRotations: 1
+    resampleCurves: 1
     optimizeGameObjects: 0
     motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
+    extraUserProperties: []
     clipAnimations: []
     isReadable: 1
   meshes:
@@ -52,25 +76,38 @@ SketchUpImporter:
     globalScale: 0.0254
     meshCompression: 0
     addColliders: 0
+    useSRGBMaterialColor: 1
+    importVisibility: 0
     importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
     optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
     useFileScale: 1
+    previousCalculatedGlobalScale: 1
+    hasPreviousCalculatedGlobalScale: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 3
+    normalCalculationMode: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
   importAnimation: 0
   copyAvatar: 0
   humanDescription:
+    serializedVersion: 2
     human: []
     skeleton: []
     armTwist: 0.5
@@ -82,6 +119,8 @@ SketchUpImporter:
     feetSpacing: 0
     rootMotionBoneName: 
     hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 0
   humanoidOversampling: 1
